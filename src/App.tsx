@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster as HotToaster } from 'react-hot-toast';
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CookieConsent } from "@/components/CookieConsent";
 
 import LandingPage from "./pages/LandingPage";
 import OnboardingPage from "./pages/OnboardingPage";
@@ -129,6 +130,7 @@ const App = () => (
               {/* Catch-all */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <CookieConsent />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
