@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,11 +6,11 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
-import { loginSchema, registerSchema } from '@/lib/validation';
+import { loginSchema } from '@/lib/validation';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3;
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
@@ -27,8 +27,15 @@ export default function OnboardingPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signIn, signUp } = useAuth();
-  const { startWatching } = useLocationStore();
+  const { signIn, signUp, isAuthenticated } = useAuth();
+  const { startWatching, position } = useLocationStore();
+
+  // If already authenticated, go directly to map
+  useEffect(() => {
+    if (isAuthenticated && position) {
+      navigate('/map');
+    }
+  }, [isAuthenticated, position, navigate]);
 
   const validateStep1 = () => {
     setErrors({});
@@ -46,7 +53,7 @@ export default function OnboardingPage() {
       }
       return true;
     } else {
-      // For registration, validate email and password individually first
+      // For registration, validate all fields together
       const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       if (!emailValid) {
         setErrors({ email: 'Email invalide' });
@@ -56,22 +63,16 @@ export default function OnboardingPage() {
         setErrors({ password: 'Mot de passe trop court (min 6 caractères)' });
         return false;
       }
+      if (!firstName.trim()) {
+        setErrors({ firstName: 'Prénom requis' });
+        return false;
+      }
+      if (firstName.length > 50) {
+        setErrors({ firstName: 'Prénom trop long (max 50 caractères)' });
+        return false;
+      }
       return true;
     }
-  };
-
-  const validateStep2 = () => {
-    setErrors({});
-    
-    if (!firstName.trim()) {
-      setErrors({ firstName: 'Prénom requis' });
-      return false;
-    }
-    if (firstName.length > 50) {
-      setErrors({ firstName: 'Prénom trop long (max 50 caractères)' });
-      return false;
-    }
-    return true;
   };
 
   const handleContinue = async () => {
@@ -93,31 +94,27 @@ export default function OnboardingPage() {
           }
         } else {
           toast.success('Bienvenue !');
-          setStep(3);
+          setStep(2);
         }
       } else {
-        setStep(2);
+        setIsLoading(true);
+        const { error } = await signUp(email, password, firstName.trim(), university.trim() || undefined);
+        setIsLoading(false);
+        
+        if (error) {
+          if (error.message.includes('User already registered')) {
+            toast.error('Un compte existe déjà avec cet email');
+          } else {
+            toast.error(error.message || 'Erreur lors de l\'inscription');
+          }
+        } else {
+          toast.success('Compte créé avec succès !');
+          setStep(2);
+        }
       }
     } else if (step === 2) {
-      if (!validateStep2()) return;
-      
-      setIsLoading(true);
-      const { error } = await signUp(email, password, firstName.trim(), university.trim() || undefined);
-      setIsLoading(false);
-      
-      if (error) {
-        if (error.message.includes('User already registered')) {
-          toast.error('Un compte existe déjà avec cet email');
-        } else {
-          toast.error(error.message || 'Erreur lors de l\'inscription');
-        }
-      } else {
-        toast.success('Compte créé avec succès !');
-        setStep(3);
-      }
+      setStep(3);
     } else if (step === 3) {
-      setStep(4);
-    } else if (step === 4) {
       navigate('/map');
     }
   };
@@ -157,7 +154,7 @@ export default function OnboardingPage() {
                 {isLogin ? 'Content de te revoir !' : 'Créons ton compte'}
               </h2>
               <p className="text-muted-foreground">
-                {isLogin ? 'Entre tes identifiants' : 'Commence par ton email'}
+                {isLogin ? 'Entre tes identifiants' : 'Remplis ces infos pour commencer'}
               </p>
             </div>
             
@@ -208,6 +205,36 @@ export default function OnboardingPage() {
                 )}
               </div>
               
+              {!isLogin && (
+                <>
+                  <div className="space-y-2">
+                    <Input
+                      type="text"
+                      placeholder="Prénom"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className={cn(
+                        "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl",
+                        errors.firstName && "border-destructive"
+                      )}
+                      autoComplete="given-name"
+                    />
+                    {errors.firstName && (
+                      <p className="text-sm text-destructive">{errors.firstName}</p>
+                    )}
+                  </div>
+                  
+                  <Input
+                    type="text"
+                    placeholder="Université (optionnel)"
+                    value={university}
+                    onChange={(e) => setUniversity(e.target.value)}
+                    className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+                    autoComplete="organization"
+                  />
+                </>
+              )}
+              
               {isLogin && (
                 <button
                   type="button"
@@ -222,48 +249,6 @@ export default function OnboardingPage() {
         );
         
       case 2:
-        return (
-          <div className="space-y-6 animate-slide-up" onKeyPress={handleKeyPress}>
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                Parle-nous de toi
-              </h2>
-              <p className="text-muted-foreground">
-                Comment tu t'appelles ?
-              </p>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Input
-                  type="text"
-                  placeholder="Prénom"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className={cn(
-                    "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl",
-                    errors.firstName && "border-destructive"
-                  )}
-                  autoComplete="given-name"
-                />
-                {errors.firstName && (
-                  <p className="text-sm text-destructive">{errors.firstName}</p>
-                )}
-              </div>
-              
-              <Input
-                type="text"
-                placeholder="Université (optionnel)"
-                value={university}
-                onChange={(e) => setUniversity(e.target.value)}
-                className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
-                autoComplete="organization"
-              />
-            </div>
-          </div>
-        );
-        
-      case 3:
         return (
           <div className="space-y-6 animate-slide-up text-center">
             <div className="w-24 h-24 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6 glow-coral">
@@ -311,7 +296,7 @@ export default function OnboardingPage() {
           </div>
         );
         
-      case 4:
+      case 3:
         return (
           <div className="space-y-6 animate-slide-up text-center">
             <div className="text-6xl mb-6">🎉</div>
@@ -354,11 +339,13 @@ export default function OnboardingPage() {
     }
   };
 
+  const totalSteps = 3;
+
   return (
     <div className="min-h-screen bg-gradient-radial flex flex-col px-6 py-8">
       {/* Progress dots */}
       <div className="flex justify-center gap-2 mb-8">
-        {[1, 2, 3, 4].map((s) => (
+        {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
           <div
             key={s}
             className={cn(
@@ -386,12 +373,12 @@ export default function OnboardingPage() {
         
         <Button
           onClick={handleContinue}
-          disabled={isLoading || (step === 3 && locationStatus !== 'success')}
+          disabled={isLoading || (step === 2 && locationStatus !== 'success')}
           className="flex-1 h-14 text-lg font-semibold bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl glow-coral transition-all duration-300"
         >
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
-          ) : step === 4 ? (
+          ) : step === totalSteps ? (
             "C'est parti !"
           ) : (
             <>
