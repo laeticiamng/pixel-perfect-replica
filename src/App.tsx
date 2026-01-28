@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster as HotToaster } from 'react-hot-toast';
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 import LandingPage from "./pages/LandingPage";
 import OnboardingPage from "./pages/OnboardingPage";
@@ -26,83 +27,85 @@ const queryClient = new QueryClient();
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <HotToaster 
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: 'hsl(240 33% 14%)',
-              color: 'hsl(0 0% 95%)',
-              border: '1px solid hsl(240 20% 20%)',
-              borderRadius: '12px',
-            },
-          }}
-        />
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/onboarding" element={<OnboardingPage />} />
-            
-            {/* Protected Routes */}
-            <Route path="/map" element={
-              <ProtectedRoute>
-                <MapPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/reveal/:userId" element={
-              <ProtectedRoute>
-                <ProximityRevealPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile/edit" element={
-              <ProtectedRoute>
-                <EditProfilePage />
-              </ProtectedRoute>
-            } />
-            <Route path="/settings" element={
-              <ProtectedRoute>
-                <SettingsPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/statistics" element={
-              <ProtectedRoute>
-                <StatisticsPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/people-met" element={
-              <ProtectedRoute>
-                <PeopleMetPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/help" element={
-              <ProtectedRoute>
-                <HelpPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/feedback" element={
-              <ProtectedRoute>
-                <FeedbackPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/report" element={
-              <ProtectedRoute>
-                <ReportPage />
-              </ProtectedRoute>
-            } />
-            
-            {/* Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <HotToaster 
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: 'hsl(240 33% 14%)',
+                color: 'hsl(0 0% 95%)',
+                border: '1px solid hsl(240 20% 20%)',
+                borderRadius: '12px',
+              },
+            }}
+          />
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/onboarding" element={<OnboardingPage />} />
+              
+              {/* Protected Routes */}
+              <Route path="/map" element={
+                <ProtectedRoute>
+                  <MapPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/reveal/:userId" element={
+                <ProtectedRoute>
+                  <ProximityRevealPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile/edit" element={
+                <ProtectedRoute>
+                  <EditProfilePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/statistics" element={
+                <ProtectedRoute>
+                  <StatisticsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/people-met" element={
+                <ProtectedRoute>
+                  <PeopleMetPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/help" element={
+                <ProtectedRoute>
+                  <HelpPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/feedback" element={
+                <ProtectedRoute>
+                  <FeedbackPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/report" element={
+                <ProtectedRoute>
+                  <ReportPage />
+                </ProtectedRoute>
+              } />
+              
+              {/* Catch-all */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );

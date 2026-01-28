@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useReports } from '@/hooks/useReports';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -10,9 +11,9 @@ type ReportType = 'bug' | 'behavior' | 'content' | 'other';
 
 export default function ReportPage() {
   const navigate = useNavigate();
+  const { createReport, isLoading } = useReports();
   const [reportType, setReportType] = useState<ReportType | null>(null);
   const [description, setDescription] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const reportTypes = [
     { id: 'bug' as ReportType, label: 'Bug technique', emoji: '🐛' },
@@ -31,14 +32,17 @@ export default function ReportPage() {
       return;
     }
     
-    setIsLoading(true);
+    const { error } = await createReport(
+      reportTypes.find(r => r.id === reportType)?.label || reportType,
+      description.trim()
+    );
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsLoading(false);
-    toast.success('Signalement envoyé ! Merci pour ton aide.');
-    navigate('/profile');
+    if (error) {
+      toast.error('Erreur lors de l\'envoi');
+    } else {
+      toast.success('Signalement envoyé ! Merci pour ton aide.');
+      navigate('/profile');
+    }
   };
 
   return (

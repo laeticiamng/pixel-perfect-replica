@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Camera, Loader2 } from 'lucide-react';
+import { ArrowLeft, Camera, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuthStore } from '@/stores/authStore';
-import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 export default function EditProfilePage() {
   const navigate = useNavigate();
-  const { user, updateProfile } = useAuthStore();
+  const { profile, updateProfile } = useAuth();
   
-  const [firstName, setFirstName] = useState(user?.firstName || '');
-  const [university, setUniversity] = useState(user?.university || '');
+  const [firstName, setFirstName] = useState(profile?.first_name || '');
+  const [university, setUniversity] = useState(profile?.university || '');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
@@ -23,17 +22,19 @@ export default function EditProfilePage() {
     
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    updateProfile({
-      firstName: firstName.trim(),
-      university: university.trim() || undefined,
+    const { error } = await updateProfile({
+      first_name: firstName.trim(),
+      university: university.trim() || null,
     });
     
     setIsLoading(false);
-    toast.success('Profil mis à jour !');
-    navigate('/profile');
+    
+    if (error) {
+      toast.error('Erreur lors de la mise à jour');
+    } else {
+      toast.success('Profil mis à jour !');
+      navigate('/profile');
+    }
   };
 
   return (
@@ -93,7 +94,7 @@ export default function EditProfilePage() {
             <label className="text-sm font-medium text-foreground">Email</label>
             <Input
               type="email"
-              value={user?.email || ''}
+              value={profile?.email || ''}
               disabled
               className="h-14 bg-deep-blue-light/50 border-border text-muted-foreground rounded-xl cursor-not-allowed"
             />

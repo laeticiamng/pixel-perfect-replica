@@ -1,28 +1,44 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, UserCircle } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
+import { useInteractions } from '@/hooks/useInteractions';
 import { ACTIVITIES } from '@/types/signal';
+import { Loader2 } from 'lucide-react';
 
 interface MetPerson {
   id: string;
   firstName: string;
   activity: string;
   date: Date;
-  positive: boolean;
+  positive: boolean | null;
 }
 
 export default function PeopleMetPage() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { getMyInteractions } = useInteractions();
+  const [peopleMet, setPeopleMet] = useState<MetPerson[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Mock data for people met
-  const peopleMet: MetPerson[] = [
-    { id: '1', firstName: 'Marie', activity: 'studying', date: new Date(Date.now() - 86400000), positive: true },
-    { id: '2', firstName: 'Thomas', activity: 'eating', date: new Date(Date.now() - 172800000), positive: true },
-    { id: '3', firstName: 'Julie', activity: 'talking', date: new Date(Date.now() - 259200000), positive: false },
-    { id: '4', firstName: 'Lucas', activity: 'working', date: new Date(Date.now() - 345600000), positive: true },
-    { id: '5', firstName: 'Emma', activity: 'sport', date: new Date(Date.now() - 432000000), positive: true },
-  ];
+  useEffect(() => {
+    const loadPeople = async () => {
+      const { data } = await getMyInteractions(50);
+      
+      if (data) {
+        const people = data.map(interaction => ({
+          id: interaction.id,
+          firstName: interaction.target_profile?.first_name || 'Anonyme',
+          activity: interaction.activity,
+          date: new Date(interaction.created_at),
+          positive: interaction.feedback === 'positive' ? true : 
+                   interaction.feedback === 'negative' ? false : null,
+        }));
+        setPeopleMet(people);
+      }
+      setIsLoading(false);
+    };
+    
+    loadPeople();
+  }, [getMyInteractions]);
 
   const formatDate = (date: Date) => {
     const now = new Date();
@@ -38,6 +54,14 @@ export default function PeopleMetPage() {
   const getActivityData = (activityId: string) => {
     return ACTIVITIES.find(a => a.id === activityId) || { emoji: '✨', label: 'Autre' };
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-radial flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-coral" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-radial pb-8">
@@ -87,7 +111,7 @@ export default function PeopleMetPage() {
                   </div>
                   
                   <span className="text-2xl">
-                    {person.positive ? '😊' : '😕'}
+                    {person.positive === true ? '😊' : person.positive === false ? '😕' : '❓'}
                   </span>
                 </div>
               );

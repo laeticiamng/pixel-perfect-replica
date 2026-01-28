@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Star, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { IcebreakerCard } from '@/components/IcebreakerCard';
-import { useSignalStore } from '@/stores/signalStore';
-import { useAuthStore } from '@/stores/authStore';
-import { ACTIVITIES } from '@/types/signal';
+import { useActiveSignal } from '@/hooks/useActiveSignal';
+import { useInteractions } from '@/hooks/useInteractions';
+import { ACTIVITIES, ICEBREAKERS } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -13,20 +13,22 @@ import toast from 'react-hot-toast';
 export default function ProximityRevealPage() {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const { nearbyUsers, getIcebreaker } = useSignalStore();
-  const { incrementInteractions, updateRating } = useAuthStore();
+  const { nearbyUsers } = useActiveSignal();
+  const { createInteraction, addFeedback } = useInteractions();
   
   const [icebreaker, setIcebreaker] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [isVibrating, setIsVibrating] = useState(false);
+  const [interactionId, setInteractionId] = useState<string | null>(null);
   
   const user = nearbyUsers.find(u => u.id === userId);
 
   const generateIcebreaker = useCallback(() => {
     if (user) {
-      setIcebreaker(getIcebreaker(user.activity));
+      const icebreakers = ICEBREAKERS[user.activity as keyof typeof ICEBREAKERS] || ICEBREAKERS.other;
+      setIcebreaker(icebreakers[Math.floor(Math.random() * icebreakers.length)]);
     }
-  }, [user, getIcebreaker]);
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -68,17 +70,28 @@ export default function ProximityRevealPage() {
     toast.success('Nouvel icebreaker !');
   };
 
-  const handleTalked = () => {
+  const handleTalked = async () => {
+    // Create interaction in database
+    const { data, error } = await createInteraction(
+      user.id,
+      user.activity,
+      icebreaker
+    );
+    
+    if (error) {
+      toast.error('Erreur lors de l\'enregistrement');
+      return;
+    }
+    
+    if (data) {
+      setInteractionId(data.id);
+    }
     setShowFeedback(true);
   };
 
-  const handleFeedback = (positive: boolean) => {
-    // Update user stats
-    incrementInteractions();
-    if (positive) {
-      updateRating(5);
-    } else {
-      updateRating(3);
+  const handleFeedback = async (positive: boolean) => {
+    if (interactionId) {
+      await addFeedback(interactionId, positive ? 'positive' : 'negative');
     }
     
     toast.success(positive ? 'Super ! Continue comme ça 🎉' : 'Pas de souci, ça arrive !');
