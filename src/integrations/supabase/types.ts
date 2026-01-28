@@ -372,6 +372,7 @@ export type Database = {
         Returns: undefined
       }
       cleanup_expired_signals: { Args: never; Returns: undefined }
+      cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       increment_interactions: {
         Args: { p_user_id: string }
         Returns: undefined

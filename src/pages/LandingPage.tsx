@@ -97,7 +97,19 @@ export default function LandingPage() {
       <footer className="py-6 text-center">
         <p className="text-xs text-muted-foreground">
           En continuant, tu acceptes nos{' '}
-          <button className="text-coral underline">conditions d'utilisation</button>
+          <button 
+            onClick={() => navigate('/terms')}
+            className="text-coral underline"
+          >
+            conditions d'utilisation
+          </button>
+          {' '}et notre{' '}
+          <button 
+            onClick={() => navigate('/privacy')}
+            className="text-coral underline"
+          >
+            politique de confidentialité
+          </button>
         </p>
       </footer>
     </div>

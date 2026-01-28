@@ -29,11 +29,11 @@ export default function ProfilePage() {
   };
 
   const handleNotifications = () => {
-    toast('Les notifications seront disponibles prochainement !', { icon: '🔔' });
+    navigate('/notifications-settings');
   };
 
   const handlePrivacy = () => {
-    toast('Les paramètres de confidentialité arrivent bientôt !', { icon: '🔒' });
+    navigate('/privacy-settings');
   };
 
   const menuSections: MenuSection[] = [

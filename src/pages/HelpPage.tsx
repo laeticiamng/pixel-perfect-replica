@@ -26,8 +26,8 @@ export default function HelpPage() {
   const supportLinks = [
     { icon: <Mail className="h-5 w-5" />, label: 'Nous contacter', href: 'mailto:support@signal-app.fr' },
     { icon: <MessageCircle className="h-5 w-5" />, label: 'Communauté', href: 'https://discord.gg', external: true },
-    { icon: <FileText className="h-5 w-5" />, label: 'Conditions d\'utilisation', href: '/help#terms' },
-    { icon: <Shield className="h-5 w-5" />, label: 'Politique de confidentialité', href: '/help#privacy' },
+    { icon: <FileText className="h-5 w-5" />, label: 'Conditions d\'utilisation', href: '/terms' },
+    { icon: <Shield className="h-5 w-5" />, label: 'Politique de confidentialité', href: '/privacy' },
   ];
 
   return (
@@ -68,19 +68,41 @@ export default function HelpPage() {
             Support
           </h2>
           <div className="glass rounded-xl overflow-hidden">
-            {supportLinks.map((link, index) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className={`flex items-center gap-4 px-4 py-3.5 hover:bg-muted/50 transition-colors ${
-                  index !== supportLinks.length - 1 ? 'border-b border-border' : ''
-                }`}
-              >
-                <span className="text-muted-foreground">{link.icon}</span>
-                <span className="flex-1 text-foreground">{link.label}</span>
-                <ExternalLink className="h-4 w-4 text-muted-foreground" />
-              </a>
-            ))}
+            {supportLinks.map((link, index) => {
+              const isExternal = link.href.startsWith('http') || link.href.startsWith('mailto');
+              
+              if (isExternal) {
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noopener noreferrer' : undefined}
+                    className={`flex items-center gap-4 px-4 py-3.5 hover:bg-muted/50 transition-colors ${
+                      index !== supportLinks.length - 1 ? 'border-b border-border' : ''
+                    }`}
+                  >
+                    <span className="text-muted-foreground">{link.icon}</span>
+                    <span className="flex-1 text-foreground">{link.label}</span>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                  </a>
+                );
+              }
+              
+              return (
+                <button
+                  key={link.label}
+                  onClick={() => navigate(link.href)}
+                  className={`w-full flex items-center gap-4 px-4 py-3.5 hover:bg-muted/50 transition-colors ${
+                    index !== supportLinks.length - 1 ? 'border-b border-border' : ''
+                  }`}
+                >
+                  <span className="text-muted-foreground">{link.icon}</span>
+                  <span className="flex-1 text-left text-foreground">{link.label}</span>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </button>
+              );
+            })}
           </div>
         </div>
 
