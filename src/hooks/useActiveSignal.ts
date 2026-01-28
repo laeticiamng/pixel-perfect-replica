@@ -176,12 +176,10 @@ export function useActiveSignal() {
       return;
     }
 
-    // Get profiles for these users
+    // Get profiles for these users using secure function (avoids exposing emails)
     const userIds = signals.map(s => s.user_id);
     const { data: profiles } = await supabase
-      .from('profiles')
-      .select('id, first_name')
-      .in('id', userIds);
+      .rpc('get_public_profiles', { profile_ids: userIds });
 
     const { data: statsData } = await supabase
       .from('user_stats')
