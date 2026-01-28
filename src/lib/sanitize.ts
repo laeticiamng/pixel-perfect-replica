@@ -87,3 +87,24 @@ export function sanitizeDbText(input: string, maxLength: number = 500): string {
   
   return cleaned;
 }
+
+// Sanitize HTML - escape all HTML entities
+export function sanitizeHtml(input: string): string {
+  if (!input) return '';
+  
+  return input
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;')
+    .replace(/=/g, '&#x3D;')
+    .replace(/`/g, '&#x60;');
+}
+
+// Escape string for use in URLs
+export function escapeForUrl(input: string): string {
+  if (!input) return '';
+  return encodeURIComponent(input);
+}

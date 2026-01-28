@@ -313,7 +313,50 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      active_signals_public: {
+        Row: {
+          accuracy: number | null
+          activity: Database["public"]["Enums"]["activity_type"] | null
+          expires_at: string | null
+          id: string | null
+          latitude: number | null
+          longitude: number | null
+          signal_type: Database["public"]["Enums"]["signal_type"] | null
+          started_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          accuracy?: number | null
+          activity?: Database["public"]["Enums"]["activity_type"] | null
+          expires_at?: string | null
+          id?: string | null
+          latitude?: never
+          longitude?: never
+          signal_type?: Database["public"]["Enums"]["signal_type"] | null
+          started_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          accuracy?: number | null
+          activity?: Database["public"]["Enums"]["activity_type"] | null
+          expires_at?: string | null
+          id?: string | null
+          latitude?: never
+          longitude?: never
+          signal_type?: Database["public"]["Enums"]["signal_type"] | null
+          started_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "active_signals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       add_hours_active: {
@@ -323,6 +366,25 @@ export type Database = {
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       fuzz_coordinates: { Args: { lat: number; lon: number }; Returns: Json }
+      get_nearby_signals: {
+        Args: {
+          max_distance_meters?: number
+          user_lat: number
+          user_lon: number
+        }
+        Returns: {
+          activity: Database["public"]["Enums"]["activity_type"]
+          avatar_url: string
+          first_name: string
+          id: string
+          latitude: number
+          longitude: number
+          rating: number
+          signal_type: Database["public"]["Enums"]["signal_type"]
+          started_at: string
+          user_id: string
+        }[]
+      }
       get_public_profile: {
         Args: { profile_id: string }
         Returns: {
