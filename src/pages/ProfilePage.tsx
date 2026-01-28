@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -20,10 +20,10 @@ interface MenuSection {
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const { profile, stats, signOut } = useAuth();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut();
     toast.success('À bientôt !');
     navigate('/');
   };
@@ -70,20 +70,20 @@ export default function ProfilePage() {
           {/* Avatar */}
           <div className="w-24 h-24 rounded-full bg-coral flex items-center justify-center mb-4 glow-coral">
             <span className="text-3xl font-bold text-primary-foreground">
-              {user?.firstName?.charAt(0).toUpperCase() || '?'}
+              {profile?.first_name?.charAt(0).toUpperCase() || '?'}
             </span>
           </div>
           
           {/* Name & Info */}
           <h1 className="text-2xl font-bold text-foreground mb-1">
-            {user?.firstName || 'Utilisateur'}
+            {profile?.first_name || 'Utilisateur'}
           </h1>
           <p className="text-muted-foreground text-sm mb-1">
-            {user?.email}
+            {profile?.email}
           </p>
-          {user?.university && (
+          {profile?.university && (
             <p className="text-muted-foreground text-sm">
-              🎓 {user.university}
+              🎓 {profile.university}
             </p>
           )}
           
@@ -93,21 +93,21 @@ export default function ProfilePage() {
               onClick={() => navigate('/statistics')}
               className="text-center hover:scale-105 transition-transform"
             >
-              <p className="text-2xl font-bold text-foreground">{user?.stats.interactions || 0}</p>
+              <p className="text-2xl font-bold text-foreground">{stats?.interactions || 0}</p>
               <p className="text-xs text-muted-foreground">Interactions</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
               className="text-center hover:scale-105 transition-transform"
             >
-              <p className="text-2xl font-bold text-foreground">{user?.stats.hoursActive || 0}h</p>
+              <p className="text-2xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
               <p className="text-xs text-muted-foreground">Actif</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
               className="text-center hover:scale-105 transition-transform"
             >
-              <p className="text-2xl font-bold text-coral">{user?.stats.rating?.toFixed(1) || '5.0'}</p>
+              <p className="text-2xl font-bold text-coral">{stats?.rating?.toFixed(1) || '5.0'}</p>
               <p className="text-xs text-muted-foreground">Rating</p>
             </button>
           </div>

@@ -2,30 +2,34 @@ import { Ghost, Ruler, Bell, Volume2, Vibrate, Trash2 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { useSettingsStore } from '@/stores/settingsStore';
-import { useAuthStore } from '@/stores/authStore';
+import { useUserSettings } from '@/hooks/useUserSettings';
+import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const { signOut, user } = useAuth();
   const {
-    ghostMode,
-    visibilityDistance,
-    pushNotifications,
-    soundNotifications,
-    proximityVibration,
+    settings,
     setGhostMode,
     setVisibilityDistance,
     setPushNotifications,
     setSoundNotifications,
     setProximityVibration,
-  } = useSettingsStore();
+  } = useUserSettings();
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (confirm('Es-tu sûr de vouloir supprimer ton compte ? Cette action est irréversible.')) {
-      logout();
+      // Delete user data first
+      if (user) {
+        await supabase.from('active_signals').delete().eq('user_id', user.id);
+        await supabase.from('user_settings').delete().eq('user_id', user.id);
+        await supabase.from('user_stats').delete().eq('user_id', user.id);
+        await supabase.from('profiles').delete().eq('id', user.id);
+      }
+      await signOut();
       toast.success('Compte supprimé');
       navigate('/');
     }
@@ -37,37 +41,37 @@ export default function SettingsPage() {
       label: 'Mode fantôme',
       description: 'Vois sans être vu',
       type: 'toggle' as const,
-      value: ghostMode,
+      value: settings.ghost_mode,
       onChange: (v: boolean) => setGhostMode(v),
       premium: true,
     },
     {
       icon: <Ruler className="h-5 w-5" />,
       label: 'Distance de visibilité',
-      description: `${visibilityDistance}m`,
+      description: `${settings.visibility_distance}m`,
       type: 'slider' as const,
-      value: visibilityDistance,
+      value: settings.visibility_distance,
       onChange: (v: number) => setVisibilityDistance(v),
     },
     {
       icon: <Bell className="h-5 w-5" />,
       label: 'Notifications push',
       type: 'toggle' as const,
-      value: pushNotifications,
+      value: settings.push_notifications,
       onChange: (v: boolean) => setPushNotifications(v),
     },
     {
       icon: <Volume2 className="h-5 w-5" />,
       label: 'Son des notifications',
       type: 'toggle' as const,
-      value: soundNotifications,
+      value: settings.sound_notifications,
       onChange: (v: boolean) => setSoundNotifications(v),
     },
     {
       icon: <Vibrate className="h-5 w-5" />,
       label: 'Vibration proximité',
       type: 'toggle' as const,
-      value: proximityVibration,
+      value: settings.proximity_vibration,
       onChange: (v: boolean) => setProximityVibration(v),
     },
   ];

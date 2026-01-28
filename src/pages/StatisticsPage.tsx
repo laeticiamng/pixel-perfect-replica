@@ -1,30 +1,99 @@
+import { useEffect, useState } from 'react';
 import { BarChart3, TrendingUp, Clock, Users, Star, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuth } from '@/contexts/AuthContext';
+import { useInteractions } from '@/hooks/useInteractions';
+
+interface InteractionData {
+  activity: string;
+  count: number;
+  emoji: string;
+}
+
+const ACTIVITY_EMOJIS: Record<string, string> = {
+  studying: '📚',
+  eating: '🍽️',
+  working: '💻',
+  talking: '💬',
+  sport: '🏃',
+  other: '✨',
+};
+
+const ACTIVITY_LABELS: Record<string, string> = {
+  studying: 'Réviser',
+  eating: 'Manger',
+  working: 'Bosser',
+  talking: 'Parler',
+  sport: 'Sport',
+  other: 'Autre',
+};
 
 export default function StatisticsPage() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { stats } = useAuth();
+  const { getMyInteractions } = useInteractions();
+  const [topActivities, setTopActivities] = useState<InteractionData[]>([]);
+  const [weeklyData, setWeeklyData] = useState([
+    { day: 'Lun', interactions: 0 },
+    { day: 'Mar', interactions: 0 },
+    { day: 'Mer', interactions: 0 },
+    { day: 'Jeu', interactions: 0 },
+    { day: 'Ven', interactions: 0 },
+    { day: 'Sam', interactions: 0 },
+    { day: 'Dim', interactions: 0 },
+  ]);
 
-  // Mock statistics data
-  const weeklyData = [
-    { day: 'Lun', interactions: 3 },
-    { day: 'Mar', interactions: 5 },
-    { day: 'Mer', interactions: 2 },
-    { day: 'Jeu', interactions: 7 },
-    { day: 'Ven', interactions: 4 },
-    { day: 'Sam', interactions: 8 },
-    { day: 'Dim', interactions: 6 },
-  ];
+  useEffect(() => {
+    const loadStats = async () => {
+      const { data: interactions } = await getMyInteractions(100);
+      
+      if (interactions) {
+        // Count activities
+        const activityCounts: Record<string, number> = {};
+        const dayCounts: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+        
+        interactions.forEach(interaction => {
+          // Activity counts
+          activityCounts[interaction.activity] = (activityCounts[interaction.activity] || 0) + 1;
+          
+          // Weekly counts
+          const date = new Date(interaction.created_at);
+          const dayOfWeek = date.getDay();
+          const adjustedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Monday = 0
+          dayCounts[adjustedDay]++;
+        });
+        
+        // Convert to array and sort
+        const sortedActivities = Object.entries(activityCounts)
+          .map(([activity, count]) => ({
+            activity: ACTIVITY_LABELS[activity] || activity,
+            count,
+            emoji: ACTIVITY_EMOJIS[activity] || '✨',
+          }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 3);
+        
+        setTopActivities(sortedActivities);
+        
+        // Update weekly data
+        setWeeklyData([
+          { day: 'Lun', interactions: dayCounts[0] },
+          { day: 'Mar', interactions: dayCounts[1] },
+          { day: 'Mer', interactions: dayCounts[2] },
+          { day: 'Jeu', interactions: dayCounts[3] },
+          { day: 'Ven', interactions: dayCounts[4] },
+          { day: 'Sam', interactions: dayCounts[5] },
+          { day: 'Dim', interactions: dayCounts[6] },
+        ]);
+      }
+    };
+    
+    loadStats();
+  }, [getMyInteractions]);
 
-  const topActivities = [
-    { activity: 'Réviser', emoji: '📚', count: 15 },
-    { activity: 'Manger', emoji: '🍽️', count: 12 },
-    { activity: 'Parler', emoji: '💬', count: 8 },
-  ];
-
-  const maxInteractions = Math.max(...weeklyData.map(d => d.interactions));
+  const maxInteractions = Math.max(...weeklyData.map(d => d.interactions), 1);
+  const weekTotal = weeklyData.reduce((sum, d) => sum + d.interactions, 0);
 
   return (
     <div className="min-h-screen bg-gradient-radial pb-8">
@@ -48,7 +117,7 @@ export default function StatisticsPage() {
               <span className="text-sm text-muted-foreground">Total rencontres</span>
             </div>
             <p className="text-3xl font-bold text-foreground">
-              {user?.stats.interactions || 0}
+              {stats?.interactions || 0}
             </p>
           </div>
           
@@ -58,7 +127,7 @@ export default function StatisticsPage() {
               <span className="text-sm text-muted-foreground">Heures actives</span>
             </div>
             <p className="text-3xl font-bold text-foreground">
-              {user?.stats.hoursActive || 0}h
+              {Math.round(stats?.hours_active || 0)}h
             </p>
           </div>
           
@@ -68,7 +137,7 @@ export default function StatisticsPage() {
               <span className="text-sm text-muted-foreground">Rating moyen</span>
             </div>
             <p className="text-3xl font-bold text-coral">
-              {user?.stats.rating?.toFixed(1) || '5.0'}
+              {stats?.rating?.toFixed(1) || '5.0'}
             </p>
           </div>
           
@@ -78,7 +147,7 @@ export default function StatisticsPage() {
               <span className="text-sm text-muted-foreground">Cette semaine</span>
             </div>
             <p className="text-3xl font-bold text-foreground">
-              {weeklyData.reduce((sum, d) => sum + d.interactions, 0)}
+              {weekTotal}
             </p>
           </div>
         </div>
@@ -97,7 +166,7 @@ export default function StatisticsPage() {
                   className="w-full bg-coral/80 rounded-t-lg transition-all duration-500 glow-coral"
                   style={{ 
                     height: `${(data.interactions / maxInteractions) * 100}%`,
-                    minHeight: data.interactions > 0 ? '8px' : '0'
+                    minHeight: data.interactions > 0 ? '8px' : '4px'
                   }}
                 />
                 <span className="text-xs text-muted-foreground">{data.day}</span>
@@ -113,24 +182,30 @@ export default function StatisticsPage() {
             <h2 className="font-semibold text-foreground">Top activités</h2>
           </div>
           
-          <div className="space-y-4">
-            {topActivities.map((activity, index) => (
-              <div key={activity.activity} className="flex items-center gap-4">
-                <span className="text-2xl w-8 text-center">{index + 1}</span>
-                <div className="w-12 h-12 rounded-lg bg-deep-blue-light flex items-center justify-center text-2xl">
-                  {activity.emoji}
+          {topActivities.length > 0 ? (
+            <div className="space-y-4">
+              {topActivities.map((activity, index) => (
+                <div key={activity.activity} className="flex items-center gap-4">
+                  <span className="text-2xl w-8 text-center">{index + 1}</span>
+                  <div className="w-12 h-12 rounded-lg bg-deep-blue-light flex items-center justify-center text-2xl">
+                    {activity.emoji}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">{activity.activity}</p>
+                    <p className="text-sm text-muted-foreground">{activity.count} fois</p>
+                  </div>
+                  <div 
+                    className="h-2 bg-coral/50 rounded-full"
+                    style={{ width: `${(activity.count / topActivities[0].count) * 60}px` }}
+                  />
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-foreground">{activity.activity}</p>
-                  <p className="text-sm text-muted-foreground">{activity.count} fois</p>
-                </div>
-                <div 
-                  className="h-2 bg-coral/50 rounded-full"
-                  style={{ width: `${(activity.count / topActivities[0].count) * 60}px` }}
-                />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground py-8">
+              Pas encore d'interactions. Commence à rencontrer du monde !
+            </p>
+          )}
         </div>
 
         {/* Heatmap placeholder */}

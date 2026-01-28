@@ -5,32 +5,34 @@ import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
 import { SignalMarker } from '@/components/SignalMarker';
 import { ActivitySelector } from '@/components/ActivitySelector';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
-import { useSignalStore } from '@/stores/signalStore';
-import { useSettingsStore } from '@/stores/settingsStore';
+import { useActiveSignal } from '@/hooks/useActiveSignal';
+import { useUserSettings } from '@/hooks/useUserSettings';
 import { ActivityType, ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function MapPage() {
   const navigate = useNavigate();
-  const { user, addHoursActive } = useAuthStore();
+  const { profile, user } = useAuth();
   const { position, startWatching, lastUpdated } = useLocationStore();
-  const { visibilityDistance, proximityVibration } = useSettingsStore();
+  const { settings } = useUserSettings();
   const { 
     isActive, 
-    myActivity, 
+    activity: myActivity, 
     nearbyUsers, 
     activateSignal, 
     deactivateSignal,
-    refreshNearbyUsers,
-  } = useSignalStore();
+    fetchNearbyUsers,
+  } = useActiveSignal();
   
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityType | null>(null);
   const [showLegend, setShowLegend] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isActivating, setIsActivating] = useState(false);
   const activeTimeRef = useRef<NodeJS.Timeout | null>(null);
 
   // Start location watching
@@ -41,25 +43,37 @@ export default function MapPage() {
   // Refresh nearby users when position changes
   useEffect(() => {
     if (position) {
-      refreshNearbyUsers(position.latitude, position.longitude);
+      fetchNearbyUsers(settings.visibility_distance);
     }
-  }, [position, refreshNearbyUsers]);
+  }, [position, fetchNearbyUsers, settings.visibility_distance]);
 
   // Auto-refresh every 30 seconds
   useEffect(() => {
     if (position && isActive) {
       const interval = setInterval(() => {
-        refreshNearbyUsers(position.latitude, position.longitude);
+        fetchNearbyUsers(settings.visibility_distance);
       }, 30000);
       return () => clearInterval(interval);
     }
-  }, [position, isActive, refreshNearbyUsers]);
+  }, [position, isActive, fetchNearbyUsers, settings.visibility_distance]);
 
   // Track active time
   useEffect(() => {
-    if (isActive) {
-      activeTimeRef.current = setInterval(() => {
-        addHoursActive(1 / 60); // Add 1 minute
+    if (isActive && user) {
+      activeTimeRef.current = setInterval(async () => {
+        // Add 1 minute of active time
+        const { data: currentStats } = await supabase
+          .from('user_stats')
+          .select('hours_active')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (currentStats) {
+          await supabase
+            .from('user_stats')
+            .update({ hours_active: Number(currentStats.hours_active) + (1/60) })
+            .eq('user_id', user.id);
+        }
       }, 60000);
     } else if (activeTimeRef.current) {
       clearInterval(activeTimeRef.current);
@@ -67,18 +81,18 @@ export default function MapPage() {
     return () => {
       if (activeTimeRef.current) clearInterval(activeTimeRef.current);
     };
-  }, [isActive, addHoursActive]);
+  }, [isActive, user]);
 
   const handleManualRefresh = useCallback(() => {
     if (position) {
       setIsRefreshing(true);
-      refreshNearbyUsers(position.latitude, position.longitude);
+      fetchNearbyUsers(settings.visibility_distance);
       setTimeout(() => {
         setIsRefreshing(false);
         toast.success('Carte mise à jour !');
       }, 500);
     }
-  }, [position, refreshNearbyUsers]);
+  }, [position, fetchNearbyUsers, settings.visibility_distance]);
 
   const handleSignalToggle = () => {
     if (isActive) {
@@ -89,11 +103,18 @@ export default function MapPage() {
     }
   };
 
-  const handleActivityConfirm = () => {
+  const handleActivityConfirm = async () => {
     if (selectedActivity) {
-      activateSignal(selectedActivity);
-      setShowActivityModal(false);
-      toast.success('Signal activé !');
+      setIsActivating(true);
+      const { error } = await activateSignal(selectedActivity);
+      setIsActivating(false);
+      
+      if (error) {
+        toast.error('Erreur lors de l\'activation');
+      } else {
+        setShowActivityModal(false);
+        toast.success('Signal activé !');
+      }
     }
   };
 
@@ -107,7 +128,7 @@ export default function MapPage() {
       toast('Rapproche-toi pour voir qui c\'est !', { icon: '👀' });
     } else {
       // Vibrate when close enough
-      if (proximityVibration && 'vibrate' in navigator) {
+      if (settings.proximity_vibration && 'vibrate' in navigator) {
         navigator.vibrate(100);
       }
       navigate(`/reveal/${userId}`);
@@ -117,18 +138,13 @@ export default function MapPage() {
   const openUsersCount = nearbyUsers.filter(u => u.signal === 'green' || u.signal === 'yellow').length;
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
 
-  // Filter users by visibility distance
-  const visibleUsers = nearbyUsers.filter(u => 
-    !u.distance || u.distance <= visibilityDistance
-  );
-
   // Calculate positions for radar display
   const getRadarPosition = (index: number, total: number, distance?: number) => {
     const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
     const maxRadius = 38;
     const minRadius = 15;
     
-    const normalizedDistance = distance ? Math.min(distance / visibilityDistance, 1) : 0.5;
+    const normalizedDistance = distance ? Math.min(distance / settings.visibility_distance, 1) : 0.5;
     const radius = minRadius + (maxRadius - minRadius) * normalizedDistance;
     
     const x = 50 + radius * Math.cos(angle);
@@ -216,7 +232,7 @@ export default function MapPage() {
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-3">
-              Distance: {visibilityDistance}m • Rafraîchissement: 30s
+              Distance: {settings.visibility_distance}m • Rafraîchissement: 30s
             </p>
           </div>
         )}
@@ -236,10 +252,10 @@ export default function MapPage() {
           {/* Distance labels */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <span className="absolute top-1 text-[10px] text-muted-foreground">
-              {visibilityDistance}m
+              {settings.visibility_distance}m
             </span>
             <span className="absolute top-1/4 text-[10px] text-muted-foreground">
-              {Math.round(visibilityDistance * 0.75)}m
+              {Math.round(settings.visibility_distance * 0.75)}m
             </span>
           </div>
           
@@ -263,7 +279,7 @@ export default function MapPage() {
               isActive ? 'bg-coral glow-coral animate-pulse-signal' : 'bg-muted'
             )}>
               <span className="text-sm font-bold text-primary-foreground">
-                {user?.firstName?.charAt(0).toUpperCase() || '?'}
+                {profile?.first_name?.charAt(0).toUpperCase() || '?'}
               </span>
             </div>
             {/* Ripple effect */}
@@ -273,8 +289,8 @@ export default function MapPage() {
           </div>
 
           {/* Nearby users */}
-          {visibleUsers.map((nearbyUser, index) => {
-            const pos = getRadarPosition(index, visibleUsers.length, nearbyUser.distance);
+          {nearbyUsers.map((nearbyUser, index) => {
+            const pos = getRadarPosition(index, nearbyUsers.length, nearbyUser.distance);
             const isClose = nearbyUser.distance && nearbyUser.distance < 50;
             
             return (
@@ -354,10 +370,10 @@ export default function MapPage() {
               </Button>
               <Button
                 onClick={handleActivityConfirm}
-                disabled={!selectedActivity}
+                disabled={!selectedActivity || isActivating}
                 className="flex-1 h-12 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
               >
-                Confirmer
+                {isActivating ? 'Activation...' : 'Confirmer'}
               </Button>
             </div>
           </div>

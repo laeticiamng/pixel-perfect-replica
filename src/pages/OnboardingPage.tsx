@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
 import { loginSchema, registerSchema } from '@/lib/validation';
@@ -25,9 +25,10 @@ export default function OnboardingPage() {
   const [university, setUniversity] = useState('');
   const [locationStatus, setLocationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
   
-  const { login, register, isLoading } = useAuthStore();
-  const { startWatching, position } = useLocationStore();
+  const { signIn, signUp } = useAuth();
+  const { startWatching } = useLocationStore();
 
   const validateStep1 = () => {
     setErrors({});
@@ -78,11 +79,21 @@ export default function OnboardingPage() {
       if (!validateStep1()) return;
       
       if (isLogin) {
-        const success = await login(email, password);
-        if (success) {
-          setStep(3);
+        setIsLoading(true);
+        const { error } = await signIn(email, password);
+        setIsLoading(false);
+        
+        if (error) {
+          if (error.message.includes('Invalid login credentials')) {
+            toast.error('Email ou mot de passe incorrect');
+          } else if (error.message.includes('Email not confirmed')) {
+            toast.error('Veuillez confirmer votre email');
+          } else {
+            toast.error(error.message || 'Erreur de connexion');
+          }
         } else {
-          toast.error('Compte non trouvé ou mot de passe incorrect');
+          toast.success('Bienvenue !');
+          setStep(3);
         }
       } else {
         setStep(2);
@@ -90,12 +101,19 @@ export default function OnboardingPage() {
     } else if (step === 2) {
       if (!validateStep2()) return;
       
-      const success = await register(email, password, firstName.trim(), university.trim() || undefined);
-      if (success) {
+      setIsLoading(true);
+      const { error } = await signUp(email, password, firstName.trim(), university.trim() || undefined);
+      setIsLoading(false);
+      
+      if (error) {
+        if (error.message.includes('User already registered')) {
+          toast.error('Un compte existe déjà avec cet email');
+        } else {
+          toast.error(error.message || 'Erreur lors de l\'inscription');
+        }
+      } else {
         toast.success('Compte créé avec succès !');
         setStep(3);
-      } else {
-        toast.error('Erreur lors de l\'inscription');
       }
     } else if (step === 3) {
       setStep(4);
