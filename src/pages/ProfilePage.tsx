@@ -68,10 +68,18 @@ export default function ProfilePage() {
       <header className="safe-top px-6 py-8">
         <div className="flex flex-col items-center">
           {/* Avatar */}
-          <div className="w-24 h-24 rounded-full bg-coral flex items-center justify-center mb-4 glow-coral">
-            <span className="text-3xl font-bold text-primary-foreground">
-              {profile?.first_name?.charAt(0).toUpperCase() || '?'}
-            </span>
+          <div className="w-24 h-24 rounded-full bg-coral flex items-center justify-center mb-4 glow-coral overflow-hidden">
+            {profile?.avatar_url ? (
+              <img 
+                src={profile.avatar_url} 
+                alt="Avatar" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-3xl font-bold text-primary-foreground">
+                {profile?.first_name?.charAt(0).toUpperCase() || '?'}
+              </span>
+            )}
           </div>
           
           {/* Name & Info */}

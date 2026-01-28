@@ -24,6 +24,8 @@ import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
 import PrivacySettingsPage from "./pages/PrivacySettingsPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -52,6 +54,8 @@ const App = () => (
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
               <Route path="/onboarding" element={<OnboardingPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               
