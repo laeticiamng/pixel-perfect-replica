@@ -63,3 +63,17 @@ export function getPasswordStrength(password: string): {
   if (score <= 4) return { score, label: 'Moyen', color: 'bg-signal-yellow' };
   return { score, label: 'Fort', color: 'bg-signal-green' };
 }
+
+// Alias for signupSchema
+export const signupSchema = registerSchema;
+
+// Email validation helper
+export function validateEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email.trim());
+}
+
+// Password validation helper
+export function validatePassword(password: string): boolean {
+  return password.length >= 6;
+}
