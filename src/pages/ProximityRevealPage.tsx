@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock } from 'lucide-react';
+import { ArrowLeft, Star, Clock, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { IcebreakerCard } from '@/components/IcebreakerCard';
 import { useSignalStore } from '@/stores/signalStore';
+import { useAuthStore } from '@/stores/authStore';
 import { ACTIVITIES } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
 import { cn } from '@/lib/utils';
@@ -13,29 +14,48 @@ export default function ProximityRevealPage() {
   const navigate = useNavigate();
   const { userId } = useParams();
   const { nearbyUsers, getIcebreaker } = useSignalStore();
+  const { incrementInteractions, updateRating } = useAuthStore();
   
   const [icebreaker, setIcebreaker] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [isVibrating, setIsVibrating] = useState(false);
   
   const user = nearbyUsers.find(u => u.id === userId);
 
-  useEffect(() => {
+  const generateIcebreaker = useCallback(() => {
     if (user) {
       setIcebreaker(getIcebreaker(user.activity));
-      
-      // Vibrate on reveal
-      if ('vibrate' in navigator) {
-        navigator.vibrate(200);
-      }
     }
   }, [user, getIcebreaker]);
 
+  useEffect(() => {
+    if (user) {
+      generateIcebreaker();
+      
+      // Vibrate on reveal
+      if ('vibrate' in navigator) {
+        navigator.vibrate([100, 50, 100]);
+        setIsVibrating(true);
+        setTimeout(() => setIsVibrating(false), 300);
+      }
+    }
+  }, [user, generateIcebreaker]);
+
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-radial flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-radial flex items-center justify-center px-6">
         <div className="text-center">
-          <p className="text-muted-foreground mb-4">Utilisateur non trouvé</p>
-          <Button onClick={() => navigate('/map')}>Retour à la carte</Button>
+          <div className="text-6xl mb-4">👻</div>
+          <p className="text-foreground font-medium mb-2">Utilisateur non trouvé</p>
+          <p className="text-muted-foreground text-sm mb-6">
+            Cette personne a peut-être désactivé son signal
+          </p>
+          <Button 
+            onClick={() => navigate('/map')}
+            className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
+          >
+            Retour à la carte
+          </Button>
         </div>
       </div>
     );
@@ -44,7 +64,7 @@ export default function ProximityRevealPage() {
   const activityData = ACTIVITIES.find(a => a.id === user.activity);
 
   const handleRefreshIcebreaker = () => {
-    setIcebreaker(getIcebreaker(user.activity));
+    generateIcebreaker();
     toast.success('Nouvel icebreaker !');
   };
 
@@ -53,6 +73,14 @@ export default function ProximityRevealPage() {
   };
 
   const handleFeedback = (positive: boolean) => {
+    // Update user stats
+    incrementInteractions();
+    if (positive) {
+      updateRating(5);
+    } else {
+      updateRating(3);
+    }
+    
     toast.success(positive ? 'Super ! Continue comme ça 🎉' : 'Pas de souci, ça arrive !');
     navigate('/map');
   };
@@ -71,7 +99,7 @@ export default function ProximityRevealPage() {
         <div className="flex gap-6 mb-8">
           <button
             onClick={() => handleFeedback(true)}
-            className="w-24 h-24 rounded-2xl bg-signal-green/20 border-2 border-signal-green flex items-center justify-center text-5xl transition-all hover:scale-110 active:scale-95"
+            className="w-24 h-24 rounded-2xl bg-signal-green/20 border-2 border-signal-green flex items-center justify-center text-5xl transition-all hover:scale-110 active:scale-95 glow-green"
           >
             😊
           </button>
@@ -95,7 +123,10 @@ export default function ProximityRevealPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-radial flex flex-col animate-slide-up">
+    <div className={cn(
+      "min-h-screen bg-gradient-radial flex flex-col animate-slide-up",
+      isVibrating && "animate-pulse"
+    )}>
       {/* Header */}
       <header className="safe-top px-6 py-4">
         <button
@@ -120,8 +151,8 @@ export default function ProximityRevealPage() {
               {/* Signal indicator */}
               <div className={cn(
                 'absolute -bottom-1 -right-1 w-8 h-8 rounded-full border-4 border-background',
-                user.signal === 'green' && 'bg-signal-green',
-                user.signal === 'yellow' && 'bg-signal-yellow',
+                user.signal === 'green' && 'bg-signal-green glow-green',
+                user.signal === 'yellow' && 'bg-signal-yellow glow-yellow',
                 user.signal === 'red' && 'bg-signal-red',
               )} />
             </div>

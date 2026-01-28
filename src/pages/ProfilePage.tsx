@@ -1,13 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut } from 'lucide-react';
+import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
+import toast from 'react-hot-toast';
 
 interface MenuItem {
   icon: React.ReactNode;
   label: string;
   onClick?: () => void;
+  route?: string;
   danger?: boolean;
 }
 
@@ -22,31 +24,40 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     logout();
+    toast.success('À bientôt !');
     navigate('/');
+  };
+
+  const handleNotifications = () => {
+    toast('Les notifications seront disponibles prochainement !', { icon: '🔔' });
+  };
+
+  const handlePrivacy = () => {
+    toast('Les paramètres de confidentialité arrivent bientôt !', { icon: '🔒' });
   };
 
   const menuSections: MenuSection[] = [
     {
       title: 'Compte',
       items: [
-        { icon: <User className="h-5 w-5" />, label: 'Modifier le profil' },
-        { icon: <Bell className="h-5 w-5" />, label: 'Notifications' },
-        { icon: <Lock className="h-5 w-5" />, label: 'Confidentialité' },
+        { icon: <User className="h-5 w-5" />, label: 'Modifier le profil', route: '/profile/edit' },
+        { icon: <Bell className="h-5 w-5" />, label: 'Notifications', onClick: handleNotifications },
+        { icon: <Lock className="h-5 w-5" />, label: 'Confidentialité', onClick: handlePrivacy },
       ],
     },
     {
       title: 'Historique',
       items: [
-        { icon: <BarChart3 className="h-5 w-5" />, label: 'Mes statistiques' },
-        { icon: <Users className="h-5 w-5" />, label: 'Personnes rencontrées' },
+        { icon: <BarChart3 className="h-5 w-5" />, label: 'Mes statistiques', route: '/statistics' },
+        { icon: <Users className="h-5 w-5" />, label: 'Personnes rencontrées', route: '/people-met' },
       ],
     },
     {
       title: 'Support',
       items: [
-        { icon: <HelpCircle className="h-5 w-5" />, label: 'Aide & FAQ' },
-        { icon: <MessageSquare className="h-5 w-5" />, label: 'Donner un feedback' },
-        { icon: <AlertTriangle className="h-5 w-5" />, label: 'Signaler un problème' },
+        { icon: <HelpCircle className="h-5 w-5" />, label: 'Aide & FAQ', route: '/help' },
+        { icon: <MessageSquare className="h-5 w-5" />, label: 'Donner un feedback', route: '/feedback' },
+        { icon: <AlertTriangle className="h-5 w-5" />, label: 'Signaler un problème', route: '/report' },
       ],
     },
   ];
@@ -78,18 +89,27 @@ export default function ProfilePage() {
           
           {/* Stats */}
           <div className="flex gap-8 mt-6">
-            <div className="text-center">
+            <button 
+              onClick={() => navigate('/statistics')}
+              className="text-center hover:scale-105 transition-transform"
+            >
               <p className="text-2xl font-bold text-foreground">{user?.stats.interactions || 0}</p>
               <p className="text-xs text-muted-foreground">Interactions</p>
-            </div>
-            <div className="text-center">
+            </button>
+            <button 
+              onClick={() => navigate('/statistics')}
+              className="text-center hover:scale-105 transition-transform"
+            >
               <p className="text-2xl font-bold text-foreground">{user?.stats.hoursActive || 0}h</p>
               <p className="text-xs text-muted-foreground">Actif</p>
-            </div>
-            <div className="text-center">
+            </button>
+            <button 
+              onClick={() => navigate('/statistics')}
+              className="text-center hover:scale-105 transition-transform"
+            >
               <p className="text-2xl font-bold text-coral">{user?.stats.rating?.toFixed(1) || '5.0'}</p>
               <p className="text-xs text-muted-foreground">Rating</p>
-            </div>
+            </button>
           </div>
         </div>
       </header>
@@ -105,7 +125,13 @@ export default function ProfilePage() {
               {section.items.map((item, index) => (
                 <button
                   key={item.label}
-                  onClick={item.onClick}
+                  onClick={() => {
+                    if (item.route) {
+                      navigate(item.route);
+                    } else if (item.onClick) {
+                      item.onClick();
+                    }
+                  }}
                   className={cn(
                     'w-full flex items-center gap-4 px-4 py-3.5 transition-colors',
                     'hover:bg-muted/50',
@@ -113,7 +139,8 @@ export default function ProfilePage() {
                   )}
                 >
                   <span className="text-muted-foreground">{item.icon}</span>
-                  <span className="text-foreground">{item.label}</span>
+                  <span className="flex-1 text-left text-foreground">{item.label}</span>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </button>
               ))}
             </div>
