@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
+import { logger } from '@/lib/logger';
 
 type SignalType = 'green' | 'yellow' | 'red';
 type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
@@ -86,6 +87,7 @@ export function useActiveSignal() {
       setIsLoading(false);
       if (!error && data) {
         setMySignal(data);
+        logger.action.signalActivated(user.id, activity);
       }
       return { data, error };
     } else {
@@ -106,6 +108,7 @@ export function useActiveSignal() {
       setIsLoading(false);
       if (!error && data) {
         setMySignal(data);
+        logger.action.signalActivated(user.id, activity);
       }
       return { data, error };
     }
@@ -125,6 +128,7 @@ export function useActiveSignal() {
     setIsLoading(false);
     if (!error) {
       setMySignal(null);
+      logger.action.signalDeactivated(user.id);
     }
     return { error };
   };
