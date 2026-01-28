@@ -25,9 +25,9 @@ export default function HelpPage() {
 
   const supportLinks = [
     { icon: <Mail className="h-5 w-5" />, label: 'Nous contacter', href: 'mailto:support@signal-app.fr' },
-    { icon: <MessageCircle className="h-5 w-5" />, label: 'Discord', href: '#' },
-    { icon: <FileText className="h-5 w-5" />, label: 'Conditions d\'utilisation', href: '#' },
-    { icon: <Shield className="h-5 w-5" />, label: 'Politique de confidentialité', href: '#' },
+    { icon: <MessageCircle className="h-5 w-5" />, label: 'Communauté', href: 'https://discord.gg', external: true },
+    { icon: <FileText className="h-5 w-5" />, label: 'Conditions d\'utilisation', href: '/help#terms' },
+    { icon: <Shield className="h-5 w-5" />, label: 'Politique de confidentialité', href: '/help#privacy' },
   ];
 
   return (

@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
+import { logger } from '@/lib/logger';
 
 type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
 type FeedbackType = 'positive' | 'negative';
@@ -51,6 +52,11 @@ export function useInteractions() {
       .single();
 
     setIsLoading(false);
+    
+    if (!error && data) {
+      logger.action.interactionCreated(user.id, targetUserId);
+    }
+    
     return { data, error };
   };
 
@@ -68,6 +74,8 @@ export function useInteractions() {
 
     // Update target user's rating if feedback is positive or negative
     if (!error && data) {
+      logger.action.feedbackGiven(user.id, interactionId, feedback === 'positive');
+      
       const newRating = feedback === 'positive' ? 5.0 : 3.0;
       
       // Get current stats

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface Profile {
   id: string;
@@ -73,6 +74,12 @@ export function useSupabaseAuth() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         console.log('Auth state changed:', event, session?.user?.id);
+        
+        if (event === 'SIGNED_IN' && session?.user) {
+          logger.auth.login(session.user.id, 'email');
+        } else if (event === 'SIGNED_OUT') {
+          logger.auth.logout();
+        }
         
         setAuthState(prev => ({
           ...prev,
@@ -148,8 +155,11 @@ export function useSupabaseAuth() {
 
     if (error) {
       console.error('Signup error:', error);
+      logger.auth.signupFailed(error.message);
       return { error };
     }
+
+    logger.auth.signupSuccess(data.user?.id || 'unknown');
 
     // Update profile with additional data after signup
     if (data.user) {
@@ -177,8 +187,11 @@ export function useSupabaseAuth() {
 
     if (error) {
       console.error('Signin error:', error);
+      logger.auth.loginFailed(error.message);
       return { error };
     }
+
+    logger.auth.login(data.user.id, 'email');
 
     return { data, error: null };
   };

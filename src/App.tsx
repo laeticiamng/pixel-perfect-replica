@@ -19,6 +19,7 @@ import PeopleMetPage from "./pages/PeopleMetPage";
 import HelpPage from "./pages/HelpPage";
 import FeedbackPage from "./pages/FeedbackPage";
 import ReportPage from "./pages/ReportPage";
+import DiagnosticsPage from "./pages/DiagnosticsPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -97,6 +98,11 @@ const App = () => (
               <Route path="/report" element={
                 <ProtectedRoute>
                   <ReportPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/diagnostics" element={
+                <ProtectedRoute>
+                  <DiagnosticsPage />
                 </ProtectedRoute>
               } />
               

@@ -1,4 +1,4 @@
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Trash2 } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Trash2, Bug } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
@@ -6,6 +6,7 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
@@ -20,10 +21,13 @@ export default function SettingsPage() {
     setProximityVibration,
   } = useUserSettings();
 
+  const isDev = import.meta.env.DEV || localStorage.getItem('debug') === 'true';
+
   const handleDeleteAccount = async () => {
     if (confirm('Es-tu sûr de vouloir supprimer ton compte ? Cette action est irréversible.')) {
       // Delete user data first
       if (user) {
+        logger.action.reportSubmitted(user.id, 'account_deletion');
         await supabase.from('active_signals').delete().eq('user_id', user.id);
         await supabase.from('user_settings').delete().eq('user_id', user.id);
         await supabase.from('user_stats').delete().eq('user_id', user.id);
@@ -147,10 +151,23 @@ export default function SettingsPage() {
           </div>
         ))}
 
+        {/* Diagnostics (dev only) */}
+        {isDev && (
+          <button 
+            onClick={() => navigate('/diagnostics')}
+            className="w-full glass rounded-xl p-4 flex items-center gap-4 text-signal-yellow hover:bg-signal-yellow/10 transition-colors mt-6"
+          >
+            <div className="p-2 rounded-lg bg-signal-yellow/20">
+              <Bug className="h-5 w-5" />
+            </div>
+            <span className="font-medium">Diagnostics (Dev)</span>
+          </button>
+        )}
+
         {/* Delete Account */}
         <button 
           onClick={handleDeleteAccount}
-          className="w-full glass rounded-xl p-4 flex items-center gap-4 text-destructive hover:bg-destructive/10 transition-colors mt-8"
+          className="w-full glass rounded-xl p-4 flex items-center gap-4 text-destructive hover:bg-destructive/10 transition-colors mt-4"
         >
           <div className="p-2 rounded-lg bg-destructive/20">
             <Trash2 className="h-5 w-5" />

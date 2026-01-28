@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Users, MessageCircle } from 'lucide-react';
+import { MapPin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuth } from '@/contexts/AuthContext';
 import { useEffect } from 'react';
 
 const features = [
@@ -24,7 +24,7 @@ const features = [
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {

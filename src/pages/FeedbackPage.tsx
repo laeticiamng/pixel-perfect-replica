@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useAppFeedback } from '@/hooks/useAppFeedback';
 import toast from 'react-hot-toast';
 
 export default function FeedbackPage() {
   const navigate = useNavigate();
+  const { submitFeedback, isLoading } = useAppFeedback();
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
     if (rating === 0) {
@@ -17,12 +18,13 @@ export default function FeedbackPage() {
       return;
     }
     
-    setIsLoading(true);
+    const { error } = await submitFeedback(rating, feedback || undefined);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    if (error) {
+      toast.error('Erreur lors de l\'envoi');
+      return;
+    }
     
-    setIsLoading(false);
     toast.success('Merci pour ton feedback ! 🙏');
     navigate('/profile');
   };
