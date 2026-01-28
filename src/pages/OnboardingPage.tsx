@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, MapPin, Check, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuthStore } from '@/stores/authStore';
 import { useLocationStore } from '@/stores/locationStore';
+import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
+import { loginSchema, registerSchema } from '@/lib/validation';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -18,45 +20,79 @@ export default function OnboardingPage() {
   const [step, setStep] = useState<Step>(1);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [university, setUniversity] = useState('');
   const [locationStatus, setLocationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errors, setErrors] = useState<Record<string, string>>({});
   
   const { login, register, isLoading } = useAuthStore();
   const { startWatching, position } = useLocationStore();
 
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateStep1 = () => {
+    setErrors({});
+    
+    if (isLogin) {
+      const result = loginSchema.safeParse({ email, password });
+      if (!result.success) {
+        const fieldErrors: Record<string, string> = {};
+        result.error.errors.forEach(err => {
+          const field = err.path[0] as string;
+          fieldErrors[field] = err.message;
+        });
+        setErrors(fieldErrors);
+        return false;
+      }
+      return true;
+    } else {
+      // For registration, validate email and password individually first
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!emailValid) {
+        setErrors({ email: 'Email invalide' });
+        return false;
+      }
+      if (password.length < 6) {
+        setErrors({ password: 'Mot de passe trop court (min 6 caractères)' });
+        return false;
+      }
+      return true;
+    }
+  };
+
+  const validateStep2 = () => {
+    setErrors({});
+    
+    if (!firstName.trim()) {
+      setErrors({ firstName: 'Prénom requis' });
+      return false;
+    }
+    if (firstName.length > 50) {
+      setErrors({ firstName: 'Prénom trop long (max 50 caractères)' });
+      return false;
+    }
+    return true;
   };
 
   const handleContinue = async () => {
     if (step === 1) {
-      if (!validateEmail(email)) {
-        toast.error('Email invalide');
-        return;
-      }
-      if (password.length < 4) {
-        toast.error('Mot de passe trop court (min 4 caractères)');
-        return;
-      }
+      if (!validateStep1()) return;
       
       if (isLogin) {
         const success = await login(email, password);
         if (success) {
-          setStep(3); // Skip to location for login
+          setStep(3);
         } else {
-          toast.error('Compte non trouvé. Crée un compte d\'abord !');
+          toast.error('Compte non trouvé ou mot de passe incorrect');
         }
       } else {
         setStep(2);
       }
     } else if (step === 2) {
-      if (!firstName.trim()) {
-        toast.error('Prénom requis');
-        return;
-      }
+      if (!validateStep2()) return;
+      
       const success = await register(email, password, firstName.trim(), university.trim() || undefined);
       if (success) {
+        toast.success('Compte créé avec succès !');
         setStep(3);
       } else {
         toast.error('Erreur lors de l\'inscription');
@@ -69,6 +105,7 @@ export default function OnboardingPage() {
   };
 
   const handleBack = () => {
+    setErrors({});
     if (step > 1) {
       setStep((step - 1) as Step);
     } else {
@@ -80,24 +117,23 @@ export default function OnboardingPage() {
     setLocationStatus('loading');
     startWatching();
     
-    // Simulate location acquisition
     setTimeout(() => {
-      if (position) {
-        setLocationStatus('success');
-        toast.success('Position obtenue !');
-      } else {
-        // Still succeed with default position for demo
-        setLocationStatus('success');
-        toast.success('Position obtenue !');
-      }
+      setLocationStatus('success');
+      toast.success('Position obtenue !');
     }, 1500);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !isLoading) {
+      handleContinue();
+    }
   };
 
   const renderStep = () => {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-6 animate-slide-up">
+          <div className="space-y-6 animate-slide-up" onKeyPress={handleKeyPress}>
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-2">
                 {isLogin ? 'Content de te revoir !' : 'Créons ton compte'}
@@ -108,27 +144,58 @@ export default function OnboardingPage() {
             </div>
             
             <div className="space-y-4">
-              <Input
-                type="email"
-                placeholder="ton.email@universite.fr"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
-              />
-              <Input
-                type="password"
-                placeholder="Mot de passe"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
-              />
+              <div className="space-y-2">
+                <Input
+                  type="email"
+                  placeholder="ton.email@universite.fr"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={cn(
+                    "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl",
+                    errors.email && "border-destructive"
+                  )}
+                  autoComplete="email"
+                />
+                {errors.email && (
+                  <p className="text-sm text-destructive">{errors.email}</p>
+                )}
+              </div>
+              
+              <div className="space-y-2">
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Mot de passe"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={cn(
+                      "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
+                      errors.password && "border-destructive"
+                    )}
+                    autoComplete={isLogin ? 'current-password' : 'new-password'}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-sm text-destructive">{errors.password}</p>
+                )}
+                {!isLogin && password && (
+                  <PasswordStrengthIndicator password={password} />
+                )}
+              </div>
             </div>
           </div>
         );
         
       case 2:
         return (
-          <div className="space-y-6 animate-slide-up">
+          <div className="space-y-6 animate-slide-up" onKeyPress={handleKeyPress}>
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-2">
                 Parle-nous de toi
@@ -139,19 +206,30 @@ export default function OnboardingPage() {
             </div>
             
             <div className="space-y-4">
-              <Input
-                type="text"
-                placeholder="Prénom"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
-              />
+              <div className="space-y-2">
+                <Input
+                  type="text"
+                  placeholder="Prénom"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className={cn(
+                    "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl",
+                    errors.firstName && "border-destructive"
+                  )}
+                  autoComplete="given-name"
+                />
+                {errors.firstName && (
+                  <p className="text-sm text-destructive">{errors.firstName}</p>
+                )}
+              </div>
+              
               <Input
                 type="text"
                 placeholder="Université (optionnel)"
                 value={university}
                 onChange={(e) => setUniversity(e.target.value)}
                 className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+                autoComplete="organization"
               />
             </div>
           </div>

@@ -10,6 +10,9 @@ interface AuthState {
   register: (email: string, password: string, firstName: string, university?: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: (updates: Partial<User>) => void;
+  incrementInteractions: () => void;
+  addHoursActive: (hours: number) => void;
+  updateRating: (newRating: number) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -36,6 +39,8 @@ export const useAuthStore = create<AuthState>()(
         const storedUser = localStorage.getItem('signal-user-' + email);
         if (storedUser) {
           const user = JSON.parse(storedUser);
+          // Ensure dates are properly parsed
+          user.createdAt = new Date(user.createdAt);
           set({ user, isAuthenticated: true, isLoading: false });
           return true;
         }
@@ -78,6 +83,56 @@ export const useAuthStore = create<AuthState>()(
         const currentUser = get().user;
         if (currentUser) {
           const updatedUser = { ...currentUser, ...updates };
+          localStorage.setItem('signal-user-' + currentUser.email, JSON.stringify(updatedUser));
+          set({ user: updatedUser });
+        }
+      },
+
+      incrementInteractions: () => {
+        const currentUser = get().user;
+        if (currentUser) {
+          const updatedUser = {
+            ...currentUser,
+            stats: {
+              ...currentUser.stats,
+              interactions: currentUser.stats.interactions + 1,
+            },
+          };
+          localStorage.setItem('signal-user-' + currentUser.email, JSON.stringify(updatedUser));
+          set({ user: updatedUser });
+        }
+      },
+
+      addHoursActive: (hours: number) => {
+        const currentUser = get().user;
+        if (currentUser) {
+          const updatedUser = {
+            ...currentUser,
+            stats: {
+              ...currentUser.stats,
+              hoursActive: currentUser.stats.hoursActive + hours,
+            },
+          };
+          localStorage.setItem('signal-user-' + currentUser.email, JSON.stringify(updatedUser));
+          set({ user: updatedUser });
+        }
+      },
+
+      updateRating: (newRating: number) => {
+        const currentUser = get().user;
+        if (currentUser) {
+          // Calculate weighted average
+          const totalInteractions = currentUser.stats.interactions + 1;
+          const newAvgRating = 
+            (currentUser.stats.rating * currentUser.stats.interactions + newRating) / totalInteractions;
+          
+          const updatedUser = {
+            ...currentUser,
+            stats: {
+              ...currentUser.stats,
+              rating: Math.round(newAvgRating * 10) / 10,
+            },
+          };
           localStorage.setItem('signal-user-' + currentUser.email, JSON.stringify(updatedUser));
           set({ user: updatedUser });
         }

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Radio } from 'lucide-react';
+import { X, Radio, RefreshCw, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
 import { SignalMarker } from '@/components/SignalMarker';
@@ -8,14 +8,16 @@ import { ActivitySelector } from '@/components/ActivitySelector';
 import { useAuthStore } from '@/stores/authStore';
 import { useLocationStore } from '@/stores/locationStore';
 import { useSignalStore } from '@/stores/signalStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { ActivityType, ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function MapPage() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user, addHoursActive } = useAuthStore();
   const { position, startWatching, lastUpdated } = useLocationStore();
+  const { visibilityDistance, proximityVibration } = useSettingsStore();
   const { 
     isActive, 
     myActivity, 
@@ -23,19 +25,58 @@ export default function MapPage() {
     activateSignal, 
     deactivateSignal,
     refreshNearbyUsers,
-    setActivity 
   } = useSignalStore();
   
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityType | null>(null);
+  const [showLegend, setShowLegend] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const activeTimeRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Start location watching
   useEffect(() => {
     startWatching();
   }, [startWatching]);
 
+  // Refresh nearby users when position changes
   useEffect(() => {
     if (position) {
       refreshNearbyUsers(position.latitude, position.longitude);
+    }
+  }, [position, refreshNearbyUsers]);
+
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    if (position && isActive) {
+      const interval = setInterval(() => {
+        refreshNearbyUsers(position.latitude, position.longitude);
+      }, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [position, isActive, refreshNearbyUsers]);
+
+  // Track active time
+  useEffect(() => {
+    if (isActive) {
+      activeTimeRef.current = setInterval(() => {
+        addHoursActive(1 / 60); // Add 1 minute
+      }, 60000);
+    } else if (activeTimeRef.current) {
+      clearInterval(activeTimeRef.current);
+    }
+    return () => {
+      if (activeTimeRef.current) clearInterval(activeTimeRef.current);
+    };
+  }, [isActive, addHoursActive]);
+
+  const handleManualRefresh = useCallback(() => {
+    if (position) {
+      setIsRefreshing(true);
+      refreshNearbyUsers(position.latitude, position.longitude);
+      setTimeout(() => {
+        setIsRefreshing(false);
+        toast.success('Carte mise à jour !');
+      }, 500);
     }
   }, [position, refreshNearbyUsers]);
 
@@ -65,6 +106,10 @@ export default function MapPage() {
     if (distance && distance > 50) {
       toast('Rapproche-toi pour voir qui c\'est !', { icon: '👀' });
     } else {
+      // Vibrate when close enough
+      if (proximityVibration && 'vibrate' in navigator) {
+        navigator.vibrate(100);
+      }
       navigate(`/reveal/${userId}`);
     }
   };
@@ -72,20 +117,31 @@ export default function MapPage() {
   const openUsersCount = nearbyUsers.filter(u => u.signal === 'green' || u.signal === 'yellow').length;
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
 
+  // Filter users by visibility distance
+  const visibleUsers = nearbyUsers.filter(u => 
+    !u.distance || u.distance <= visibilityDistance
+  );
+
   // Calculate positions for radar display
   const getRadarPosition = (index: number, total: number, distance?: number) => {
     const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
-    const maxRadius = 38; // percentage from center
+    const maxRadius = 38;
     const minRadius = 15;
     
-    // Map distance to radius (closer = larger radius)
-    const normalizedDistance = distance ? Math.min(distance / 300, 1) : 0.5;
+    const normalizedDistance = distance ? Math.min(distance / visibilityDistance, 1) : 0.5;
     const radius = minRadius + (maxRadius - minRadius) * normalizedDistance;
     
     const x = 50 + radius * Math.cos(angle);
     const y = 50 + radius * Math.sin(angle);
     
     return { x, y };
+  };
+
+  const getTimeSinceUpdate = () => {
+    if (!lastUpdated) return null;
+    const seconds = Math.round((Date.now() - lastUpdated.getTime()) / 1000);
+    if (seconds < 60) return `${seconds}s`;
+    return `${Math.floor(seconds / 60)}min`;
   };
 
   return (
@@ -103,23 +159,67 @@ export default function MapPage() {
             </span>
           </div>
           
-          {isActive && myActivity && (
+          <div className="flex items-center gap-2">
+            {isActive && myActivity && (
+              <button
+                onClick={handleChangeActivity}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-deep-blue-light text-sm"
+              >
+                <span>{currentActivityData?.emoji}</span>
+                <span className="text-muted-foreground">{currentActivityData?.label}</span>
+              </button>
+            )}
+            
             <button
-              onClick={handleChangeActivity}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-deep-blue-light text-sm"
+              onClick={handleManualRefresh}
+              className={cn(
+                "p-2 rounded-lg bg-deep-blue-light text-muted-foreground hover:text-foreground transition-all",
+                isRefreshing && "animate-spin"
+              )}
             >
-              <span>{currentActivityData?.emoji}</span>
-              <span className="text-muted-foreground">{currentActivityData?.label}</span>
+              <RefreshCw className="h-4 w-4" />
             </button>
-          )}
+          </div>
         </div>
         
         {/* Open signals count */}
-        <div className="mt-3 text-center">
+        <div className="mt-3 flex items-center justify-between px-1">
           <p className="text-muted-foreground text-sm">
             <span className="text-coral font-bold">{openUsersCount}</span> personnes ouvertes autour de toi
           </p>
+          <button
+            onClick={() => setShowLegend(!showLegend)}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <Info className="h-4 w-4" />
+          </button>
         </div>
+        
+        {/* Legend */}
+        {showLegend && (
+          <div className="mt-3 glass rounded-xl p-4 animate-slide-up">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Légende
+            </p>
+            <div className="grid grid-cols-3 gap-3 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-signal-green" />
+                <span className="text-muted-foreground">Ouvert</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-signal-yellow" />
+                <span className="text-muted-foreground">Conditionnel</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-coral" />
+                <span className="text-muted-foreground">Toi</span>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3">
+              Distance: {visibilityDistance}m • Rafraîchissement: 30s
+            </p>
+          </div>
+        )}
       </header>
 
       {/* Radar Map */}
@@ -131,6 +231,16 @@ export default function MapPage() {
             <div className="absolute w-3/4 h-3/4 rounded-full border border-muted/20" />
             <div className="absolute w-1/2 h-1/2 rounded-full border border-muted/20" />
             <div className="absolute w-1/4 h-1/4 rounded-full border border-muted/30" />
+          </div>
+          
+          {/* Distance labels */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span className="absolute top-1 text-[10px] text-muted-foreground">
+              {visibilityDistance}m
+            </span>
+            <span className="absolute top-1/4 text-[10px] text-muted-foreground">
+              {Math.round(visibilityDistance * 0.75)}m
+            </span>
           </div>
           
           {/* Radar sweep effect */}
@@ -147,22 +257,24 @@ export default function MapPage() {
           </div>
           
           {/* Center point (user) */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
             <div className={cn(
-              'w-6 h-6 rounded-full flex items-center justify-center',
+              'w-8 h-8 rounded-full flex items-center justify-center',
               isActive ? 'bg-coral glow-coral animate-pulse-signal' : 'bg-muted'
             )}>
-              <span className="text-xs font-bold text-primary-foreground">
+              <span className="text-sm font-bold text-primary-foreground">
                 {user?.firstName?.charAt(0).toUpperCase() || '?'}
               </span>
             </div>
             {/* Ripple effect */}
-            <div className="absolute inset-0 rounded-full bg-coral/20 animate-ripple" />
+            {isActive && (
+              <div className="absolute inset-0 rounded-full bg-coral/20 animate-ripple" />
+            )}
           </div>
 
           {/* Nearby users */}
-          {nearbyUsers.map((nearbyUser, index) => {
-            const pos = getRadarPosition(index, nearbyUsers.length, nearbyUser.distance);
+          {visibleUsers.map((nearbyUser, index) => {
+            const pos = getRadarPosition(index, visibleUsers.length, nearbyUser.distance);
             const isClose = nearbyUser.distance && nearbyUser.distance < 50;
             
             return (
@@ -208,7 +320,7 @@ export default function MapPage() {
         
         {lastUpdated && (
           <p className="text-center text-xs text-muted-foreground mt-2">
-            Dernière mise à jour : il y a {Math.round((Date.now() - lastUpdated.getTime()) / 1000)}s
+            Dernière mise à jour : il y a {getTimeSinceUpdate()}
           </p>
         )}
       </div>

@@ -1,60 +1,74 @@
-import { useState } from 'react';
 import { Ghost, Ruler, Bell, Volume2, Vibrate, Trash2 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { cn } from '@/lib/utils';
-
-interface SettingItem {
-  icon: React.ReactNode;
-  label: string;
-  description?: string;
-  type: 'toggle' | 'slider' | 'button';
-  premium?: boolean;
-  danger?: boolean;
-}
+import { useSettingsStore } from '@/stores/settingsStore';
+import { useAuthStore } from '@/stores/authStore';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
-  const [settings, setSettings] = useState({
-    ghostMode: false,
-    visibilityDistance: 200,
-    pushNotifications: true,
-    soundNotifications: true,
-    proximityVibration: true,
-  });
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
+  const {
+    ghostMode,
+    visibilityDistance,
+    pushNotifications,
+    soundNotifications,
+    proximityVibration,
+    setGhostMode,
+    setVisibilityDistance,
+    setPushNotifications,
+    setSoundNotifications,
+    setProximityVibration,
+  } = useSettingsStore();
 
-  const updateSetting = (key: keyof typeof settings, value: boolean | number) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  const handleDeleteAccount = () => {
+    if (confirm('Es-tu sûr de vouloir supprimer ton compte ? Cette action est irréversible.')) {
+      logout();
+      toast.success('Compte supprimé');
+      navigate('/');
+    }
   };
 
-  const settingsItems: SettingItem[] = [
+  const settingsItems = [
     {
       icon: <Ghost className="h-5 w-5" />,
       label: 'Mode fantôme',
       description: 'Vois sans être vu',
-      type: 'toggle',
+      type: 'toggle' as const,
+      value: ghostMode,
+      onChange: (v: boolean) => setGhostMode(v),
       premium: true,
     },
     {
       icon: <Ruler className="h-5 w-5" />,
       label: 'Distance de visibilité',
-      description: `${settings.visibilityDistance}m`,
-      type: 'slider',
+      description: `${visibilityDistance}m`,
+      type: 'slider' as const,
+      value: visibilityDistance,
+      onChange: (v: number) => setVisibilityDistance(v),
     },
     {
       icon: <Bell className="h-5 w-5" />,
       label: 'Notifications push',
-      type: 'toggle',
+      type: 'toggle' as const,
+      value: pushNotifications,
+      onChange: (v: boolean) => setPushNotifications(v),
     },
     {
       icon: <Volume2 className="h-5 w-5" />,
       label: 'Son des notifications',
-      type: 'toggle',
+      type: 'toggle' as const,
+      value: soundNotifications,
+      onChange: (v: boolean) => setSoundNotifications(v),
     },
     {
       icon: <Vibrate className="h-5 w-5" />,
       label: 'Vibration proximité',
-      type: 'toggle',
+      type: 'toggle' as const,
+      value: proximityVibration,
+      onChange: (v: boolean) => setProximityVibration(v),
     },
   ];
 
@@ -94,18 +108,14 @@ export default function SettingsPage() {
 
               {item.type === 'toggle' && (
                 <Switch
-                  checked={
-                    item.label === 'Mode fantôme' ? settings.ghostMode :
-                    item.label === 'Notifications push' ? settings.pushNotifications :
-                    item.label === 'Son des notifications' ? settings.soundNotifications :
-                    item.label === 'Vibration proximité' ? settings.proximityVibration :
-                    false
-                  }
+                  checked={item.value as boolean}
                   onCheckedChange={(checked) => {
-                    if (item.label === 'Mode fantôme') updateSetting('ghostMode', checked);
-                    else if (item.label === 'Notifications push') updateSetting('pushNotifications', checked);
-                    else if (item.label === 'Son des notifications') updateSetting('soundNotifications', checked);
-                    else if (item.label === 'Vibration proximité') updateSetting('proximityVibration', checked);
+                    if (item.premium) {
+                      toast('Cette fonctionnalité est Premium !', { icon: '⭐' });
+                      return;
+                    }
+                    item.onChange(checked);
+                    toast.success('Paramètre mis à jour');
                   }}
                   disabled={item.premium}
                 />
@@ -115,8 +125,10 @@ export default function SettingsPage() {
             {item.type === 'slider' && (
               <div className="mt-4 px-1">
                 <Slider
-                  value={[settings.visibilityDistance]}
-                  onValueChange={([value]) => updateSetting('visibilityDistance', value)}
+                  value={[item.value as number]}
+                  onValueChange={([value]) => {
+                    item.onChange(value);
+                  }}
                   min={50}
                   max={500}
                   step={50}
@@ -132,7 +144,10 @@ export default function SettingsPage() {
         ))}
 
         {/* Delete Account */}
-        <button className="w-full glass rounded-xl p-4 flex items-center gap-4 text-destructive hover:bg-destructive/10 transition-colors mt-8">
+        <button 
+          onClick={handleDeleteAccount}
+          className="w-full glass rounded-xl p-4 flex items-center gap-4 text-destructive hover:bg-destructive/10 transition-colors mt-8"
+        >
           <div className="p-2 rounded-lg bg-destructive/20">
             <Trash2 className="h-5 w-5" />
           </div>
