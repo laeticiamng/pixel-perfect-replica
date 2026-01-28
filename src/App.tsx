@@ -7,6 +7,7 @@ import { Toaster as HotToaster } from 'react-hot-toast';
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CookieConsent } from "@/components/CookieConsent";
+import { OfflineBanner } from "@/components/OfflineBanner";
 
 import LandingPage from "./pages/LandingPage";
 import OnboardingPage from "./pages/OnboardingPage";
@@ -131,6 +132,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <CookieConsent />
+            <OfflineBanner />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
