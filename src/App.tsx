@@ -20,6 +20,10 @@ import HelpPage from "./pages/HelpPage";
 import FeedbackPage from "./pages/FeedbackPage";
 import ReportPage from "./pages/ReportPage";
 import DiagnosticsPage from "./pages/DiagnosticsPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
+import PrivacySettingsPage from "./pages/PrivacySettingsPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -48,6 +52,8 @@ const App = () => (
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
               <Route path="/onboarding" element={<OnboardingPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
               
               {/* Protected Routes */}
               <Route path="/map" element={
@@ -103,6 +109,16 @@ const App = () => (
               <Route path="/diagnostics" element={
                 <ProtectedRoute>
                   <DiagnosticsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/notifications-settings" element={
+                <ProtectedRoute>
+                  <NotificationsSettingsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/privacy-settings" element={
+                <ProtectedRoute>
+                  <PrivacySettingsPage />
                 </ProtectedRoute>
               } />
               

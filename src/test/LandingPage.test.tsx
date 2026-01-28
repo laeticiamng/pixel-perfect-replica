@@ -45,8 +45,9 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    // Updated tagline
-    expect(screen.getByText(/ouvert à l'interaction/)).toBeInTheDocument();
+    // Updated tagline - use more specific selector for the main tagline paragraph
+    const tagline = screen.getByText(/Vois qui est ouvert/);
+    expect(tagline).toBeInTheDocument();
   });
 
   it('should render the CTA buttons', () => {
