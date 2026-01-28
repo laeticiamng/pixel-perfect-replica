@@ -50,7 +50,7 @@ export default function LandingPage() {
 
         {/* Tagline */}
         <p className="text-center text-lg text-muted-foreground max-w-xs mb-12 leading-relaxed">
-          Vois qui est ouvert autour de toi.
+          Vois qui est ouvert à l'interaction autour de toi.
           <br />
           <span className="text-foreground font-medium">Approche sans awkwardness.</span>
         </p>
