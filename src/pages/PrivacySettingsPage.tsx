@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Ghost, Eye, EyeOff, MapPin, Shield, Lock } from 'lucide-react';
+import { ArrowLeft, Ghost, Eye, MapPin, Shield, Lock, Download, Loader2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components/ui/button';
 import { useUserSettings } from '@/hooks/useUserSettings';
+import { useGdprExport } from '@/hooks/useGdprExport';
 import toast from 'react-hot-toast';
 
 export default function PrivacySettingsPage() {
@@ -12,6 +14,16 @@ export default function PrivacySettingsPage() {
     setGhostMode,
     setVisibilityDistance,
   } = useUserSettings();
+  const { downloadExport, isExporting } = useGdprExport();
+
+  const handleExportData = async () => {
+    const { error } = await downloadExport();
+    if (error) {
+      toast.error('Erreur lors de l\'export');
+    } else {
+      toast.success('Tes données ont été téléchargées !');
+    }
+  };
 
   const handleGhostMode = async (value: boolean) => {
     // Ghost mode is premium
@@ -152,6 +164,38 @@ export default function PrivacySettingsPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* GDPR Export */}
+        <div className="glass rounded-xl p-4">
+          <div className="flex items-start gap-4">
+            <div className="p-2 rounded-lg bg-coral/20 text-coral">
+              <Download className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-foreground">Exporter mes données</p>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Télécharge une copie de toutes tes données (RGPD)
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={handleExportData}
+            disabled={isExporting}
+            className="w-full mt-4 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
+          >
+            {isExporting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Export en cours...
+              </>
+            ) : (
+              <>
+                <Download className="mr-2 h-4 w-4" />
+                Télécharger mes données
+              </>
+            )}
+          </Button>
         </div>
 
         {/* Link to Privacy Policy */}

@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Radio, RefreshCw, Info } from 'lucide-react';
+import { X, Radio, RefreshCw, Info, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
 import { SignalMarker } from '@/components/SignalMarker';
 import { ActivitySelector } from '@/components/ActivitySelector';
+import { ActivityFilter } from '@/components/ActivityFilter';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
@@ -33,6 +34,8 @@ export default function MapPage() {
   const [showLegend, setShowLegend] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isActivating, setIsActivating] = useState(false);
+  const [activityFilters, setActivityFilters] = useState<ActivityType[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
   const activeTimeRef = useRef<NodeJS.Timeout | null>(null);
 
   // Start location watching
@@ -135,7 +138,24 @@ export default function MapPage() {
     }
   };
 
-  const openUsersCount = nearbyUsers.filter(u => u.signal === 'green' || u.signal === 'yellow').length;
+  const toggleActivityFilter = (activity: ActivityType) => {
+    setActivityFilters(prev => 
+      prev.includes(activity) 
+        ? prev.filter(a => a !== activity)
+        : [...prev, activity]
+    );
+  };
+
+  const clearActivityFilters = () => {
+    setActivityFilters([]);
+  };
+
+  // Filter nearby users by activity
+  const filteredNearbyUsers = activityFilters.length > 0
+    ? nearbyUsers.filter(u => activityFilters.includes(u.activity))
+    : nearbyUsers;
+
+  const openUsersCount = filteredNearbyUsers.filter(u => u.signal === 'green' || u.signal === 'yellow').length;
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
 
   // Calculate positions for radar display
@@ -198,11 +218,24 @@ export default function MapPage() {
           </div>
         </div>
         
-        {/* Open signals count */}
+        {/* Filters & Open signals count */}
         <div className="mt-3 flex items-center justify-between px-1">
-          <p className="text-muted-foreground text-sm">
-            <span className="text-coral font-bold">{openUsersCount}</span> personnes ouvertes autour de toi
-          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={cn(
+                "p-2 rounded-lg transition-colors",
+                showFilters || activityFilters.length > 0
+                  ? "bg-coral text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <Filter className="h-4 w-4" />
+            </button>
+            <p className="text-muted-foreground text-sm">
+              <span className="text-coral font-bold">{openUsersCount}</span> personnes ouvertes
+            </p>
+          </div>
           <button
             onClick={() => setShowLegend(!showLegend)}
             className="text-muted-foreground hover:text-foreground"
@@ -210,6 +243,17 @@ export default function MapPage() {
             <Info className="h-4 w-4" />
           </button>
         </div>
+        
+        {/* Activity Filters */}
+        {showFilters && (
+          <div className="mt-3 animate-slide-up">
+            <ActivityFilter
+              selectedActivities={activityFilters}
+              onToggle={toggleActivityFilter}
+              onClear={clearActivityFilters}
+            />
+          </div>
+        )}
         
         {/* Legend */}
         {showLegend && (
@@ -289,8 +333,8 @@ export default function MapPage() {
           </div>
 
           {/* Nearby users */}
-          {nearbyUsers.map((nearbyUser, index) => {
-            const pos = getRadarPosition(index, nearbyUsers.length, nearbyUser.distance);
+          {filteredNearbyUsers.map((nearbyUser, index) => {
+            const pos = getRadarPosition(index, filteredNearbyUsers.length, nearbyUser.distance);
             const isClose = nearbyUser.distance && nearbyUser.distance < 50;
             
             return (
