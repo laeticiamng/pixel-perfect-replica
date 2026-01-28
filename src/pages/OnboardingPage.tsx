@@ -207,6 +207,16 @@ export default function OnboardingPage() {
                   <PasswordStrengthIndicator password={password} />
                 )}
               </div>
+              
+              {isLogin && (
+                <button
+                  type="button"
+                  onClick={() => navigate('/forgot-password')}
+                  className="text-sm text-coral hover:text-coral-dark transition-colors"
+                >
+                  Mot de passe oublié ?
+                </button>
+              )}
             </div>
           </div>
         );
