@@ -449,6 +449,12 @@ export default function LandingPage() {
             
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <button 
+                onClick={() => navigate('/help')}
+                className="hover:text-foreground transition-colors"
+              >
+                Aide
+              </button>
+              <button 
                 onClick={() => navigate('/terms')}
                 className="hover:text-foreground transition-colors"
               >
@@ -460,6 +466,12 @@ export default function LandingPage() {
               >
                 Confidentialité
               </button>
+              <a 
+                href="mailto:support@signal-app.fr"
+                className="hover:text-foreground transition-colors"
+              >
+                Contact
+              </a>
             </div>
           </div>
           

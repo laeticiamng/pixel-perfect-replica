@@ -101,11 +101,7 @@ function AnimatedRoutes() {
               <PeopleMetPage />
             </ProtectedRoute>
           } />
-          <Route path="/help" element={
-            <ProtectedRoute>
-              <HelpPage />
-            </ProtectedRoute>
-          } />
+          <Route path="/help" element={<HelpPage />} />
           <Route path="/feedback" element={
             <ProtectedRoute>
               <FeedbackPage />
