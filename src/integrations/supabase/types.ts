@@ -313,50 +313,7 @@ export type Database = {
       }
     }
     Views: {
-      active_signals_public: {
-        Row: {
-          accuracy: number | null
-          activity: Database["public"]["Enums"]["activity_type"] | null
-          expires_at: string | null
-          id: string | null
-          latitude: number | null
-          longitude: number | null
-          signal_type: Database["public"]["Enums"]["signal_type"] | null
-          started_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          accuracy?: number | null
-          activity?: Database["public"]["Enums"]["activity_type"] | null
-          expires_at?: string | null
-          id?: string | null
-          latitude?: never
-          longitude?: never
-          signal_type?: Database["public"]["Enums"]["signal_type"] | null
-          started_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          accuracy?: number | null
-          activity?: Database["public"]["Enums"]["activity_type"] | null
-          expires_at?: string | null
-          id?: string | null
-          latitude?: never
-          longitude?: never
-          signal_type?: Database["public"]["Enums"]["signal_type"] | null
-          started_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "active_signals_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       add_hours_active: {
