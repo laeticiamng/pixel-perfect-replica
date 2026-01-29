@@ -21,6 +21,7 @@ export type Database = {
           expires_at: string
           id: string
           latitude: number
+          location_description: string | null
           longitude: number
           signal_type: Database["public"]["Enums"]["signal_type"]
           started_at: string
@@ -32,6 +33,7 @@ export type Database = {
           expires_at?: string
           id?: string
           latitude: number
+          location_description?: string | null
           longitude: number
           signal_type?: Database["public"]["Enums"]["signal_type"]
           started_at?: string
@@ -43,6 +45,7 @@ export type Database = {
           expires_at?: string
           id?: string
           latitude?: number
+          location_description?: string | null
           longitude?: number
           signal_type?: Database["public"]["Enums"]["signal_type"]
           started_at?: string
@@ -81,6 +84,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          phone: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          phone: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          phone?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       interactions: {
         Row: {
@@ -136,6 +171,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           created_at: string
           email: string
           first_name: string
@@ -145,6 +181,7 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           email: string
           first_name: string
@@ -154,6 +191,7 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           email?: string
           first_name?: string
