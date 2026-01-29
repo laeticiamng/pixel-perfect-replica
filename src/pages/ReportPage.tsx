@@ -4,6 +4,7 @@ import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useReports } from '@/hooks/useReports';
+import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -13,6 +14,7 @@ type ReportType = 'bug' | 'behavior' | 'content' | 'other';
 export default function ReportPage() {
   const navigate = useNavigate();
   const { createReport, isLoading } = useReports();
+  const reportRateLimit = useRateLimit(RATE_LIMIT_PRESETS.report);
   const [reportType, setReportType] = useState<ReportType | null>(null);
   const [description, setDescription] = useState('');
 
@@ -41,6 +43,14 @@ export default function ReportPage() {
       return;
     }
     
+    // Check rate limit
+    const { allowed, message } = reportRateLimit.checkRateLimit();
+    if (!allowed) {
+      toast.error(message || 'Trop de signalements');
+      return;
+    }
+    
+    reportRateLimit.recordAttempt();
     const { error } = await createReport(
       reportTypes.find(r => r.id === reportType)?.label || reportType,
       sanitizedDescription

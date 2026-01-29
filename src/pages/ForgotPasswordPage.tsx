@@ -4,6 +4,7 @@ import { ArrowLeft, Mail, Loader2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
+import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -13,6 +14,7 @@ export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const [error, setError] = useState('');
+  const passwordResetRateLimit = useRateLimit(RATE_LIMIT_PRESETS.passwordReset);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +31,15 @@ export default function ForgotPasswordPage() {
       return;
     }
 
+    // Check rate limit
+    const { allowed, message } = passwordResetRateLimit.checkRateLimit();
+    if (!allowed) {
+      toast.error(message || 'Trop de tentatives');
+      return;
+    }
+
     setIsLoading(true);
+    passwordResetRateLimit.recordAttempt();
 
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,

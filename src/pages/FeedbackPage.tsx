@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAppFeedback } from '@/hooks/useAppFeedback';
+import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -11,6 +12,7 @@ import toast from 'react-hot-toast';
 export default function FeedbackPage() {
   const navigate = useNavigate();
   const { submitFeedback, isLoading } = useAppFeedback();
+  const feedbackRateLimit = useRateLimit(RATE_LIMIT_PRESETS.feedback);
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
 
@@ -20,9 +22,17 @@ export default function FeedbackPage() {
       return;
     }
     
+    // Check rate limit
+    const { allowed, message } = feedbackRateLimit.checkRateLimit();
+    if (!allowed) {
+      toast.error(message || 'Trop de feedbacks envoyés');
+      return;
+    }
+    
     // Sanitize feedback text
     const sanitizedFeedback = sanitizeDbText(feedback, 500);
     
+    feedbackRateLimit.recordAttempt();
     const { error } = await submitFeedback(rating, sanitizedFeedback || undefined);
     
     if (error) {
