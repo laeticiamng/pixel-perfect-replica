@@ -186,6 +186,7 @@ export default function EditProfilePage() {
         <button
           onClick={() => navigate('/profile')}
           className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label="Retour au profil"
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
@@ -203,6 +204,7 @@ export default function EditProfilePage() {
             <button
               onClick={handleAvatarClick}
               disabled={isUploading}
+              aria-label="Modifier la photo de profil"
               className={cn(
                 "w-28 h-28 rounded-full flex items-center justify-center glow-coral overflow-hidden transition-all relative hover:scale-105 active:scale-95",
                 isUploading && "opacity-50",
@@ -228,6 +230,7 @@ export default function EditProfilePage() {
             <button 
               onClick={handleAvatarClick}
               disabled={isUploading}
+              aria-label="Ajouter une photo"
               className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-coral border-2 border-background flex items-center justify-center hover:bg-coral-dark transition-colors"
             >
               <Camera className="h-5 w-5 text-primary-foreground" />
@@ -238,6 +241,7 @@ export default function EditProfilePage() {
               <button 
                 onClick={handleRemoveAvatar}
                 disabled={isUploading}
+                aria-label="Supprimer la photo de profil"
                 className="absolute top-0 right-0 w-8 h-8 rounded-full bg-destructive flex items-center justify-center hover:bg-destructive/80 transition-colors"
               >
                 <X className="h-4 w-4 text-primary-foreground" />

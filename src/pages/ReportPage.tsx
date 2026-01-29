@@ -72,6 +72,7 @@ export default function ReportPage() {
         <button
           onClick={() => navigate('/profile')}
           className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label="Retour au profil"
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>

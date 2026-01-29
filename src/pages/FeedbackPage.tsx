@@ -52,6 +52,7 @@ export default function FeedbackPage() {
         <button
           onClick={() => navigate('/profile')}
           className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
+          aria-label="Retour au profil"
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
@@ -70,6 +71,8 @@ export default function FeedbackPage() {
             <button
               key={star}
               onClick={() => setRating(star)}
+              aria-label={`Note ${star} sur 5 étoiles`}
+              aria-pressed={star <= rating}
               className="p-2 transition-all duration-300 hover:scale-125 active:scale-95"
             >
               <Star

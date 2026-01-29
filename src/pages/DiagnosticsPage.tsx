@@ -90,6 +90,7 @@ export default function DiagnosticsPage() {
         <button
           onClick={() => navigate('/settings')}
           className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label="Retour aux paramètres"
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>

@@ -68,6 +68,7 @@ export default function HelpPage() {
         <button
           onClick={() => navigate('/profile')}
           className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
+          aria-label="Retour au profil"
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
