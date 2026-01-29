@@ -4,9 +4,11 @@ import { ArrowLeft, ChevronRight, ExternalLink, Mail, MessageCircle, FileText, S
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function HelpPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
 
   const faqs = [
@@ -66,9 +68,9 @@ export default function HelpPage() {
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
-          onClick={() => navigate('/profile')}
+          onClick={() => navigate(user ? '/profile' : '/')}
           className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
-          aria-label="Retour au profil"
+          aria-label={user ? "Retour au profil" : "Retour à l'accueil"}
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
