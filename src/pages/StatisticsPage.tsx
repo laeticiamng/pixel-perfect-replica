@@ -299,7 +299,7 @@ export default function StatisticsPage() {
                 <Bar 
                   dataKey="interactions" 
                   radius={[6, 6, 0, 0]}
-                  fill="hsl(16, 100%, 66%)"
+                  fill="hsl(var(--coral))"
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -411,7 +411,7 @@ export default function StatisticsPage() {
                   <Bar 
                     dataKey="count" 
                     radius={[4, 4, 0, 0]}
-                    fill="hsl(48, 96%, 53%)"
+                    fill="hsl(var(--signal-yellow))"
                   />
                 </BarChart>
               </ResponsiveContainer>
