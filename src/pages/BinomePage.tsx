@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Calendar, Users, Clock } from 'lucide-react';
+import { ArrowLeft, Plus, Calendar, Users, Clock, AlertCircle } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { SessionCard } from '@/components/binome/SessionCard';
 import { SessionFilters } from '@/components/binome/SessionFilters';
 import { CreateSessionForm } from '@/components/binome/CreateSessionForm';
+import { SessionQuotaBadge } from '@/components/binome/SessionQuotaBadge';
 import { useBinomeSessions, type SessionFilters as Filters, type CreateSessionInput } from '@/hooks/useBinomeSessions';
+import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useAuth } from '@/contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 export default function BinomePage() {
   const navigate = useNavigate();
@@ -18,6 +21,8 @@ export default function BinomePage() {
   const [showCreateSheet, setShowCreateSheet] = useState(false);
   const [filters, setFilters] = useState<Filters>({ city: '' });
   const [isCreating, setIsCreating] = useState(false);
+  
+  const { usage, canCreate, remaining, isPremium, refetch: refetchQuota } = useSessionQuota();
 
   const {
     sessions,
@@ -38,13 +43,28 @@ export default function BinomePage() {
 
   // Handle session creation
   const handleCreate = async (data: CreateSessionInput) => {
+    if (!canCreate) {
+      toast.error('Limite de créneaux atteinte ce mois-ci. Passe Premium pour plus !');
+      return false;
+    }
+    
     setIsCreating(true);
     const success = await createSession(data);
     setIsCreating(false);
     if (success) {
       setShowCreateSheet(false);
+      refetchQuota(); // Refresh quota after creation
     }
     return success;
+  };
+  
+  // Handle opening create sheet with quota check
+  const handleOpenCreate = () => {
+    if (!canCreate) {
+      toast.error('Tu as atteint ta limite de 4 créneaux ce mois. Passe Premium !');
+      return;
+    }
+    setShowCreateSheet(true);
   };
 
   // Handle join
@@ -117,12 +137,24 @@ export default function BinomePage() {
           <Button 
             size="sm" 
             className="bg-coral hover:bg-coral/90"
-            onClick={() => setShowCreateSheet(true)}
+            onClick={handleOpenCreate}
+            disabled={!canCreate}
           >
             <Plus className="h-4 w-4 mr-1" />
-            Créer
+            Créer {!isPremium && remaining < 5 && `(${remaining})`}
           </Button>
         </div>
+        
+        {/* Quota Badge */}
+        {usage && (
+          <SessionQuotaBadge
+            sessionsCreated={usage.sessionsCreated}
+            sessionsLimit={usage.sessionsLimit}
+            isPremium={usage.isPremium}
+            canCreate={usage.canCreate}
+            className="mt-2"
+          />
+        )}
       </header>
 
       <div className="px-6">

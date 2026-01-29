@@ -449,6 +449,41 @@ export type Database = {
           },
         ]
       }
+      monthly_session_usage: {
+        Row: {
+          created_at: string
+          id: string
+          month_year: string
+          sessions_created: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month_year: string
+          sessions_created?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month_year?: string
+          sessions_created?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monthly_session_usage_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -458,6 +493,7 @@ export type Database = {
           favorite_activities: string[] | null
           first_name: string
           id: string
+          is_premium: boolean
           university: string | null
           updated_at: string
         }
@@ -469,6 +505,7 @@ export type Database = {
           favorite_activities?: string[] | null
           first_name: string
           id: string
+          is_premium?: boolean
           university?: string | null
           updated_at?: string
         }
@@ -480,6 +517,7 @@ export type Database = {
           favorite_activities?: string[] | null
           first_name?: string
           id?: string
+          is_premium?: boolean
           university?: string | null
           updated_at?: string
         }
@@ -964,6 +1002,7 @@ export type Database = {
         Args: { p_hours: number; p_user_id: string }
         Returns: undefined
       }
+      can_create_session: { Args: { p_user_id: string }; Returns: boolean }
       check_report_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
@@ -991,6 +1030,15 @@ export type Database = {
           note: string
           scheduled_date: string
           start_time: string
+        }[]
+      }
+      get_current_month_usage: {
+        Args: { p_user_id: string }
+        Returns: {
+          can_create: boolean
+          is_premium: boolean
+          sessions_created: number
+          sessions_limit: number
         }[]
       }
       get_daily_active_users: {
