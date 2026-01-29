@@ -182,8 +182,9 @@ export default function MapPage() {
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col pb-28">
-      {/* Header */}
-      <header className="safe-top px-6 py-4">
+      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+        {/* Header */}
+        <header className="safe-top px-6 py-4">
         <div className="glass-strong rounded-2xl p-4 flex items-center justify-between shadow-medium">
           <div className="flex items-center gap-3">
             <div className="relative">
@@ -432,6 +433,7 @@ export default function MapPage() {
       )}
 
       <BottomNav />
+      </div>
     </div>
   );
 }

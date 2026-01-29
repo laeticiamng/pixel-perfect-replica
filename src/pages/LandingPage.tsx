@@ -35,7 +35,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col">
       {/* Hero Section */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 max-w-2xl mx-auto w-full">
         {/* Animated Logo - Custom SVG */}
         <div className="animate-float mb-8 relative">
           {/* Multiple glow rings */}
@@ -68,7 +68,7 @@ export default function LandingPage() {
         </p>
 
         {/* Features */}
-        <div className="w-full max-w-sm space-y-4 mb-12">
+        <div className="w-full max-w-sm md:max-w-md space-y-4 mb-12">
           {features.map((feature, index) => (
             <div
               key={index}
@@ -87,7 +87,7 @@ export default function LandingPage() {
         </div>
 
         {/* CTAs */}
-        <div className="w-full max-w-sm space-y-3 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+        <div className="w-full max-w-sm md:max-w-md space-y-3 animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <Button
             onClick={() => navigate('/onboarding')}
             className="w-full h-14 text-lg font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-primary-foreground rounded-2xl animate-glow-pulse transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-medium"
