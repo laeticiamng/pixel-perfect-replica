@@ -37,11 +37,31 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
-// Page transition variants
+// Page transition variants - smoother with easing
 const pageVariants = {
-  initial: { opacity: 0, x: 10 },
-  enter: { opacity: 1, x: 0, transition: { duration: 0.25, ease: 'easeOut' as const } },
-  exit: { opacity: 0, x: -10, transition: { duration: 0.15, ease: 'easeIn' as const } },
+  initial: { 
+    opacity: 0, 
+    y: 8,
+    scale: 0.99,
+  },
+  enter: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { 
+      duration: 0.35, 
+      ease: 'easeOut' as const,
+    } 
+  },
+  exit: { 
+    opacity: 0, 
+    y: -8,
+    scale: 0.99,
+    transition: { 
+      duration: 0.2, 
+      ease: 'easeIn' as const,
+    } 
+  },
 };
 
 // Animated Routes wrapper
@@ -56,6 +76,7 @@ function AnimatedRoutes() {
         animate="enter"
         exit="exit"
         variants={pageVariants}
+        className="will-change-transform"
       >
         <Routes location={location}>
           {/* Public Routes */}
