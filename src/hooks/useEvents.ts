@@ -12,7 +12,7 @@ export interface Event {
   longitude: number;
   starts_at: string;
   ends_at: string;
-  qr_code_secret: string;
+  qr_code_secret?: string; // Only visible to organizers
   max_participants: number;
   is_active: boolean;
   created_at: string;
@@ -34,18 +34,18 @@ export function useEvents() {
   const [joinedEvents, setJoinedEvents] = useState<EventParticipant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch all active events
+  // Fetch all active events using secure function (excludes qr_code_secret)
   const fetchEvents = useCallback(async () => {
     setIsLoading(true);
     
-    const { data } = await supabase
-      .from('events')
-      .select('*')
-      .eq('is_active', true)
-      .gt('ends_at', new Date().toISOString())
-      .order('starts_at', { ascending: true });
+    const { data } = await supabase.rpc('get_events_public');
 
-    setEvents(data || []);
+    // Sort by starts_at ascending
+    const sortedEvents = (data || []).sort((a: Event, b: Event) => 
+      new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime()
+    );
+
+    setEvents(sortedEvents);
     setIsLoading(false);
   }, []);
 
