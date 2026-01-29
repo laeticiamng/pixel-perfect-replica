@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, UserCircle } from 'lucide-react';
+import { ArrowLeft, UserCircle, Search, Calendar, TrendingUp, Filter } from 'lucide-react';
 import { useInteractions } from '@/hooks/useInteractions';
 import { ACTIVITIES } from '@/types/signal';
 import { Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 interface MetPerson {
   id: string;
@@ -18,6 +20,8 @@ export default function PeopleMetPage() {
   const { getMyInteractions } = useInteractions();
   const [peopleMet, setPeopleMet] = useState<MetPerson[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterFeedback, setFilterFeedback] = useState<'all' | 'positive' | 'negative' | 'pending'>('all');
 
   useEffect(() => {
     const loadPeople = async () => {
@@ -39,6 +43,29 @@ export default function PeopleMetPage() {
     
     loadPeople();
   }, [getMyInteractions]);
+
+  const filteredPeople = useMemo(() => {
+    return peopleMet.filter(person => {
+      // Search filter
+      const matchesSearch = searchQuery === '' || 
+        person.firstName.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      // Feedback filter
+      const matchesFeedback = filterFeedback === 'all' ||
+        (filterFeedback === 'positive' && person.positive === true) ||
+        (filterFeedback === 'negative' && person.positive === false) ||
+        (filterFeedback === 'pending' && person.positive === null);
+      
+      return matchesSearch && matchesFeedback;
+    });
+  }, [peopleMet, searchQuery, filterFeedback]);
+
+  const stats = useMemo(() => {
+    const positive = peopleMet.filter(p => p.positive === true).length;
+    const negative = peopleMet.filter(p => p.positive === false).length;
+    const pending = peopleMet.filter(p => p.positive === null).length;
+    return { positive, negative, pending, total: peopleMet.length };
+  }, [peopleMet]);
 
   const formatDate = (date: Date) => {
     const now = new Date();
@@ -76,8 +103,65 @@ export default function PeopleMetPage() {
         <h1 className="text-xl font-bold text-foreground">Personnes rencontrées</h1>
       </header>
 
-      <div className="px-6">
-        {peopleMet.length === 0 ? (
+      <div className="px-6 space-y-4">
+        {/* Stats Summary */}
+        {peopleMet.length > 0 && (
+          <div className="grid grid-cols-4 gap-2">
+            <div className="glass rounded-xl p-3 text-center">
+              <p className="text-xl font-bold text-foreground">{stats.total}</p>
+              <p className="text-xs text-muted-foreground">Total</p>
+            </div>
+            <div className="glass rounded-xl p-3 text-center">
+              <p className="text-xl font-bold text-signal-green">{stats.positive}</p>
+              <p className="text-xs text-muted-foreground">😊</p>
+            </div>
+            <div className="glass rounded-xl p-3 text-center">
+              <p className="text-xl font-bold text-signal-red">{stats.negative}</p>
+              <p className="text-xs text-muted-foreground">😕</p>
+            </div>
+            <div className="glass rounded-xl p-3 text-center">
+              <p className="text-xl font-bold text-muted-foreground">{stats.pending}</p>
+              <p className="text-xs text-muted-foreground">❓</p>
+            </div>
+          </div>
+        )}
+
+        {/* Search & Filter */}
+        {peopleMet.length > 0 && (
+          <>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Rechercher par prénom..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+              />
+            </div>
+
+            <div className="flex gap-2">
+              {(['all', 'positive', 'negative', 'pending'] as const).map(filter => (
+                <button
+                  key={filter}
+                  onClick={() => setFilterFeedback(filter)}
+                  className={cn(
+                    'px-3 py-1.5 rounded-lg text-sm transition-colors',
+                    filterFeedback === filter
+                      ? 'bg-coral text-primary-foreground'
+                      : 'bg-muted text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  {filter === 'all' ? 'Tous' : 
+                   filter === 'positive' ? '😊' :
+                   filter === 'negative' ? '😕' : '❓'}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* People List */}
+        {filteredPeople.length === 0 && peopleMet.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
             <UserCircle className="h-16 w-16 text-muted-foreground mb-4" />
             <p className="text-muted-foreground text-center">
@@ -86,9 +170,16 @@ export default function PeopleMetPage() {
               Active ton signal et va à la rencontre !
             </p>
           </div>
+        ) : filteredPeople.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <Filter className="h-12 w-12 text-muted-foreground mb-4" />
+            <p className="text-muted-foreground text-center">
+              Aucun résultat pour ces filtres
+            </p>
+          </div>
         ) : (
           <div className="space-y-3">
-            {peopleMet.map((person) => {
+            {filteredPeople.map((person) => {
               const activityData = getActivityData(person.activity);
               return (
                 <div

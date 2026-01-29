@@ -362,6 +362,16 @@ export type Database = {
           university: string
         }[]
       }
+      get_safe_public_profile: {
+        Args: { profile_id: string }
+        Returns: {
+          avatar_url: string
+          created_at: string
+          first_name: string
+          id: string
+          university: string
+        }[]
+      }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       increment_interactions: {
         Args: { p_user_id: string }

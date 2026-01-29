@@ -99,11 +99,41 @@ export default function DiagnosticsPage() {
       </header>
 
       <div className="px-6 space-y-6">
+        {/* Quick Health Check */}
+        <div className="glass rounded-xl p-4 border-2 border-signal-green/30">
+          <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+            ✅ Statut système
+          </h2>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div className={cn(
+              'p-2 rounded-lg',
+              isOnline ? 'bg-signal-green/20' : 'bg-signal-red/20'
+            )}>
+              <Wifi className={cn('h-5 w-5 mx-auto mb-1', isOnline ? 'text-signal-green' : 'text-signal-red')} />
+              <span className="text-xs text-muted-foreground">Réseau</span>
+            </div>
+            <div className={cn(
+              'p-2 rounded-lg',
+              isAuthenticated ? 'bg-signal-green/20' : 'bg-signal-red/20'
+            )}>
+              <User className={cn('h-5 w-5 mx-auto mb-1', isAuthenticated ? 'text-signal-green' : 'text-signal-red')} />
+              <span className="text-xs text-muted-foreground">Auth</span>
+            </div>
+            <div className={cn(
+              'p-2 rounded-lg',
+              position ? 'bg-signal-green/20' : 'bg-signal-yellow/20'
+            )}>
+              <Database className={cn('h-5 w-5 mx-auto mb-1', position ? 'text-signal-green' : 'text-signal-yellow')} />
+              <span className="text-xs text-muted-foreground">GPS</span>
+            </div>
+          </div>
+        </div>
+
         {/* System Status */}
         <div className="glass rounded-xl p-4">
           <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
             <Database className="h-5 w-5 text-coral" />
-            État système
+            Détails système
           </h2>
           
           <div className="space-y-3 text-sm">
@@ -141,6 +171,13 @@ export default function DiagnosticsPage() {
                   ? `${position.latitude.toFixed(4)}, ${position.longitude.toFixed(4)}`
                   : 'N/A'
                 }
+              </span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Supabase URL</span>
+              <span className="text-foreground font-mono text-xs truncate max-w-[150px]">
+                {import.meta.env.VITE_SUPABASE_URL?.replace('https://', '').slice(0, 20)}...
               </span>
             </div>
           </div>
