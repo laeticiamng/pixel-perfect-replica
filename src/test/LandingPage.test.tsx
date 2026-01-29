@@ -45,7 +45,7 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText(/Signale ce que tu es ouvert/)).toBeInTheDocument();
+    expect(getByText(/ouvert·e à l'interaction/)).toBeInTheDocument();
   });
 
   it('should render the value proposition', () => {
@@ -55,8 +55,8 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText(/Zéro approche gênante/)).toBeInTheDocument();
-    expect(getByText(/intentions alignées/)).toBeInTheDocument();
+    expect(getByText(/Lutte contre la solitude/)).toBeInTheDocument();
+    expect(getByText(/Consentement mutuel/)).toBeInTheDocument();
   });
 
   it('should render the concept grid', () => {
@@ -66,8 +66,8 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText('Une intention')).toBeInTheDocument();
-    expect(getByText('Mêmes intentions')).toBeInTheDocument();
+    expect(getByText(/"Ouvert à..."/)).toBeInTheDocument();
+    expect(getByText('Qui veut aussi')).toBeInTheDocument();
     expect(getByText('Une notif douce')).toBeInTheDocument();
     expect(getByText('Naturelle')).toBeInTheDocument();
   });
@@ -90,9 +90,9 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText("Basé sur l'intention")).toBeInTheDocument();
-    expect(getByText('Consentement explicite')).toBeInTheDocument();
-    expect(getByText('Ancrées dans le lieu')).toBeInTheDocument();
+    expect(getByText(/"Je suis ouvert à l'interaction"/)).toBeInTheDocument();
+    expect(getByText('Consentement mutuel')).toBeInTheDocument();
+    expect(getByText('Intention active')).toBeInTheDocument();
   });
 
   it('should render the closing pitch', () => {
@@ -102,8 +102,8 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText(/On ne connecte pas des profils/)).toBeInTheDocument();
-    expect(getByText(/On connecte des intentions/)).toBeInTheDocument();
+    expect(getByText(/Tu n'es plus seul·e/)).toBeInTheDocument();
+    expect(getByText(/ouvert à l'interaction/)).toBeInTheDocument();
   });
 
   it('should render the CTA buttons', () => {

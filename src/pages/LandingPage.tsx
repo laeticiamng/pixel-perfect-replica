@@ -48,10 +48,10 @@ const useCases = [
 ];
 
 const differentiators = [
-  { old: 'Basées sur le profil', new: 'Basé sur l\'intention' },
-  { old: 'Déconnectées du réel', new: 'Ancrées dans le lieu' },
-  { old: 'Approche intrusive', new: 'Consentement explicite' },
-  { old: 'Swipe / jugement', new: 'Action / contexte' },
+  { old: '"Je suis là"', new: '"Je suis ouvert à l\'interaction"' },
+  { old: 'Profil passif', new: 'Intention active' },
+  { old: 'Espoir de match', new: 'Consentement mutuel' },
+  { old: 'Approche gênante', new: 'Premier pas déjà fait' },
 ];
 
 export default function LandingPage() {
@@ -100,26 +100,29 @@ export default function LandingPage() {
 
         {/* Main tagline */}
         <p className="text-center text-lg text-foreground font-medium max-w-md mb-3 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          Signale ce que tu es ouvert·e à faire, <span className="text-coral">ici et maintenant</span>.
+          Signale que tu es <span className="text-coral font-bold">ouvert·e à l'interaction</span>, ici et maintenant.
         </p>
         
-        <p className="text-center text-sm text-muted-foreground max-w-sm mb-6 animate-fade-in" style={{ animationDelay: '0.15s' }}>
-          Zéro approche gênante. Zéro interruption.<br />
-          Juste des <span className="text-foreground font-semibold">intentions alignées</span>, au bon endroit, au bon moment.
+        <p className="text-center text-sm text-muted-foreground max-w-sm mb-4 animate-fade-in" style={{ animationDelay: '0.15s' }}>
+          Pas juste "je fais cette activité" — mais <span className="text-foreground font-semibold">"je VEUX la faire avec quelqu'un"</span>.
+        </p>
+
+        <p className="text-center text-xs text-muted-foreground max-w-xs mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          🤝 Lutte contre la solitude • ✨ Facilite la rencontre • 💚 Consentement mutuel
         </p>
 
         {/* Concept en une phrase */}
-        <div className="w-full max-w-sm glass-strong rounded-2xl p-4 mb-8 border border-coral/20 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+        <div className="w-full max-w-sm glass-strong rounded-2xl p-4 mb-8 border border-coral/20 animate-fade-in" style={{ animationDelay: '0.25s' }}>
           <div className="grid grid-cols-2 gap-3 text-center">
             <div className="space-y-1">
-              <div className="text-2xl">🎯</div>
+              <div className="text-2xl">💚</div>
               <p className="text-xs text-muted-foreground">Tu actives</p>
-              <p className="text-sm font-semibold text-foreground">Une intention</p>
+              <p className="text-sm font-semibold text-signal-green">"Ouvert à..."</p>
             </div>
             <div className="space-y-1">
               <div className="text-2xl">📍</div>
-              <p className="text-xs text-muted-foreground">L'app détecte</p>
-              <p className="text-sm font-semibold text-foreground">Mêmes intentions</p>
+              <p className="text-xs text-muted-foreground">L'app trouve</p>
+              <p className="text-sm font-semibold text-foreground">Qui veut aussi</p>
             </div>
             <div className="space-y-1">
               <div className="text-2xl">🔔</div>
@@ -127,7 +130,7 @@ export default function LandingPage() {
               <p className="text-sm font-semibold text-foreground">Une notif douce</p>
             </div>
             <div className="space-y-1">
-              <div className="text-2xl">✨</div>
+              <div className="text-2xl">🤝</div>
               <p className="text-xs text-muted-foreground">L'approche devient</p>
               <p className="text-sm font-semibold text-coral">Naturelle</p>
             </div>
@@ -232,10 +235,10 @@ export default function LandingPage() {
       <section className="px-6 py-10 max-w-2xl mx-auto w-full text-center">
         <div className="glass-strong rounded-2xl p-6 border border-coral/30">
           <p className="text-lg text-muted-foreground mb-2">
-            « On ne connecte pas des profils.
+            « Tu n'es plus seul·e à vouloir rencontrer quelqu'un.
           </p>
           <p className="text-xl font-bold text-coral">
-            On connecte des intentions, dans le monde réel. »
+            Ici, tout le monde est ouvert à l'interaction. »
           </p>
         </div>
 
