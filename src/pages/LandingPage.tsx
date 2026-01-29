@@ -449,6 +449,12 @@ export default function LandingPage() {
             
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <button 
+                onClick={() => navigate('/install')}
+                className="hover:text-coral transition-colors font-medium"
+              >
+                📲 Installer
+              </button>
+              <button 
                 onClick={() => navigate('/help')}
                 className="hover:text-foreground transition-colors"
               >

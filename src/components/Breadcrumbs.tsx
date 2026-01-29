@@ -24,6 +24,7 @@ const ROUTE_CONFIG: Record<string, { label: string; parent?: string }> = {
   '/privacy-settings': { label: 'Confidentialité', parent: '/profile' },
   '/change-password': { label: 'Mot de passe', parent: '/settings' },
   '/diagnostics': { label: 'Diagnostics', parent: '/settings' },
+  '/install': { label: 'Installation', parent: '/settings' },
   '/terms': { label: 'Conditions', parent: '/' },
   '/privacy': { label: 'Confidentialité', parent: '/' },
 };

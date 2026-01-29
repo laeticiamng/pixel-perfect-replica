@@ -31,6 +31,7 @@ import PrivacySettingsPage from "./pages/PrivacySettingsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import InstallPage from "./pages/InstallPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -64,6 +65,7 @@ function AnimatedRoutes() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/install" element={<InstallPage />} />
           
           {/* Protected Routes */}
           <Route path="/map" element={
