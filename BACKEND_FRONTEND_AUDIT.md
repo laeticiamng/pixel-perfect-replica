@@ -114,20 +114,21 @@
 
 ---
 
-## 🔗 LIENS MANQUANTS DANS LA NAVIGATION
+## 🔗 LIENS DANS LA NAVIGATION - CORRIGÉS
 
 | Élément | Depuis | Vers | Status |
 |---------|--------|------|--------|
-| Aide/FAQ | Footer LandingPage | `/help` | ❌ Manquant |
-| Contact | Footer LandingPage | `/feedback` | ❌ Manquant |
-| Diagnostics | Menu utilisateur | `/diagnostics` | ⚠️ Dev only (OK) |
+| Aide/FAQ | Footer LandingPage | `/help` | ✅ Ajouté |
+| Contact | Footer LandingPage | `mailto:support@...` | ✅ Ajouté |
+| Diagnostics | Menu utilisateur | `/diagnostics` | ✅ Dev only (OK) |
 
 ---
 
-## ✅ CORRECTIONS À APPLIQUER
+## ✅ CORRECTIONS APPLIQUÉES
 
-1. **LandingPage footer**: Ajouter liens "Aide" et "Contact"
-2. **HelpPage**: Rendre accessible sans authentification (FAQ publique)
+1. **LandingPage footer**: ✅ Liens "Aide" et "Contact" ajoutés
+2. **HelpPage**: ✅ Rendue accessible sans authentification
+3. **Navigation adaptative**: ✅ Bouton retour adaptatif selon l'état auth
 
 ---
 
@@ -141,9 +142,10 @@
 - [x] SettingsPage donne accès aux paramètres avancés
 - [x] Export GDPR est accessible
 - [x] Contacts d'urgence sont accessibles
-- [ ] Liens Aide/Contact dans le footer public
+- [x] Liens Aide/Contact dans le footer public ✅ CORRIGÉ
 - [x] Reset password accessible depuis login
+- [x] HelpPage accessible publiquement ✅ CORRIGÉ
 
 ---
 
-*Audit généré par Lovable AI - 2026-01-29*
+*Audit complété et corrections appliquées par Lovable AI - 2026-01-29*
