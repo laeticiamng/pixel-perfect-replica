@@ -212,12 +212,15 @@ export default function PeopleMetPage() {
             {filteredPeople.map((person) => {
               const activityData = getActivityData(person.activity);
               return (
-                <button
-                  key={person.id}
-                  onClick={() => toast('Profil non disponible', { icon: '👤' })}
-                  className="w-full glass rounded-xl p-4 flex items-center gap-4 text-left hover:bg-muted/30 transition-colors"
-                  aria-label={`Voir le profil de ${person.firstName}`}
-                >
+                  <button
+                    key={person.id}
+                    onClick={() => {
+                      // Try to navigate to reveal if user still has active signal
+                      toast('Ce profil n\'est plus actif. Les interactions sont éphémères !', { icon: '👻' });
+                    }}
+                    className="w-full glass rounded-xl p-4 flex items-center gap-4 text-left hover:bg-muted/30 transition-colors"
+                    aria-label={`Voir le profil de ${person.firstName}`}
+                  >
                   <div className="w-12 h-12 rounded-full bg-coral flex items-center justify-center">
                     <span className="text-lg font-bold text-primary-foreground">
                       {person.firstName.charAt(0)}
