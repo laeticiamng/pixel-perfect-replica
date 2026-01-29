@@ -54,7 +54,7 @@ export default function MapPage() {
   const [activityFilters, setActivityFilters] = useState<ActivityType[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [locationDescription, setLocationDescription] = useState('');
-  const activeTimeRef = useRef<NodeJS.Timeout | null>(null);
+  const activeTimeRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Start location watching
   useEffect(() => {

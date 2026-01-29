@@ -20,8 +20,8 @@ export function EmergencyButton({ onTrigger, className }: EmergencyButtonProps) 
   const [isHolding, setIsHolding] = useState(false);
   const [holdProgress, setHoldProgress] = useState(0);
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const holdTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const progressRef = useRef<NodeJS.Timeout | null>(null);
+  const holdTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const HOLD_DURATION = 2000; // 2 seconds to activate
 

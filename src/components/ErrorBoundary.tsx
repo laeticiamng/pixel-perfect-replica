@@ -56,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
             Une erreur inattendue s'est produite. Essaie de recharger la page ou retourne à l'accueil.
           </p>
           
-          {process.env.NODE_ENV === 'development' && this.state.error && (
+          {import.meta.env.DEV && this.state.error && (
             <div className="glass rounded-xl p-4 mb-6 max-w-md w-full overflow-auto">
               <p className="text-sm font-mono text-destructive">
                 {this.state.error.toString()}
