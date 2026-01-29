@@ -235,7 +235,7 @@ export default function MapPage() {
             >
               <Filter className="h-4 w-4" />
             </button>
-            <p className="text-gray-300 text-sm">
+            <p className="text-muted-foreground text-sm">
               <span className="text-coral font-bold">{openUsersCount}</span> personnes ouvertes
             </p>
           </div>
@@ -261,24 +261,24 @@ export default function MapPage() {
         {/* Legend */}
         {showLegend && (
           <div className="mt-3 glass rounded-xl p-4 animate-slide-up">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
               Légende
             </p>
             <div className="grid grid-cols-3 gap-3 text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-3.5 h-3.5 rounded-full bg-signal-green shadow-sm" />
-                <span className="text-gray-300 font-medium">Ouvert</span>
+                <span className="text-muted-foreground font-medium">Ouvert</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3.5 h-3.5 rounded-full bg-signal-yellow shadow-sm" />
-                <span className="text-gray-300 font-medium">Conditionnel</span>
+                <span className="text-muted-foreground font-medium">Conditionnel</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3.5 h-3.5 rounded-full bg-coral shadow-sm" />
-                <span className="text-gray-300 font-medium">Toi</span>
+                <span className="text-muted-foreground font-medium">Toi</span>
               </div>
             </div>
-            <p className="text-xs text-gray-400 mt-3 font-medium">
+            <p className="text-xs text-muted-foreground mt-3 font-medium">
               Distance: {settings.visibility_distance}m • Rafraîchissement: 30s
             </p>
           </div>
@@ -386,7 +386,7 @@ export default function MapPage() {
         </button>
         
         {lastUpdated && (
-          <p className="text-center text-xs text-gray-400 mt-3 font-medium">
+          <p className="text-center text-xs text-muted-foreground mt-3 font-medium">
             Dernière mise à jour : il y a {getTimeSinceUpdate()}
           </p>
         )}

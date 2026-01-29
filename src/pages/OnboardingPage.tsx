@@ -28,7 +28,23 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   
   const { signIn, signUp, isAuthenticated } = useAuth();
-  const { startWatching, position } = useLocationStore();
+  const { startWatching, position, error: locationError } = useLocationStore();
+
+  // Watch for position changes to update locationStatus
+  useEffect(() => {
+    if (position && locationStatus === 'loading') {
+      setLocationStatus('success');
+      toast.success('Position obtenue !');
+    }
+  }, [position, locationStatus]);
+
+  // Watch for location errors
+  useEffect(() => {
+    if (locationError && locationStatus === 'loading') {
+      setLocationStatus('error');
+      toast.error(locationError);
+    }
+  }, [locationError, locationStatus]);
 
   // If already authenticated, go directly to map
   useEffect(() => {
@@ -131,11 +147,7 @@ export default function OnboardingPage() {
   const handleLocationRequest = () => {
     setLocationStatus('loading');
     startWatching();
-    
-    setTimeout(() => {
-      setLocationStatus('success');
-      toast.success('Position obtenue !');
-    }, 1500);
+    // The useEffect hooks will handle the success/error state based on store updates
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -153,7 +165,7 @@ export default function OnboardingPage() {
               <h2 className="text-2xl font-bold text-foreground mb-3">
                 {isLogin ? 'Content de te revoir !' : 'Créons ton compte'}
               </h2>
-              <p className="text-gray-300">
+              <p className="text-muted-foreground">
                 {isLogin ? 'Entre tes identifiants' : 'Remplis ces infos pour commencer'}
               </p>
             </div>
@@ -264,7 +276,7 @@ export default function OnboardingPage() {
             <h2 className="text-2xl font-bold text-foreground mb-3">
               Active la localisation
             </h2>
-            <p className="text-gray-300 max-w-xs mx-auto leading-relaxed">
+            <p className="text-muted-foreground max-w-xs mx-auto leading-relaxed">
               Pour voir les signaux autour de toi, on a besoin de ta position. 
               Elle reste privée et n'est jamais stockée.
             </p>
@@ -305,7 +317,7 @@ export default function OnboardingPage() {
               Tu es prêt !
             </h2>
             
-            <p className="text-gray-300 mb-8">
+            <p className="text-muted-foreground mb-8">
               Voici comment fonctionnent les signaux :
             </p>
             
@@ -314,7 +326,7 @@ export default function OnboardingPage() {
                 <div className="w-7 h-7 rounded-full bg-signal-green glow-green shadow-lg" />
                 <div>
                   <p className="font-bold text-foreground">Signal vert</p>
-                  <p className="text-sm text-gray-300">Ouvert à l'interaction</p>
+                  <p className="text-sm text-muted-foreground">Ouvert à l'interaction</p>
                 </div>
               </div>
               
@@ -322,7 +334,7 @@ export default function OnboardingPage() {
                 <div className="w-7 h-7 rounded-full bg-signal-yellow glow-yellow shadow-lg" />
                 <div>
                   <p className="font-bold text-foreground">Signal jaune</p>
-                  <p className="text-sm text-gray-300">Ouvert sous conditions</p>
+                  <p className="text-sm text-muted-foreground">Ouvert sous conditions</p>
                 </div>
               </div>
               
@@ -330,7 +342,7 @@ export default function OnboardingPage() {
                 <div className="w-7 h-7 rounded-full bg-signal-red glow-red shadow-lg" />
                 <div>
                   <p className="font-bold text-foreground">Signal rouge</p>
-                  <p className="text-sm text-gray-300">Pas disponible</p>
+                  <p className="text-sm text-muted-foreground">Pas disponible</p>
                 </div>
               </div>
             </div>

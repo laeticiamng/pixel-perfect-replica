@@ -89,11 +89,11 @@ export default function ProfilePage() {
           <h1 className="text-2xl font-bold text-foreground mb-1 animate-fade-in">
             {profile?.first_name || 'Utilisateur'}
           </h1>
-          <p className="text-gray-300 text-sm mb-1 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+          <p className="text-muted-foreground text-sm mb-1 animate-fade-in" style={{ animationDelay: '0.05s' }}>
             {profile?.email}
           </p>
           {profile?.university && (
-            <p className="text-gray-400 text-sm animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <p className="text-muted-foreground text-sm animate-fade-in" style={{ animationDelay: '0.1s' }}>
               🎓 {profile.university}
             </p>
           )}
@@ -105,21 +105,21 @@ export default function ProfilePage() {
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{stats?.interactions || 0}</p>
-              <p className="text-xs text-gray-400 font-medium">Interactions</p>
+              <p className="text-xs text-muted-foreground font-medium">Interactions</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
-              <p className="text-xs text-gray-400 font-medium">Actif</p>
+              <p className="text-xs text-muted-foreground font-medium">Actif</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.rating?.toFixed(1) || '5.0'}</p>
-              <p className="text-xs text-gray-400 font-medium">Rating</p>
+              <p className="text-xs text-muted-foreground font-medium">Rating</p>
             </button>
           </div>
         </div>

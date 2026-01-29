@@ -88,7 +88,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <span className="font-medium text-foreground">Thème</span>
-              <p className="text-sm text-gray-400 mt-0.5">Personnalise l'apparence</p>
+              <p className="text-sm text-muted-foreground mt-0.5">Personnalise l'apparence</p>
             </div>
           </div>
           <ThemeToggle />
