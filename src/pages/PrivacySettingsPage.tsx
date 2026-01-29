@@ -5,6 +5,7 @@ import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useGdprExport } from '@/hooks/useGdprExport';
+import { EmergencyContactsManager } from '@/components/EmergencyContactsManager';
 import toast from 'react-hot-toast';
 
 export default function PrivacySettingsPage() {
@@ -63,6 +64,9 @@ export default function PrivacySettingsPage() {
             </div>
           </div>
         </div>
+
+        {/* Emergency Contacts */}
+        <EmergencyContactsManager />
 
         {/* Ghost Mode */}
         <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.05s' }}>
