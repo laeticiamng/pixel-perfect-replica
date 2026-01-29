@@ -18,11 +18,11 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "robots.txt"],
+      includeAssets: ["favicon.ico", "robots.txt", "easy-logo.png"],
       manifest: {
-        name: "SIGNAL - Rencontres spontanées",
-        short_name: "SIGNAL",
-        description: "Vois qui est ouvert autour de toi. Approche sans awkwardness.",
+        name: "EASY - Le premier réseau social 100% réel",
+        short_name: "EASY",
+        description: "Facilite les rencontres IRL. Des vraies personnes, prêtes à se retrouver.",
         theme_color: "#0f0f1a",
         background_color: "#0f0f1a",
         display: "standalone",

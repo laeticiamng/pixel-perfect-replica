@@ -65,7 +65,7 @@ export default function FeedbackPage() {
 
       <div className="px-6 py-8 animate-slide-up">
         <div className="text-center mb-8">
-          <p className="text-lg text-foreground mb-2 font-semibold">Comment trouves-tu SIGNAL ?</p>
+          <p className="text-lg text-foreground mb-2 font-semibold">Comment trouves-tu EASY ?</p>
           <p className="text-sm text-muted-foreground">Ton avis nous aide à améliorer l'app</p>
         </div>
 
