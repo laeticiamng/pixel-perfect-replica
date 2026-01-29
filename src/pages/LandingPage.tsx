@@ -466,12 +466,12 @@ export default function LandingPage() {
               >
                 Confidentialité
               </button>
-              <button 
-                onClick={() => navigate('/feedback')}
+              <a 
+                href="mailto:support@signal-app.fr"
                 className="hover:text-foreground transition-colors"
               >
                 Contact
-              </button>
+              </a>
             </div>
           </div>
           
