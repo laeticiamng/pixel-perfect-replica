@@ -36,14 +36,22 @@ export default function LandingPage() {
     <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col">
       {/* Hero Section */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-        {/* Animated Logo */}
+        {/* Animated Logo - Custom SVG */}
         <div className="animate-float mb-8 relative">
-          {/* Outer glow ring */}
+          {/* Multiple glow rings */}
           <div className="absolute inset-0 rounded-full bg-coral/20 animate-ripple" />
-          <div className="absolute inset-0 rounded-full bg-coral/10 animate-ripple" style={{ animationDelay: '0.5s' }} />
-          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-coral/30 to-coral/10 flex items-center justify-center glow-coral relative">
-            <div className="absolute inset-1 rounded-full bg-gradient-to-br from-deep-blue to-midnight" />
-            <span className="text-5xl relative z-10">📍</span>
+          <div className="absolute inset-0 rounded-full bg-coral/15 animate-ripple" style={{ animationDelay: '0.4s' }} />
+          <div className="absolute inset-0 rounded-full bg-coral/10 animate-ripple" style={{ animationDelay: '0.8s' }} />
+          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-coral/40 to-coral/15 flex items-center justify-center glow-coral relative shadow-medium">
+            <div className="absolute inset-1.5 rounded-full bg-gradient-to-br from-deep-blue via-deep-blue-light to-midnight" />
+            {/* Custom SVG Pin Icon */}
+            <svg 
+              className="relative z-10 w-14 h-14 text-coral drop-shadow-[0_0_12px_hsl(var(--coral)/0.8)]" 
+              viewBox="0 0 24 24" 
+              fill="currentColor"
+            >
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
           </div>
         </div>
 
@@ -53,10 +61,10 @@ export default function LandingPage() {
         </h1>
 
         {/* Tagline */}
-        <p className="text-center text-lg text-muted-foreground max-w-xs mb-12 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
+        <p className="text-center text-lg text-gray-300 max-w-xs mb-12 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
           Vois qui est ouvert à l'interaction autour de toi.
           <br />
-          <span className="text-foreground font-semibold">Approche sans awkwardness.</span>
+          <span className="text-foreground font-bold">Approche sans awkwardness.</span>
         </p>
 
         {/* Features */}
@@ -64,15 +72,15 @@ export default function LandingPage() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="glass rounded-2xl p-5 flex items-start gap-4 animate-slide-up hover:scale-[1.02] transition-transform duration-300"
+              className="glass rounded-2xl p-5 flex items-start gap-4 animate-slide-up hover:scale-[1.02] hover:bg-card/90 active:scale-[0.98] transition-all duration-300 cursor-default"
               style={{ animationDelay: `${index * 120}ms` }}
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-deep-blue-light to-deep-blue flex items-center justify-center shrink-0 shadow-soft">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-deep-blue-light to-deep-blue flex items-center justify-center shrink-0 shadow-medium border border-white/5">
                 {feature.icon}
               </div>
               <div>
-                <h3 className="font-bold text-foreground mb-1">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+                <h3 className="font-bold text-foreground mb-1.5">{feature.title}</h3>
+                <p className="text-sm text-gray-300 leading-relaxed">{feature.description}</p>
               </div>
             </div>
           ))}
@@ -97,20 +105,20 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer - Enhanced visibility */}
       <footer className="py-6 text-center safe-bottom">
-        <p className="text-xs text-muted-foreground px-4">
+        <p className="text-sm text-gray-400 px-4">
           En continuant, tu acceptes nos{' '}
           <button 
             onClick={() => navigate('/terms')}
-            className="text-coral underline hover:text-coral-light transition-colors"
+            className="text-coral font-medium underline underline-offset-2 hover:text-coral-light transition-colors"
           >
             conditions d'utilisation
           </button>
           {' '}et notre{' '}
           <button 
             onClick={() => navigate('/privacy')}
-            className="text-coral underline hover:text-coral-light transition-colors"
+            className="text-coral font-medium underline underline-offset-2 hover:text-coral-light transition-colors"
           >
             politique de confidentialité
           </button>
