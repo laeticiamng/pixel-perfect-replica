@@ -12,7 +12,7 @@ const corsHeaders = {
 // TYPES
 // ============================================================
 
-type ActionType = "send-admin-alert" | "send-push" | "health";
+type ActionType = "send-admin-alert" | "send-push" | "send-session-reminders" | "health";
 
 interface BaseRequest {
   action: ActionType;
@@ -35,6 +35,10 @@ interface PushNotificationRequest extends BaseRequest {
   data?: Record<string, string>;
 }
 
+interface SessionRemindersRequest extends BaseRequest {
+  action: "send-session-reminders";
+}
+
 interface HealthRequest extends BaseRequest {
   action: "health";
 }
@@ -52,7 +56,20 @@ interface PushSubscription {
   auth: string;
 }
 
-type NotificationRequest = AdminAlertRequest | PushNotificationRequest | HealthRequest;
+interface SessionReminder {
+  session_id: string;
+  participant_id: string;
+  user_id: string;
+  reminder_type: string;
+  session_date: string;
+  start_time: string;
+  activity: string;
+  city: string;
+  location_name: string | null;
+  creator_name: string;
+}
+
+type NotificationRequest = AdminAlertRequest | PushNotificationRequest | SessionRemindersRequest | HealthRequest;
 
 // deno-lint-ignore no-explicit-any
 type AnySupabaseClient = SupabaseClient<any, any, any>;
@@ -249,6 +266,99 @@ async function handlePushNotification(
   );
 }
 
+async function handleSessionReminders(
+  supabase: AnySupabaseClient
+): Promise<Response> {
+  try {
+    // Get sessions needing reminders
+    const { data: reminders, error: remindersError } = await supabase
+      .rpc('get_sessions_needing_reminders');
+
+    if (remindersError) {
+      console.error("[notifications/session-reminders] Error fetching reminders:", remindersError);
+      throw new Error("Failed to fetch sessions needing reminders");
+    }
+
+    const remindersList = reminders as SessionReminder[] | null;
+
+    if (!remindersList || remindersList.length === 0) {
+      console.log("[notifications/session-reminders] No reminders needed");
+      return new Response(
+        JSON.stringify({ success: true, sent: 0, message: "No reminders needed" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log(`[notifications/session-reminders] Processing ${remindersList.length} reminders`);
+
+    const activityLabels: Record<string, string> = {
+      studying: "Réviser",
+      working: "Bosser",
+      eating: "Manger",
+      sport: "Sport",
+      talking: "Parler",
+      other: "Autre"
+    };
+
+    let sentCount = 0;
+    const processedParticipants = new Set<string>();
+
+    for (const reminder of remindersList) {
+      // Skip if we've already processed this participant in this run
+      const key = `${reminder.participant_id}-${reminder.reminder_type}`;
+      if (processedParticipants.has(key)) continue;
+      processedParticipants.add(key);
+
+      const activityLabel = activityLabels[reminder.activity] || reminder.activity;
+      const locationText = reminder.location_name 
+        ? `${reminder.city} - ${reminder.location_name}`
+        : reminder.city;
+
+      let title: string;
+      let body: string;
+
+      if (reminder.reminder_type === '1h') {
+        title = `⏰ Session dans 1 heure !`;
+        body = `${activityLabel} avec ${reminder.creator_name} à ${locationText}`;
+      } else {
+        title = `🔔 Session dans 15 minutes !`;
+        body = `${activityLabel} avec ${reminder.creator_name} à ${locationText} - C'est bientôt !`;
+      }
+
+      // Log the notification (in production, this would send a push notification)
+      console.log(`[notifications/session-reminders] Sending ${reminder.reminder_type} reminder to user ${reminder.user_id}: ${title}`);
+
+      // Mark the reminder as sent
+      const updateField = reminder.reminder_type === '1h' ? 'reminder_1h_sent' : 'reminder_15m_sent';
+      const { error: updateError } = await supabase
+        .from('session_participants')
+        .update({ [updateField]: true })
+        .eq('id', reminder.participant_id);
+
+      if (updateError) {
+        console.error(`[notifications/session-reminders] Error updating reminder status:`, updateError);
+      } else {
+        sentCount++;
+      }
+    }
+
+    console.log(`[notifications/session-reminders] Sent ${sentCount} reminders`);
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        action: "send-session-reminders",
+        sent: sentCount,
+        total: remindersList.length,
+      }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("[notifications/session-reminders] Error:", error);
+    throw error;
+  }
+}
+
 function handleHealth(): Response {
   return new Response(
     JSON.stringify({
@@ -256,8 +366,8 @@ function handleHealth(): Response {
       action: "health",
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "1.0.0",
-      actions: ["send-admin-alert", "send-push", "health"],
+      version: "1.1.0",
+      actions: ["send-admin-alert", "send-push", "send-session-reminders", "health"],
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
@@ -306,6 +416,10 @@ const handler = async (req: Request): Promise<Response> => {
         response = await handlePushNotification(body as PushNotificationRequest, supabase);
         break;
 
+      case "send-session-reminders":
+        response = await handleSessionReminders(supabase);
+        break;
+
       case "health":
         response = handleHealth();
         break;
@@ -314,7 +428,7 @@ const handler = async (req: Request): Promise<Response> => {
         response = new Response(
           JSON.stringify({
             error: `Unknown action: ${action}`,
-            availableActions: ["send-admin-alert", "send-push", "health"],
+            availableActions: ["send-admin-alert", "send-push", "send-session-reminders", "health"],
           }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
