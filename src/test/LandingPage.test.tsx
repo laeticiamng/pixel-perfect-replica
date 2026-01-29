@@ -68,9 +68,9 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText('Signale que tu es ouvert')).toBeInTheDocument();
-    expect(getByText('Vois les signaux autour')).toBeInTheDocument();
-    expect(getByText('Approche sans awkwardness')).toBeInTheDocument();
+    expect(getByText('Dis ce que tu fais')).toBeInTheDocument();
+    expect(getByText('Détecte qui est dispo')).toBeInTheDocument();
+    expect(getByText('Approche naturellement')).toBeInTheDocument();
   });
 
   it('should render footer with terms link', () => {
