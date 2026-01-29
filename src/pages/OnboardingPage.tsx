@@ -355,26 +355,28 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col px-6 py-8 safe-top safe-bottom">
-      {/* Progress dots */}
-      <div className="flex justify-center gap-2 mb-8">
-        {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
-          <div
-            key={s}
-            className={cn(
-              'w-2 h-2 rounded-full transition-all duration-300',
-              s === step ? 'w-8 bg-coral' : s < step ? 'bg-coral/50' : 'bg-muted'
-            )}
-          />
-        ))}
-      </div>
+      <div className="max-w-md mx-auto w-full flex-1 flex flex-col">
+        {/* Progress dots */}
+        <div className="flex justify-center gap-2 mb-8">
+          {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
+            <div
+              key={s}
+              className={cn(
+                'w-2 h-2 rounded-full transition-all duration-300',
+                s === step ? 'w-8 bg-coral' : s < step ? 'bg-coral/50' : 'bg-muted'
+              )}
+            />
+          ))}
+        </div>
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col justify-center">
-        {renderStep()}
+        {/* Content */}
+        <div className="flex-1 flex flex-col justify-center">
+          {renderStep()}
+        </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex gap-4 mt-8">
+      <div className="flex gap-4 mt-8 max-w-md mx-auto w-full">
         <Button
           variant="outline"
           onClick={handleBack}

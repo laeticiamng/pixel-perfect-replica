@@ -75,9 +75,10 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-28">
-      <header className="safe-top px-6 py-6">
-        <h1 className="text-2xl font-bold text-foreground">Paramètres</h1>
-      </header>
+      <div className="max-w-2xl mx-auto w-full">
+        <header className="safe-top px-6 py-6">
+          <h1 className="text-2xl font-bold text-foreground">Paramètres</h1>
+        </header>
 
       <div className="px-6 space-y-4">
         {/* Theme Section */}
@@ -185,6 +186,7 @@ export default function SettingsPage() {
         <div className="mt-4">
           <DeleteAccountDialog />
         </div>
+      </div>
       </div>
 
       <BottomNav />
