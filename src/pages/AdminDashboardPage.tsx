@@ -2,12 +2,16 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Users, Activity, TrendingUp, Calendar,
-  BarChart3, Clock, Eye, MousePointer, Shield, Bell
+  BarChart3, Clock, Eye, MousePointer, Shield, Bell,
+  RefreshCw, AlertTriangle, CheckCircle, Loader2
 } from 'lucide-react';
 import { AlertPreferencesCard } from '@/components/admin/AlertPreferencesCard';
 import { AlertHistoryCard } from '@/components/admin/AlertHistoryCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSystemStats } from '@/hooks/useSystemStats';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -51,7 +55,16 @@ export default function AdminDashboardPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Stats
+  // System stats from edge function
+  const { 
+    stats: systemStats, 
+    errorRate, 
+    isLoading: statsLoading, 
+    refetch: refetchStats,
+    triggerCleanup 
+  } = useSystemStats(isAdmin);
+  
+  // Stats (fallback to local queries)
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalEvents, setTotalEvents] = useState(0);
   const [totalSignals, setTotalSignals] = useState(0);
@@ -85,6 +98,31 @@ export default function AdminDashboardPage() {
 
     checkAdmin();
   }, [user, navigate]);
+
+  // Sync system stats when available
+  useEffect(() => {
+    if (systemStats) {
+      setTotalUsers(systemStats.total_users);
+      setTotalSignals(systemStats.active_signals);
+      setTotalInteractions(systemStats.total_interactions);
+    }
+  }, [systemStats]);
+
+  const handleCleanup = async () => {
+    const success = await triggerCleanup();
+    if (success) {
+      toast.success('Nettoyage des signaux expirés effectué');
+      refetchStats();
+    } else {
+      toast.error('Erreur lors du nettoyage');
+    }
+  };
+
+  const handleRefresh = () => {
+    refetchStats();
+    loadAnalytics();
+    toast.success('Données rafraîchies');
+  };
 
   // Load analytics data
   const loadAnalytics = useCallback(async () => {
@@ -255,19 +293,66 @@ export default function AdminDashboardPage() {
     <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4">
-        <div className="flex items-center gap-4 mb-2">
-          <button
-            onClick={() => navigate('/settings')}
-            className="p-2 rounded-lg hover:bg-muted transition-colors"
-            aria-label="Retour"
-          >
-            <ArrowLeft className="h-6 w-6 text-foreground" />
-          </button>
-          <div>
-            <h1 className="text-xl font-bold text-foreground">Dashboard Admin</h1>
-            <p className="text-sm text-muted-foreground">Analytics & Engagement</p>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate('/settings')}
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              aria-label="Retour"
+            >
+              <ArrowLeft className="h-6 w-6 text-foreground" />
+            </button>
+            <div>
+              <h1 className="text-xl font-bold text-foreground">Dashboard Admin</h1>
+              <p className="text-sm text-muted-foreground">Analytics & Engagement</p>
+            </div>
           </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleRefresh}
+            disabled={statsLoading}
+          >
+            {statsLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+          </Button>
         </div>
+        
+        {/* System Health Indicator */}
+        {errorRate && (
+          <div className={`flex items-center gap-2 p-3 rounded-lg mt-4 ${
+            errorRate.health_status === 'healthy' 
+              ? 'bg-signal-green/10 text-signal-green' 
+              : errorRate.health_status === 'warning'
+              ? 'bg-signal-yellow/10 text-signal-yellow'
+              : 'bg-coral/10 text-coral'
+          }`}>
+            {errorRate.health_status === 'healthy' ? (
+              <CheckCircle className="h-5 w-5" />
+            ) : (
+              <AlertTriangle className="h-5 w-5" />
+            )}
+            <div className="flex-1">
+              <p className="font-medium capitalize">
+                Système {errorRate.health_status === 'healthy' ? 'Opérationnel' : errorRate.health_status === 'warning' ? 'Attention' : 'Critique'}
+              </p>
+              <p className="text-xs opacity-80">
+                Taux d'erreur: {errorRate.error_rate_percent.toFixed(2)}% ({errorRate.error_count}/{errorRate.total_events} dernières 24h)
+              </p>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleCleanup}
+              className="text-xs"
+            >
+              Nettoyer
+            </Button>
+          </div>
+        )}
       </header>
 
       <div className="px-6 space-y-6">
