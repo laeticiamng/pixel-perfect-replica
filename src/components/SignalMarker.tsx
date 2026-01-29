@@ -24,7 +24,7 @@ export function SignalMarker({
   const emoji = activityData?.emoji || '✨';
   
   const sizeClasses = {
-    sm: 'w-10 h-10 text-lg',
+    sm: 'w-11 h-11 text-lg',
     md: 'w-14 h-14 text-xl',
     lg: 'w-20 h-20 text-3xl',
   };
@@ -36,41 +36,47 @@ export function SignalMarker({
   };
   
   const bgClasses = {
-    green: 'bg-signal-green/20',
-    yellow: 'bg-signal-yellow/20',
-    red: 'bg-signal-red/20',
+    green: 'bg-gradient-to-br from-signal-green/30 to-signal-green/10',
+    yellow: 'bg-gradient-to-br from-signal-yellow/30 to-signal-yellow/10',
+    red: 'bg-gradient-to-br from-signal-red/30 to-signal-red/10',
   };
 
   return (
     <button
       onClick={onClick}
       className={cn(
-        'relative rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer',
-        'border-2 animate-pulse-signal',
+        'relative rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer shadow-soft',
+        'border-2 animate-pulse-signal backdrop-blur-sm',
         sizeClasses[size],
         glowClasses[signal],
         bgClasses[signal],
-        onClick && 'hover:scale-110 active:scale-95'
+        onClick && 'hover:scale-115 active:scale-95'
       )}
     >
       {/* Inner content */}
       <span className="relative z-10">
         {isClose && firstName ? (
-          <span className="font-bold text-foreground">
+          <span className="font-bold text-foreground drop-shadow-sm">
             {firstName.charAt(0).toUpperCase()}
           </span>
         ) : (
-          emoji
+          <span className="drop-shadow-sm">{emoji}</span>
         )}
       </span>
       
-      {/* Pulse rings */}
+      {/* Pulse rings - multiple for depth */}
       <div className={cn(
         'absolute inset-0 rounded-full animate-ripple',
         signal === 'green' && 'bg-signal-green/30',
         signal === 'yellow' && 'bg-signal-yellow/30',
         signal === 'red' && 'bg-signal-red/30',
       )} />
+      <div className={cn(
+        'absolute inset-0 rounded-full animate-ripple',
+        signal === 'green' && 'bg-signal-green/15',
+        signal === 'yellow' && 'bg-signal-yellow/15',
+        signal === 'red' && 'bg-signal-red/15',
+      )} style={{ animationDelay: '0.4s' }} />
     </button>
   );
 }

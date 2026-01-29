@@ -37,22 +37,26 @@ export default function LandingPage() {
       {/* Hero Section */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         {/* Animated Logo */}
-        <div className="animate-float mb-8">
-          <div className="w-24 h-24 rounded-full bg-coral/20 flex items-center justify-center glow-coral">
-            <span className="text-5xl">📍</span>
+        <div className="animate-float mb-8 relative">
+          {/* Outer glow ring */}
+          <div className="absolute inset-0 rounded-full bg-coral/20 animate-ripple" />
+          <div className="absolute inset-0 rounded-full bg-coral/10 animate-ripple" style={{ animationDelay: '0.5s' }} />
+          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-coral/30 to-coral/10 flex items-center justify-center glow-coral relative">
+            <div className="absolute inset-1 rounded-full bg-gradient-to-br from-deep-blue to-midnight" />
+            <span className="text-5xl relative z-10">📍</span>
           </div>
         </div>
 
-        {/* Title */}
-        <h1 className="text-5xl font-extrabold text-coral mb-4 tracking-tight">
+        {/* Title with gradient */}
+        <h1 className="text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent animate-fade-in">
           SIGNAL
         </h1>
 
         {/* Tagline */}
-        <p className="text-center text-lg text-muted-foreground max-w-xs mb-12 leading-relaxed">
+        <p className="text-center text-lg text-muted-foreground max-w-xs mb-12 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
           Vois qui est ouvert à l'interaction autour de toi.
           <br />
-          <span className="text-foreground font-medium">Approche sans awkwardness.</span>
+          <span className="text-foreground font-semibold">Approche sans awkwardness.</span>
         </p>
 
         {/* Features */}
@@ -60,25 +64,25 @@ export default function LandingPage() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="glass rounded-xl p-4 flex items-start gap-4 animate-slide-up"
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="glass rounded-2xl p-5 flex items-start gap-4 animate-slide-up hover:scale-[1.02] transition-transform duration-300"
+              style={{ animationDelay: `${index * 120}ms` }}
             >
-              <div className="w-10 h-10 rounded-lg bg-deep-blue-light flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-deep-blue-light to-deep-blue flex items-center justify-center shrink-0 shadow-soft">
                 {feature.icon}
               </div>
               <div>
-                <h3 className="font-semibold text-foreground mb-1">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
+                <h3 className="font-bold text-foreground mb-1">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* CTAs */}
-        <div className="w-full max-w-sm space-y-3">
+        <div className="w-full max-w-sm space-y-3 animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <Button
             onClick={() => navigate('/onboarding')}
-            className="w-full h-14 text-lg font-semibold bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl glow-coral transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full h-14 text-lg font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-primary-foreground rounded-2xl animate-glow-pulse transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-medium"
           >
             Commencer
           </Button>
@@ -86,7 +90,7 @@ export default function LandingPage() {
           <Button
             variant="ghost"
             onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
-            className="w-full h-12 text-muted-foreground hover:text-foreground"
+            className="w-full h-12 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-xl transition-all duration-300"
           >
             J'ai déjà un compte
           </Button>
