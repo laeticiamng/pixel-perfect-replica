@@ -315,12 +315,27 @@ npm run test -- src/test/auth.test.ts
 - **Docs**: [docs.lovable.dev](https://docs.lovable.dev)
 - **Discord**: [Communauté Lovable](https://discord.com/channels/1119885301872070706/1280461670979993613)
 - **Feedback**: Page Feedback dans l'app
-- **Email**: support@signal-app.fr
+- **Email**: support@easy-app.fr
+
+---
+
+## 🆕 Mode Binôme (v1.2)
+
+Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de travail en groupe :
+
+| Fonctionnalité | Description |
+|----------------|-------------|
+| **Créer un créneau** | Planifie une session avec activité, date, heure et durée |
+| **Rejoindre une session** | Trouve des sessions dans ta ville et rejoins-les |
+| **Chat de groupe** | Échange avec les participants avant la session |
+| **Feedback post-session** | Évalue les participants après la session |
+| **Score de fiabilité** | Les utilisateurs ponctuels et agréables ont un meilleur score |
+| **Rappels automatiques** | Notifications 1h et 15min avant la session |
 
 ---
 
 <p align="center">
-  <strong>📡 SIGNAL</strong> — Vois qui est ouvert à l'interaction autour de toi<br>
-  <em>Version 1.1.0 • PWA • Notifications Push</em><br><br>
-  Fait avec ❤️ par EmotionsCare Sasu
+  <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
+  <em>Version 1.2.0 • PWA • Mode Binôme • Notifications Push</em><br><br>
+  Fait avec ❤️ in France par EmotionsCare Sasu
 </p>

@@ -1,5 +1,5 @@
 /**
- * Structured logger for SIGNAL app
+ * Structured logger for EASY app
  * Provides consistent logging with categories, timestamps, and context
  */
 

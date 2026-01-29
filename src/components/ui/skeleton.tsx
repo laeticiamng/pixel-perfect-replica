@@ -4,7 +4,7 @@ function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>)
   return <div className={cn("animate-pulse rounded-md bg-muted", className)} {...props} />;
 }
 
-// Specific skeleton components for SIGNAL app
+// Specific skeleton components for EASY app
 function ProfileCardSkeleton() {
   return (
     <div className="glass rounded-xl p-4 flex items-center gap-4">

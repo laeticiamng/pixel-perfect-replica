@@ -193,7 +193,7 @@ export default function EventsPage() {
           <Card className="glass border-0 animate-slide-up">
             <CardHeader>
               <CardTitle>Nouvel événement</CardTitle>
-              <CardDescription>Crée un événement avec SIGNAL isolé</CardDescription>
+              <CardDescription>Crée un événement avec signal isolé</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">

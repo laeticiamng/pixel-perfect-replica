@@ -212,8 +212,8 @@ export default function HelpPage() {
             visible: { opacity: 1, transition: { duration: 0.4, delay: 0.2 } },
           }}
         >
-          <p className="text-xs text-muted-foreground">SIGNAL v1.0.0</p>
-          <p className="text-xs text-muted-foreground mt-1">Made with ❤️ in Paris</p>
+          <p className="text-xs text-muted-foreground">EASY v1.2.0</p>
+          <p className="text-xs text-muted-foreground mt-1">Made with ❤️ in France par EmotionsCare Sasu</p>
         </motion.div>
       </motion.div>
     </PageLayout>
