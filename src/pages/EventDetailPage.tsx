@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Users, QrCode, UserPlus, LogOut, Check, Loader2, Share2, Copy } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Users, QrCode, UserPlus, LogOut, Check, Loader2, Share2, Copy, Camera } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageLayout } from '@/components/PageLayout';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { QRCodeScanner } from '@/components/events';
 import { useEvents } from '@/hooks/useEvents';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -34,6 +35,7 @@ export default function EventDetailPage() {
   const [isLoadingParticipants, setIsLoadingParticipants] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [showQrCode, setShowQrCode] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
 
   // Find the event
   const event = [...events, ...myEvents].find(e => e.id === eventId);
@@ -107,6 +109,52 @@ export default function EventDetailPage() {
     if (event?.qr_code_secret) {
       navigator.clipboard.writeText(`${window.location.origin}/events/${eventId}/checkin?secret=${event.qr_code_secret}`);
       toast.success('Lien de check-in copié !');
+    }
+  };
+
+  const handleScanCheckIn = async (data: string) => {
+    if (!user || !eventId) return;
+
+    // Extract secret from scanned URL
+    const urlMatch = data.match(/secret=([^&]+)/);
+    const scannedSecret = urlMatch ? urlMatch[1] : data;
+
+    // Perform check-in
+    const { error } = await supabase
+      .from('event_participants')
+      .update({
+        checked_in: true,
+        checked_in_at: new Date().toISOString(),
+      })
+      .eq('event_id', eventId)
+      .eq('user_id', user.id);
+
+    if (error) {
+      throw new Error('Erreur lors du check-in');
+    }
+
+    // Refresh participants
+    const { data: participantsData } = await supabase
+      .from('event_participants')
+      .select('*')
+      .eq('event_id', eventId);
+
+    if (participantsData) {
+      const userIds = participantsData.map(p => p.user_id);
+      const { data: profiles } = await supabase.rpc('get_public_profiles', {
+        profile_ids: userIds
+      });
+
+      const enrichedParticipants = participantsData.map(p => {
+        const profile = profiles?.find((prof: any) => prof.id === p.user_id);
+        return {
+          ...p,
+          first_name: profile?.first_name || 'Anonyme',
+          avatar_url: profile?.avatar_url,
+        };
+      });
+
+      setParticipants(enrichedParticipants);
     }
   };
 
@@ -250,14 +298,22 @@ export default function EventDetailPage() {
               )}
               
               {amParticipating && !amOrganizer && (
-                <Button
-                  variant="outline"
-                  onClick={handleLeave}
-                  className="flex-1 text-destructive gap-2"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Quitter
-                </Button>
+                <>
+                  <Button
+                    onClick={() => setShowScanner(true)}
+                    className="flex-1 bg-coral hover:bg-coral-dark gap-2"
+                  >
+                    <Camera className="h-4 w-4" />
+                    Check-in
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={handleLeave}
+                    className="text-destructive"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </>
               )}
             </div>
           </CardContent>
@@ -370,6 +426,13 @@ export default function EventDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* QR Scanner Modal for participants */}
+      <QRCodeScanner
+        isOpen={showScanner}
+        onClose={() => setShowScanner(false)}
+        onScan={handleScanCheckIn}
+      />
     </PageLayout>
   );
 }

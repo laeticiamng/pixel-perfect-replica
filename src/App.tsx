@@ -40,6 +40,7 @@ import {
   // Events
   EventsPage,
   EventDetailPage,
+  EventCheckinPage,
   // Binome
   BinomePage,
   SessionDetailPage,
@@ -198,6 +199,7 @@ function AnimatedRoutes() {
               <EventDetailPage />
             </ProtectedRoute>
           } />
+          <Route path="/events/:eventId/checkin" element={<EventCheckinPage />} />
           <Route path="/binome" element={
             <ProtectedRoute>
               <BinomePage />
