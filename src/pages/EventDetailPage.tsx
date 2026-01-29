@@ -112,7 +112,7 @@ export default function EventDetailPage() {
 
   const handleShare = async () => {
     const shareData = {
-      title: event?.name || 'Événement SIGNAL',
+      title: event?.name || 'Événement EASY',
       text: `Rejoins-moi sur l'événement "${event?.name}" !`,
       url: window.location.href,
     };

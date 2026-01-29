@@ -175,7 +175,7 @@ export default function ProfilePage() {
 
         {/* Version */}
         <p className="text-center text-xs text-gray-500 py-4 font-medium">
-          SIGNAL v1.0.0
+          EASY v1.2.0
         </p>
       </div>
 

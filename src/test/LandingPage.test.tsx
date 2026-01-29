@@ -148,7 +148,7 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText('SIGNAL')).toBeInTheDocument();
+    expect(getByText('EASY')).toBeInTheDocument();
     expect(getByText('Conditions')).toBeInTheDocument();
     expect(getByText('Confidentialité')).toBeInTheDocument();
   });
