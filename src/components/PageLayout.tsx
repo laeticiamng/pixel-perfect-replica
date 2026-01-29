@@ -48,6 +48,83 @@ export function PageLayout({
   );
 }
 
+// Stagger container for list animations
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+// Item animation variants
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
+// Animated list container
+export function AnimatedList({ 
+  children, 
+  className,
+  delay = 0,
+}: { 
+  children: ReactNode; 
+  className?: string;
+  delay?: number;
+}) {
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: {
+            staggerChildren: 0.08,
+            delayChildren: delay,
+          },
+        },
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+// Animated list item
+export function AnimatedItem({ 
+  children, 
+  className,
+  index = 0,
+}: { 
+  children: ReactNode; 
+  className?: string;
+  index?: number;
+}) {
+  return (
+    <motion.div
+      variants={itemVariants}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 // Animated section component for consistent page sections
 export function AnimatedSection({ 
   children, 

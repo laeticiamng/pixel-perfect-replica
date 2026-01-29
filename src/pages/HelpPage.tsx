@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronRight, ExternalLink, Mail, MessageCircle, FileText, Shield, Search } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
 
@@ -76,9 +77,26 @@ export default function HelpPage() {
         </span>
       </header>
 
-      <div className="px-6 space-y-6">
+      <motion.div 
+        className="px-6 space-y-6"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1, delayChildren: 0.15 },
+          },
+        }}
+      >
         {/* Search */}
-        <div className="relative">
+        <motion.div 
+          className="relative"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+          }}
+        >
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Rechercher une question..."
@@ -86,10 +104,15 @@ export default function HelpPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
           />
-        </div>
+        </motion.div>
 
         {/* FAQ Section */}
-        <div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+          }}
+        >
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             Questions fréquentes {searchQuery && `(${filteredFaqs.length} résultats)`}
           </h2>
@@ -111,10 +134,15 @@ export default function HelpPage() {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Support Links */}
-        <div>
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+          }}
+        >
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             Support
           </h2>
@@ -155,14 +183,20 @@ export default function HelpPage() {
               );
             })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Version Info */}
-        <div className="text-center py-4">
+        <motion.div 
+          className="text-center py-4"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { duration: 0.4, delay: 0.2 } },
+          }}
+        >
           <p className="text-xs text-muted-foreground">SIGNAL v1.0.0</p>
           <p className="text-xs text-muted-foreground mt-1">Made with ❤️ in Paris</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </PageLayout>
   );
 }

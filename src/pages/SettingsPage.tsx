@@ -1,4 +1,5 @@
 import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
 import { Switch } from '@/components/ui/switch';
@@ -82,9 +83,26 @@ export default function SettingsPage() {
           <h1 className="text-2xl font-bold text-foreground">Paramètres</h1>
         </header>
 
-      <div className="px-6 space-y-4">
+      <motion.div 
+        className="px-6 space-y-4"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+          },
+        }}
+      >
         {/* Theme Section */}
-        <div className="glass rounded-xl p-4">
+        <motion.div 
+          className="glass rounded-xl p-4"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+          }}
+        >
           <div className="flex items-start gap-4 mb-4">
             <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
               <Palette className="h-5 w-5" />
@@ -95,7 +113,7 @@ export default function SettingsPage() {
             </div>
           </div>
           <ThemeToggle />
-        </div>
+        </motion.div>
 
         {/* Security Section */}
         <div className="glass rounded-xl p-4">
@@ -211,7 +229,7 @@ export default function SettingsPage() {
         <div className="mt-4">
           <DeleteAccountDialog />
         </div>
-      </div>
+      </motion.div>
       </div>
 
       <BottomNav />
