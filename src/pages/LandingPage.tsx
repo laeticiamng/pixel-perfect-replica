@@ -225,7 +225,7 @@ export default function LandingPage() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-lg md:text-xl text-muted-foreground text-center max-w-lg mb-12 leading-relaxed"
         >
-          Groupes de motivation, amis, travail, amour, camarades...
+          Groupes de motivation, amis, travail, amour...
           <br className="hidden sm:block" />
           <span className="text-foreground font-medium">Crée du lien en vrai, + facilement, tout de suite et ici.</span>
         </motion.p>
