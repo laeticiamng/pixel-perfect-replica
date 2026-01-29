@@ -76,6 +76,69 @@
     --shadow-medium: 0 8px 30px -4px hsl(240 50% 3% / 0.6);
     --shadow-strong: 0 12px 40px -6px hsl(240 50% 3% / 0.7);
   }
+
+  /* Light theme */
+  .light {
+    --coral: 8 85% 55%;
+    --coral-light: 12 90% 62%;
+    --coral-dark: 4 80% 48%;
+    --coral-glow: 8 90% 60%;
+    
+    --deep-blue: 220 20% 96%;
+    --deep-blue-light: 220 25% 92%;
+    --midnight: 220 15% 98%;
+    
+    --purple-accent: 270 50% 55%;
+    --purple-glow: 270 60% 60%;
+    
+    --signal-green: 155 75% 40%;
+    --signal-yellow: 45 95% 45%;
+    --signal-red: 0 80% 50%;
+    
+    --gray-100: 220 15% 20%;
+    --gray-200: 220 12% 30%;
+    --gray-300: 220 10% 40%;
+    --gray-400: 220 8% 55%;
+    --gray-500: 220 6% 70%;
+    
+    --background: 220 25% 98%;
+    --foreground: 220 25% 10%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 10%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 10%;
+    
+    --primary: 8 85% 55%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 220 20% 92%;
+    --secondary-foreground: 220 25% 15%;
+    
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 10% 45%;
+    
+    --accent: 8 85% 55%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 80% 50%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 220 15% 88%;
+    --input: 220 15% 92%;
+    --ring: 8 85% 55%;
+    
+    --glow-coral: 0 0 20px hsl(8 85% 55% / 0.3), 0 0 40px hsl(8 85% 55% / 0.1);
+    --glow-green: 0 0 15px hsl(155 75% 40% / 0.4), 0 0 30px hsl(155 75% 40% / 0.15);
+    --glow-yellow: 0 0 15px hsl(45 95% 45% / 0.4), 0 0 30px hsl(45 95% 45% / 0.15);
+    --glow-red: 0 0 15px hsl(0 80% 50% / 0.4), 0 0 30px hsl(0 80% 50% / 0.15);
+    --glow-purple: 0 0 15px hsl(270 60% 60% / 0.3), 0 0 30px hsl(270 60% 60% / 0.1);
+    
+    --shadow-soft: 0 4px 20px -2px hsl(220 15% 50% / 0.1);
+    --shadow-medium: 0 8px 30px -4px hsl(220 15% 50% / 0.15);
+    --shadow-strong: 0 12px 40px -6px hsl(220 15% 50% / 0.2);
+  }
 }
 
 @layer base {

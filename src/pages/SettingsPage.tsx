@@ -1,9 +1,10 @@
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { DeleteAccountDialog } from '@/components/DeleteAccountDialog';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -79,6 +80,20 @@ export default function SettingsPage() {
       </header>
 
       <div className="px-6 space-y-4">
+        {/* Theme Section */}
+        <div className="glass rounded-xl p-4">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
+              <Palette className="h-5 w-5" />
+            </div>
+            <div>
+              <span className="font-medium text-foreground">Thème</span>
+              <p className="text-sm text-gray-400 mt-0.5">Personnalise l'apparence</p>
+            </div>
+          </div>
+          <ThemeToggle />
+        </div>
+
         {settingsItems.map((item) => (
           <div
             key={item.label}
