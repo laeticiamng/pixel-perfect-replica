@@ -10,6 +10,7 @@ import { ExpirationTimer } from '@/components/ExpirationTimer';
 import { EmergencyButton } from '@/components/EmergencyButton';
 import { LocationDescriptionInput } from '@/components/LocationDescriptionInput';
 import { SearchingIndicator } from '@/components/SearchingIndicator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
@@ -19,6 +20,27 @@ import { ActivityType, ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { supabase } from '@/integrations/supabase/client';
+
+// Skeleton component for nearby users on radar
+const NearbyUserSkeleton = ({ index, total }: { index: number; total: number }) => {
+  const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
+  const radius = 30 + (index * 5);
+  const x = 50 + radius * Math.cos(angle);
+  const y = 50 + radius * Math.sin(angle);
+  
+  return (
+    <div
+      className="absolute"
+      style={{
+        left: `${x}%`,
+        top: `${y}%`,
+        transform: 'translate(-50%, -50%)',
+      }}
+    >
+      <Skeleton className="w-8 h-8 rounded-full" />
+    </div>
+  );
+};
 
 export default function MapPage() {
   const navigate = useNavigate();
@@ -270,6 +292,7 @@ export default function MapPage() {
               
               <button
                 onClick={handleManualRefresh}
+                aria-label="Rafraîchir la carte"
                 className={cn(
                   "p-2.5 rounded-xl bg-deep-blue-light/80 text-muted-foreground hover:text-foreground hover:bg-deep-blue-light transition-all",
                   isRefreshing && "animate-spin"
@@ -286,6 +309,8 @@ export default function MapPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowFilters(!showFilters)}
+              aria-label={showFilters ? "Masquer les filtres" : "Afficher les filtres d'activité"}
+              aria-expanded={showFilters}
               className={cn(
                 "p-2 rounded-lg transition-colors",
                 showFilters || activityFilters.length > 0
@@ -301,6 +326,8 @@ export default function MapPage() {
           </div>
           <button
             onClick={() => setShowLegend(!showLegend)}
+            aria-label={showLegend ? "Masquer la légende" : "Afficher la légende"}
+            aria-expanded={showLegend}
             className="text-muted-foreground hover:text-foreground"
           >
             <Info className="h-4 w-4" />
@@ -446,6 +473,7 @@ export default function MapPage() {
       <div className="px-6 mb-4">
         <button
           onClick={handleSignalToggle}
+          aria-label={isActive ? "Désactiver ton signal" : "Activer ton signal"}
           className={cn(
             'w-full h-20 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-medium',
             'font-bold text-lg',
