@@ -3,6 +3,20 @@ import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import LandingPage from '@/pages/LandingPage';
 
+// Mock framer-motion
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    h1: ({ children, ...props }: any) => <h1 {...props}>{children}</h1>,
+    p: ({ children, ...props }: any) => <p {...props}>{children}</p>,
+    section: ({ children, ...props }: any) => <section {...props}>{children}</section>,
+  },
+  useScroll: () => ({ scrollYProgress: { current: 0 } }),
+  useTransform: () => 1,
+  useInView: () => true,
+  AnimatePresence: ({ children }: any) => children,
+}));
+
 // Mock useAuth
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({
@@ -35,75 +49,75 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText('SIGNAL')).toBeInTheDocument();
+    expect(getByText(/Vois qui est/)).toBeInTheDocument();
+    expect(getByText(/ouvert/)).toBeInTheDocument();
   });
 
-  it('should render the main tagline', () => {
+  it('should render the badge', () => {
     const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(getByText(/ouvert·e à l'interaction/)).toBeInTheDocument();
+    expect(getByText('La rencontre réinventée')).toBeInTheDocument();
   });
 
-  it('should render the value proposition', () => {
+  it('should render the problem statement', () => {
     const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(getByText(/Lutte contre la solitude/)).toBeInTheDocument();
-    expect(getByText(/Consentement mutuel/)).toBeInTheDocument();
+    expect(getByText(/veut être approchée/)).toBeInTheDocument();
   });
 
-  it('should render the concept grid', () => {
+  it('should render the signal section', () => {
     const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(getByText(/"Ouvert à..."/)).toBeInTheDocument();
-    expect(getByText('Qui veut aussi')).toBeInTheDocument();
-    expect(getByText('Une notif douce')).toBeInTheDocument();
-    expect(getByText('Naturelle')).toBeInTheDocument();
+    expect(getByText(/signal vert/)).toBeInTheDocument();
+    expect(getByText(/change tout/)).toBeInTheDocument();
   });
 
-  it('should render use case example', () => {
+  it('should render feature cards', () => {
     const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    // First use case should be visible by default
+    expect(getByText('Lutte contre la solitude')).toBeInTheDocument();
+    expect(getByText('Zéro approche gênante')).toBeInTheDocument();
+    expect(getByText('Ancré dans le réel')).toBeInTheDocument();
+  });
+
+  it('should render the comparison section', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    expect(getByText('On ne connecte pas des profils.')).toBeInTheDocument();
+    expect(getByText('On connecte des intentions.')).toBeInTheDocument();
+  });
+
+  it('should render use cases', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
     expect(getByText('Bibliothèque')).toBeInTheDocument();
-  });
-
-  it('should render differentiators section', () => {
-    const { getByText } = render(
-      <BrowserRouter>
-        <LandingPage />
-      </BrowserRouter>
-    );
-    
-    expect(getByText(/"Je suis ouvert à l'interaction"/)).toBeInTheDocument();
-    expect(getByText('Consentement mutuel')).toBeInTheDocument();
-    expect(getByText('Intention active')).toBeInTheDocument();
-  });
-
-  it('should render the closing pitch', () => {
-    const { getByText } = render(
-      <BrowserRouter>
-        <LandingPage />
-      </BrowserRouter>
-    );
-    
-    expect(getByText(/Tu n'es plus seul·e/)).toBeInTheDocument();
-    expect(getByText(/ouvert à l'interaction/)).toBeInTheDocument();
+    expect(getByText('Salle de sport')).toBeInTheDocument();
+    expect(getByText('Café')).toBeInTheDocument();
+    expect(getByText('Coworking')).toBeInTheDocument();
   });
 
   it('should render the CTA buttons', () => {
@@ -113,19 +127,29 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText('Commencer gratuitement')).toBeInTheDocument();
-    expect(getByText("J'ai déjà un compte")).toBeInTheDocument();
-    expect(getByText('Essayer maintenant')).toBeInTheDocument();
+    expect(getByText('Commencer')).toBeInTheDocument();
+    expect(getByText('Se connecter')).toBeInTheDocument();
   });
 
-  it('should render footer with terms link', () => {
+  it('should render final CTA', () => {
     const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(getByText(/conditions d'utilisation/)).toBeInTheDocument();
-    expect(getByText(/politique de confidentialité/)).toBeInTheDocument();
+    expect(getByText('Commencer maintenant')).toBeInTheDocument();
+  });
+
+  it('should render footer with links', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    expect(getByText('SIGNAL')).toBeInTheDocument();
+    expect(getByText('Conditions')).toBeInTheDocument();
+    expect(getByText('Confidentialité')).toBeInTheDocument();
   });
 });
