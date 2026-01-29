@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           accuracy: number | null
           activity: Database["public"]["Enums"]["activity_type"]
+          event_id: string | null
           expires_at: string
           id: string
           latitude: number
@@ -30,6 +31,7 @@ export type Database = {
         Insert: {
           accuracy?: number | null
           activity: Database["public"]["Enums"]["activity_type"]
+          event_id?: string | null
           expires_at?: string
           id?: string
           latitude: number
@@ -42,6 +44,7 @@ export type Database = {
         Update: {
           accuracy?: number | null
           activity?: Database["public"]["Enums"]["activity_type"]
+          event_id?: string | null
           expires_at?: string
           id?: string
           latitude?: number
@@ -52,6 +55,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "active_signals_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "active_signals_user_id_fkey"
             columns: ["user_id"]
@@ -269,6 +279,121 @@ export type Database = {
           },
         ]
       }
+      event_participants: {
+        Row: {
+          checked_in: boolean
+          checked_in_at: string | null
+          event_id: string
+          id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          checked_in?: boolean
+          checked_in_at?: string | null
+          event_id: string
+          id?: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          checked_in?: boolean
+          checked_in_at?: string | null
+          event_id?: string
+          id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          description: string | null
+          ends_at: string
+          id: string
+          is_active: boolean
+          latitude: number
+          location_name: string
+          longitude: number
+          max_participants: number | null
+          name: string
+          organizer_id: string
+          qr_code_secret: string
+          starts_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          latitude: number
+          location_name: string
+          longitude: number
+          max_participants?: number | null
+          name: string
+          organizer_id: string
+          qr_code_secret?: string
+          starts_at: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          latitude?: number
+          location_name?: string
+          longitude?: number
+          max_participants?: number | null
+          name?: string
+          organizer_id?: string
+          qr_code_secret?: string
+          starts_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       interactions: {
         Row: {
           activity: Database["public"]["Enums"]["activity_type"]
@@ -334,12 +459,59 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          interaction_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          interaction_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          interaction_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_interaction_id_fkey"
+            columns: ["interaction_id"]
+            isOneToOne: false
+            referencedRelation: "interactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
           created_at: string
           email: string
+          favorite_activities: string[] | null
           first_name: string
           id: string
           university: string | null
@@ -350,6 +522,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           email: string
+          favorite_activities?: string[] | null
           first_name: string
           id: string
           university?: string | null
@@ -360,6 +533,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           email?: string
+          favorite_activities?: string[] | null
           first_name?: string
           id?: string
           university?: string | null
@@ -562,6 +736,45 @@ export type Database = {
             foreignKeyName: "user_stats_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      verification_badges: {
+        Row: {
+          badge_type: string
+          id: string
+          metadata: Json | null
+          user_id: string
+          verified_at: string
+        }
+        Insert: {
+          badge_type: string
+          id?: string
+          metadata?: Json | null
+          user_id: string
+          verified_at?: string
+        }
+        Update: {
+          badge_type?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+          verified_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verification_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },

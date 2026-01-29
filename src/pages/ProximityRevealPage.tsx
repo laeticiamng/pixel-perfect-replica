@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, Flag, GraduationCap } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { IcebreakerCard } from '@/components/IcebreakerCard';
 import { PageLayout } from '@/components/PageLayout';
+import { VerificationBadges } from '@/components/VerificationBadges';
+import { MiniChat } from '@/components/MiniChat';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
 import { ACTIVITIES, ICEBREAKERS } from '@/types/signal';
@@ -26,6 +28,7 @@ export default function ProximityRevealPage() {
   
   const [icebreaker, setIcebreaker] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [isVibrating, setIsVibrating] = useState(false);
   const [interactionId, setInteractionId] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -111,6 +114,7 @@ export default function ProximityRevealPage() {
     
     if (data) {
       setInteractionId(data.id);
+      setShowChat(true); // Show mini chat after interaction created
     }
     setShowFeedback(true);
   };
@@ -218,6 +222,11 @@ export default function ProximityRevealPage() {
             </div>
           )}
 
+          {/* Verification Badges */}
+          {userId && (
+            <VerificationBadges userId={userId} className="justify-center mb-4" />
+          )}
+
           {/* Activity & Time */}
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
@@ -249,33 +258,56 @@ export default function ProximityRevealPage() {
         </div>
       </div>
 
+      {/* Mini Chat - shows after interaction */}
+      {showChat && interactionId && (
+        <div className="px-6 pb-4">
+          <MiniChat 
+            interactionId={interactionId} 
+            otherUserName={user.firstName}
+            className="glass rounded-2xl"
+          />
+        </div>
+      )}
+
       {/* Actions */}
       <div className="px-6 pb-8 space-y-3">
-        <Button
-          onClick={handleTalked}
-          className="w-full h-14 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl text-lg font-semibold glow-coral"
-          aria-label="Confirmer que j'ai parlé à cette personne"
-        >
-          J'ai parlé ✓
-        </Button>
-        <div className="flex gap-3">
+        {!showChat ? (
+          <>
+            <Button
+              onClick={handleTalked}
+              className="w-full h-14 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl text-lg font-semibold glow-coral"
+              aria-label="Confirmer que j'ai parlé à cette personne"
+            >
+              J'ai parlé ✓
+            </Button>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/map')}
+                className="flex-1 h-14 rounded-xl text-muted-foreground"
+                aria-label="Retourner à la carte"
+              >
+                Pas maintenant
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate('/report', { state: { reportedUserId: userId } })}
+                className="h-14 px-4 rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10"
+                aria-label="Signaler cet utilisateur"
+              >
+                <Flag className="h-5 w-5" />
+              </Button>
+            </div>
+          </>
+        ) : (
           <Button
             variant="outline"
             onClick={() => navigate('/map')}
-            className="flex-1 h-14 rounded-xl text-muted-foreground"
-            aria-label="Retourner à la carte"
+            className="w-full h-14 rounded-xl"
           >
-            Pas maintenant
+            Retour à la carte
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => navigate('/report', { state: { reportedUserId: userId } })}
-            className="h-14 px-4 rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10"
-            aria-label="Signaler cet utilisateur"
-          >
-            <Flag className="h-5 w-5" />
-          </Button>
-        </div>
+        )}
       </div>
     </PageLayout>
   );

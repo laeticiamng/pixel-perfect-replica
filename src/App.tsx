@@ -35,6 +35,7 @@ import InstallPage from "./pages/InstallPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import BlockedUsersPage from "./pages/BlockedUsersPage";
 import DataExportPage from "./pages/DataExportPage";
+import EventsPage from "./pages/EventsPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AnalyticsProvider } from "./hooks/useAnalytics";
@@ -174,7 +175,11 @@ function AnimatedRoutes() {
               <DataExportPage />
             </ProtectedRoute>
           } />
-          
+          <Route path="/events" element={
+            <ProtectedRoute>
+              <EventsPage />
+            </ProtectedRoute>
+          } />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

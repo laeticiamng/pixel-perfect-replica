@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
-import { MapPin, User, Settings } from 'lucide-react';
+import { MapPin, User, Settings, CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -11,8 +11,9 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { to: '/map', icon: <MapPin className="h-6 w-6" />, label: 'Carte' },
+  { to: '/events', icon: <CalendarDays className="h-6 w-6" />, label: 'Événements' },
   { to: '/profile', icon: <User className="h-6 w-6" />, label: 'Profil' },
-  { to: '/settings', icon: <Settings className="h-6 w-6" />, label: 'Paramètres' },
+  { to: '/settings', icon: <Settings className="h-6 w-6" />, label: 'Réglages' },
 ];
 
 export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(

@@ -9,6 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
 import { firstNameSchema, universitySchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
+import { FavoriteActivitiesSelector } from '@/components/FavoriteActivitiesSelector';
+import { ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -22,24 +24,28 @@ export default function EditProfilePage() {
   const [firstName, setFirstName] = useState(profile?.first_name || '');
   const [university, setUniversity] = useState(profile?.university || '');
   const [bio, setBio] = useState('');
+  const [favoriteActivities, setFavoriteActivities] = useState<ActivityType[]>([]);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Fetch current bio from database
+  // Fetch current bio and favorite activities from database
   useEffect(() => {
-    const fetchBio = async () => {
+    const fetchProfileData = async () => {
       if (!user) return;
       const { data } = await supabase
         .from('profiles')
-        .select('bio')
+        .select('bio, favorite_activities')
         .eq('id', user.id)
         .single();
-      if (data?.bio) {
-        setBio(data.bio);
+      if (data) {
+        if (data.bio) setBio(data.bio);
+        if (data.favorite_activities) {
+          setFavoriteActivities(data.favorite_activities as ActivityType[]);
+        }
       }
     };
-    fetchBio();
+    fetchProfileData();
   }, [user]);
 
   const handleAvatarClick = () => {
@@ -156,7 +162,7 @@ export default function EditProfilePage() {
     
     setIsLoading(true);
 
-    // Update profile including bio (direct query since bio is new)
+    // Update profile including bio and favorite activities
     const { error: profileError } = await supabase
       .from('profiles')
       .update({
@@ -164,6 +170,7 @@ export default function EditProfilePage() {
         university: sanitizedUniversity || null,
         avatar_url: avatarUrl || null,
         bio: sanitizedBio || null,
+        favorite_activities: favoriteActivities,
       })
       .eq('id', user?.id);
     
@@ -309,6 +316,12 @@ export default function EditProfilePage() {
               className="min-h-[100px] bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
             />
           </div>
+
+          {/* Favorite Activities */}
+          <FavoriteActivitiesSelector
+            value={favoriteActivities}
+            onChange={setFavoriteActivities}
+          />
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Email</label>
