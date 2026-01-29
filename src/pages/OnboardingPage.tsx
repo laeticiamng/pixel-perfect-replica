@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
 import { loginSchema } from '@/lib/validation';
+import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -28,6 +29,8 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   
   const { signIn, signUp, isAuthenticated } = useAuth();
+  const loginRateLimit = useRateLimit(RATE_LIMIT_PRESETS.login);
+  const signupRateLimit = useRateLimit(RATE_LIMIT_PRESETS.signup);
   const { startWatching, position, error: locationError } = useLocationStore();
 
   // Watch for position changes to update locationStatus
@@ -96,7 +99,15 @@ export default function OnboardingPage() {
       if (!validateStep1()) return;
       
       if (isLogin) {
+        // Check rate limit for login
+        const { allowed, message } = loginRateLimit.checkRateLimit();
+        if (!allowed) {
+          toast.error(message || 'Trop de tentatives');
+          return;
+        }
+        
         setIsLoading(true);
+        loginRateLimit.recordAttempt();
         const { error } = await signIn(email, password);
         setIsLoading(false);
         
@@ -109,11 +120,20 @@ export default function OnboardingPage() {
             toast.error(error.message || 'Erreur de connexion');
           }
         } else {
+          loginRateLimit.reset();
           toast.success('Bienvenue !');
           setStep(2);
         }
       } else {
+        // Check rate limit for signup
+        const { allowed, message } = signupRateLimit.checkRateLimit();
+        if (!allowed) {
+          toast.error(message || 'Trop de tentatives');
+          return;
+        }
+        
         setIsLoading(true);
+        signupRateLimit.recordAttempt();
         const { error } = await signUp(email, password, firstName.trim(), university.trim() || undefined);
         setIsLoading(false);
         
@@ -124,6 +144,7 @@ export default function OnboardingPage() {
             toast.error(error.message || 'Erreur lors de l\'inscription');
           }
         } else {
+          signupRateLimit.reset();
           toast.success('Compte créé avec succès !');
           setStep(2);
         }

@@ -5,6 +5,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { ACTIVITIES } from '@/types/signal';
 import { Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { ProfileCardSkeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 interface MetPerson {
@@ -84,8 +85,21 @@ export default function PeopleMetPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-radial flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-coral" />
+      <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+        <header className="safe-top px-6 py-4 flex items-center gap-4">
+          <button
+            onClick={() => navigate('/profile')}
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
+          >
+            <ArrowLeft className="h-6 w-6 text-foreground" />
+          </button>
+          <h1 className="text-xl font-bold text-foreground">Personnes rencontrées</h1>
+        </header>
+        <div className="px-6 space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <ProfileCardSkeleton key={i} />
+          ))}
+        </div>
       </div>
     );
   }

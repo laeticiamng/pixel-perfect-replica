@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useInteractions } from '@/hooks/useInteractions';
+import { StatCardSkeleton, ChartSkeleton } from '@/components/ui/skeleton';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell, PieChart, Pie } from 'recharts';
 
 interface InteractionData {

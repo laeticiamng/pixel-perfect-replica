@@ -149,6 +149,25 @@ export function useActiveSignal() {
       .eq('user_id', user.id);
   };
 
+  // Extend signal expiration by 2 hours
+  const extendSignal = async () => {
+    if (!user || !mySignal) return { error: new Error('No active signal') };
+
+    const newExpiry = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+
+    const { data, error } = await supabase
+      .from('active_signals')
+      .update({ expires_at: newExpiry })
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (!error && data) {
+      setMySignal(data);
+    }
+    return { data, error };
+  };
+
   // Fetch nearby users with signals (respects ghost mode)
   const fetchNearbyUsers = useCallback(async (maxDistance: number = 200) => {
     if (!user || !position) return;
@@ -283,6 +302,7 @@ export function useActiveSignal() {
     activateSignal,
     deactivateSignal,
     updatePosition,
+    extendSignal,
     fetchNearbyUsers,
     fetchMySignal,
   };

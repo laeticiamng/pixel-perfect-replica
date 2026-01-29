@@ -32,6 +32,7 @@ export default function MapPage() {
     nearbyUsers, 
     activateSignal, 
     deactivateSignal,
+    extendSignal,
     fetchNearbyUsers,
   } = useActiveSignal();
 
@@ -151,6 +152,15 @@ export default function MapPage() {
     toast('Ton signal a expiré !', { icon: '⏰' });
   };
 
+  const handleExtendSignal = async () => {
+    const { error } = await extendSignal();
+    if (error) {
+      toast.error('Erreur lors de la prolongation');
+    } else {
+      toast.success('Signal prolongé de 2h !');
+    }
+  };
+
   const handleEmergencyTrigger = (position: GeolocationPosition | null) => {
     // Log emergency trigger for analytics
     console.log('Emergency triggered at:', position?.coords);
@@ -239,6 +249,8 @@ export default function MapPage() {
                   <ExpirationTimer 
                     expiresAt={mySignal.expires_at} 
                     onExpire={handleSignalExpired}
+                    onExtend={handleExtendSignal}
+                    canExtend={true}
                     className="mt-1"
                   />
                 )}
