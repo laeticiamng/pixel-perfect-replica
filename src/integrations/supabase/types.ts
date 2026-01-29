@@ -63,24 +63,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "active_signals_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "active_signals_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "active_signals_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -214,13 +200,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "analytics_events_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       app_feedback: {
@@ -277,13 +256,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "emergency_contacts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       event_participants: {
@@ -320,24 +292,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "event_participants_event_id_fkey"
-            columns: ["event_id"]
-            isOneToOne: false
-            referencedRelation: "events_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "event_participants_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "event_participants_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -399,13 +357,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "events_organizer_id_fkey"
-            columns: ["organizer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       interactions: {
@@ -451,24 +402,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "interactions_target_user_id_fkey"
-            columns: ["target_user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "interactions_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "interactions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -508,13 +445,6 @@ export type Database = {
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -589,24 +519,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "reports_reported_user_id_fkey"
-            columns: ["reported_user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reports_reporter_id_fkey"
             columns: ["reporter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reports_reporter_id_fkey"
-            columns: ["reporter_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -698,13 +614,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "user_settings_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       user_stats: {
@@ -746,13 +655,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "user_stats_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       verification_badges: {
@@ -785,107 +687,11 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "verification_badges_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
     Views: {
-      events_public: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          ends_at: string | null
-          id: string | null
-          is_active: boolean | null
-          latitude: number | null
-          location_name: string | null
-          longitude: number | null
-          max_participants: number | null
-          name: string | null
-          organizer_id: string | null
-          starts_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          ends_at?: string | null
-          id?: string | null
-          is_active?: boolean | null
-          latitude?: number | null
-          location_name?: string | null
-          longitude?: number | null
-          max_participants?: number | null
-          name?: string | null
-          organizer_id?: string | null
-          starts_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          ends_at?: string | null
-          id?: string | null
-          is_active?: boolean | null
-          latitude?: number | null
-          location_name?: string | null
-          longitude?: number | null
-          max_participants?: number | null
-          name?: string | null
-          organizer_id?: string | null
-          starts_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "events_organizer_id_fkey"
-            columns: ["organizer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "events_organizer_id_fkey"
-            columns: ["organizer_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles_public: {
-        Row: {
-          avatar_url: string | null
-          bio: string | null
-          created_at: string | null
-          first_name: string | null
-          id: string | null
-          university: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string | null
-          first_name?: string | null
-          id?: string | null
-          university?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string | null
-          first_name?: string | null
-          id?: string | null
-          university?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       add_hours_active: {
@@ -901,6 +707,41 @@ export type Database = {
         Returns: {
           active_users: number
           date: string
+        }[]
+      }
+      get_event_for_user: {
+        Args: { p_event_id: string }
+        Returns: {
+          created_at: string
+          description: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          latitude: number
+          location_name: string
+          longitude: number
+          max_participants: number
+          name: string
+          organizer_id: string
+          qr_code_secret: string
+          starts_at: string
+        }[]
+      }
+      get_events_public: {
+        Args: never
+        Returns: {
+          created_at: string
+          description: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          latitude: number
+          location_name: string
+          longitude: number
+          max_participants: number
+          name: string
+          organizer_id: string
+          starts_at: string
         }[]
       }
       get_interaction_profile: {
@@ -931,11 +772,22 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_own_admin_email: { Args: never; Returns: string }
       get_public_profile: {
         Args: { profile_id: string }
         Returns: {
           avatar_url: string
           created_at: string
+          first_name: string
+          id: string
+          university: string
+        }[]
+      }
+      get_public_profile_secure: {
+        Args: { p_user_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
           first_name: string
           id: string
           university: string
