@@ -437,27 +437,34 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-muted/20 relative z-10">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
+        <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center">
+                <span className="text-white font-bold text-sm">S</span>
+              </div>
+              <span className="font-bold text-foreground">SIGNAL</span>
             </div>
-            <span className="font-bold text-foreground">SIGNAL</span>
+            
+            <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <button 
+                onClick={() => navigate('/terms')}
+                className="hover:text-foreground transition-colors"
+              >
+                Conditions
+              </button>
+              <button 
+                onClick={() => navigate('/privacy')}
+                className="hover:text-foreground transition-colors"
+              >
+                Confidentialité
+              </button>
+            </div>
           </div>
           
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <button 
-              onClick={() => navigate('/terms')}
-              className="hover:text-foreground transition-colors"
-            >
-              Conditions
-            </button>
-            <button 
-              onClick={() => navigate('/privacy')}
-              className="hover:text-foreground transition-colors"
-            >
-              Confidentialité
-            </button>
+          <div className="text-center text-xs text-muted-foreground">
+            <p className="font-medium">SIGNAL v1.0.0</p>
+            <p>Made with ❤️ in France par EmotionsCare Sasu</p>
           </div>
         </div>
       </footer>
