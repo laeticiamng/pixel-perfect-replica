@@ -30,6 +30,8 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
                   <RouterNavLink
                     key={item.to}
                     to={item.to}
+                    aria-label={`Naviguer vers ${item.label}`}
+                    aria-current={isActive ? 'page' : undefined}
                     className={cn(
                       'flex flex-col items-center gap-1.5 transition-all duration-300 relative',
                       isActive
