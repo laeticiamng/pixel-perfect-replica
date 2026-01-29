@@ -4,6 +4,7 @@ import { ArrowLeft, Loader2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAppFeedback } from '@/hooks/useAppFeedback';
+import { sanitizeDbText } from '@/lib/sanitize';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -19,7 +20,10 @@ export default function FeedbackPage() {
       return;
     }
     
-    const { error } = await submitFeedback(rating, feedback || undefined);
+    // Sanitize feedback text
+    const sanitizedFeedback = sanitizeDbText(feedback, 500);
+    
+    const { error } = await submitFeedback(rating, sanitizedFeedback || undefined);
     
     if (error) {
       toast.error('Erreur lors de l\'envoi');

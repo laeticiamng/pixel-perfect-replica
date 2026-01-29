@@ -30,6 +30,7 @@ import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
 import PrivacySettingsPage from "./pages/PrivacySettingsPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -130,6 +131,12 @@ function AnimatedRoutes() {
               <PrivacySettingsPage />
             </ProtectedRoute>
           } />
+          <Route path="/change-password" element={
+            <ProtectedRoute>
+              <ChangePasswordPage />
+            </ProtectedRoute>
+          } />
+          
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />

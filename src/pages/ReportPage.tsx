@@ -4,6 +4,7 @@ import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useReports } from '@/hooks/useReports';
+import { sanitizeDbText } from '@/lib/sanitize';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -27,14 +28,22 @@ export default function ReportPage() {
       toast.error('Choisis un type de signalement');
       return;
     }
-    if (!description.trim()) {
+    
+    const sanitizedDescription = sanitizeDbText(description, 1000);
+    
+    if (!sanitizedDescription) {
       toast.error('Décris le problème s\'il te plaît');
+      return;
+    }
+    
+    if (sanitizedDescription.length < 10) {
+      toast.error('Description trop courte (min 10 caractères)');
       return;
     }
     
     const { error } = await createReport(
       reportTypes.find(r => r.id === reportType)?.label || reportType,
-      description.trim()
+      sanitizedDescription
     );
     
     if (error) {

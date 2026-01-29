@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
+import { firstNameSchema, universitySchema } from '@/lib/validation';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -104,16 +106,31 @@ export default function EditProfilePage() {
   };
 
   const handleSave = async () => {
-    if (!firstName.trim()) {
-      toast.error('Le prénom est requis');
+    // Sanitize inputs
+    const sanitizedFirstName = stripHtml(firstName.trim());
+    const sanitizedUniversity = stripHtml(university.trim());
+    
+    // Validate first name
+    const firstNameResult = firstNameSchema.safeParse(sanitizedFirstName);
+    if (!firstNameResult.success) {
+      toast.error(firstNameResult.error.errors[0].message);
       return;
+    }
+    
+    // Validate university if provided
+    if (sanitizedUniversity) {
+      const universityResult = universitySchema.safeParse(sanitizedUniversity);
+      if (!universityResult.success) {
+        toast.error(universityResult.error.errors[0].message);
+        return;
+      }
     }
     
     setIsLoading(true);
     
     const { error } = await updateProfile({
-      first_name: firstName.trim(),
-      university: university.trim() || null,
+      first_name: sanitizedFirstName,
+      university: sanitizedUniversity || null,
       avatar_url: avatarUrl || null,
     });
     
