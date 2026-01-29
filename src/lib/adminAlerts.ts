@@ -11,8 +11,9 @@ interface SendAlertParams {
 
 export async function sendAdminAlert({ alert_type, subject, message, metadata }: SendAlertParams) {
   try {
-    const { data, error } = await supabase.functions.invoke('send-admin-alert', {
+    const { data, error } = await supabase.functions.invoke('notifications', {
       body: {
+        action: 'send-admin-alert',
         alert_type,
         subject,
         message,
