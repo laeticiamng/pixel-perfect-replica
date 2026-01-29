@@ -1,7 +1,8 @@
 # 🔍 AUDIT DE COMPLÉTUDE BACKEND ↔ FRONTEND
 
 **Date**: 2026-01-29  
-**Objectif**: Identifier les fonctionnalités backend non exposées et les routes non accessibles
+**Objectif**: Identifier les fonctionnalités backend non exposées et les routes non accessibles  
+**Status**: ✅ COMPLÉTÉ - Toutes les corrections appliquées
 
 ---
 
@@ -87,14 +88,17 @@
 
 ---
 
-## ❌ PROBLÈMES IDENTIFIÉS
+## ❌ PROBLÈMES IDENTIFIÉS ET CORRIGÉS
 
-### 1. Routes non liées dans le footer de LandingPage
-**Problème**: Le footer ne contient pas de lien vers l'aide/contact
-**Solution**: Ajouter un lien "Aide" dans le footer
+### 1. ✅ Routes non liées dans le footer de LandingPage
+**Problème**: Le footer ne contenait pas de lien vers l'aide/contact
+**Solution appliquée**: Ajout des liens "Aide" et "Contact" dans le footer
 
-### 2. Diagnostics accessible uniquement en mode dev
-**Problème**: `/diagnostics` n'est visible que si `DEV=true` ou `localStorage.debug=true`
+### 2. ✅ HelpPage inaccessible sans authentification
+**Problème**: `/help` était protégée, mais liée depuis le footer public
+**Solution appliquée**: Route `/help` rendue publique, bouton retour adaptatif
+
+### 3. Diagnostics accessible uniquement en mode dev
 **Status**: ✅ Correct (comportement voulu)
 
 ### 3. LOVABLE_API_KEY non utilisée
