@@ -18,7 +18,7 @@ export default function HelpPage() {
     },
     {
       question: "Ma position est-elle stockée ?",
-      answer: "Non, ta position n'est jamais stockée sur nos serveurs. Elle est utilisée uniquement en temps réel pour afficher les signaux autour de toi."
+      answer: "Non, ta position n'est jamais stockée sur nos serveurs. Elle est utilisée uniquement en temps réel pour afficher les signaux autour de toi. Les coordonnées sont automatiquement effacées après 24h."
     },
     {
       question: "Qu'est-ce que le mode fantôme ?",
@@ -26,23 +26,39 @@ export default function HelpPage() {
     },
     {
       question: "Comment signaler un comportement inapproprié ?",
-      answer: "Tu peux signaler un problème via le menu Support dans ton profil. Notre équipe traitera ta demande rapidement."
+      answer: "Tu peux signaler un problème via le menu Support dans ton profil, ou directement sur la page de la personne concernée via le bouton drapeau. Notre équipe modère les signalements en moins de 24h."
     },
     {
       question: "Comment supprimer mon compte ?",
-      answer: "Va dans Paramètres, puis clique sur 'Supprimer mon compte'. Tu devras confirmer en tapant SUPPRIMER."
+      answer: "Va dans Paramètres, puis clique sur 'Supprimer mon compte'. Tu devras confirmer en tapant SUPPRIMER. Toutes tes données seront définitivement supprimées."
     },
     {
       question: "Mes données sont-elles sécurisées ?",
-      answer: "Oui, nous utilisons le chiffrement et des politiques de sécurité strictes. Tu peux exporter tes données depuis les paramètres de confidentialité."
+      answer: "Oui, nous utilisons le chiffrement TLS, des politiques RLS (Row Level Security) sur chaque table, et tes données ne sont jamais partagées. Tu peux exporter tes données RGPD depuis les paramètres de confidentialité."
     },
     {
       question: "Qu'est-ce que la distance de visibilité ?",
-      answer: "C'est le rayon maximum dans lequel tu verras les autres signaux. Tu peux l'ajuster de 50m à 500m dans les paramètres."
+      answer: "C'est le rayon maximum dans lequel tu verras les autres signaux. Tu peux l'ajuster de 50m à 500m dans les paramètres. Plus la distance est petite, plus les rencontres seront proches !"
     },
     {
       question: "Comment fonctionne le rating ?",
-      answer: "Après chaque interaction, les utilisateurs peuvent laisser un feedback positif ou négatif. Ton rating moyen reflète la qualité de tes échanges."
+      answer: "Après chaque interaction, les utilisateurs peuvent laisser un feedback positif ou négatif. Ton rating moyen reflète la qualité de tes échanges. Un bon rating inspire confiance aux autres."
+    },
+    {
+      question: "Qu'est-ce qu'un événement SIGNAL ?",
+      answer: "Les événements permettent de créer des rassemblements avec un SIGNAL isolé. L'organisateur génère un QR code pour valider les présences. Parfait pour les meetups, révisions, ou soirées !"
+    },
+    {
+      question: "Comment contacter le support ?",
+      answer: "Tu peux nous écrire à support@signal-app.fr ou rejoindre notre communauté Discord. Nous répondons généralement sous 24h en semaine."
+    },
+    {
+      question: "SIGNAL est-il gratuit ?",
+      answer: "Oui, SIGNAL est entièrement gratuit ! Certaines fonctionnalités premium (mode fantôme) seront disponibles prochainement."
+    },
+    {
+      question: "Comment fonctionne le mini-chat ?",
+      answer: "Après avoir confirmé une interaction avec 'J'ai parlé', un mini-chat s'ouvre pour continuer la conversation. Les messages sont chiffrés et limités à cette interaction."
     },
   ];
 

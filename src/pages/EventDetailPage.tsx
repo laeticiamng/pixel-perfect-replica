@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users, QrCode, UserPlus, LogOut, Check, Loader2, Share2, Copy } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageLayout } from '@/components/PageLayout';
@@ -275,17 +276,19 @@ export default function EventDetailPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="bg-card p-6 rounded-xl text-center mb-4 border border-border">
-                {/* QR Code placeholder - in production, use a QR code library */}
-                <div className="w-48 h-48 mx-auto bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-border">
-                  <div className="text-center">
-                    <QrCode className="h-16 w-16 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-xs text-muted-foreground">QR Code</p>
-                    <p className="text-[10px] text-muted-foreground mt-1 break-all px-2">
-                      {event.qr_code_secret.slice(0, 8)}...
-                    </p>
-                  </div>
-                </div>
+              <div className="bg-white p-6 rounded-xl text-center mb-4 border border-border">
+                <QRCodeSVG
+                  value={`${window.location.origin}/events/${eventId}/checkin?secret=${event.qr_code_secret}`}
+                  size={192}
+                  level="H"
+                  includeMargin={true}
+                  className="mx-auto"
+                  bgColor="#ffffff"
+                  fgColor="#0f0f1a"
+                />
+                <p className="text-xs text-muted-foreground mt-3">
+                  Scanne pour confirmer ta présence
+                </p>
               </div>
               
               <Button
