@@ -38,6 +38,7 @@ import DataExportPage from "./pages/DataExportPage";
 import EventsPage from "./pages/EventsPage";
 import EventDetailPage from "./pages/EventDetailPage";
 import BinomePage from "./pages/BinomePage";
+import SessionDetailPage from "./pages/SessionDetailPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AnalyticsProvider } from "./hooks/useAnalytics";
@@ -190,6 +191,11 @@ function AnimatedRoutes() {
           <Route path="/binome" element={
             <ProtectedRoute>
               <BinomePage />
+            </ProtectedRoute>
+          } />
+          <Route path="/binome/:sessionId" element={
+            <ProtectedRoute>
+              <SessionDetailPage />
             </ProtectedRoute>
           } />
           

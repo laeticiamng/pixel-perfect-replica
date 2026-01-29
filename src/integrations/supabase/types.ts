@@ -647,6 +647,45 @@ export type Database = {
           },
         ]
       }
+      session_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       session_participants: {
         Row: {
           checked_in: boolean
@@ -1089,6 +1128,10 @@ export type Database = {
       leave_session: { Args: { p_session_id: string }; Returns: boolean }
       submit_rating: {
         Args: { p_rating: number; p_target_user_id: string }
+        Returns: undefined
+      }
+      update_reliability_from_feedback: {
+        Args: { p_positive: boolean; p_user_id: string }
         Returns: undefined
       }
       update_user_stats_safe: {

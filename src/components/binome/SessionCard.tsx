@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useNavigate } from 'react-router-dom';
 import { 
   Book, Laptop, Utensils, Dumbbell, MessageCircle, Star,
   MapPin, Clock, Users, Calendar, Shield
@@ -62,12 +63,19 @@ export function SessionCard({
   isOwner = false,
   isLoading = false
 }: SessionCardProps) {
+  const navigate = useNavigate();
   const sessionDate = new Date(session.scheduled_date);
   const formattedDate = format(sessionDate, 'EEEE d MMMM', { locale: fr });
   const isFull = (session.current_participants || 0) >= session.max_participants;
 
+  const handleCardClick = () => {
+    navigate(`/binome/${session.id}`);
+  };
   return (
-    <Card className="glass border-0 overflow-hidden">
+    <Card 
+      className="glass border-0 overflow-hidden cursor-pointer hover:border-coral/30 transition-colors"
+      onClick={handleCardClick}
+    >
       <CardContent className="p-4">
         {/* Header with creator info */}
         <div className="flex items-start justify-between mb-3">
@@ -133,13 +141,13 @@ export function SessionCard({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2">
+        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
           {isOwner ? (
             <Button 
               variant="destructive" 
               size="sm" 
               className="flex-1"
-              onClick={() => onCancel?.(session.id)}
+              onClick={(e) => { e.stopPropagation(); onCancel?.(session.id); }}
               disabled={isLoading || session.status === 'cancelled'}
             >
               {session.status === 'cancelled' ? 'Annulé' : 'Annuler'}
@@ -149,7 +157,7 @@ export function SessionCard({
               variant="outline" 
               size="sm" 
               className="flex-1"
-              onClick={() => onLeave?.(session.id)}
+              onClick={(e) => { e.stopPropagation(); onLeave?.(session.id); }}
               disabled={isLoading}
             >
               Quitter
@@ -158,7 +166,7 @@ export function SessionCard({
             <Button 
               size="sm" 
               className="flex-1 bg-coral hover:bg-coral/90"
-              onClick={() => onJoin?.(session.id)}
+              onClick={(e) => { e.stopPropagation(); onJoin?.(session.id); }}
               disabled={isLoading || isFull}
             >
               {isFull ? 'Complet' : 'Rejoindre'}
