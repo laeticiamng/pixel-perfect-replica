@@ -293,6 +293,32 @@ export function useActiveSignal() {
     }
   }, [position]);
 
+  // Setup realtime subscription for nearby signals
+  useEffect(() => {
+    if (!user || !position) return;
+
+    const channel = supabase
+      .channel('active-signals-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'active_signals',
+        },
+        (payload) => {
+          console.log('Signal change detected:', payload.eventType);
+          // Refetch nearby users when signals change
+          fetchNearbyUsers(200);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, position, fetchNearbyUsers]);
+
   return {
     mySignal,
     nearbyUsers,

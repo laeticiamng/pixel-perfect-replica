@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Flag, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { IcebreakerCard } from '@/components/IcebreakerCard';
 import { PageLayout } from '@/components/PageLayout';
@@ -8,8 +8,15 @@ import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
 import { ACTIVITIES, ICEBREAKERS } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
+import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
+
+interface UserProfile {
+  avatar_url: string | null;
+  bio: string | null;
+  university: string | null;
+}
 
 export default function ProximityRevealPage() {
   const navigate = useNavigate();
@@ -21,8 +28,26 @@ export default function ProximityRevealPage() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isVibrating, setIsVibrating] = useState(false);
   const [interactionId, setInteractionId] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   
   const user = nearbyUsers.find(u => u.id === userId);
+
+  // Fetch extended profile data
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userId) return;
+      const { data } = await supabase
+        .rpc('get_safe_public_profile', { profile_id: userId });
+      if (data && data[0]) {
+        setUserProfile({
+          avatar_url: data[0].avatar_url,
+          bio: null, // Bio is private, we only show public fields
+          university: data[0].university,
+        });
+      }
+    };
+    fetchProfile();
+  }, [userId]);
 
   const generateIcebreaker = useCallback(() => {
     if (user) {
@@ -157,10 +182,18 @@ export default function ProximityRevealPage() {
           {/* Avatar */}
           <div className="flex justify-center mb-6">
             <div className="relative">
-              <div className="w-28 h-28 rounded-full bg-coral flex items-center justify-center glow-coral animate-pulse-signal">
-                <span className="text-4xl font-bold text-primary-foreground">
-                  {user.firstName.charAt(0).toUpperCase()}
-                </span>
+              <div className="w-28 h-28 rounded-full bg-coral flex items-center justify-center glow-coral animate-pulse-signal overflow-hidden">
+                {userProfile?.avatar_url ? (
+                  <img 
+                    src={userProfile.avatar_url} 
+                    alt={`Avatar de ${user.firstName}`}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-4xl font-bold text-primary-foreground">
+                    {user.firstName.charAt(0).toUpperCase()}
+                  </span>
+                )}
               </div>
               {/* Signal indicator */}
               <div className={cn(
@@ -173,9 +206,17 @@ export default function ProximityRevealPage() {
           </div>
 
           {/* Name */}
-          <h1 className="text-3xl font-bold text-foreground text-center mb-4">
+          <h1 className="text-3xl font-bold text-foreground text-center mb-2">
             {user.firstName}
           </h1>
+          
+          {/* University badge */}
+          {userProfile?.university && (
+            <div className="flex items-center justify-center gap-1 mb-4 text-muted-foreground">
+              <GraduationCap className="h-4 w-4" />
+              <span className="text-sm">{userProfile.university}</span>
+            </div>
+          )}
 
           {/* Activity & Time */}
           <div className="flex items-center justify-center gap-4 mb-4">
@@ -213,16 +254,28 @@ export default function ProximityRevealPage() {
         <Button
           onClick={handleTalked}
           className="w-full h-14 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl text-lg font-semibold glow-coral"
+          aria-label="Confirmer que j'ai parlé à cette personne"
         >
           J'ai parlé ✓
         </Button>
-        <Button
-          variant="outline"
-          onClick={() => navigate('/map')}
-          className="w-full h-14 rounded-xl text-muted-foreground"
-        >
-          Pas maintenant
-        </Button>
+        <div className="flex gap-3">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/map')}
+            className="flex-1 h-14 rounded-xl text-muted-foreground"
+            aria-label="Retourner à la carte"
+          >
+            Pas maintenant
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate('/report', { state: { reportedUserId: userId } })}
+            className="h-14 px-4 rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10"
+            aria-label="Signaler cet utilisateur"
+          >
+            <Flag className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
     </PageLayout>
   );
