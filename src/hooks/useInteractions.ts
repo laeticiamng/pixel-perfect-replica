@@ -99,39 +99,9 @@ export function useInteractions() {
           .eq('user_id', data.target_user_id);
       }
 
-      // Increment interaction count for both users
-      await supabase
-        .from('user_stats')
-        .update({ interactions: supabase.rpc ? 1 : 1 })
-        .eq('user_id', user.id);
-      
-      // Update my interaction count
-      const { data: myStats } = await supabase
-        .from('user_stats')
-        .select('interactions')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (myStats) {
-        await supabase
-          .from('user_stats')
-          .update({ interactions: myStats.interactions + 1 })
-          .eq('user_id', user.id);
-      }
-
-      // Update target user interaction count
-      const { data: targetStats } = await supabase
-        .from('user_stats')
-        .select('interactions')
-        .eq('user_id', data.target_user_id)
-        .single();
-      
-      if (targetStats) {
-        await supabase
-          .from('user_stats')
-          .update({ interactions: targetStats.interactions + 1 })
-          .eq('user_id', data.target_user_id);
-      }
+      // Increment interaction counts using RPC to avoid race conditions
+      await supabase.rpc('increment_interactions', { p_user_id: user.id });
+      await supabase.rpc('increment_interactions', { p_user_id: data.target_user_id });
     }
 
     return { data, error };
