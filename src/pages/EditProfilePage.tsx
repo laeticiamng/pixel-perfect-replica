@@ -1,14 +1,17 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Camera, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
 import { firstNameSchema, universitySchema } from '@/lib/validation';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
+
+const BIO_MAX_LENGTH = 140;
 
 export default function EditProfilePage() {
   const navigate = useNavigate();
@@ -17,9 +20,26 @@ export default function EditProfilePage() {
   
   const [firstName, setFirstName] = useState(profile?.first_name || '');
   const [university, setUniversity] = useState(profile?.university || '');
+  const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+
+  // Fetch current bio from database
+  useEffect(() => {
+    const fetchBio = async () => {
+      if (!user) return;
+      const { data } = await supabase
+        .from('profiles')
+        .select('bio')
+        .eq('id', user.id)
+        .single();
+      if (data?.bio) {
+        setBio(data.bio);
+      }
+    };
+    fetchBio();
+  }, [user]);
 
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
@@ -109,6 +129,7 @@ export default function EditProfilePage() {
     // Sanitize inputs
     const sanitizedFirstName = stripHtml(firstName.trim());
     const sanitizedUniversity = stripHtml(university.trim());
+    const sanitizedBio = stripHtml(bio.trim());
     
     // Validate first name
     const firstNameResult = firstNameSchema.safeParse(sanitizedFirstName);
@@ -125,16 +146,28 @@ export default function EditProfilePage() {
         return;
       }
     }
+
+    // Validate bio length
+    if (sanitizedBio.length > BIO_MAX_LENGTH) {
+      toast.error(`La bio ne doit pas dépasser ${BIO_MAX_LENGTH} caractères`);
+      return;
+    }
     
     setIsLoading(true);
-    
-    const { error } = await updateProfile({
-      first_name: sanitizedFirstName,
-      university: sanitizedUniversity || null,
-      avatar_url: avatarUrl || null,
-    });
+
+    // Update profile including bio (direct query since bio is new)
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update({
+        first_name: sanitizedFirstName,
+        university: sanitizedUniversity || null,
+        avatar_url: avatarUrl || null,
+        bio: sanitizedBio || null,
+      })
+      .eq('id', user?.id);
     
     setIsLoading(false);
+    const error = profileError;
     
     if (error) {
       toast.error('Erreur lors de la mise à jour');
@@ -246,6 +279,29 @@ export default function EditProfilePage() {
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
               className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-foreground">Bio</label>
+              <span className={cn(
+                "text-xs font-medium",
+                bio.length > BIO_MAX_LENGTH - 20 ? "text-signal-yellow" : "text-muted-foreground",
+                bio.length > BIO_MAX_LENGTH - 5 && "text-signal-red"
+              )}>
+                {bio.length}/{BIO_MAX_LENGTH}
+              </span>
+            </div>
+            <Textarea
+              placeholder="Décris-toi en quelques mots..."
+              value={bio}
+              onChange={(e) => {
+                if (e.target.value.length <= BIO_MAX_LENGTH) {
+                  setBio(e.target.value);
+                }
+              }}
+              className="min-h-[100px] bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
             />
           </div>
 

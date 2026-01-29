@@ -55,7 +55,7 @@ export function useActiveSignal() {
   }, [user]);
 
   // Activate signal
-  const activateSignal = async (activity: ActivityType, signalType: SignalType = 'green') => {
+  const activateSignal = async (activity: ActivityType, signalType: SignalType = 'green', locationDescription?: string) => {
     if (!user || !position) return { error: new Error('Missing user or position') };
 
     setIsLoading(true);
@@ -79,6 +79,7 @@ export function useActiveSignal() {
           accuracy: position.accuracy || null,
           started_at: new Date().toISOString(),
           expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+          location_description: locationDescription || null,
         })
         .eq('user_id', user.id)
         .select()
@@ -101,6 +102,7 @@ export function useActiveSignal() {
           latitude: position.latitude,
           longitude: position.longitude,
           accuracy: position.accuracy || null,
+          location_description: locationDescription || null,
         })
         .select()
         .single();

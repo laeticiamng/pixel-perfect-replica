@@ -6,6 +6,9 @@ import { BottomNav } from '@/components/BottomNav';
 import { SignalMarker } from '@/components/SignalMarker';
 import { ActivitySelector } from '@/components/ActivitySelector';
 import { ActivityFilter } from '@/components/ActivityFilter';
+import { ExpirationTimer } from '@/components/ExpirationTimer';
+import { EmergencyButton } from '@/components/EmergencyButton';
+import { LocationDescriptionInput } from '@/components/LocationDescriptionInput';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
@@ -22,6 +25,7 @@ export default function MapPage() {
   const { settings } = useUserSettings();
   const { 
     isActive, 
+    mySignal,
     activity: myActivity, 
     nearbyUsers, 
     activateSignal, 
@@ -36,6 +40,7 @@ export default function MapPage() {
   const [isActivating, setIsActivating] = useState(false);
   const [activityFilters, setActivityFilters] = useState<ActivityType[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [locationDescription, setLocationDescription] = useState('');
   const activeTimeRef = useRef<NodeJS.Timeout | null>(null);
 
   // Start location watching
@@ -109,16 +114,26 @@ export default function MapPage() {
   const handleActivityConfirm = async () => {
     if (selectedActivity) {
       setIsActivating(true);
-      const { error } = await activateSignal(selectedActivity);
+      const { error } = await activateSignal(selectedActivity, 'green', locationDescription);
       setIsActivating(false);
       
       if (error) {
         toast.error('Erreur lors de l\'activation');
       } else {
         setShowActivityModal(false);
+        setLocationDescription('');
         toast.success('Signal activé !');
       }
     }
+  };
+
+  const handleSignalExpired = () => {
+    toast('Ton signal a expiré !', { icon: '⏰' });
+  };
+
+  const handleEmergencyTrigger = (position: GeolocationPosition | null) => {
+    // Log emergency trigger for analytics
+    console.log('Emergency triggered at:', position?.coords);
   };
 
   const handleChangeActivity = () => {
@@ -185,40 +200,52 @@ export default function MapPage() {
       <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
         {/* Header */}
         <header className="safe-top px-6 py-4">
-        <div className="glass-strong rounded-2xl p-4 flex items-center justify-between shadow-medium">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className={cn(
-                'w-3.5 h-3.5 rounded-full',
-                isActive ? 'bg-signal-green glow-green animate-pulse-signal' : 'bg-signal-red'
-              )} />
-              {isActive && <div className="absolute inset-0 rounded-full bg-signal-green/30 animate-ripple" />}
+        <div className="glass-strong rounded-2xl p-4 shadow-medium">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className={cn(
+                  'w-3.5 h-3.5 rounded-full',
+                  isActive ? 'bg-signal-green glow-green animate-pulse-signal' : 'bg-signal-red'
+                )} />
+                {isActive && <div className="absolute inset-0 rounded-full bg-signal-green/30 animate-ripple" />}
+              </div>
+              <div className="flex flex-col">
+                <span className="font-semibold text-foreground">
+                  {isActive ? 'Tu es visible' : 'Signal désactivé'}
+                </span>
+                {/* Expiration Timer */}
+                {isActive && mySignal?.expires_at && (
+                  <ExpirationTimer 
+                    expiresAt={mySignal.expires_at} 
+                    onExpire={handleSignalExpired}
+                    className="mt-1"
+                  />
+                )}
+              </div>
             </div>
-            <span className="font-semibold text-foreground">
-              {isActive ? 'Tu es visible' : 'Signal désactivé'}
-            </span>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            {isActive && myActivity && (
-              <button
-                onClick={handleChangeActivity}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-deep-blue-light/80 text-sm hover:bg-deep-blue-light transition-colors"
-              >
-                <span>{currentActivityData?.emoji}</span>
-                <span className="text-muted-foreground">{currentActivityData?.label}</span>
-              </button>
-            )}
             
-            <button
-              onClick={handleManualRefresh}
-              className={cn(
-                "p-2.5 rounded-xl bg-deep-blue-light/80 text-muted-foreground hover:text-foreground hover:bg-deep-blue-light transition-all",
-                isRefreshing && "animate-spin"
+            <div className="flex items-center gap-2">
+              {isActive && myActivity && (
+                <button
+                  onClick={handleChangeActivity}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-deep-blue-light/80 text-sm hover:bg-deep-blue-light transition-colors"
+                >
+                  <span>{currentActivityData?.emoji}</span>
+                  <span className="text-muted-foreground">{currentActivityData?.label}</span>
+                </button>
               )}
-            >
-              <RefreshCw className="h-4 w-4" />
-            </button>
+              
+              <button
+                onClick={handleManualRefresh}
+                className={cn(
+                  "p-2.5 rounded-xl bg-deep-blue-light/80 text-muted-foreground hover:text-foreground hover:bg-deep-blue-light transition-all",
+                  isRefreshing && "animate-spin"
+                )}
+              >
+                <RefreshCw className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
         
@@ -411,11 +438,23 @@ export default function MapPage() {
               selectedActivity={selectedActivity}
               onSelect={setSelectedActivity}
             />
+
+            {/* Location Description */}
+            <div className="mt-4">
+              <LocationDescriptionInput
+                value={locationDescription}
+                onChange={setLocationDescription}
+                placeholder="Où es-tu ? (optionnel)"
+              />
+            </div>
             
             <div className="flex gap-3 mt-6">
               <Button
                 variant="outline"
-                onClick={() => setShowActivityModal(false)}
+                onClick={() => {
+                  setShowActivityModal(false);
+                  setLocationDescription('');
+                }}
                 className="flex-1 h-12 rounded-xl"
               >
                 Annuler
@@ -431,6 +470,11 @@ export default function MapPage() {
           </div>
         </div>
       )}
+
+      {/* Emergency Button - Fixed position */}
+      <div className="fixed bottom-32 right-4 z-40">
+        <EmergencyButton onTrigger={handleEmergencyTrigger} />
+      </div>
 
       <BottomNav />
       </div>
