@@ -7,18 +7,18 @@ import { useEffect } from 'react';
 const features = [
   {
     icon: <div className="w-3 h-3 rounded-full bg-signal-green" />,
-    title: 'Signale que tu es ouvert',
-    description: 'Active ton signal pour montrer que tu es ouvert à l\'interaction',
+    title: 'Dis ce que tu fais',
+    description: 'Réviser, manger, bosser... Choisis ton activité et active ton signal',
   },
   {
     icon: <MapPin className="h-5 w-5 text-coral" />,
-    title: 'Vois les signaux autour',
-    description: 'Découvre qui est ouvert près de toi sur la carte radar',
+    title: 'Détecte qui est dispo',
+    description: 'Reçois une notif dès que quelqu\'un arrive et active son signal près de toi',
   },
   {
     icon: <MessageCircle className="h-5 w-5 text-coral" />,
-    title: 'Approche sans awkwardness',
-    description: 'Reçois un icebreaker parfait pour lancer la conversation',
+    title: 'Approche naturellement',
+    description: 'Tu sais déjà ce qu\'il/elle fait — l\'icebreaker parfait pour engager',
   },
 ];
 
