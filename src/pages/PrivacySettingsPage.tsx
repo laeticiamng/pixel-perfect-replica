@@ -5,7 +5,7 @@ import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useGdprExport } from '@/hooks/useGdprExport';
-import { EmergencyContactsManager } from '@/components/EmergencyContactsManager';
+import { EmergencyContactsManager } from '@/components/safety';
 import { PageLayout } from '@/components/PageLayout';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import toast from 'react-hot-toast';

@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { X, Radio, RefreshCw, Info, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
-import { SignalMarker } from '@/components/SignalMarker';
-import { ActivitySelector } from '@/components/ActivitySelector';
-import { ActivityFilter } from '@/components/ActivityFilter';
-import { ExpirationTimer } from '@/components/ExpirationTimer';
-import { EmergencyButton } from '@/components/EmergencyButton';
-import { LocationDescriptionInput } from '@/components/LocationDescriptionInput';
-import { SearchingIndicator } from '@/components/SearchingIndicator';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
+import { 
+  SignalMarker, 
+  ActivitySelector, 
+  ActivityFilter, 
+  ExpirationTimer, 
+  LocationDescriptionInput, 
+  SearchingIndicator 
+} from '@/components/radar';
+import { EmergencyButton } from '@/components/safety';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';

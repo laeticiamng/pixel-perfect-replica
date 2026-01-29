@@ -1,8 +1,9 @@
 // Map-related components barrel export
-export { ActivityFilter } from '../ActivityFilter';
-export { ActivitySelector } from '../ActivitySelector';
-export { SignalMarker } from '../SignalMarker';
-export { SearchingIndicator } from '../SearchingIndicator';
-export { ExpirationTimer } from '../ExpirationTimer';
-export { EmergencyButton } from '../EmergencyButton';
-export { LocationDescriptionInput } from '../LocationDescriptionInput';
+// Re-export from new organized folders
+export { ActivityFilter } from '../radar';
+export { ActivitySelector } from '../radar';
+export { SignalMarker } from '../radar';
+export { SearchingIndicator } from '../radar';
+export { ExpirationTimer } from '../radar';
+export { LocationDescriptionInput } from '../radar';
+export { EmergencyButton } from '../safety';

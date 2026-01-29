@@ -1,12 +1,14 @@
 import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { DesktopSidebar } from './navigation/DesktopSidebar';
 
 interface PageLayoutProps {
   children: ReactNode;
   className?: string;
   showOrbs?: boolean;
   animate?: boolean;
+  showSidebar?: boolean;
 }
 
 // Floating orbs background - same as landing page
@@ -24,11 +26,17 @@ export function PageLayout({
   children, 
   className, 
   showOrbs = true,
-  animate = true 
+  animate = true,
+  showSidebar = true
 }: PageLayoutProps) {
   const content = (
-    <div className={cn("min-h-screen min-h-[100dvh] bg-gradient-radial relative", className)}>
+    <div className={cn(
+      "min-h-screen min-h-[100dvh] bg-gradient-radial relative",
+      showSidebar && "lg:pl-64", // Add padding for sidebar on desktop
+      className
+    )}>
       {showOrbs && <FloatingOrbs />}
+      {showSidebar && <DesktopSidebar />}
       <div className="relative z-10">
         {children}
       </div>
@@ -60,116 +68,54 @@ const staggerContainer = {
   },
 };
 
-// Item animation variants
-const itemVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
-  visible: {
-    opacity: 1,
+// Child item animation
+const staggerItem = {
+  hidden: { 
+    opacity: 0, 
+    y: 16,
+    scale: 0.95,
+  },
+  visible: { 
+    opacity: 1, 
     y: 0,
     scale: 1,
     transition: {
-      duration: 0.4,
-      ease: "easeOut" as const,
+      type: 'spring' as const,
+      stiffness: 400,
+      damping: 25,
     },
   },
 };
 
-// Animated list container
-export function AnimatedList({ 
+// Export for use in page components
+export const AnimatedSection = ({ 
   children, 
-  className,
-  delay = 0,
+  className 
 }: { 
   children: ReactNode; 
   className?: string;
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={{
-        hidden: { opacity: 0 },
-        visible: {
-          opacity: 1,
-          transition: {
-            staggerChildren: 0.08,
-            delayChildren: delay,
-          },
-        },
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+}) => (
+  <motion.div
+    variants={staggerContainer}
+    initial="hidden"
+    animate="visible"
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
 
-// Animated list item
-export function AnimatedItem({ 
+export const AnimatedItem = ({ 
   children, 
-  className,
-  index = 0,
+  className 
 }: { 
   children: ReactNode; 
   className?: string;
-  index?: number;
-}) {
-  return (
-    <motion.div
-      variants={itemVariants}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+}) => (
+  <motion.div variants={staggerItem} className={className}>
+    {children}
+  </motion.div>
+);
 
-// Animated section component for consistent page sections
-export function AnimatedSection({ 
-  children, 
-  className, 
-  delay = 0 
-}: { 
-  children: ReactNode; 
-  className?: string; 
-  delay?: number;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay, ease: [0.25, 0.4, 0.25, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// Animated card with hover effect
-export function AnimatedCard({ 
-  children, 
-  className,
-  delay = 0,
-  onClick
-}: { 
-  children: ReactNode; 
-  className?: string;
-  delay?: number;
-  onClick?: () => void;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay, ease: [0.25, 0.4, 0.25, 1] }}
-      whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      className={cn("glass rounded-xl cursor-pointer", className)}
-    >
-      {children}
-    </motion.div>
-  );
-}
+// Re-export animation variants for custom use
+export { staggerContainer, staggerItem };

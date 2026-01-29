@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { ACTIVITIES, ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
 

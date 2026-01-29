@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ActivitySelector } from '@/components/ActivitySelector';
+import { ActivitySelector } from '@/components/radar';
 import type { CreateSessionInput, ActivityType, DurationOption } from '@/hooks/useBinomeSessions';
 
 const formSchema = z.object({
