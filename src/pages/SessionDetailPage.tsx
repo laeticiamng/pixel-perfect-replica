@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { 
   ArrowLeft, Calendar, Clock, MapPin, Users, 
-  MessageCircle, Shield, Loader2, AlertTriangle 
+  MessageCircle, Shield, Loader2, AlertTriangle,
+  CheckCircle2, Navigation
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -17,6 +18,8 @@ import { SessionChat } from '@/components/binome/SessionChat';
 import { SessionFeedbackForm } from '@/components/binome/SessionFeedbackForm';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLocationStore } from '@/stores/locationStore';
+import { calculateDistance } from '@/utils/distance';
 import { toast } from 'sonner';
 import type { ActivityType, DurationOption, SessionStatus } from '@/hooks/useBinomeSessions';
 
