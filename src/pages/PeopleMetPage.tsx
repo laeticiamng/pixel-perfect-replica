@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
 import { ProfileCardSkeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import toast from 'react-hot-toast';
 
 interface MetPerson {
   id: string;
@@ -207,9 +208,11 @@ export default function PeopleMetPage() {
             {filteredPeople.map((person) => {
               const activityData = getActivityData(person.activity);
               return (
-                <div
+                <button
                   key={person.id}
-                  className="glass rounded-xl p-4 flex items-center gap-4"
+                  onClick={() => toast('Profil non disponible', { icon: '👤' })}
+                  className="w-full glass rounded-xl p-4 flex items-center gap-4 text-left hover:bg-muted/30 transition-colors"
+                  aria-label={`Voir le profil de ${person.firstName}`}
                 >
                   <div className="w-12 h-12 rounded-full bg-coral flex items-center justify-center">
                     <span className="text-lg font-bold text-primary-foreground">
@@ -226,10 +229,10 @@ export default function PeopleMetPage() {
                     </div>
                   </div>
                   
-                  <span className="text-2xl">
+                  <span className="text-2xl" aria-label={person.positive === true ? 'Feedback positif' : person.positive === false ? 'Feedback négatif' : 'Pas de feedback'}>
                     {person.positive === true ? '😊' : person.positive === false ? '😕' : '❓'}
                   </span>
-                </div>
+                </button>
               );
             })}
           </div>

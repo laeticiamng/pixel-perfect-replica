@@ -42,19 +42,34 @@ const ACTIVITY_LABELS: Record<string, string> = {
   other: 'Autre',
 };
 
+// Use CSS custom properties for chart colors (theme-aware)
+const getChartColors = () => {
+  const root = document.documentElement;
+  const style = getComputedStyle(root);
+  return [
+    `hsl(${style.getPropertyValue('--coral').trim()})`,
+    `hsl(${style.getPropertyValue('--signal-green').trim()})`,
+    `hsl(${style.getPropertyValue('--signal-yellow').trim()})`,
+    `hsl(${style.getPropertyValue('--purple-accent').trim()})`,
+    'hsl(200, 100%, 50%)', // blue (not in design system)
+    'hsl(340, 82%, 52%)', // pink (not in design system)
+  ];
+};
+
 const CHART_COLORS = [
-  'hsl(16, 100%, 66%)', // coral
-  'hsl(142, 76%, 36%)', // green
-  'hsl(48, 96%, 53%)',  // yellow
-  'hsl(262, 83%, 58%)', // purple
-  'hsl(200, 100%, 50%)', // blue
-  'hsl(340, 82%, 52%)', // pink
+  'hsl(var(--coral))',
+  'hsl(var(--signal-green))',
+  'hsl(var(--signal-yellow))',
+  'hsl(var(--purple-accent))',
+  'hsl(200, 100%, 50%)',
+  'hsl(340, 82%, 52%)',
 ];
 
 export default function StatisticsPage() {
   const navigate = useNavigate();
   const { stats } = useAuth();
   const { getMyInteractions } = useInteractions();
+  const [isLoading, setIsLoading] = useState(true);
   const [topActivities, setTopActivities] = useState<InteractionData[]>([]);
   const [weeklyData, setWeeklyData] = useState<WeeklyData[]>([
     { day: 'Lun', interactions: 0 },
@@ -70,6 +85,7 @@ export default function StatisticsPage() {
 
   useEffect(() => {
     const loadStats = async () => {
+      setIsLoading(true);
       const { data: interactions } = await getMyInteractions(100);
       
       if (interactions) {
@@ -140,10 +156,38 @@ export default function StatisticsPage() {
           .sort((a, b) => parseInt(a.hour) - parseInt(b.hour));
         setHourlyData(hourlyChartData);
       }
+      setIsLoading(false);
     };
     
     loadStats();
   }, [getMyInteractions]);
+
+  // Show skeleton while loading
+  if (isLoading) {
+    return (
+      <PageLayout className="pb-8 safe-bottom">
+        <header className="safe-top px-6 py-4 flex items-center gap-4">
+          <button
+            onClick={() => navigate('/profile')}
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
+            aria-label="Retour au profil"
+          >
+            <ArrowLeft className="h-6 w-6 text-foreground" />
+          </button>
+          <h1 className="text-xl font-bold text-foreground">Mes statistiques</h1>
+        </header>
+        <div className="px-6 space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <StatCardSkeleton key={i} />
+            ))}
+          </div>
+          <ChartSkeleton />
+          <ChartSkeleton />
+        </div>
+      </PageLayout>
+    );
+  }
 
   const weekTotal = weeklyData.reduce((sum, d) => sum + d.interactions, 0);
   const avgPerDay = (weekTotal / 7).toFixed(1);
@@ -168,6 +212,7 @@ export default function StatisticsPage() {
         <button
           onClick={() => navigate('/profile')}
           className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label="Retour au profil"
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
