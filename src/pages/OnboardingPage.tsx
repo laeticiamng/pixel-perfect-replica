@@ -313,36 +313,43 @@ export default function OnboardingPage() {
           <div className="space-y-6 animate-slide-up text-center">
             <div className="text-6xl mb-6">🎉</div>
             
-            <h2 className="text-2xl font-bold text-foreground mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-2">
               Tu es prêt !
             </h2>
             
-            <p className="text-muted-foreground mb-8">
-              Voici comment fonctionnent les signaux :
+            <p className="text-coral font-semibold mb-2">
+              Ici, tout le monde est ouvert à l'interaction.
+            </p>
+            
+            <p className="text-muted-foreground mb-6 text-sm">
+              Active ton signal pour montrer que tu veux rencontrer quelqu'un :
             </p>
             
             <div className="space-y-4 text-left">
-              <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform">
+              <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform border border-signal-green/30">
                 <div className="w-7 h-7 rounded-full bg-signal-green glow-green shadow-lg" />
                 <div>
-                  <p className="font-bold text-foreground">Signal vert</p>
-                  <p className="text-sm text-muted-foreground">Ouvert à l'interaction</p>
+                  <p className="font-bold text-signal-green">Signal vert</p>
+                  <p className="text-sm text-foreground font-medium">"Je suis ouvert·e à l'interaction"</p>
+                  <p className="text-xs text-muted-foreground">Je veux faire cette activité avec quelqu'un</p>
                 </div>
               </div>
               
               <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform">
                 <div className="w-7 h-7 rounded-full bg-signal-yellow glow-yellow shadow-lg" />
                 <div>
-                  <p className="font-bold text-foreground">Signal jaune</p>
-                  <p className="text-sm text-muted-foreground">Ouvert sous conditions</p>
+                  <p className="font-bold text-signal-yellow">Signal jaune</p>
+                  <p className="text-sm text-foreground font-medium">"Ouvert·e sous conditions"</p>
+                  <p className="text-xs text-muted-foreground">Dépend de l'activité ou du contexte</p>
                 </div>
               </div>
               
               <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform">
                 <div className="w-7 h-7 rounded-full bg-signal-red glow-red shadow-lg" />
                 <div>
-                  <p className="font-bold text-foreground">Signal rouge</p>
-                  <p className="text-sm text-muted-foreground">Pas disponible</p>
+                  <p className="font-bold text-signal-red">Signal rouge</p>
+                  <p className="text-sm text-foreground font-medium">"Pas disponible"</p>
+                  <p className="text-xs text-muted-foreground">Visible mais ne souhaite pas être approché</p>
                 </div>
               </div>
             </div>
