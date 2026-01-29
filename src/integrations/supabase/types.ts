@@ -68,6 +68,66 @@ export type Database = {
           },
         ]
       }
+      admin_alert_preferences: {
+        Row: {
+          alert_error_spike: boolean
+          alert_high_reports: boolean
+          alert_new_user: boolean
+          created_at: string
+          email: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_error_spike?: boolean
+          alert_high_reports?: boolean
+          alert_new_user?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_error_spike?: boolean
+          alert_high_reports?: boolean
+          alert_new_user?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      alert_logs: {
+        Row: {
+          alert_type: string
+          id: string
+          metadata: Json | null
+          recipient_email: string
+          sent_at: string
+          subject: string
+        }
+        Insert: {
+          alert_type: string
+          id?: string
+          metadata?: Json | null
+          recipient_email: string
+          sent_at?: string
+          subject: string
+        }
+        Update: {
+          alert_type?: string
+          id?: string
+          metadata?: Json | null
+          recipient_email?: string
+          sent_at?: string
+          subject?: string
+        }
+        Relationships: []
+      }
       analytics_events: {
         Row: {
           created_at: string
