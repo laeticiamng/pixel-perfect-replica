@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
-const CONSENT_KEY = 'signal-cookie-consent';
+const CONSENT_KEY = 'easy-cookie-consent';
 
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
@@ -53,7 +53,7 @@ export function CookieConsent() {
         </div>
         
         <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-          SIGNAL utilise des cookies pour améliorer ton expérience et analyser l'utilisation de l'app. 
+          EASY utilise des cookies pour améliorer ton expérience et analyser l'utilisation de l'app. 
           Ta position n'est jamais stockée sans ton consentement.
         </p>
         

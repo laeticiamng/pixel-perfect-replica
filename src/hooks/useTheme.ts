@@ -28,7 +28,7 @@ export const useThemeStore = create<ThemeState>()(
       },
     }),
     {
-      name: 'signal-theme-storage',
+      name: 'easy-theme-storage',
     }
   )
 );
