@@ -33,6 +33,8 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import InstallPage from "./pages/InstallPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import BlockedUsersPage from "./pages/BlockedUsersPage";
+import DataExportPage from "./pages/DataExportPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AnalyticsProvider } from "./hooks/useAnalytics";
@@ -160,6 +162,16 @@ function AnimatedRoutes() {
           <Route path="/admin" element={
             <ProtectedRoute>
               <AdminDashboardPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/blocked-users" element={
+            <ProtectedRoute>
+              <BlockedUsersPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/data-export" element={
+            <ProtectedRoute>
+              <DataExportPage />
             </ProtectedRoute>
           } />
           
