@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Clock, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +20,13 @@ export function ExpirationTimer({
   const [timeLeft, setTimeLeft] = useState<string>('');
   const [isUrgent, setIsUrgent] = useState(false);
   const [showExtend, setShowExtend] = useState(false);
+  // Prevent multiple onExpire calls
+  const hasExpiredRef = useRef(false);
+
+  useEffect(() => {
+    // Reset expired flag when expiresAt changes (new signal)
+    hasExpiredRef.current = false;
+  }, [expiresAt]);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -29,7 +36,11 @@ export function ExpirationTimer({
 
       if (diff <= 0) {
         setTimeLeft('Expiré');
-        onExpire?.();
+        // Only call onExpire ONCE
+        if (!hasExpiredRef.current) {
+          hasExpiredRef.current = true;
+          onExpire?.();
+        }
         return;
       }
 
