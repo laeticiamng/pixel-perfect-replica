@@ -1,4 +1,4 @@
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
@@ -8,6 +8,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -93,6 +94,29 @@ export default function SettingsPage() {
             </div>
           </div>
           <ThemeToggle />
+        </div>
+
+        {/* Security Section */}
+        <div className="glass rounded-xl p-4">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
+              <Lock className="h-5 w-5" />
+            </div>
+            <div>
+              <span className="font-medium text-foreground">Sécurité</span>
+              <p className="text-sm text-muted-foreground mt-0.5">Gère la sécurité de ton compte</p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate('/change-password')}
+            className={cn(
+              "w-full flex items-center gap-4 p-3 rounded-xl transition-colors",
+              "hover:bg-muted/50 active:bg-muted/70"
+            )}
+          >
+            <Key className="h-5 w-5 text-muted-foreground" />
+            <span className="text-foreground font-medium">Changer le mot de passe</span>
+          </button>
         </div>
 
         {settingsItems.map((item) => (

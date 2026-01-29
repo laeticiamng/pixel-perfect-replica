@@ -147,76 +147,99 @@ export function useActiveSignal() {
       .eq('user_id', user.id);
   };
 
-  // Fetch nearby users with signals
+  // Fetch nearby users with signals (respects ghost mode)
   const fetchNearbyUsers = useCallback(async (maxDistance: number = 200) => {
     if (!user || !position) return;
 
-    // Get all active signals except current user
-    const { data: signals, error } = await supabase
-      .from('active_signals')
-      .select(`
-        id,
-        user_id,
-        signal_type,
-        activity,
-        latitude,
-        longitude,
-        started_at
-      `)
-      .neq('user_id', user.id)
-      .gte('expires_at', new Date().toISOString());
+    try {
+      // Get all active signals except current user
+      const { data: signals, error } = await supabase
+        .from('active_signals')
+        .select(`
+          id,
+          user_id,
+          signal_type,
+          activity,
+          latitude,
+          longitude,
+          started_at
+        `)
+        .neq('user_id', user.id)
+        .gte('expires_at', new Date().toISOString());
 
-    if (error) {
-      console.error('Error fetching nearby signals:', error);
-      return;
+      if (error) {
+        console.error('Error fetching nearby signals:', error);
+        return;
+      }
+
+      if (!signals || signals.length === 0) {
+        setNearbyUsers([]);
+        return;
+      }
+
+      // Get profiles for these users using secure function (avoids exposing emails)
+      const userIds = signals.map(s => s.user_id);
+      
+      // Get user settings to filter out ghost mode users
+      const { data: settingsData } = await supabase
+        .from('user_settings')
+        .select('user_id, ghost_mode')
+        .in('user_id', userIds);
+      
+      // Filter out users with ghost mode enabled
+      const visibleUserIds = userIds.filter(uid => {
+        const userSettings = settingsData?.find(s => s.user_id === uid);
+        return !userSettings?.ghost_mode;
+      });
+      
+      if (visibleUserIds.length === 0) {
+        setNearbyUsers([]);
+        return;
+      }
+      
+      const { data: profiles } = await supabase
+        .rpc('get_public_profiles', { profile_ids: visibleUserIds });
+
+      const { data: statsData } = await supabase
+        .from('user_stats')
+        .select('user_id, rating')
+        .in('user_id', visibleUserIds);
+
+      // Calculate distances and combine data (only for visible users)
+      const nearby: NearbyUser[] = signals
+        .filter(signal => visibleUserIds.includes(signal.user_id))
+        .map(signal => {
+          const profile = profiles?.find(p => p.id === signal.user_id);
+          const stats = statsData?.find(s => s.user_id === signal.user_id);
+          
+          const distance = calculateDistance(
+            position.latitude,
+            position.longitude,
+            Number(signal.latitude),
+            Number(signal.longitude)
+          );
+
+          return {
+            id: signal.user_id,
+            firstName: profile?.first_name || 'Anonyme',
+            signal: signal.signal_type as SignalType,
+            activity: signal.activity as ActivityType,
+            distance,
+            activeSince: new Date(signal.started_at),
+            rating: stats?.rating ? Number(stats.rating) : 5.0,
+            position: {
+              latitude: Number(signal.latitude),
+              longitude: Number(signal.longitude),
+            },
+          };
+        })
+        .filter(u => u.distance <= maxDistance)
+        .sort((a, b) => a.distance - b.distance);
+
+      setNearbyUsers(nearby);
+    } catch (err) {
+      console.error('Error in fetchNearbyUsers:', err);
     }
-
-    if (!signals || signals.length === 0) {
-      setNearbyUsers([]);
-      return;
-    }
-
-    // Get profiles for these users using secure function (avoids exposing emails)
-    const userIds = signals.map(s => s.user_id);
-    const { data: profiles } = await supabase
-      .rpc('get_public_profiles', { profile_ids: userIds });
-
-    const { data: statsData } = await supabase
-      .from('user_stats')
-      .select('user_id, rating')
-      .in('user_id', userIds);
-
-    // Calculate distances and combine data
-    const nearby: NearbyUser[] = signals
-      .map(signal => {
-        const profile = profiles?.find(p => p.id === signal.user_id);
-        const stats = statsData?.find(s => s.user_id === signal.user_id);
-        
-        const distance = calculateDistance(
-          position.latitude,
-          position.longitude,
-          Number(signal.latitude),
-          Number(signal.longitude)
-        );
-
-        return {
-          id: signal.user_id,
-          firstName: profile?.first_name || 'Anonyme',
-          signal: signal.signal_type as SignalType,
-          activity: signal.activity as ActivityType,
-          distance,
-          activeSince: new Date(signal.started_at),
-          rating: stats?.rating ? Number(stats.rating) : 5.0,
-          position: {
-            latitude: Number(signal.latitude),
-            longitude: Number(signal.longitude),
-          },
-        };
-      })
-      .filter(u => u.distance <= maxDistance)
-      .sort((a, b) => a.distance - b.distance);
-
-    setNearbyUsers(nearby);
   }, [user, position]);
 
   // Haversine distance calculation
