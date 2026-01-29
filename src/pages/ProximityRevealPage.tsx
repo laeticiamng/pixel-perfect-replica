@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Star, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { IcebreakerCard } from '@/components/IcebreakerCard';
+import { PageLayout } from '@/components/PageLayout';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
 import { ACTIVITIES, ICEBREAKERS } from '@/types/signal';
@@ -45,7 +46,7 @@ export default function ProximityRevealPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-radial flex items-center justify-center px-6">
+      <PageLayout className="flex items-center justify-center px-6">
         <div className="text-center">
           <div className="text-6xl mb-4">👻</div>
           <p className="text-foreground font-medium mb-2">Utilisateur non trouvé</p>
@@ -59,7 +60,7 @@ export default function ProximityRevealPage() {
             Retour à la carte
           </Button>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -104,7 +105,7 @@ export default function ProximityRevealPage() {
 
   if (showFeedback) {
     return (
-      <div className="min-h-screen bg-gradient-radial flex flex-col items-center justify-center px-6 animate-fade-in">
+      <PageLayout className="flex flex-col items-center justify-center px-6 animate-fade-in">
         <h2 className="text-2xl font-bold text-foreground mb-8">
           Comment c'était ?
         </h2>
@@ -131,13 +132,13 @@ export default function ProximityRevealPage() {
         >
           Passer
         </Button>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className={cn(
-      "min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col animate-slide-up",
+    <PageLayout className={cn(
+      "flex flex-col animate-slide-up",
       isVibrating && "animate-pulse"
     )}>
       {/* Header */}
@@ -223,6 +224,6 @@ export default function ProximityRevealPage() {
           Pas maintenant
         </Button>
       </div>
-    </div>
+    </PageLayout>
   );
 }
