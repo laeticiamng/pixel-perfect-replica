@@ -6,6 +6,7 @@ import { ACTIVITIES } from '@/types/signal';
 import { Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { ProfileCardSkeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -109,14 +110,17 @@ export default function PeopleMetPage() {
   return (
     <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
-      <header className="safe-top px-6 py-4 flex items-center gap-4">
-        <button
-          onClick={() => navigate('/profile')}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
-        >
-          <ArrowLeft className="h-6 w-6 text-foreground" />
-        </button>
-        <h1 className="text-xl font-bold text-foreground">Personnes rencontrées</h1>
+      <header className="safe-top px-6 py-4">
+        <div className="flex items-center gap-4 mb-2">
+          <button
+            onClick={() => navigate('/profile')}
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
+          >
+            <ArrowLeft className="h-6 w-6 text-foreground" />
+          </button>
+          <h1 className="text-xl font-bold text-foreground">Personnes rencontrées</h1>
+        </div>
+        <Breadcrumbs className="px-2" />
       </header>
 
       <div className="px-6 space-y-4">

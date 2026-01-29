@@ -2,7 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout, AnimatedSection } from '@/components/PageLayout';
+import { SwipeIndicator } from '@/components/SwipeIndicator';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -22,6 +24,7 @@ interface MenuSection {
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { profile, stats, signOut } = useAuth();
+  const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
 
   const handleLogout = async () => {
     await signOut();
@@ -174,6 +177,11 @@ export default function ProfilePage() {
         <p className="text-center text-xs text-gray-500 py-4 font-medium">
           SIGNAL v1.0.0
         </p>
+      </div>
+
+      {/* Swipe Indicator */}
+      <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none">
+        <SwipeIndicator currentIndex={currentRouteIndex} totalRoutes={totalRoutes} />
       </div>
 
       <BottomNav />
