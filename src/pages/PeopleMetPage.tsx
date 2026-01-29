@@ -162,13 +162,23 @@ export default function PeopleMetPage() {
 
         {/* People List */}
         {filteredPeople.length === 0 && peopleMet.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16">
-            <UserCircle className="h-16 w-16 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground text-center">
-              Tu n'as pas encore rencontré de personnes.
-              <br />
-              Active ton signal et va à la rencontre !
+          <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 rounded-full bg-coral/20 blur-xl animate-breathing" />
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-coral/20 to-coral/10 flex items-center justify-center relative">
+                <UserCircle className="h-12 w-12 text-coral" />
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Aucune rencontre pour l'instant</h3>
+            <p className="text-muted-foreground text-center mb-6 max-w-xs">
+              Active ton signal sur la carte et va à la rencontre de nouvelles personnes !
             </p>
+            <button
+              onClick={() => navigate('/map')}
+              className="px-6 py-3 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 glow-coral"
+            >
+              Activer mon signal
+            </button>
           </div>
         ) : filteredPeople.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">

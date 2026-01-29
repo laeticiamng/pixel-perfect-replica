@@ -65,11 +65,14 @@ export default function HelpPage() {
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
           onClick={() => navigate('/profile')}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
+          className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
         <h1 className="text-xl font-bold text-foreground">Aide & FAQ</h1>
+        <span className="ml-auto px-2 py-1 text-xs font-medium bg-coral/20 text-coral rounded-lg">
+          {faqs.length} questions
+        </span>
       </header>
 
       <div className="px-6 space-y-6">

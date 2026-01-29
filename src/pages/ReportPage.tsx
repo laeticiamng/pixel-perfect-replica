@@ -68,22 +68,35 @@ export default function ReportPage() {
       </header>
 
       <div className="px-6 py-8">
+        {/* Info Banner */}
+        <div className="glass rounded-xl p-4 mb-6 border-2 border-signal-yellow/30 animate-fade-in">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-signal-yellow/20">
+              <AlertTriangle className="h-5 w-5 text-signal-yellow" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Ton signalement sera traité avec attention et confidentialité
+            </p>
+          </div>
+        </div>
+
         {/* Report Type Selection */}
         <div className="mb-6">
           <label className="text-sm font-medium text-foreground block mb-3">
             Type de signalement
           </label>
           <div className="grid grid-cols-2 gap-3">
-            {reportTypes.map((type) => (
+            {reportTypes.map((type, idx) => (
               <button
                 key={type.id}
                 onClick={() => setReportType(type.id)}
                 className={cn(
-                  'glass rounded-xl p-4 text-left transition-all',
+                  'glass rounded-xl p-4 text-left transition-all animate-slide-up',
                   reportType === type.id
                     ? 'border-2 border-coral glow-coral'
                     : 'border-2 border-transparent hover:border-muted'
                 )}
+                style={{ animationDelay: `${idx * 0.05}s` }}
               >
                 <span className="text-2xl mb-2 block">{type.emoji}</span>
                 <span className="text-sm font-medium text-foreground">{type.label}</span>

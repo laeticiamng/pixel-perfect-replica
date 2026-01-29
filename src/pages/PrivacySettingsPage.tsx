@@ -51,8 +51,21 @@ export default function PrivacySettingsPage() {
       </header>
 
       <div className="px-6 space-y-6">
+        {/* Privacy Score Banner */}
+        <div className="glass rounded-xl p-4 border-2 border-signal-green/30 animate-fade-in">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-signal-green/20">
+              <Shield className="h-5 w-5 text-signal-green" />
+            </div>
+            <div>
+              <p className="font-medium text-foreground">Protection maximale</p>
+              <p className="text-sm text-muted-foreground">Tes données sont sécurisées et chiffrées</p>
+            </div>
+          </div>
+        </div>
+
         {/* Ghost Mode */}
-        <div className="glass rounded-xl p-4">
+        <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.05s' }}>
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4">
               <div className="p-2 rounded-lg bg-deep-blue-light text-muted-foreground">

@@ -82,19 +82,35 @@ export default function NotificationsSettingsPage() {
       </header>
 
       <div className="px-6 space-y-6">
+        {/* Status Banner */}
+        <div className="glass rounded-xl p-4 border-2 border-signal-green/30 animate-fade-in">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-signal-green/20">
+              <Bell className="h-5 w-5 text-signal-green" />
+            </div>
+            <div>
+              <p className="font-medium text-foreground">Notifications actives</p>
+              <p className="text-sm text-muted-foreground">
+                {[settings.push_notifications, settings.sound_notifications, settings.proximity_vibration].filter(Boolean).length}/3 paramètres activés
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Active Settings */}
         <div>
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             Paramètres actifs
           </h2>
           <div className="space-y-3">
-            {notificationSettings.map((setting) => (
+            {notificationSettings.map((setting, idx) => (
               <div
                 key={setting.label}
-                className="glass rounded-xl p-4 flex items-center justify-between gap-4"
+                className="glass rounded-xl p-4 flex items-center justify-between gap-4 animate-slide-up"
+                style={{ animationDelay: `${idx * 0.05}s` }}
               >
                 <div className="flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-deep-blue-light text-muted-foreground">
+                  <div className={`p-2 rounded-lg ${setting.value ? 'bg-coral/20 text-coral' : 'bg-deep-blue-light text-muted-foreground'} transition-colors`}>
                     {setting.icon}
                   </div>
                   <div>

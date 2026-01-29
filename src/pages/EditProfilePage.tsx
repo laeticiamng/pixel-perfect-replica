@@ -159,18 +159,20 @@ export default function EditProfilePage() {
         <div className="w-10" /> {/* Spacer */}
       </header>
 
-      <div className="px-6 py-8">
+      <div className="px-6 py-8 animate-fade-in">
         {/* Avatar */}
         <div className="flex justify-center mb-8">
           <div className="relative">
+            {/* Glow effect */}
+            <div className="absolute inset-0 rounded-full bg-coral/30 blur-xl animate-breathing" />
             {/* Avatar display */}
             <button
               onClick={handleAvatarClick}
               disabled={isUploading}
               className={cn(
-                "w-28 h-28 rounded-full flex items-center justify-center glow-coral overflow-hidden transition-all",
+                "w-28 h-28 rounded-full flex items-center justify-center glow-coral overflow-hidden transition-all relative hover:scale-105 active:scale-95",
                 isUploading && "opacity-50",
-                avatarUrl ? "" : "bg-coral"
+                avatarUrl ? "" : "bg-gradient-to-br from-coral to-coral-dark"
               )}
             >
               {isUploading ? (
