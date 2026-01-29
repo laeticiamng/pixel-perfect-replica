@@ -9,10 +9,12 @@ import { ActivityFilter } from '@/components/ActivityFilter';
 import { ExpirationTimer } from '@/components/ExpirationTimer';
 import { EmergencyButton } from '@/components/EmergencyButton';
 import { LocationDescriptionInput } from '@/components/LocationDescriptionInput';
+import { SearchingIndicator } from '@/components/SearchingIndicator';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useUserSettings } from '@/hooks/useUserSettings';
+import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
 import { ActivityType, ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -32,6 +34,17 @@ export default function MapPage() {
     deactivateSignal,
     fetchNearbyUsers,
   } = useActiveSignal();
+
+  // Setup realtime notifications for new nearby users
+  const { initializeKnownUsers } = useNearbyNotifications({
+    isActive,
+    onNewUserNearby: useCallback((user) => {
+      // Refresh the list when new user arrives
+      if (position) {
+        fetchNearbyUsers(settings.visibility_distance);
+      }
+    }, [position, fetchNearbyUsers, settings.visibility_distance]),
+  });
   
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityType | null>(null);
@@ -54,6 +67,13 @@ export default function MapPage() {
       fetchNearbyUsers(settings.visibility_distance);
     }
   }, [position, fetchNearbyUsers, settings.visibility_distance]);
+
+  // Initialize known users when nearby list changes
+  useEffect(() => {
+    if (isActive && nearbyUsers.length > 0) {
+      initializeKnownUsers(nearbyUsers.map(u => u.id));
+    }
+  }, [isActive, nearbyUsers, initializeKnownUsers]);
 
   // Auto-refresh every 30 seconds
   useEffect(() => {
@@ -312,6 +332,16 @@ export default function MapPage() {
           </div>
         )}
       </header>
+
+      {/* Searching Indicator - shows when active but no one nearby */}
+      {isActive && (
+        <div className="px-6 mb-4">
+          <SearchingIndicator 
+            isSearching={isActive} 
+            nearbyCount={filteredNearbyUsers.length}
+          />
+        </div>
+      )}
 
       {/* Radar Map */}
       <div className="flex-1 flex items-center justify-center px-6">
