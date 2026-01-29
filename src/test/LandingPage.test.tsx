@@ -45,8 +45,8 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    // Updated tagline - use more specific selector for the main tagline paragraph
-    const tagline = getByText(/Vois qui est ouvert/);
+    // Updated tagline with explicit description
+    const tagline = getByText(/qui est ouvert/);
     expect(tagline).toBeInTheDocument();
   });
 
@@ -57,20 +57,32 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
     
-    expect(getByText('Commencer')).toBeInTheDocument();
+    expect(getByText('Commencer gratuitement')).toBeInTheDocument();
     expect(getByText("J'ai déjà un compte")).toBeInTheDocument();
   });
 
-  it('should render 3 feature cards', () => {
+  it('should render 4 step cards explaining how it works', () => {
     const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(getByText('Dis ce que tu fais')).toBeInTheDocument();
-    expect(getByText('Détecte qui est dispo')).toBeInTheDocument();
-    expect(getByText('Approche naturellement')).toBeInTheDocument();
+    // New 4-step explanation
+    expect(getByText('Choisis ton activité')).toBeInTheDocument();
+    expect(getByText('Active ton signal')).toBeInTheDocument();
+    expect(getByText('Reçois une notif')).toBeInTheDocument();
+    expect(getByText('Approche facilement')).toBeInTheDocument();
+  });
+
+  it('should render the concrete example section', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    expect(getByText('Exemple concret')).toBeInTheDocument();
   });
 
   it('should render footer with terms link', () => {
@@ -81,5 +93,15 @@ describe('LandingPage', () => {
     );
     
     expect(getByText(/conditions d'utilisation/)).toBeInTheDocument();
+  });
+
+  it('should render the value proposition', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    expect(getByText(/approche ceux qui veulent être approchés/i)).toBeInTheDocument();
   });
 });
