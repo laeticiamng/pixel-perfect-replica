@@ -2,8 +2,10 @@ import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Users, Activity, TrendingUp, Calendar,
-  BarChart3, Clock, Eye, MousePointer, AlertTriangle, Shield
+  BarChart3, Clock, Eye, MousePointer, Shield, Bell
 } from 'lucide-react';
+import { AlertPreferencesCard } from '@/components/admin/AlertPreferencesCard';
+import { AlertHistoryCard } from '@/components/admin/AlertHistoryCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { PageLayout } from '@/components/PageLayout';
@@ -322,10 +324,14 @@ export default function AdminDashboardPage() {
 
         {/* Tabs for different analytics views */}
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-muted/30">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/30">
             <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
             <TabsTrigger value="events">Événements</TabsTrigger>
             <TabsTrigger value="pages">Pages</TabsTrigger>
+            <TabsTrigger value="alerts" className="flex items-center gap-1">
+              <Bell className="h-3 w-3" />
+              Alertes
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6 mt-6">
@@ -542,6 +548,13 @@ export default function AdminDashboardPage() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="alerts" className="space-y-6 mt-6">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <AlertPreferencesCard />
+              <AlertHistoryCard />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
