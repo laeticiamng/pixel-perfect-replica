@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
@@ -382,8 +383,8 @@ export default function OnboardingPage() {
   const totalSteps = 3;
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col px-6 py-8 safe-top safe-bottom">
-      <div className="max-w-md mx-auto w-full flex-1 flex flex-col">
+    <PageLayout className="flex flex-col px-6 py-8 safe-top safe-bottom">
+      <div className="max-w-md mx-auto w-full flex-1 flex flex-col relative z-10">
         {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-8">
           {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
@@ -430,6 +431,6 @@ export default function OnboardingPage() {
           )}
         </Button>
       </div>
-    </div>
+    </PageLayout>
   );
 }

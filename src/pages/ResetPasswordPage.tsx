@@ -4,6 +4,7 @@ import { Lock, Loader2, Check, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
+import { PageLayout } from '@/components/PageLayout';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -75,7 +76,7 @@ export default function ResetPasswordPage() {
 
   if (!isValidSession) {
     return (
-      <div className="min-h-screen bg-gradient-radial flex flex-col items-center justify-center px-6">
+      <PageLayout className="flex flex-col items-center justify-center px-6">
         <div className="text-6xl mb-6">🔒</div>
         <h1 className="text-2xl font-bold text-foreground mb-4 text-center">
           Lien expiré
@@ -89,13 +90,13 @@ export default function ResetPasswordPage() {
         >
           Nouveau lien
         </Button>
-      </div>
+      </PageLayout>
     );
   }
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-radial flex flex-col items-center justify-center px-6">
+      <PageLayout className="flex flex-col items-center justify-center px-6">
         <div className="w-20 h-20 rounded-full bg-signal-green/20 flex items-center justify-center mb-6 animate-pulse-signal">
           <Check className="h-10 w-10 text-signal-green" />
         </div>
@@ -105,12 +106,12 @@ export default function ResetPasswordPage() {
         <p className="text-muted-foreground text-center">
           Redirection en cours...
         </p>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col px-6 py-8 safe-bottom">
+    <PageLayout className="flex flex-col px-6 py-8 safe-bottom">
       {/* Content */}
       <div className="flex-1 flex flex-col justify-center">
         <div className="w-16 h-16 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6">
@@ -179,6 +180,6 @@ export default function ResetPasswordPage() {
           </Button>
         </form>
       </div>
-    </div>
+    </PageLayout>
   );
 }

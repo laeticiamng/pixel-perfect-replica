@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, RefreshCw, Trash2, Database, Wifi, User, Clock, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
@@ -83,7 +84,7 @@ export default function DiagnosticsPage() {
   if (!isDev) return null;
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+    <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
@@ -339,6 +340,6 @@ export default function DiagnosticsPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }
