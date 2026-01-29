@@ -1,6 +1,7 @@
 # 📡 Signal - Connecte-toi IRL
 
-**Signal** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton signal pour indiquer que tu es ouvert aux rencontres, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
+**Signal** est une application mobile-first qui permet aux étudiants et jeunes actifs de se rejoindre spontanément dans la vraie vie. 
+Active ton signal pour indiquer que tu es ouvert aux rencontres, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
 
 ![Signal App](https://img.shields.io/badge/React-18.3-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue) ![Supabase](https://img.shields.io/badge/Supabase-Cloud-green) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-cyan)
 
