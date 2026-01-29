@@ -42,6 +42,7 @@ export { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 export { ProtectedRoute } from './ProtectedRoute';
 export { SwipeIndicator } from './SwipeIndicator';
 export { ThemeToggle } from './ThemeToggle';
+export { CommandPalette } from './CommandPalette';
 
 // Backward compatibility aliases (deprecated - use from subfolders)
 export { ActivityFilter } from './radar';
