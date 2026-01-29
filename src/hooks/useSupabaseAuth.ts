@@ -9,6 +9,7 @@ interface Profile {
   first_name: string;
   avatar_url: string | null;
   university: string | null;
+  is_premium: boolean;
   created_at: string;
   updated_at: string;
 }

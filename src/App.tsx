@@ -18,6 +18,7 @@ import {
   MapPage,
   ProximityRevealPage,
   AdminDashboardPage,
+  PremiumPage,
   NotFound,
   // Auth
   OnboardingPage,
@@ -187,6 +188,11 @@ function AnimatedRoutes() {
           <Route path="/data-export" element={
             <ProtectedRoute>
               <DataExportPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/premium" element={
+            <ProtectedRoute>
+              <PremiumPage />
             </ProtectedRoute>
           } />
           <Route path="/events" element={

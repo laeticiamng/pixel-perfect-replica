@@ -32,6 +32,7 @@ export { useAppFeedback } from './useAppFeedback';
 export { useGdprExport } from './useGdprExport';
 export { useNearbyNotifications } from './useNearbyNotifications';
 export { usePushNotifications } from './usePushNotifications';
+export { usePushSubscription } from './usePushSubscription';
 export { useSystemStats } from './useSystemStats';
 export { useVerificationBadges } from './useVerificationBadges';
 export { useSessionQuota } from './useSessionQuota';
