@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useInteractions } from '@/hooks/useInteractions';
 import { PageLayout } from '@/components/PageLayout';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { StatCardSkeleton, ChartSkeleton } from '@/components/ui/skeleton';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell, PieChart, Pie } from 'recharts';
 
@@ -208,15 +209,18 @@ export default function StatisticsPage() {
   return (
     <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
-      <header className="safe-top px-6 py-4 flex items-center gap-4">
-        <button
-          onClick={() => navigate('/profile')}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
-          aria-label="Retour au profil"
-        >
-          <ArrowLeft className="h-6 w-6 text-foreground" />
-        </button>
-        <h1 className="text-xl font-bold text-foreground">Mes statistiques</h1>
+      <header className="safe-top px-6 py-4">
+        <div className="flex items-center gap-4 mb-2">
+          <button
+            onClick={() => navigate('/profile')}
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
+            aria-label="Retour au profil"
+          >
+            <ArrowLeft className="h-6 w-6 text-foreground" />
+          </button>
+          <h1 className="text-xl font-bold text-foreground">Mes statistiques</h1>
+        </div>
+        <Breadcrumbs className="px-2" />
       </header>
 
       <div className="px-6 space-y-6">

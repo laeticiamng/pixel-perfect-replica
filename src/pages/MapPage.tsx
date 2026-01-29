@@ -10,12 +10,14 @@ import { ExpirationTimer } from '@/components/ExpirationTimer';
 import { EmergencyButton } from '@/components/EmergencyButton';
 import { LocationDescriptionInput } from '@/components/LocationDescriptionInput';
 import { SearchingIndicator } from '@/components/SearchingIndicator';
+import { SwipeIndicator } from '@/components/SwipeIndicator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
+import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { ActivityType, ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -47,6 +49,7 @@ export default function MapPage() {
   const { profile, user } = useAuth();
   const { position, startWatching, lastUpdated } = useLocationStore();
   const { settings } = useUserSettings();
+  const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { 
     isActive, 
     mySignal,
@@ -550,6 +553,11 @@ export default function MapPage() {
       {/* Emergency Button - Fixed position */}
       <div className="fixed bottom-32 right-4 z-40">
         <EmergencyButton onTrigger={handleEmergencyTrigger} />
+      </div>
+
+      {/* Swipe Indicator */}
+      <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none">
+        <SwipeIndicator currentIndex={currentRouteIndex} totalRoutes={totalRoutes} />
       </div>
 
       <BottomNav />

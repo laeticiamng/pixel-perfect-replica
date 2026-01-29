@@ -2,18 +2,21 @@ import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Loc
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
+import { SwipeIndicator } from '@/components/SwipeIndicator';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { DeleteAccountDialog } from '@/components/DeleteAccountDialog';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useUserSettings } from '@/hooks/useUserSettings';
+import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
+  const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const {
     settings,
     setGhostMode,
@@ -271,6 +274,11 @@ export default function SettingsPage() {
           <DeleteAccountDialog />
         </div>
       </motion.div>
+      </div>
+
+      {/* Swipe Indicator */}
+      <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none">
+        <SwipeIndicator currentIndex={currentRouteIndex} totalRoutes={totalRoutes} />
       </div>
 
       <BottomNav />
