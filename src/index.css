@@ -170,10 +170,24 @@
       radial-gradient(ellipse at center, hsl(var(--deep-blue-light)) 0%, hsl(var(--midnight)) 70%);
   }
   
+  /* Light mode gradient - cleaner, brighter feel */
+  .light .bg-gradient-radial {
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% 0%, hsl(var(--coral) / 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 100% 80% at 50% 100%, hsl(var(--purple-accent) / 0.05) 0%, transparent 40%),
+      hsl(var(--background));
+  }
+  
   .bg-gradient-radial-subtle {
     background: 
       radial-gradient(ellipse at top, hsl(var(--purple-accent) / 0.1) 0%, transparent 50%),
       radial-gradient(ellipse at center, hsl(var(--deep-blue) / 0.5) 0%, transparent 70%);
+  }
+  
+  .light .bg-gradient-radial-subtle {
+    background: 
+      radial-gradient(ellipse at top, hsl(var(--coral) / 0.05) 0%, transparent 50%),
+      hsl(var(--background));
   }
   
   /* Enhanced glassmorphism */
@@ -190,6 +204,21 @@
     box-shadow: 
       0 8px 32px -2px hsl(240 50% 3% / 0.5),
       inset 0 1px 0 0 hsl(0 0% 100% / 0.08);
+  }
+  
+  /* Light mode glassmorphism */
+  .light .glass {
+    @apply bg-card/90 backdrop-blur-xl border border-border;
+    box-shadow: 
+      0 4px 24px -1px hsl(220 15% 50% / 0.08),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.5);
+  }
+  
+  .light .glass-strong {
+    @apply bg-card/95 backdrop-blur-2xl border border-border;
+    box-shadow: 
+      0 8px 32px -2px hsl(220 15% 50% / 0.12),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.6);
   }
   
   /* Enhanced glow effects */
