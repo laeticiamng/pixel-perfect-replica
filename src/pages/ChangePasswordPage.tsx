@@ -41,7 +41,28 @@ export default function ChangePasswordPage() {
     setIsLoading(true);
 
     try {
-      // Update password
+      // Get current user email
+      const { data: userData } = await supabase.auth.getUser();
+      const email = userData?.user?.email;
+      
+      if (!email) {
+        toast.error('Session expirée, veuillez vous reconnecter');
+        navigate('/');
+        return;
+      }
+
+      // Verify current password by re-authenticating
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password: currentPassword,
+      });
+
+      if (signInError) {
+        toast.error('Mot de passe actuel incorrect');
+        return;
+      }
+
+      // Update to new password
       const { error } = await supabase.auth.updateUser({
         password: newPassword,
       });
