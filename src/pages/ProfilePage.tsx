@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { PageLayout, AnimatedSection } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -63,7 +64,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-28">
+    <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto w-full">
         {/* Profile Header */}
         <header className="safe-top px-6 py-8">
@@ -177,6 +178,6 @@ export default function ProfilePage() {
 
       <BottomNav />
       </div>
-    </div>
+    </PageLayout>
   );
 }

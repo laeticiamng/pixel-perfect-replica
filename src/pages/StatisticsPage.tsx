@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useInteractions } from '@/hooks/useInteractions';
+import { PageLayout } from '@/components/PageLayout';
 import { StatCardSkeleton, ChartSkeleton } from '@/components/ui/skeleton';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell, PieChart, Pie } from 'recharts';
 
@@ -161,7 +162,7 @@ export default function StatisticsPage() {
   };
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+    <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
@@ -387,6 +388,6 @@ export default function StatisticsPage() {
           </p>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }

@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, User, Bell, Shield } from 'lucide-react';
+import { PageLayout } from '@/components/PageLayout';
 
 export default function PrivacyPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+    <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
@@ -141,6 +142,6 @@ export default function PrivacyPage() {
           © 2026 SIGNAL. Tous droits réservés.
         </p>
       </div>
-    </div>
+    </PageLayout>
   );
 }

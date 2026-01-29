@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
 import { firstNameSchema, universitySchema } from '@/lib/validation';
+import { PageLayout } from '@/components/PageLayout';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -179,7 +180,7 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+    <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center justify-between">
         <button
@@ -332,6 +333,6 @@ export default function EditProfilePage() {
           </Button>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }

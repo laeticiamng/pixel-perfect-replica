@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useReports } from '@/hooks/useReports';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
+import { PageLayout } from '@/components/PageLayout';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -65,7 +66,7 @@ export default function ReportPage() {
   };
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+    <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
@@ -154,6 +155,6 @@ export default function ReportPage() {
           )}
         </Button>
       </div>
-    </div>
+    </PageLayout>
   );
 }
