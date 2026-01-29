@@ -1,39 +1,63 @@
 import { useNavigate } from 'react-router-dom';
-import { MapPin, MessageCircle, Bell, Users } from 'lucide-react';
+import { MapPin, Users, Sparkles, Heart, CheckCircle2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const steps = [
+const useCases = [
   {
-    number: '1',
     emoji: '📚',
-    title: 'Choisis ton activité',
-    description: 'Réviser, manger, bosser, sport...',
+    title: 'Bibliothèque',
+    scenario: [
+      { step: 1, text: 'Tu es à la BU → tu actives "Réviser"' },
+      { step: 2, text: 'Marie arrive → elle active aussi "Réviser"' },
+      { step: 3, text: 'Notif : "Marie est ouverte pour réviser 📚"' },
+    ],
+    result: 'Pas d\'interruption, pas de malaise',
   },
   {
-    number: '2',
-    emoji: '📍',
-    title: 'Active ton signal',
-    description: 'Montre que tu es ouvert à l\'interaction',
+    emoji: '🏋️',
+    title: 'Sport',
+    scenario: [
+      { step: 1, text: 'Tu arrives à la salle → "S\'entraîner"' },
+      { step: 2, text: 'Alex active "S\'entraîner – duo"' },
+      { step: 3, text: 'Notif : "Alex est ouvert pour s\'entraîner 💪"' },
+    ],
+    result: 'Fini le "je dérange ou pas ?"',
   },
   {
-    number: '3',
-    emoji: '🔔',
-    title: 'Reçois une notif',
-    description: 'Dès que quelqu\'un arrive près de toi',
+    emoji: '☕',
+    title: 'Café',
+    scenario: [
+      { step: 1, text: 'Tu t\'installes → "Discuter"' },
+      { step: 2, text: 'Léa active "Discuter" dans le même café' },
+      { step: 3, text: 'Notif : "Léa est ouverte pour discuter ☕"' },
+    ],
+    result: 'Échange simple, sans pression',
   },
   {
-    number: '4',
-    emoji: '👋',
-    title: 'Approche facilement',
-    description: 'Tu sais déjà ce qu\'il/elle fait !',
+    emoji: '💻',
+    title: 'Coworking',
+    scenario: [
+      { step: 1, text: 'Tu arrives → "Travailler / Brainstorming"' },
+      { step: 2, text: 'Sam active "Brainstorming"' },
+      { step: 3, text: 'Notif : "Sam est ouvert pour brainstormer 💡"' },
+    ],
+    result: 'Networking utile, pas de small talk',
   },
+];
+
+const differentiators = [
+  { old: 'Basées sur le profil', new: 'Basé sur l\'intention' },
+  { old: 'Déconnectées du réel', new: 'Ancrées dans le lieu' },
+  { old: 'Approche intrusive', new: 'Consentement explicite' },
+  { old: 'Swipe / jugement', new: 'Action / contexte' },
 ];
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [activeCase, setActiveCase] = useState(0);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -41,19 +65,24 @@ export default function LandingPage() {
     }
   }, [isAuthenticated, navigate]);
 
+  // Auto-rotate use cases
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveCase((prev) => (prev + 1) % useCases.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial">
       {/* Hero Section */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 max-w-2xl mx-auto w-full">
-        {/* Animated Logo - Custom SVG */}
+      <section className="flex flex-col items-center justify-center px-6 py-12 max-w-2xl mx-auto w-full">
+        {/* Animated Logo */}
         <div className="animate-float mb-6 relative">
-          {/* Multiple glow rings */}
           <div className="absolute inset-0 rounded-full bg-coral/20 animate-ripple" />
           <div className="absolute inset-0 rounded-full bg-coral/15 animate-ripple" style={{ animationDelay: '0.4s' }} />
-          <div className="absolute inset-0 rounded-full bg-coral/10 animate-ripple" style={{ animationDelay: '0.8s' }} />
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-coral/40 to-coral/15 flex items-center justify-center glow-coral relative shadow-medium">
             <div className="absolute inset-1.5 rounded-full bg-gradient-to-br from-deep-blue via-deep-blue-light to-midnight" />
-            {/* Custom SVG Pin Icon */}
             <svg 
               className="relative z-10 w-12 h-12 text-coral drop-shadow-[0_0_12px_hsl(var(--coral)/0.8)]" 
               viewBox="0 0 24 24" 
@@ -64,75 +93,55 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Title with gradient */}
-        <h1 className="text-4xl font-extrabold tracking-tight mb-3 bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent animate-fade-in">
+        {/* Title */}
+        <h1 className="text-4xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent animate-fade-in">
           SIGNAL
         </h1>
 
-        {/* Subtitle - More explicit */}
-        <p className="text-center text-base text-muted-foreground max-w-sm mb-2 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          L'app qui te dit <span className="text-foreground font-semibold">qui est ouvert</span> à discuter autour de toi.
+        {/* Main tagline */}
+        <p className="text-center text-lg text-foreground font-medium max-w-md mb-3 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          Signale ce que tu es ouvert·e à faire, <span className="text-coral">ici et maintenant</span>.
         </p>
         
-        {/* Value proposition */}
-        <div className="glass-strong rounded-full px-4 py-2 mb-8 animate-fade-in" style={{ animationDelay: '0.15s' }}>
-          <p className="text-sm text-coral font-medium flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            Fini l'hésitation : approche ceux qui veulent être approchés
-          </p>
-        </div>
+        <p className="text-center text-sm text-muted-foreground max-w-sm mb-6 animate-fade-in" style={{ animationDelay: '0.15s' }}>
+          Zéro approche gênante. Zéro interruption.<br />
+          Juste des <span className="text-foreground font-semibold">intentions alignées</span>, au bon endroit, au bon moment.
+        </p>
 
-        {/* How it works - Step by step */}
-        <div className="w-full max-w-sm md:max-w-md mb-8">
-          <h2 className="text-center text-xs uppercase tracking-wider text-muted-foreground mb-4 font-semibold">
-            Comment ça marche ?
-          </h2>
-          
-          <div className="grid grid-cols-2 gap-3">
-            {steps.map((step, index) => (
-              <div
-                key={index}
-                className="glass rounded-xl p-4 animate-slide-up hover:scale-[1.02] transition-all duration-300"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-coral/20 flex items-center justify-center border border-coral/50">
-                    <span className="text-lg">{step.emoji}</span>
-                  </div>
-                  <span className="text-xs font-bold text-coral">Étape {step.number}</span>
-                </div>
-                <h3 className="font-bold text-foreground text-sm mb-1">{step.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Use case example */}
-        <div className="w-full max-w-sm md:max-w-md mb-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <div className="glass-strong rounded-2xl p-4 border border-coral/20">
-            <p className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
-              <span className="text-lg">💡</span>
-              <span className="font-medium text-foreground">Exemple concret</span>
-            </p>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Tu es à la BU en train de réviser. Tu actives ton signal <span className="text-signal-green font-semibold">« Réviser »</span>. 
-              Marie arrive, active aussi son signal. Tu reçois une notif : 
-              <span className="text-coral font-semibold"> "Marie vient d'arriver ! 📚"</span>
-            </p>
-            <p className="text-sm text-foreground mt-2 font-medium">
-              → Tu sais qu'elle révise aussi. L'approche devient naturelle !
-            </p>
+        {/* Concept en une phrase */}
+        <div className="w-full max-w-sm glass-strong rounded-2xl p-4 mb-8 border border-coral/20 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <div className="grid grid-cols-2 gap-3 text-center">
+            <div className="space-y-1">
+              <div className="text-2xl">🎯</div>
+              <p className="text-xs text-muted-foreground">Tu actives</p>
+              <p className="text-sm font-semibold text-foreground">Une intention</p>
+            </div>
+            <div className="space-y-1">
+              <div className="text-2xl">📍</div>
+              <p className="text-xs text-muted-foreground">L'app détecte</p>
+              <p className="text-sm font-semibold text-foreground">Mêmes intentions</p>
+            </div>
+            <div className="space-y-1">
+              <div className="text-2xl">🔔</div>
+              <p className="text-xs text-muted-foreground">Tu reçois</p>
+              <p className="text-sm font-semibold text-foreground">Une notif douce</p>
+            </div>
+            <div className="space-y-1">
+              <div className="text-2xl">✨</div>
+              <p className="text-xs text-muted-foreground">L'approche devient</p>
+              <p className="text-sm font-semibold text-coral">Naturelle</p>
+            </div>
           </div>
         </div>
 
         {/* CTAs */}
-        <div className="w-full max-w-sm md:max-w-md space-y-3 animate-slide-up" style={{ animationDelay: '0.5s' }}>
+        <div className="w-full max-w-sm space-y-3 mb-10 animate-slide-up" style={{ animationDelay: '0.3s' }}>
           <Button
             onClick={() => navigate('/onboarding')}
             className="w-full h-14 text-lg font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-primary-foreground rounded-2xl animate-glow-pulse transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-medium"
           >
             Commencer gratuitement
+            <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           
           <Button
@@ -143,9 +152,104 @@ export default function LandingPage() {
             J'ai déjà un compte
           </Button>
         </div>
-      </div>
+      </section>
 
-      {/* Footer - Enhanced visibility */}
+      {/* Use Cases Section */}
+      <section className="px-6 py-8 max-w-2xl mx-auto w-full">
+        <h2 className="text-center text-xs uppercase tracking-wider text-muted-foreground mb-6 font-semibold flex items-center justify-center gap-2">
+          <Sparkles className="h-4 w-4 text-coral" />
+          Comment ça marche concrètement ?
+        </h2>
+
+        {/* Use case tabs */}
+        <div className="flex justify-center gap-2 mb-4">
+          {useCases.map((uc, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveCase(index)}
+              className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                activeCase === index
+                  ? 'bg-coral text-primary-foreground shadow-medium'
+                  : 'glass text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {uc.emoji}
+            </button>
+          ))}
+        </div>
+
+        {/* Active use case */}
+        <div className="glass-strong rounded-2xl p-5 border border-coral/20 animate-fade-in">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-3xl">{useCases[activeCase].emoji}</span>
+            <h3 className="text-xl font-bold text-foreground">{useCases[activeCase].title}</h3>
+          </div>
+          
+          <div className="space-y-3 mb-4">
+            {useCases[activeCase].scenario.map((step, i) => (
+              <div key={i} className="flex items-start gap-3 animate-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
+                <div className="w-6 h-6 rounded-full bg-coral/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-xs font-bold text-coral">{step.step}</span>
+                </div>
+                <p className="text-sm text-foreground leading-relaxed">{step.text}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 pt-3 border-t border-muted/30">
+            <CheckCircle2 className="h-4 w-4 text-signal-green" />
+            <p className="text-sm font-medium text-signal-green">{useCases[activeCase].result}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Differentiators Section */}
+      <section className="px-6 py-8 max-w-2xl mx-auto w-full">
+        <h2 className="text-center text-xs uppercase tracking-wider text-muted-foreground mb-6 font-semibold flex items-center justify-center gap-2">
+          <Heart className="h-4 w-4 text-coral" />
+          Ce qui nous différencie
+        </h2>
+
+        <div className="grid grid-cols-1 gap-3">
+          {differentiators.map((diff, index) => (
+            <div 
+              key={index} 
+              className="glass rounded-xl p-3 flex items-center justify-between animate-fade-in"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground line-through">{diff.old}</span>
+                <ArrowRight className="h-3 w-3 text-coral" />
+                <span className="text-sm font-semibold text-foreground">{diff.new}</span>
+              </div>
+              <CheckCircle2 className="h-4 w-4 text-signal-green" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Closing pitch */}
+      <section className="px-6 py-10 max-w-2xl mx-auto w-full text-center">
+        <div className="glass-strong rounded-2xl p-6 border border-coral/30">
+          <p className="text-lg text-muted-foreground mb-2">
+            « On ne connecte pas des profils.
+          </p>
+          <p className="text-xl font-bold text-coral">
+            On connecte des intentions, dans le monde réel. »
+          </p>
+        </div>
+
+        {/* Final CTA */}
+        <Button
+          onClick={() => navigate('/onboarding')}
+          className="mt-6 h-12 px-8 font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-primary-foreground rounded-full transition-all duration-300 hover:scale-105 shadow-medium"
+        >
+          Essayer maintenant
+          <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </section>
+
+      {/* Footer */}
       <footer className="py-6 text-center safe-bottom">
         <p className="text-sm text-muted-foreground px-4">
           En continuant, tu acceptes nos{' '}

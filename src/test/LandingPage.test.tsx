@@ -38,16 +38,72 @@ describe('LandingPage', () => {
     expect(getByText('SIGNAL')).toBeInTheDocument();
   });
 
-  it('should render the tagline', () => {
+  it('should render the main tagline', () => {
     const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    // Updated tagline with explicit description
-    const tagline = getByText(/qui est ouvert/);
-    expect(tagline).toBeInTheDocument();
+    expect(getByText(/Signale ce que tu es ouvert/)).toBeInTheDocument();
+  });
+
+  it('should render the value proposition', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    expect(getByText(/Zéro approche gênante/)).toBeInTheDocument();
+    expect(getByText(/intentions alignées/)).toBeInTheDocument();
+  });
+
+  it('should render the concept grid', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    expect(getByText('Une intention')).toBeInTheDocument();
+    expect(getByText('Mêmes intentions')).toBeInTheDocument();
+    expect(getByText('Une notif douce')).toBeInTheDocument();
+    expect(getByText('Naturelle')).toBeInTheDocument();
+  });
+
+  it('should render use case example', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    // First use case should be visible by default
+    expect(getByText('Bibliothèque')).toBeInTheDocument();
+  });
+
+  it('should render differentiators section', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    expect(getByText("Basé sur l'intention")).toBeInTheDocument();
+    expect(getByText('Consentement explicite')).toBeInTheDocument();
+    expect(getByText('Ancrées dans le lieu')).toBeInTheDocument();
+  });
+
+  it('should render the closing pitch', () => {
+    const { getByText } = render(
+      <BrowserRouter>
+        <LandingPage />
+      </BrowserRouter>
+    );
+    
+    expect(getByText(/On ne connecte pas des profils/)).toBeInTheDocument();
+    expect(getByText(/On connecte des intentions/)).toBeInTheDocument();
   });
 
   it('should render the CTA buttons', () => {
@@ -59,30 +115,7 @@ describe('LandingPage', () => {
     
     expect(getByText('Commencer gratuitement')).toBeInTheDocument();
     expect(getByText("J'ai déjà un compte")).toBeInTheDocument();
-  });
-
-  it('should render 4 step cards explaining how it works', () => {
-    const { getByText } = render(
-      <BrowserRouter>
-        <LandingPage />
-      </BrowserRouter>
-    );
-    
-    // New 4-step explanation
-    expect(getByText('Choisis ton activité')).toBeInTheDocument();
-    expect(getByText('Active ton signal')).toBeInTheDocument();
-    expect(getByText('Reçois une notif')).toBeInTheDocument();
-    expect(getByText('Approche facilement')).toBeInTheDocument();
-  });
-
-  it('should render the concrete example section', () => {
-    const { getByText } = render(
-      <BrowserRouter>
-        <LandingPage />
-      </BrowserRouter>
-    );
-    
-    expect(getByText('Exemple concret')).toBeInTheDocument();
+    expect(getByText('Essayer maintenant')).toBeInTheDocument();
   });
 
   it('should render footer with terms link', () => {
@@ -93,15 +126,6 @@ describe('LandingPage', () => {
     );
     
     expect(getByText(/conditions d'utilisation/)).toBeInTheDocument();
-  });
-
-  it('should render the value proposition', () => {
-    const { getByText } = render(
-      <BrowserRouter>
-        <LandingPage />
-      </BrowserRouter>
-    );
-    
-    expect(getByText(/approche ceux qui veulent être approchés/i)).toBeInTheDocument();
+    expect(getByText(/politique de confidentialité/)).toBeInTheDocument();
   });
 });
