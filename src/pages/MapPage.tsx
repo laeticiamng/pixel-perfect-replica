@@ -395,8 +395,8 @@ export default function MapPage() {
 
       {/* Activity Modal */}
       {showActivityModal && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-background/80 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-[500px] glass-strong rounded-t-3xl p-6 animate-slide-up">
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-background/80 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-[500px] glass-strong rounded-t-3xl p-6 pb-8 animate-slide-up">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-foreground">Tu fais quoi ?</h2>
               <button
