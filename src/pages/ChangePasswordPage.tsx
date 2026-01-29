@@ -76,14 +76,26 @@ export default function ChangePasswordPage() {
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
           onClick={() => navigate('/settings')}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
+          className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
         <h1 className="text-xl font-bold text-foreground">Changer le mot de passe</h1>
       </header>
 
-      <form onSubmit={handleSubmit} className="px-6 py-8 space-y-6">
+      <form onSubmit={handleSubmit} className="px-6 py-8 space-y-6 animate-slide-up">
+        {/* Security Info */}
+        <div className="glass rounded-xl p-4 border-2 border-signal-green/30">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-signal-green/20">
+              <Lock className="h-5 w-5 text-signal-green" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Utilise un mot de passe fort avec majuscules, minuscules et chiffres
+            </p>
+          </div>
+        </div>
+
         {/* Current Password */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground flex items-center gap-2">

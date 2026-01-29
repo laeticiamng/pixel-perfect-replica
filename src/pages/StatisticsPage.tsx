@@ -175,19 +175,23 @@ export default function StatisticsPage() {
       <div className="px-6 space-y-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="glass rounded-xl p-4">
+          <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.05s' }}>
             <div className="flex items-center gap-2 mb-2">
-              <Users className="h-5 w-5 text-coral" />
+              <div className="p-1.5 rounded-lg bg-coral/20">
+                <Users className="h-4 w-4 text-coral" />
+              </div>
               <span className="text-sm text-muted-foreground">Total rencontres</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">
+            <p className="text-3xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">
               {stats?.interactions || 0}
             </p>
           </div>
           
-          <div className="glass rounded-xl p-4">
+          <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-5 w-5 text-coral" />
+              <div className="p-1.5 rounded-lg bg-signal-green/20">
+                <Clock className="h-4 w-4 text-signal-green" />
+              </div>
               <span className="text-sm text-muted-foreground">Heures actives</span>
             </div>
             <p className="text-3xl font-bold text-foreground">
@@ -195,19 +199,23 @@ export default function StatisticsPage() {
             </p>
           </div>
           
-          <div className="glass rounded-xl p-4">
+          <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.15s' }}>
             <div className="flex items-center gap-2 mb-2">
-              <Star className="h-5 w-5 text-signal-yellow" />
+              <div className="p-1.5 rounded-lg bg-signal-yellow/20">
+                <Star className="h-4 w-4 text-signal-yellow" />
+              </div>
               <span className="text-sm text-muted-foreground">Rating moyen</span>
             </div>
-            <p className="text-3xl font-bold text-coral">
+            <p className="text-3xl font-bold bg-gradient-to-r from-signal-yellow to-coral bg-clip-text text-transparent">
               {stats?.rating?.toFixed(1) || '5.0'}
             </p>
           </div>
           
-          <div className="glass rounded-xl p-4">
+          <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="h-5 w-5 text-signal-green" />
+              <div className="p-1.5 rounded-lg bg-signal-green/20">
+                <TrendingUp className="h-4 w-4 text-signal-green" />
+              </div>
               <span className="text-sm text-muted-foreground">Moyenne/jour</span>
             </div>
             <p className="text-3xl font-bold text-foreground">
