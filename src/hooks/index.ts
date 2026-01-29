@@ -35,3 +35,4 @@ export { usePushNotifications } from './usePushNotifications';
 export { useSystemStats } from './useSystemStats';
 export { useVerificationBadges } from './useVerificationBadges';
 export { useSessionQuota } from './useSessionQuota';
+export { useKeyboardShortcuts, useShortcutHint } from './useKeyboardShortcuts';

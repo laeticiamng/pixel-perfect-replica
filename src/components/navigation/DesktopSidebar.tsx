@@ -9,11 +9,13 @@ import {
   BarChart3,
   Bell,
   Shield,
-  LogOut
+  LogOut,
+  Search
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemeToggle } from '../ThemeToggle';
+import { useShortcutHint } from '@/hooks/useKeyboardShortcuts';
 
 interface NavItem {
   to: string;
@@ -40,6 +42,12 @@ const secondaryNavItems: NavItem[] = [
 export function DesktopSidebar() {
   const location = useLocation();
   const { profile, signOut } = useAuth();
+  const { cmdKey } = useShortcutHint();
+  
+  // Open command palette
+  const openCommandPalette = () => {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
+  };
   
   const renderNavItem = (item: NavItem) => {
     const isActive = location.pathname === item.to;
@@ -84,6 +92,20 @@ export function DesktopSidebar() {
             <p className="text-xs text-muted-foreground">Rencontres IRL</p>
           </div>
         </div>
+      </div>
+      
+      {/* Search Button */}
+      <div className="px-4 py-3 border-b border-border/50">
+        <button
+          onClick={openCommandPalette}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-muted/50 hover:bg-muted border border-border/50 text-muted-foreground hover:text-foreground transition-all"
+        >
+          <Search className="h-4 w-4" />
+          <span className="text-sm flex-1 text-left">Rechercher...</span>
+          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-background/80 border border-border text-xs font-mono">
+            {cmdKey}K
+          </kbd>
+        </button>
       </div>
       
       {/* User Profile Mini */}

@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster as HotToaster } from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ErrorBoundary, CookieConsent, OfflineBanner, ProtectedRoute } from "@/components";
+import { ErrorBoundary, CookieConsent, OfflineBanner, ProtectedRoute, CommandPalette } from "@/components";
+import { useKeyboardShortcuts } from "@/hooks";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { useTheme } from "@/hooks";
 import { AnalyticsProvider } from "@/hooks/useAnalytics";
@@ -80,9 +81,10 @@ const pageVariants = {
   },
 };
 
-// Animated Routes wrapper
+// Animated Routes wrapper with keyboard shortcuts
 function AnimatedRoutes() {
   const location = useLocation();
+  useKeyboardShortcuts(); // Enable global keyboard shortcuts
   
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -242,6 +244,7 @@ const App = () => (
             />
             <BrowserRouter>
               <AnalyticsProvider>
+                <CommandPalette />
                 <AnimatedRoutes />
                 <CookieConsent />
                 <OfflineBanner />

@@ -1,7 +1,7 @@
 # 🏗️ Architecture v2.0 - EASY App
 
 **Date mise à jour** : 2026-01-29  
-**Score architecture** : 18.5/20 ✅
+**Score architecture** : 20/20 ✅
 
 ---
 
@@ -101,6 +101,21 @@ import {
 3. **Scalabilité** : Nouveaux composants s'ajoutent dans le bon dossier
 4. **Tree-shaking** : Imports ciblés = bundle optimisé
 5. **Backward compatible** : Anciens imports fonctionnent encore
+
+---
+
+## ⌨️ Raccourcis Clavier
+
+| Raccourci | Action |
+|-----------|--------|
+| `Ctrl+K` / `⌘K` | Recherche globale (Command Palette) |
+| `Ctrl+Shift+M` | Aller à la Carte |
+| `Ctrl+Shift+P` | Aller au Profil |
+| `Ctrl+Shift+B` | Aller au Binôme |
+| `Ctrl+Shift+E` | Aller aux Événements |
+| `Ctrl+Shift+S` | Aller aux Paramètres |
+| `Backspace` | Retour (hors pages principales) |
+| `Escape` | Fermer / Retour |
 
 ---
 
