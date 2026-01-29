@@ -67,6 +67,57 @@ export default function LandingPage() {
           <span className="text-foreground font-bold">Approche sans awkwardness.</span>
         </p>
 
+        {/* Visual Flow Schema */}
+        <div className="w-full max-w-sm md:max-w-md mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="glass rounded-2xl p-4 overflow-hidden">
+            <div className="flex items-center justify-between gap-2">
+              {/* Step 1: Activity */}
+              <div className="flex flex-col items-center gap-1.5 flex-1">
+                <div className="w-12 h-12 rounded-full bg-coral/20 flex items-center justify-center border-2 border-coral animate-pulse">
+                  <span className="text-xl">📚</span>
+                </div>
+                <span className="text-xs text-muted-foreground text-center">Toi</span>
+              </div>
+              
+              {/* Arrow 1 */}
+              <div className="flex items-center text-coral">
+                <div className="w-6 h-0.5 bg-gradient-to-r from-coral/50 to-coral" />
+                <span className="text-sm">→</span>
+              </div>
+              
+              {/* Step 2: Signal broadcast */}
+              <div className="flex flex-col items-center gap-1.5 flex-1 relative">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-full border border-signal-green/30 animate-ping" style={{ animationDuration: '2s' }} />
+                </div>
+                <div className="w-12 h-12 rounded-full bg-signal-green/20 flex items-center justify-center border-2 border-signal-green relative z-10">
+                  <div className="w-3 h-3 rounded-full bg-signal-green" />
+                </div>
+                <span className="text-xs text-muted-foreground text-center">Signal</span>
+              </div>
+              
+              {/* Arrow 2 */}
+              <div className="flex items-center text-coral">
+                <div className="w-6 h-0.5 bg-gradient-to-r from-coral to-coral/50" />
+                <span className="text-sm">→</span>
+              </div>
+              
+              {/* Step 3: Others appear */}
+              <div className="flex flex-col items-center gap-1.5 flex-1">
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-full bg-coral/20 flex items-center justify-center border-2 border-coral/50">
+                    <span className="text-xl">🍽️</span>
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-coral flex items-center justify-center text-xs font-bold text-primary-foreground animate-bounce">
+                    !
+                  </div>
+                </div>
+                <span className="text-xs text-muted-foreground text-center">Notif</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Features */}
         <div className="w-full max-w-sm md:max-w-md space-y-4 mb-12">
           {features.map((feature, index) => (
