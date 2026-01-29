@@ -34,7 +34,7 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
                       'flex flex-col items-center gap-1.5 transition-all duration-300 relative',
                       isActive
                         ? 'text-coral scale-110'
-                        : 'text-gray-400 hover:text-gray-300'
+                        : 'text-muted-foreground hover:text-foreground'
                     )}
                   >
                     {isActive && (

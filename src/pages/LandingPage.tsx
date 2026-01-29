@@ -61,7 +61,7 @@ export default function LandingPage() {
         </h1>
 
         {/* Tagline */}
-        <p className="text-center text-lg text-gray-300 max-w-xs mb-12 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
+        <p className="text-center text-lg text-muted-foreground max-w-xs mb-12 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
           Vois qui est ouvert à l'interaction autour de toi.
           <br />
           <span className="text-foreground font-bold">Approche sans awkwardness.</span>
@@ -80,7 +80,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <h3 className="font-bold text-foreground mb-1.5">{feature.title}</h3>
-                <p className="text-sm text-gray-300 leading-relaxed">{feature.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
               </div>
             </div>
           ))}
@@ -107,7 +107,7 @@ export default function LandingPage() {
 
       {/* Footer - Enhanced visibility */}
       <footer className="py-6 text-center safe-bottom">
-        <p className="text-sm text-gray-400 px-4">
+        <p className="text-sm text-muted-foreground px-4">
           En continuant, tu acceptes nos{' '}
           <button 
             onClick={() => navigate('/terms')}
