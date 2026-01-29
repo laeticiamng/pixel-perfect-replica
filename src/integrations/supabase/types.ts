@@ -68,6 +68,54 @@ export type Database = {
           },
         ]
       }
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_category: string
+          event_data: Json | null
+          event_name: string
+          id: string
+          page_path: string | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_category: string
+          event_data?: Json | null
+          event_name: string
+          id?: string
+          page_path?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_category?: string
+          event_data?: Json | null
+          event_name?: string
+          id?: string
+          page_path?: string | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_feedback: {
         Row: {
           created_at: string
@@ -444,6 +492,13 @@ export type Database = {
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       fuzz_coordinates: { Args: { lat: number; lon: number }; Returns: Json }
+      get_daily_active_users: {
+        Args: { days_back?: number }
+        Returns: {
+          active_users: number
+          date: string
+        }[]
+      }
       get_interaction_profile: {
         Args: { p_user_id: string }
         Returns: {
