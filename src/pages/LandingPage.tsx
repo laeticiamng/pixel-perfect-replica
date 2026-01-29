@@ -227,7 +227,7 @@ export default function LandingPage() {
         >
           Groupes de motivation, amis, travail, amour...
           <br className="hidden sm:block" />
-          <span className="text-foreground font-medium">Crée du lien en vrai, + facilement, tout de suite et ici.</span>
+          <span className="text-foreground font-medium">Crée du lien en vrai, plus facilement, ici et maintenant.</span>
         </motion.p>
         
         {/* CTA Buttons */}
