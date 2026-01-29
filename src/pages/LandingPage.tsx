@@ -1,24 +1,33 @@
 import { useNavigate } from 'react-router-dom';
-import { MapPin, MessageCircle } from 'lucide-react';
+import { MapPin, MessageCircle, Bell, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEffect } from 'react';
 
-const features = [
+const steps = [
   {
-    icon: <div className="w-3 h-3 rounded-full bg-signal-green" />,
-    title: 'Dis ce que tu fais',
-    description: 'Réviser, manger, bosser... Choisis ton activité et active ton signal',
+    number: '1',
+    emoji: '📚',
+    title: 'Choisis ton activité',
+    description: 'Réviser, manger, bosser, sport...',
   },
   {
-    icon: <MapPin className="h-5 w-5 text-coral" />,
-    title: 'Détecte qui est dispo',
-    description: 'Reçois une notif dès que quelqu\'un arrive et active son signal près de toi',
+    number: '2',
+    emoji: '📍',
+    title: 'Active ton signal',
+    description: 'Montre que tu es ouvert à l\'interaction',
   },
   {
-    icon: <MessageCircle className="h-5 w-5 text-coral" />,
-    title: 'Approche naturellement',
-    description: 'Tu sais déjà ce qu\'il/elle fait — l\'icebreaker parfait pour engager',
+    number: '3',
+    emoji: '🔔',
+    title: 'Reçois une notif',
+    description: 'Dès que quelqu\'un arrive près de toi',
+  },
+  {
+    number: '4',
+    emoji: '👋',
+    title: 'Approche facilement',
+    description: 'Tu sais déjà ce qu\'il/elle fait !',
   },
 ];
 
@@ -35,18 +44,18 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col">
       {/* Hero Section */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 max-w-2xl mx-auto w-full">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 max-w-2xl mx-auto w-full">
         {/* Animated Logo - Custom SVG */}
-        <div className="animate-float mb-8 relative">
+        <div className="animate-float mb-6 relative">
           {/* Multiple glow rings */}
           <div className="absolute inset-0 rounded-full bg-coral/20 animate-ripple" />
           <div className="absolute inset-0 rounded-full bg-coral/15 animate-ripple" style={{ animationDelay: '0.4s' }} />
           <div className="absolute inset-0 rounded-full bg-coral/10 animate-ripple" style={{ animationDelay: '0.8s' }} />
-          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-coral/40 to-coral/15 flex items-center justify-center glow-coral relative shadow-medium">
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-coral/40 to-coral/15 flex items-center justify-center glow-coral relative shadow-medium">
             <div className="absolute inset-1.5 rounded-full bg-gradient-to-br from-deep-blue via-deep-blue-light to-midnight" />
             {/* Custom SVG Pin Icon */}
             <svg 
-              className="relative z-10 w-14 h-14 text-coral drop-shadow-[0_0_12px_hsl(var(--coral)/0.8)]" 
+              className="relative z-10 w-12 h-12 text-coral drop-shadow-[0_0_12px_hsl(var(--coral)/0.8)]" 
               viewBox="0 0 24 24" 
               fill="currentColor"
             >
@@ -56,94 +65,74 @@ export default function LandingPage() {
         </div>
 
         {/* Title with gradient */}
-        <h1 className="text-5xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent animate-fade-in">
+        <h1 className="text-4xl font-extrabold tracking-tight mb-3 bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent animate-fade-in">
           SIGNAL
         </h1>
 
-        {/* Tagline */}
-        <p className="text-center text-lg text-muted-foreground max-w-xs mb-12 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          Vois qui est ouvert à l'interaction autour de toi.
-          <br />
-          <span className="text-foreground font-bold">Approche sans awkwardness.</span>
+        {/* Subtitle - More explicit */}
+        <p className="text-center text-base text-muted-foreground max-w-sm mb-2 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          L'app qui te dit <span className="text-foreground font-semibold">qui est ouvert</span> à discuter autour de toi.
         </p>
+        
+        {/* Value proposition */}
+        <div className="glass-strong rounded-full px-4 py-2 mb-8 animate-fade-in" style={{ animationDelay: '0.15s' }}>
+          <p className="text-sm text-coral font-medium flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Fini l'hésitation : approche ceux qui veulent être approchés
+          </p>
+        </div>
 
-        {/* Visual Flow Schema */}
-        <div className="w-full max-w-sm md:max-w-md mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <div className="glass rounded-2xl p-4 overflow-hidden">
-            <div className="flex items-center justify-between gap-2">
-              {/* Step 1: Activity */}
-              <div className="flex flex-col items-center gap-1.5 flex-1">
-                <div className="w-12 h-12 rounded-full bg-coral/20 flex items-center justify-center border-2 border-coral animate-pulse">
-                  <span className="text-xl">📚</span>
-                </div>
-                <span className="text-xs text-muted-foreground text-center">Toi</span>
-              </div>
-              
-              {/* Arrow 1 */}
-              <div className="flex items-center text-coral">
-                <div className="w-6 h-0.5 bg-gradient-to-r from-coral/50 to-coral" />
-                <span className="text-sm">→</span>
-              </div>
-              
-              {/* Step 2: Signal broadcast */}
-              <div className="flex flex-col items-center gap-1.5 flex-1 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full border border-signal-green/30 animate-ping" style={{ animationDuration: '2s' }} />
-                </div>
-                <div className="w-12 h-12 rounded-full bg-signal-green/20 flex items-center justify-center border-2 border-signal-green relative z-10">
-                  <div className="w-3 h-3 rounded-full bg-signal-green" />
-                </div>
-                <span className="text-xs text-muted-foreground text-center">Signal</span>
-              </div>
-              
-              {/* Arrow 2 */}
-              <div className="flex items-center text-coral">
-                <div className="w-6 h-0.5 bg-gradient-to-r from-coral to-coral/50" />
-                <span className="text-sm">→</span>
-              </div>
-              
-              {/* Step 3: Others appear */}
-              <div className="flex flex-col items-center gap-1.5 flex-1">
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-full bg-coral/20 flex items-center justify-center border-2 border-coral/50">
-                    <span className="text-xl">🍽️</span>
+        {/* How it works - Step by step */}
+        <div className="w-full max-w-sm md:max-w-md mb-8">
+          <h2 className="text-center text-xs uppercase tracking-wider text-muted-foreground mb-4 font-semibold">
+            Comment ça marche ?
+          </h2>
+          
+          <div className="grid grid-cols-2 gap-3">
+            {steps.map((step, index) => (
+              <div
+                key={index}
+                className="glass rounded-xl p-4 animate-slide-up hover:scale-[1.02] transition-all duration-300"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-coral/20 flex items-center justify-center border border-coral/50">
+                    <span className="text-lg">{step.emoji}</span>
                   </div>
-                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-coral flex items-center justify-center text-xs font-bold text-primary-foreground animate-bounce">
-                    !
-                  </div>
+                  <span className="text-xs font-bold text-coral">Étape {step.number}</span>
                 </div>
-                <span className="text-xs text-muted-foreground text-center">Notif</span>
+                <h3 className="font-bold text-foreground text-sm mb-1">{step.title}</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">{step.description}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Features */}
-        <div className="w-full max-w-sm md:max-w-md space-y-4 mb-12">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="glass rounded-2xl p-5 flex items-start gap-4 animate-slide-up hover:scale-[1.02] hover:bg-card/90 active:scale-[0.98] transition-all duration-300 cursor-default"
-              style={{ animationDelay: `${index * 120}ms` }}
-            >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-deep-blue-light to-deep-blue flex items-center justify-center shrink-0 shadow-medium border border-white/5">
-                {feature.icon}
-              </div>
-              <div>
-                <h3 className="font-bold text-foreground mb-1.5">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
-              </div>
-            </div>
-          ))}
+        {/* Use case example */}
+        <div className="w-full max-w-sm md:max-w-md mb-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+          <div className="glass-strong rounded-2xl p-4 border border-coral/20">
+            <p className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
+              <span className="text-lg">💡</span>
+              <span className="font-medium text-foreground">Exemple concret</span>
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Tu es à la BU en train de réviser. Tu actives ton signal <span className="text-signal-green font-semibold">« Réviser »</span>. 
+              Marie arrive, active aussi son signal. Tu reçois une notif : 
+              <span className="text-coral font-semibold"> "Marie vient d'arriver ! 📚"</span>
+            </p>
+            <p className="text-sm text-foreground mt-2 font-medium">
+              → Tu sais qu'elle révise aussi. L'approche devient naturelle !
+            </p>
+          </div>
         </div>
 
         {/* CTAs */}
-        <div className="w-full max-w-sm md:max-w-md space-y-3 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+        <div className="w-full max-w-sm md:max-w-md space-y-3 animate-slide-up" style={{ animationDelay: '0.5s' }}>
           <Button
             onClick={() => navigate('/onboarding')}
             className="w-full h-14 text-lg font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-primary-foreground rounded-2xl animate-glow-pulse transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-medium"
           >
-            Commencer
+            Commencer gratuitement
           </Button>
           
           <Button
