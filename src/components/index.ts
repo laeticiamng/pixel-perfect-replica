@@ -28,15 +28,6 @@ export * from './safety';
 // Social components (Chat, Badges)
 export * from './social';
 
-// Radar components (Activity, Signal, Timer)
-export * from './radar';
-
-// Safety components (Emergency)
-export * from './safety';
-
-// Social components (Chat, Badges)
-export * from './social';
-
 // Re-export individual components for backward compatibility
 export { BottomNav } from './BottomNav';
 export { Breadcrumbs } from './Breadcrumbs';
