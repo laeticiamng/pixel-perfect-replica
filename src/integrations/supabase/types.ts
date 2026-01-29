@@ -527,6 +527,180 @@ export type Database = {
           },
         ]
       }
+      scheduled_sessions: {
+        Row: {
+          activity: Database["public"]["Enums"]["activity_type"]
+          city: string
+          created_at: string
+          creator_id: string
+          duration_minutes: number
+          id: string
+          latitude: number | null
+          location_name: string | null
+          longitude: number | null
+          max_participants: number
+          note: string | null
+          scheduled_date: string
+          start_time: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          activity: Database["public"]["Enums"]["activity_type"]
+          city: string
+          created_at?: string
+          creator_id: string
+          duration_minutes: number
+          id?: string
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          max_participants?: number
+          note?: string | null
+          scheduled_date: string
+          start_time: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          activity?: Database["public"]["Enums"]["activity_type"]
+          city?: string
+          created_at?: string
+          creator_id?: string
+          duration_minutes?: number
+          id?: string
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          max_participants?: number
+          note?: string | null
+          scheduled_date?: string
+          start_time?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_sessions_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_feedback: {
+        Row: {
+          comment: string | null
+          created_at: string
+          from_user_id: string
+          id: string
+          pleasant: boolean
+          punctual: boolean
+          session_id: string
+          to_user_id: string
+          would_recommend: boolean
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          from_user_id: string
+          id?: string
+          pleasant?: boolean
+          punctual?: boolean
+          session_id: string
+          to_user_id: string
+          would_recommend?: boolean
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          pleasant?: boolean
+          punctual?: boolean
+          session_id?: string
+          to_user_id?: string
+          would_recommend?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_feedback_from_user_id_fkey"
+            columns: ["from_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_feedback_to_user_id_fkey"
+            columns: ["to_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_participants: {
+        Row: {
+          checked_in: boolean
+          checked_in_at: string | null
+          checked_out: boolean
+          checked_out_at: string | null
+          id: string
+          joined_at: string
+          reminder_15m_sent: boolean
+          reminder_1h_sent: boolean
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          checked_in?: boolean
+          checked_in_at?: string | null
+          checked_out?: boolean
+          checked_out_at?: string | null
+          id?: string
+          joined_at?: string
+          reminder_15m_sent?: boolean
+          reminder_1h_sent?: boolean
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          checked_in?: boolean
+          checked_in_at?: string | null
+          checked_out?: boolean
+          checked_out_at?: string | null
+          id?: string
+          joined_at?: string
+          reminder_15m_sent?: boolean
+          reminder_1h_sent?: boolean
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_blocks: {
         Row: {
           blocked_id: string
@@ -550,6 +724,59 @@ export type Database = {
           reason?: string | null
         }
         Relationships: []
+      }
+      user_reliability: {
+        Row: {
+          created_at: string
+          id: string
+          late_cancellations: number
+          no_shows: number
+          positive_feedback_count: number
+          reliability_score: number
+          sessions_completed: number
+          sessions_created: number
+          sessions_joined: number
+          total_feedback_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          late_cancellations?: number
+          no_shows?: number
+          positive_feedback_count?: number
+          reliability_score?: number
+          sessions_completed?: number
+          sessions_created?: number
+          sessions_joined?: number
+          total_feedback_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          late_cancellations?: number
+          no_shows?: number
+          positive_feedback_count?: number
+          reliability_score?: number
+          sessions_completed?: number
+          sessions_created?: number
+          sessions_joined?: number
+          total_feedback_count?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reliability_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -702,6 +929,31 @@ export type Database = {
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       fuzz_coordinates: { Args: { lat: number; lon: number }; Returns: Json }
+      get_available_sessions: {
+        Args: {
+          p_activity?: Database["public"]["Enums"]["activity_type"]
+          p_city: string
+          p_date?: string
+          p_duration?: number
+        }
+        Returns: {
+          activity: Database["public"]["Enums"]["activity_type"]
+          city: string
+          created_at: string
+          creator_avatar: string
+          creator_id: string
+          creator_name: string
+          creator_reliability: number
+          current_participants: number
+          duration_minutes: number
+          id: string
+          location_name: string
+          max_participants: number
+          note: string
+          scheduled_date: string
+          start_time: string
+        }[]
+      }
       get_daily_active_users: {
         Args: { days_back?: number }
         Returns: {
@@ -813,11 +1065,28 @@ export type Database = {
           university: string
         }[]
       }
+      get_sessions_needing_reminders: {
+        Args: never
+        Returns: {
+          activity: Database["public"]["Enums"]["activity_type"]
+          city: string
+          creator_name: string
+          location_name: string
+          participant_id: string
+          reminder_type: string
+          session_date: string
+          session_id: string
+          start_time: string
+          user_id: string
+        }[]
+      }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       increment_interactions: {
         Args: { p_user_id: string }
         Returns: undefined
       }
+      join_session: { Args: { p_session_id: string }; Returns: boolean }
+      leave_session: { Args: { p_session_id: string }; Returns: boolean }
       submit_rating: {
         Args: { p_rating: number; p_target_user_id: string }
         Returns: undefined

@@ -37,6 +37,7 @@ import BlockedUsersPage from "./pages/BlockedUsersPage";
 import DataExportPage from "./pages/DataExportPage";
 import EventsPage from "./pages/EventsPage";
 import EventDetailPage from "./pages/EventDetailPage";
+import BinomePage from "./pages/BinomePage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AnalyticsProvider } from "./hooks/useAnalytics";
@@ -184,6 +185,11 @@ function AnimatedRoutes() {
           <Route path="/events/:eventId" element={
             <ProtectedRoute>
               <EventDetailPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/binome" element={
+            <ProtectedRoute>
+              <BinomePage />
             </ProtectedRoute>
           } />
           
