@@ -22,8 +22,8 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
     return (
       <nav ref={ref} className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
         <div className="mx-auto max-w-[500px]">
-          <div className="mx-4 mb-4 glass-strong rounded-2xl">
-            <div className="flex items-center justify-around py-3 px-6">
+          <div className="mx-4 mb-4 glass-strong rounded-2xl shadow-medium">
+            <div className="flex items-center justify-around py-3.5 px-6">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.to;
                 return (
@@ -31,19 +31,25 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
                     key={item.to}
                     to={item.to}
                     className={cn(
-                      'flex flex-col items-center gap-1 transition-all duration-300',
+                      'flex flex-col items-center gap-1.5 transition-all duration-300 relative',
                       isActive
                         ? 'text-coral scale-110'
                         : 'text-gray-400 hover:text-gray-300'
                     )}
                   >
+                    {isActive && (
+                      <div className="absolute -inset-2 bg-coral/10 rounded-xl -z-10" />
+                    )}
                     <div className={cn(
                       'transition-all duration-300',
-                      isActive && 'drop-shadow-[0_0_8px_hsl(var(--coral)/0.6)]'
+                      isActive && 'drop-shadow-[0_0_12px_hsl(var(--coral)/0.7)]'
                     )}>
                       {item.icon}
                     </div>
-                    <span className="text-xs font-medium">{item.label}</span>
+                    <span className={cn(
+                      'text-xs',
+                      isActive ? 'font-bold' : 'font-medium'
+                    )}>{item.label}</span>
                   </RouterNavLink>
                 );
               })}

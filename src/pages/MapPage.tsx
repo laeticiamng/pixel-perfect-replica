@@ -184,13 +184,16 @@ export default function MapPage() {
     <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col pb-28">
       {/* Header */}
       <header className="safe-top px-6 py-4">
-        <div className="glass rounded-xl p-4 flex items-center justify-between">
+        <div className="glass-strong rounded-2xl p-4 flex items-center justify-between shadow-medium">
           <div className="flex items-center gap-3">
-            <div className={cn(
-              'w-3 h-3 rounded-full',
-              isActive ? 'bg-signal-green glow-green animate-pulse-signal' : 'bg-signal-red'
-            )} />
-            <span className="font-medium text-foreground">
+            <div className="relative">
+              <div className={cn(
+                'w-3.5 h-3.5 rounded-full',
+                isActive ? 'bg-signal-green glow-green animate-pulse-signal' : 'bg-signal-red'
+              )} />
+              {isActive && <div className="absolute inset-0 rounded-full bg-signal-green/30 animate-ripple" />}
+            </div>
+            <span className="font-semibold text-foreground">
               {isActive ? 'Tu es visible' : 'Signal désactivé'}
             </span>
           </div>
@@ -199,7 +202,7 @@ export default function MapPage() {
             {isActive && myActivity && (
               <button
                 onClick={handleChangeActivity}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-deep-blue-light text-sm"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-deep-blue-light/80 text-sm hover:bg-deep-blue-light transition-colors"
               >
                 <span>{currentActivityData?.emoji}</span>
                 <span className="text-muted-foreground">{currentActivityData?.label}</span>
@@ -209,7 +212,7 @@ export default function MapPage() {
             <button
               onClick={handleManualRefresh}
               className={cn(
-                "p-2 rounded-lg bg-deep-blue-light text-muted-foreground hover:text-foreground transition-all",
+                "p-2.5 rounded-xl bg-deep-blue-light/80 text-muted-foreground hover:text-foreground hover:bg-deep-blue-light transition-all",
                 isRefreshing && "animate-spin"
               )}
             >
@@ -285,50 +288,54 @@ export default function MapPage() {
       {/* Radar Map */}
       <div className="flex-1 flex items-center justify-center px-6">
         <div className="relative w-full max-w-sm aspect-square">
-          {/* Radar circles */}
+          {/* Radar circles with enhanced styling */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="absolute w-full h-full rounded-full border border-muted/20" />
-            <div className="absolute w-3/4 h-3/4 rounded-full border border-muted/20" />
-            <div className="absolute w-1/2 h-1/2 rounded-full border border-muted/20" />
-            <div className="absolute w-1/4 h-1/4 rounded-full border border-muted/30" />
+            <div className="absolute w-full h-full rounded-full border border-coral/10" />
+            <div className="absolute w-3/4 h-3/4 rounded-full border border-coral/15" />
+            <div className="absolute w-1/2 h-1/2 rounded-full border border-coral/20" />
+            <div className="absolute w-1/4 h-1/4 rounded-full border border-coral/25 bg-coral/5" />
           </div>
           
           {/* Distance labels */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="absolute top-1 text-[10px] text-muted-foreground">
+            <span className="absolute top-1 text-[10px] text-muted-foreground font-medium">
               {settings.visibility_distance}m
             </span>
-            <span className="absolute top-1/4 text-[10px] text-muted-foreground">
+            <span className="absolute top-1/4 text-[10px] text-muted-foreground/70">
               {Math.round(settings.visibility_distance * 0.75)}m
             </span>
           </div>
           
-          {/* Radar sweep effect */}
+          {/* Radar sweep effect with enhanced gradient */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="absolute w-full h-full animate-radar-sweep origin-center">
               <div 
-                className="absolute top-1/2 left-1/2 w-1/2 h-0.5"
+                className="absolute top-1/2 left-1/2 w-1/2 h-1"
                 style={{
-                  background: 'linear-gradient(90deg, hsl(var(--coral) / 0.5), transparent)',
+                  background: 'linear-gradient(90deg, hsl(var(--coral) / 0.6), hsl(var(--coral) / 0.2), transparent)',
                   transformOrigin: 'left center',
+                  borderRadius: '2px',
                 }}
               />
             </div>
           </div>
           
-          {/* Center point (user) */}
+          {/* Center point (user) with enhanced effects */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
             <div className={cn(
-              'w-8 h-8 rounded-full flex items-center justify-center',
-              isActive ? 'bg-coral glow-coral animate-pulse-signal' : 'bg-muted'
+              'w-10 h-10 rounded-full flex items-center justify-center relative shadow-medium',
+              isActive ? 'bg-gradient-to-br from-coral to-coral-dark glow-coral animate-pulse-signal' : 'bg-muted'
             )}>
               <span className="text-sm font-bold text-primary-foreground">
                 {profile?.first_name?.charAt(0).toUpperCase() || '?'}
               </span>
             </div>
-            {/* Ripple effect */}
+            {/* Multiple ripple effects */}
             {isActive && (
-              <div className="absolute inset-0 rounded-full bg-coral/20 animate-ripple" />
+              <>
+                <div className="absolute inset-0 rounded-full bg-coral/25 animate-ripple" />
+                <div className="absolute inset-0 rounded-full bg-coral/15 animate-ripple" style={{ animationDelay: '0.5s' }} />
+              </>
             )}
           </div>
 
@@ -367,11 +374,11 @@ export default function MapPage() {
         <button
           onClick={handleSignalToggle}
           className={cn(
-            'w-full h-20 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300',
-            'font-semibold text-lg',
+            'w-full h-20 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-medium',
+            'font-bold text-lg',
             isActive
-              ? 'bg-signal-green/20 border-2 border-signal-green text-signal-green glow-green'
-              : 'bg-coral/20 border-2 border-coral text-coral glow-coral hover:scale-[1.02]'
+              ? 'bg-gradient-to-r from-signal-green/20 to-signal-green/10 border-2 border-signal-green text-signal-green glow-green'
+              : 'bg-gradient-to-r from-coral/20 to-coral/10 border-2 border-coral text-coral animate-glow-pulse hover:scale-[1.02]'
           )}
         >
           <Radio className="h-6 w-6" />
@@ -379,7 +386,7 @@ export default function MapPage() {
         </button>
         
         {lastUpdated && (
-          <p className="text-center text-xs text-muted-foreground mt-2">
+          <p className="text-center text-xs text-muted-foreground mt-3">
             Dernière mise à jour : il y a {getTimeSinceUpdate()}
           </p>
         )}

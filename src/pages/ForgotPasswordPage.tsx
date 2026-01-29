@@ -49,18 +49,22 @@ export default function ForgotPasswordPage() {
   if (isSent) {
     return (
       <div className="min-h-screen bg-gradient-radial flex flex-col items-center justify-center px-6">
-        <div className="w-20 h-20 rounded-full bg-signal-green/20 flex items-center justify-center mb-6">
-          <Check className="h-10 w-10 text-signal-green" />
+        <div className="relative mb-8 animate-scale-in">
+          <div className="absolute inset-0 rounded-full bg-signal-green/30 blur-xl animate-breathing" />
+          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-signal-green/30 to-signal-green/10 flex items-center justify-center relative shadow-medium">
+            <Check className="h-12 w-12 text-signal-green" />
+          </div>
         </div>
-        <h1 className="text-2xl font-bold text-foreground mb-4 text-center">
+        <h1 className="text-2xl font-bold text-foreground mb-4 text-center animate-slide-up">
           Email envoyé !
         </h1>
-        <p className="text-muted-foreground text-center mb-8 max-w-xs">
+        <p className="text-muted-foreground text-center mb-8 max-w-xs animate-slide-up" style={{ animationDelay: '0.1s' }}>
           Consulte ta boîte mail et clique sur le lien pour réinitialiser ton mot de passe.
         </p>
         <Button
           onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
-          className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
+          className="bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-primary-foreground rounded-2xl shadow-medium animate-slide-up"
+          style={{ animationDelay: '0.2s' }}
         >
           Retour à la connexion
         </Button>

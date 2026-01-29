@@ -35,6 +35,11 @@ export default {
           DEFAULT: "hsl(var(--coral))",
           light: "hsl(var(--coral-light))",
           dark: "hsl(var(--coral-dark))",
+          glow: "hsl(var(--coral-glow))",
+        },
+        purple: {
+          accent: "hsl(var(--purple-accent))",
+          glow: "hsl(var(--purple-glow))",
         },
         'deep-blue': {
           DEFAULT: "hsl(var(--deep-blue))",

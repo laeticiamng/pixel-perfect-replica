@@ -67,55 +67,58 @@ export default function ProfilePage() {
       {/* Profile Header */}
       <header className="safe-top px-6 py-8">
         <div className="flex flex-col items-center">
-          {/* Avatar */}
-          <div className="w-24 h-24 rounded-full bg-coral flex items-center justify-center mb-4 glow-coral overflow-hidden">
-            {profile?.avatar_url ? (
-              <img 
-                src={profile.avatar_url} 
-                alt="Avatar" 
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-3xl font-bold text-primary-foreground">
-                {profile?.first_name?.charAt(0).toUpperCase() || '?'}
-              </span>
-            )}
+          {/* Avatar with enhanced glow */}
+          <div className="relative mb-5">
+            <div className="absolute inset-0 rounded-full bg-coral/30 blur-xl animate-breathing" />
+            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center glow-coral overflow-hidden relative shadow-medium">
+              {profile?.avatar_url ? (
+                <img 
+                  src={profile.avatar_url} 
+                  alt="Avatar" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-4xl font-bold text-primary-foreground">
+                  {profile?.first_name?.charAt(0).toUpperCase() || '?'}
+                </span>
+              )}
+            </div>
           </div>
           
           {/* Name & Info */}
-          <h1 className="text-2xl font-bold text-foreground mb-1">
+          <h1 className="text-2xl font-bold text-foreground mb-1 animate-fade-in">
             {profile?.first_name || 'Utilisateur'}
           </h1>
-          <p className="text-muted-foreground text-sm mb-1">
+          <p className="text-muted-foreground text-sm mb-1 animate-fade-in" style={{ animationDelay: '0.05s' }}>
             {profile?.email}
           </p>
           {profile?.university && (
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-sm animate-fade-in" style={{ animationDelay: '0.1s' }}>
               🎓 {profile.university}
             </p>
           )}
           
-          {/* Stats */}
-          <div className="flex gap-8 mt-6">
+          {/* Stats with enhanced styling */}
+          <div className="flex gap-6 mt-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
             <button 
               onClick={() => navigate('/statistics')}
-              className="text-center hover:scale-105 transition-transform"
+              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{stats?.interactions || 0}</p>
               <p className="text-xs text-muted-foreground">Interactions</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
-              className="text-center hover:scale-105 transition-transform"
+              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
               <p className="text-xs text-muted-foreground">Actif</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
-              className="text-center hover:scale-105 transition-transform"
+              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 transition-all duration-300"
             >
-              <p className="text-2xl font-bold text-coral">{stats?.rating?.toFixed(1) || '5.0'}</p>
+              <p className="text-2xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.rating?.toFixed(1) || '5.0'}</p>
               <p className="text-xs text-muted-foreground">Rating</p>
             </button>
           </div>
@@ -124,12 +127,12 @@ export default function ProfilePage() {
 
       {/* Menu Sections */}
       <div className="px-6 space-y-6">
-        {menuSections.map((section) => (
-          <div key={section.title}>
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
+        {menuSections.map((section, sectionIdx) => (
+          <div key={section.title} className="animate-slide-up" style={{ animationDelay: `${0.2 + sectionIdx * 0.1}s` }}>
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 px-1">
               {section.title}
             </h2>
-            <div className="glass rounded-xl overflow-hidden">
+            <div className="glass rounded-2xl overflow-hidden shadow-soft">
               {section.items.map((item, index) => (
                 <button
                   key={item.label}
@@ -141,13 +144,13 @@ export default function ProfilePage() {
                     }
                   }}
                   className={cn(
-                    'w-full flex items-center gap-4 px-4 py-3.5 transition-colors',
-                    'hover:bg-muted/50',
-                    index !== section.items.length - 1 && 'border-b border-border'
+                    'w-full flex items-center gap-4 px-5 py-4 transition-all duration-200',
+                    'hover:bg-muted/50 active:bg-muted/70',
+                    index !== section.items.length - 1 && 'border-b border-border/50'
                   )}
                 >
-                  <span className="text-muted-foreground">{item.icon}</span>
-                  <span className="flex-1 text-left text-foreground">{item.label}</span>
+                  <span className="text-coral">{item.icon}</span>
+                  <span className="flex-1 text-left text-foreground font-medium">{item.label}</span>
                   <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </button>
               ))}
@@ -158,10 +161,11 @@ export default function ProfilePage() {
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-3 py-4 rounded-xl bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+          className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all duration-200 shadow-soft animate-slide-up"
+          style={{ animationDelay: '0.5s' }}
         >
           <LogOut className="h-5 w-5" />
-          <span className="font-medium">Déconnexion</span>
+          <span className="font-semibold">Déconnexion</span>
         </button>
 
         {/* Version */}
