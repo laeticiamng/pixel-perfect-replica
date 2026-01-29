@@ -129,7 +129,7 @@ export default function EditProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-radial">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center justify-between">
         <button

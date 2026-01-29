@@ -69,7 +69,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-radial flex flex-col px-6 py-8">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col px-6 py-8 safe-bottom">
       {/* Header */}
       <header className="flex items-center gap-4 mb-8">
         <button

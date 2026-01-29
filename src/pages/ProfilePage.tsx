@@ -63,7 +63,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-radial pb-28">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-28">
       {/* Profile Header */}
       <header className="safe-top px-6 py-8">
         <div className="flex flex-col items-center">

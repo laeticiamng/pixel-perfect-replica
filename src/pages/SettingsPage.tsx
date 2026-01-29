@@ -73,7 +73,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-radial pb-28">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-28">
       <header className="safe-top px-6 py-6">
         <h1 className="text-2xl font-bold text-foreground">Paramètres</h1>
       </header>

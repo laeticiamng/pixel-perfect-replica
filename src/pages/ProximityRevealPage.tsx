@@ -137,7 +137,7 @@ export default function ProximityRevealPage() {
 
   return (
     <div className={cn(
-      "min-h-screen bg-gradient-radial flex flex-col animate-slide-up",
+      "min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col animate-slide-up",
       isVibrating && "animate-pulse"
     )}>
       {/* Header */}
