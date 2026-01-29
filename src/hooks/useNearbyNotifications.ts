@@ -6,6 +6,23 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { ACTIVITIES } from '@/types/signal';
 import toast from 'react-hot-toast';
 
+// Helper to show native notification
+const showNativeNotification = (title: string, body: string, icon?: string) => {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    try {
+      const options: NotificationOptions = {
+        body,
+        icon: icon || '/pwa-192x192.png',
+        badge: '/pwa-192x192.png',
+        tag: 'nearby-signal',
+      };
+      new Notification(title, options);
+    } catch (err) {
+      console.log('Native notification not available');
+    }
+  }
+};
+
 interface UseNearbyNotificationsProps {
   isActive: boolean;
   onNewUserNearby?: (user: { firstName: string; activity: string; distance: number }) => void;
@@ -87,19 +104,26 @@ export function useNearbyNotifications({ isActive, onNewUserNearby }: UseNearbyN
       navigator.vibrate([100, 50, 100]);
     }
 
-    // Show notification
-    toast(
-      `${firstName} vient d'arriver ! ${activity?.emoji || '📍'}`,
-      {
-        icon: '🆕',
-        duration: 5000,
-        style: {
-          background: 'hsl(var(--card))',
-          color: 'hsl(var(--foreground))',
-          border: '2px solid hsl(var(--coral))',
-        },
-      }
-    );
+    // Show in-app toast notification
+    const notificationMessage = `${firstName} vient d'arriver ! ${activity?.emoji || '📍'}`;
+    toast(notificationMessage, {
+      icon: '🆕',
+      duration: 5000,
+      style: {
+        background: 'hsl(var(--card))',
+        color: 'hsl(var(--foreground))',
+        border: '2px solid hsl(var(--coral))',
+      },
+    });
+
+    // Also show native push notification if enabled
+    if (settings.push_notifications) {
+      showNativeNotification(
+        'Nouveau signal à proximité 📍',
+        `${firstName} est près de toi et fait : ${activity?.label || 'une activité'}`,
+        activity?.emoji
+      );
+    }
 
     // Callback
     onNewUserNearby?.({ 

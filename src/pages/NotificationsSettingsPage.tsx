@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Bell, BellRing, Volume2, Vibrate, Clock, Users } from 'lucide-react';
+import { ArrowLeft, Bell, BellRing, Volume2, Vibrate, Clock, Users, BellOff, Check } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import { useUserSettings } from '@/hooks/useUserSettings';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { PageLayout } from '@/components/PageLayout';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import toast from 'react-hot-toast';
@@ -14,6 +16,14 @@ export default function NotificationsSettingsPage() {
     setSoundNotifications,
     setProximityVibration,
   } = useUserSettings();
+
+  const {
+    isSupported,
+    isSubscribed,
+    permission,
+    subscribe,
+    unsubscribe,
+  } = usePushNotifications();
 
   const handleToggle = async (
     setter: (value: boolean) => Promise<{ error: any }>,
@@ -28,14 +38,34 @@ export default function NotificationsSettingsPage() {
     }
   };
 
+  const handlePushToggle = async (enabled: boolean) => {
+    if (enabled) {
+      const success = await subscribe();
+      if (success) {
+        await setPushNotifications(true);
+      }
+    } else {
+      await unsubscribe();
+      await setPushNotifications(false);
+    }
+  };
+
+  const getPermissionStatus = () => {
+    if (!isSupported) {
+      return { text: 'Non supporté', color: 'text-muted-foreground' };
+    }
+    if (permission === 'granted') {
+      return { text: 'Autorisé', color: 'text-signal-green' };
+    }
+    if (permission === 'denied') {
+      return { text: 'Bloqué', color: 'text-destructive' };
+    }
+    return { text: 'Non demandé', color: 'text-signal-yellow' };
+  };
+
+  const permissionStatus = getPermissionStatus();
+
   const notificationSettings = [
-    {
-      icon: <Bell className="h-5 w-5" />,
-      label: 'Notifications push',
-      description: 'Recevoir des notifications sur ton téléphone',
-      value: settings.push_notifications,
-      onChange: (v: boolean) => handleToggle(setPushNotifications, v, 'Notifications push'),
-    },
     {
       icon: <Volume2 className="h-5 w-5" />,
       label: 'Son des notifications',
@@ -53,11 +83,6 @@ export default function NotificationsSettingsPage() {
   ];
 
   const upcomingFeatures = [
-    {
-      icon: <Users className="h-5 w-5" />,
-      label: 'Alertes de nouveaux signaux',
-      description: 'Être notifié quand des signaux apparaissent',
-    },
     {
       icon: <Clock className="h-5 w-5" />,
       label: 'Heures silencieuses',
@@ -88,16 +113,57 @@ export default function NotificationsSettingsPage() {
       </header>
 
       <div className="px-6 space-y-6">
+        {/* Push Notifications Card */}
+        <div className="glass rounded-xl p-4 border-2 border-coral/30 animate-fade-in">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-full ${isSubscribed ? 'bg-signal-green/20' : 'bg-coral/20'}`}>
+                {isSubscribed ? (
+                  <Bell className="h-5 w-5 text-signal-green" />
+                ) : (
+                  <BellOff className="h-5 w-5 text-coral" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium text-foreground">Notifications push</p>
+                <p className="text-sm text-muted-foreground">
+                  Statut: <span className={permissionStatus.color}>{permissionStatus.text}</span>
+                </p>
+              </div>
+            </div>
+            
+            {isSupported && (
+              <Switch
+                checked={isSubscribed && settings.push_notifications}
+                onCheckedChange={handlePushToggle}
+                disabled={permission === 'denied'}
+              />
+            )}
+          </div>
+          
+          {permission === 'denied' && (
+            <p className="text-xs text-destructive mt-3">
+              ⚠️ Les notifications sont bloquées. Autorise-les dans les paramètres de ton navigateur.
+            </p>
+          )}
+          
+          {!isSupported && (
+            <p className="text-xs text-muted-foreground mt-3">
+              ℹ️ Ton navigateur ne supporte pas les notifications push.
+            </p>
+          )}
+        </div>
+
         {/* Status Banner */}
         <div className="glass rounded-xl p-4 border-2 border-signal-green/30 animate-fade-in">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-full bg-signal-green/20">
-              <Bell className="h-5 w-5 text-signal-green" />
+              <Check className="h-5 w-5 text-signal-green" />
             </div>
             <div>
-              <p className="font-medium text-foreground">Notifications actives</p>
+              <p className="font-medium text-foreground">Paramètres actifs</p>
               <p className="text-sm text-muted-foreground">
-                {[settings.push_notifications, settings.sound_notifications, settings.proximity_vibration].filter(Boolean).length}/3 paramètres activés
+                {[isSubscribed && settings.push_notifications, settings.sound_notifications, settings.proximity_vibration].filter(Boolean).length}/3 activés
               </p>
             </div>
           </div>
@@ -106,7 +172,7 @@ export default function NotificationsSettingsPage() {
         {/* Active Settings */}
         <div>
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Paramètres actifs
+            Autres paramètres
           </h2>
           <div className="space-y-3">
             {notificationSettings.map((setting, idx) => (
@@ -130,6 +196,26 @@ export default function NotificationsSettingsPage() {
                 />
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Nearby Alerts - Now Active! */}
+        <div className="glass rounded-xl p-4 border-2 border-signal-green/20">
+          <div className="flex items-center gap-4">
+            <div className="p-2 rounded-lg bg-signal-green/20 text-signal-green">
+              <Users className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-medium text-foreground">Alertes de nouveaux signaux</p>
+                <span className="px-2 py-0.5 text-xs font-medium bg-signal-green/20 text-signal-green rounded-full">
+                  Actif
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Tu seras notifié quand quelqu'un arrive à proximité
+              </p>
+            </div>
           </div>
         </div>
 
@@ -166,9 +252,16 @@ export default function NotificationsSettingsPage() {
         {/* Info */}
         <div className="glass rounded-xl p-4">
           <p className="text-sm text-muted-foreground text-center">
-            💡 Les notifications push nécessitent que tu autorises les notifications 
-            dans les paramètres de ton navigateur.
+            💡 Pour recevoir les notifications même quand l'app est fermée, 
+            installe Signal comme application sur ton téléphone.
           </p>
+          <Button
+            variant="ghost"
+            className="w-full mt-2 text-coral"
+            onClick={() => navigate('/install')}
+          >
+            Installer l'application
+          </Button>
         </div>
       </div>
     </PageLayout>
