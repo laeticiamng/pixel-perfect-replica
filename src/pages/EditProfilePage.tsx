@@ -9,7 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
 import { firstNameSchema, universitySchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
-import { FavoriteActivitiesSelector } from '@/components/FavoriteActivitiesSelector';
+import { FavoriteActivitiesSelector } from '@/components/social';
 import { ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';

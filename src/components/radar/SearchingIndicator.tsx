@@ -1,4 +1,4 @@
-import { Loader2, Users, Wifi } from 'lucide-react';
+import { Users, Wifi } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SearchingIndicatorProps {
