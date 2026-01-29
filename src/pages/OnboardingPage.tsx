@@ -93,9 +93,9 @@ export default function OnboardingPage() {
       }
       return true;
     } else {
-      // For registration, validate all fields together
-      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      if (!emailValid) {
+      // For registration, validate all fields together using Zod for better email validation
+      const emailResult = loginSchema.shape.email.safeParse(email);
+      if (!emailResult.success) {
         setErrors({ email: 'Email invalide' });
         return false;
       }
@@ -448,7 +448,7 @@ export default function OnboardingPage() {
   const totalSteps = 3;
 
   return (
-    <PageLayout className="flex flex-col px-6 py-8 safe-top safe-bottom">
+    <PageLayout showSidebar={false} className="flex flex-col px-6 py-8 safe-top safe-bottom">
       <div className="max-w-md mx-auto w-full flex-1 flex flex-col relative z-10">
         {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-8">

@@ -60,7 +60,7 @@ export default function InstallPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout showSidebar={false} className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button

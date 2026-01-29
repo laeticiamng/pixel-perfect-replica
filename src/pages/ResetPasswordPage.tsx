@@ -76,7 +76,7 @@ export default function ResetPasswordPage() {
 
   if (!isValidSession) {
     return (
-      <PageLayout className="flex flex-col items-center justify-center px-6">
+      <PageLayout showSidebar={false} className="flex flex-col items-center justify-center px-6">
         <div className="text-6xl mb-6">🔒</div>
         <h1 className="text-2xl font-bold text-foreground mb-4 text-center">
           Lien expiré
@@ -96,7 +96,7 @@ export default function ResetPasswordPage() {
 
   if (isSuccess) {
     return (
-      <PageLayout className="flex flex-col items-center justify-center px-6">
+      <PageLayout showSidebar={false} className="flex flex-col items-center justify-center px-6">
         <div className="w-20 h-20 rounded-full bg-signal-green/20 flex items-center justify-center mb-6 animate-pulse-signal">
           <Check className="h-10 w-10 text-signal-green" />
         </div>
@@ -111,7 +111,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <PageLayout className="flex flex-col px-6 py-8 safe-bottom">
+    <PageLayout showSidebar={false} className="flex flex-col px-6 py-8 safe-bottom">
       {/* Content */}
       <div className="flex-1 flex flex-col justify-center">
         <div className="w-16 h-16 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6">
