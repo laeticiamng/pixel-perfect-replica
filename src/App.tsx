@@ -5,43 +5,51 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster as HotToaster } from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ErrorBoundary, CookieConsent, OfflineBanner, ProtectedRoute } from "@/components";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { CookieConsent } from "@/components/CookieConsent";
-import { OfflineBanner } from "@/components/OfflineBanner";
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme } from "@/hooks";
+import { AnalyticsProvider } from "@/hooks/useAnalytics";
 
-import LandingPage from "./pages/LandingPage";
-import OnboardingPage from "./pages/OnboardingPage";
-import MapPage from "./pages/MapPage";
-import ProximityRevealPage from "./pages/ProximityRevealPage";
-import ProfilePage from "./pages/ProfilePage";
-import EditProfilePage from "./pages/EditProfilePage";
-import SettingsPage from "./pages/SettingsPage";
-import StatisticsPage from "./pages/StatisticsPage";
-import PeopleMetPage from "./pages/PeopleMetPage";
-import HelpPage from "./pages/HelpPage";
-import FeedbackPage from "./pages/FeedbackPage";
-import ReportPage from "./pages/ReportPage";
-import DiagnosticsPage from "./pages/DiagnosticsPage";
-import TermsPage from "./pages/TermsPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import NotificationsSettingsPage from "./pages/NotificationsSettingsPage";
-import PrivacySettingsPage from "./pages/PrivacySettingsPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
-import InstallPage from "./pages/InstallPage";
-import AdminDashboardPage from "./pages/AdminDashboardPage";
-import BlockedUsersPage from "./pages/BlockedUsersPage";
-import DataExportPage from "./pages/DataExportPage";
-import EventsPage from "./pages/EventsPage";
-import EventDetailPage from "./pages/EventDetailPage";
-import BinomePage from "./pages/BinomePage";
-import SessionDetailPage from "./pages/SessionDetailPage";
-import NotFound from "./pages/NotFound";
-import { ProtectedRoute } from "./components/ProtectedRoute";
-import { AnalyticsProvider } from "./hooks/useAnalytics";
+// Pages - organized by category
+import {
+  // Main
+  LandingPage,
+  MapPage,
+  ProximityRevealPage,
+  AdminDashboardPage,
+  NotFound,
+  // Auth
+  OnboardingPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  ChangePasswordPage,
+  // Profile
+  ProfilePage,
+  EditProfilePage,
+  StatisticsPage,
+  PeopleMetPage,
+  // Settings
+  SettingsPage,
+  NotificationsSettingsPage,
+  PrivacySettingsPage,
+  DiagnosticsPage,
+  InstallPage,
+  BlockedUsersPage,
+  DataExportPage,
+  // Events
+  EventsPage,
+  EventDetailPage,
+  // Binome
+  BinomePage,
+  SessionDetailPage,
+  // Legal
+  TermsPage,
+  PrivacyPage,
+  // Support
+  HelpPage,
+  FeedbackPage,
+  ReportPage,
+} from "@/pages";
 
 const queryClient = new QueryClient();
 
