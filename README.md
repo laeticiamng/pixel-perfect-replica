@@ -1,15 +1,50 @@
 # 📡 Signal - Connecte-toi IRL
 
-**Signal** est une application mobile-first qui permet aux étudiants et jeunes actifs de se rejoindre spontanément dans la vraie vie. 
-Active ton signal pour indiquer que tu es ouvert aux rencontres, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
+**Signal** est une application mobile-first qui permet aux étudiants et jeunes actifs de se rejoindre spontanément dans la vraie vie. Active ton signal pour indiquer que tu es ouvert aux rencontres, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
 
 ![Signal App](https://img.shields.io/badge/React-18.3-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue) ![Supabase](https://img.shields.io/badge/Supabase-Cloud-green) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-cyan)
 
 ---
 
-## 🚀 Fonctionnalités
+## 📋 Métadonnées Projet
 
-### 🎯 Core Features
+| Champ | Valeur |
+|-------|--------|
+| Version cible | 1.0.0 |
+| Priorité | P1 - Haute |
+| Durée totale | 16-20 semaines |
+| Budget total | 80-120k€ |
+| Équipe | 5 pers (2 full-stack, 1 mobile, 1 growth hacker, 1 designer) |
+
+---
+
+## 🚨 Failles à Éliminer
+
+| # | Faille | Solution | Sprint |
+|---|--------|----------|--------|
+| F1 | Chicken-and-egg | Lancement concentré 1 campus puis expansion | S10-S16 |
+| F2 | Consommation batterie | Geofencing intelligent + mode économie | S3-S6 |
+| F3 | Risque sécurité physique | Vérification sociale + bouton alerte | S4-S8 |
+| F4 | Imprécision indoor | Beacons BLE + WiFi fingerprinting | S6-S10 |
+| F5 | Monétisation floue | B2B établissements + premium users | S12-S16 |
+
+---
+
+## 🎯 Axes Différenciants
+
+| # | Axe | Implémentation | Sprint |
+|---|-----|----------------|--------|
+| A1 | Lancement campus ciblé | Playbook + ambassadeurs + événement | S10-S16 |
+| A2 | Beacons indoor | Partenariats cafés/BU | S6-S10 |
+| A3 | Mode événement | Activation temporaire pour soirées | S8-S12 |
+| A4 | Dashboard B2B | Analytics établissements partenaires | S10-S14 |
+| A5 | Vérification sociale | LinkedIn, Instagram, email .edu | S4-S8 |
+
+---
+
+## 🚀 Fonctionnalités Core
+
+### 🎯 Features Principales
 
 | Fonctionnalité | Description |
 |----------------|-------------|
@@ -42,6 +77,59 @@ Active ton signal pour indiquer que tu es ouvert aux rencontres, découvre qui e
 - Vibration de proximité
 - Distance de visibilité personnalisable
 - Suppression de compte
+
+---
+
+## 📦 Modules de Développement
+
+### MODULE 1: Application Mobile Native (S1-S8)
+
+- React Native + Expo SDK 50+
+- Auth: phone OTP, email, Apple, Google
+- Profil: photo, bio 140 chars, 6 activités favorites
+- Interface signal: + timer expiration
+- Carte temps réel Mapbox + distance floue
+- Système icebreaker + mini chat 10 messages
+
+### MODULE 2: Optimisation Localisation (S3-S10)
+
+- Geofencing zones actives (campus, quartiers)
+- Optimisation batterie < 5%/heure actif
+- Indoor beacons iBeacon/Eddystone (< 5m précision)
+- WiFi fingerprinting crowdsourced
+- Description textuelle lieu optionnelle
+
+### MODULE 3: Sécurité & Trust (S4-S8)
+
+- Vérification email .edu/.univ-*.fr (50+ domaines)
+- OAuth LinkedIn + Instagram (badges)
+- Vérification photo liveness detection
+- Bouton alerte: GPS → 3 contacts + 112
+- Modération: report 3 taps, review < 24h
+
+### MODULE 4: Mode Événement (S8-S12)
+
+- Création événement: lieu, date, QR code
+- SIGNAL isolé aux participants événement
+- Icebreakers spéciaux + gamification
+- Dashboard organisateur temps réel
+- Intégrations: Shotgun, Eventbrite, Weezevent
+
+### MODULE 5: B2B Établissements (S10-S14)
+
+- Onboarding: SIRET + vérification gérant
+- Dashboard: fréquentation, heatmap, demographics
+- Promotions push ciblées + tracking redemptions
+- Badge 'SIGNAL Friendly' + kit marketing
+- Pricing: Free / Premium 29€/mois / Enterprise
+
+### MODULE 6: Lancement Campus (S10-S16)
+
+- Sélection 3 campus (> 10k étudiants)
+- 15 ambassadeurs (5/campus) + formation + incentives
+- Événement lancement/campus: 100+ participants
+- Campagne: affiches, réseaux sociaux, referral
+- Itérations rapides: hotfixes < 24h, NPS hebdo
 
 ---
 
@@ -116,6 +204,49 @@ Active ton signal pour indiquer que tu es ouvert aux rencontres, découvre qui e
 | `cleanup_expired_signals` | Nettoie les signaux expirés |
 | `increment_interactions` | Incrémente le compteur d'interactions |
 | `add_hours_active` | Ajoute du temps actif aux statistiques |
+
+---
+
+## 💰 Budget Détaillé
+
+| Poste | Min | Max | Notes |
+|-------|-----|-----|-------|
+| Équipe interne | 50k€ | 70k€ | 5 personnes × 4-5 mois |
+| Beacons hardware | 5k€ | 10k€ | 50 beacons × 3 lieux |
+| Marketing lancement | 10k€ | 15k€ | Événements, goodies, ads |
+| Ambassadeurs | 5k€ | 8k€ | Commissions, bonus |
+| Infrastructure | 5k€ | 8k€ | Servers, Mapbox, SMS |
+| Juridique | 3k€ | 5k€ | CGV, privacy policy |
+| **TOTAL** | **80k€** | **120k€** | |
+
+---
+
+## 📈 KPIs de Succès
+
+| KPI | Target S20 | Seuil PMF |
+|-----|------------|-----------|
+| Downloads | 3,000+ | 2,000 |
+| DAU | 500+ | 300 |
+| DAU/MAU ratio | > 30% | > 25% |
+| Icebreakers/jour | 200+ | 100 |
+| Acceptance rate | > 40% | > 30% |
+| D7 retention | > 35% | > 25% |
+| NPS | > 40 | > 30 |
+| Établissements B2B | 10+ | 5 |
+
+---
+
+## ✅ Definition of Done
+
+- [ ] App iOS + Android publiée, rating > 4.0
+- [ ] 3 campus lancés, 500+ users chacun
+- [ ] DAU > 500 stable sur 4 semaines
+- [ ] Retention D7 > 35%
+- [ ] 3 méthodes vérification actives
+- [ ] 0 incident sécurité grave
+- [ ] Indoor positioning < 10m précision
+- [ ] 10 établissements B2B onboardés
+- [ ] Métriques PMF documentées pour pitch seed
 
 ---
 
@@ -248,6 +379,8 @@ npm run test -- src/test/security.test.ts
 | `rls-permissions.test.ts` | Tests des policies RLS |
 | `integration.test.ts` | Tests d'intégration |
 | `e2e-scenarios.test.ts` | Scénarios end-to-end |
+| `LandingPage.test.tsx` | Tests de la page d'accueil |
+| `OnboardingPage.test.tsx` | Tests de l'onboarding |
 
 ---
 

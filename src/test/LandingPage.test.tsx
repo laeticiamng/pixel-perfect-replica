@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import LandingPage from '@/pages/LandingPage';
 
@@ -29,57 +29,57 @@ describe('LandingPage', () => {
   });
 
   it('should render the main title', () => {
-    render(
+    const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(screen.getByText('SIGNAL')).toBeInTheDocument();
+    expect(getByText('SIGNAL')).toBeInTheDocument();
   });
 
   it('should render the tagline', () => {
-    render(
+    const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
     // Updated tagline - use more specific selector for the main tagline paragraph
-    const tagline = screen.getByText(/Vois qui est ouvert/);
+    const tagline = getByText(/Vois qui est ouvert/);
     expect(tagline).toBeInTheDocument();
   });
 
   it('should render the CTA buttons', () => {
-    render(
+    const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(screen.getByText('Commencer')).toBeInTheDocument();
-    expect(screen.getByText("J'ai déjà un compte")).toBeInTheDocument();
+    expect(getByText('Commencer')).toBeInTheDocument();
+    expect(getByText("J'ai déjà un compte")).toBeInTheDocument();
   });
 
   it('should render 3 feature cards', () => {
-    render(
+    const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(screen.getByText('Signale que tu es ouvert')).toBeInTheDocument();
-    expect(screen.getByText('Vois les signaux autour')).toBeInTheDocument();
-    expect(screen.getByText('Approche sans awkwardness')).toBeInTheDocument();
+    expect(getByText('Signale que tu es ouvert')).toBeInTheDocument();
+    expect(getByText('Vois les signaux autour')).toBeInTheDocument();
+    expect(getByText('Approche sans awkwardness')).toBeInTheDocument();
   });
 
   it('should render footer with terms link', () => {
-    render(
+    const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
     
-    expect(screen.getByText(/conditions d'utilisation/)).toBeInTheDocument();
+    expect(getByText(/conditions d'utilisation/)).toBeInTheDocument();
   });
 });
