@@ -545,6 +545,34 @@
   background: hsl(var(--coral) / 0.5);
 }
 
+/* Slow spin for searching indicator */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+/* Scan animation for searching bar */
+@keyframes scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.animate-scan {
+  animation: scan 2s ease-in-out infinite;
+}
+
 /* Mobile optimizations */
 @media (max-width: 500px) {
   html {
