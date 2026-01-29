@@ -181,7 +181,7 @@ export default function MapPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-radial flex flex-col pb-28">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col pb-28">
       {/* Header */}
       <header className="safe-top px-6 py-4">
         <div className="glass rounded-xl p-4 flex items-center justify-between">

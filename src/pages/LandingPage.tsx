@@ -33,7 +33,7 @@ export default function LandingPage() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-radial flex flex-col">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col">
       {/* Hero Section */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         {/* Animated Logo */}
@@ -94,19 +94,19 @@ export default function LandingPage() {
       </div>
 
       {/* Footer */}
-      <footer className="py-6 text-center">
-        <p className="text-xs text-muted-foreground">
+      <footer className="py-6 text-center safe-bottom">
+        <p className="text-xs text-muted-foreground px-4">
           En continuant, tu acceptes nos{' '}
           <button 
             onClick={() => navigate('/terms')}
-            className="text-coral underline"
+            className="text-coral underline hover:text-coral-light transition-colors"
           >
             conditions d'utilisation
           </button>
           {' '}et notre{' '}
           <button 
             onClick={() => navigate('/privacy')}
-            className="text-coral underline"
+            className="text-coral underline hover:text-coral-light transition-colors"
           >
             politique de confidentialité
           </button>

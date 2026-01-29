@@ -5,7 +5,7 @@ export default function TermsPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-radial pb-8">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button

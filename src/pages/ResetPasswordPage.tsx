@@ -110,7 +110,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-radial flex flex-col px-6 py-8">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col px-6 py-8 safe-bottom">
       {/* Content */}
       <div className="flex-1 flex flex-col justify-center">
         <div className="w-16 h-16 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6">

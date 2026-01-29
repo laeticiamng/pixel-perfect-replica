@@ -342,7 +342,7 @@ export default function OnboardingPage() {
   const totalSteps = 3;
 
   return (
-    <div className="min-h-screen bg-gradient-radial flex flex-col px-6 py-8">
+    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col px-6 py-8 safe-top safe-bottom">
       {/* Progress dots */}
       <div className="flex justify-center gap-2 mb-8">
         {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
