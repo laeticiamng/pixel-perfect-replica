@@ -226,7 +226,7 @@ export default function LandingPage() {
           className="text-lg md:text-xl text-muted-foreground text-center max-w-md mb-12 leading-relaxed"
         >
           Plus besoin de deviner. Signale ton intention,
-          <br className="hidden sm:block" /> trouve ceux qui partagent la tienne.
+          <br className="hidden sm:block" /> trouve ceux qui partagent la tienne à proximité.
         </motion.p>
         
         {/* CTA Buttons */}
