@@ -392,6 +392,22 @@ export default function OnboardingPage() {
                 'Autoriser la localisation'
               )}
             </Button>
+            
+            {locationStatus !== 'success' && (
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="text-sm text-muted-foreground hover:text-foreground underline transition-colors"
+              >
+                Passer pour l'instant
+              </button>
+            )}
+            
+            {locationStatus !== 'success' && (
+              <p className="text-xs text-muted-foreground/70">
+                Tu pourras activer la localisation plus tard dans les paramètres
+              </p>
+            )}
           </div>
         );
         
@@ -481,13 +497,15 @@ export default function OnboardingPage() {
         
         <Button
           onClick={handleContinue}
-          disabled={isLoading || (step === 2 && locationStatus !== 'success')}
+          disabled={isLoading}
           className="flex-1 h-14 text-lg font-semibold bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl glow-coral transition-all duration-300"
         >
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : step === totalSteps ? (
             "C'est parti !"
+          ) : step === 2 && locationStatus !== 'success' ? (
+            "Passer"
           ) : (
             <>
               Continuer
