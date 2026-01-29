@@ -442,9 +442,9 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center">
-                <span className="text-white font-bold text-sm">S</span>
+                <span className="text-white font-bold text-sm">E</span>
               </div>
-              <span className="font-bold text-foreground">SIGNAL</span>
+              <span className="font-bold text-foreground">EASY</span>
             </div>
             
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
@@ -473,7 +473,7 @@ export default function LandingPage() {
                 Confidentialité
               </button>
               <a 
-                href="mailto:support@signal-app.fr"
+                href="mailto:support@easy-app.fr"
                 className="hover:text-foreground transition-colors"
               >
                 Contact
@@ -482,7 +482,7 @@ export default function LandingPage() {
           </div>
           
           <div className="text-center text-xs text-muted-foreground">
-            <p className="font-medium">SIGNAL v1.1.0 • PWA</p>
+            <p className="font-medium">EASY v1.2.0 • PWA</p>
             <p>Made with ❤️ in France par EmotionsCare Sasu</p>
           </div>
         </div>

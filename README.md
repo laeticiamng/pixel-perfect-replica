@@ -1,6 +1,6 @@
-# 📡 SIGNAL — Vois qui est ouvert à l'interaction autour de toi
+# 🟢 EASY — Le premier réseau social 100% réel
 
-**SIGNAL** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton signal, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
+**EASY** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton signal, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
 
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript) ![Supabase](https://img.shields.io/badge/Lovable_Cloud-Supabase-3FCF8E?logo=supabase) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss) ![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa) ![Vitest](https://img.shields.io/badge/Tests-Vitest-6E9F18?logo=vitest)
 
@@ -10,7 +10,7 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.1.0 |
+| **Version** | 1.2.0 |
 | **Statut** | ✅ Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud (Supabase) |

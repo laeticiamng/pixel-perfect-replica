@@ -13,8 +13,8 @@ export default function HelpPage() {
 
   const faqs = [
     {
-      question: "Comment fonctionne SIGNAL ?",
-      answer: "SIGNAL te permet de signaler que tu es ouvert à l'interaction dans un lieu. Les autres utilisateurs peuvent voir ton signal et venir te parler avec un icebreaker suggéré."
+      question: "Comment fonctionne EASY ?",
+      answer: "EASY te permet de signaler que tu es ouvert à l'interaction dans un lieu. Les autres utilisateurs peuvent voir ton signal et venir te parler avec un icebreaker suggéré."
     },
     {
       question: "Ma position est-elle stockée ?",
@@ -45,16 +45,16 @@ export default function HelpPage() {
       answer: "Après chaque interaction, les utilisateurs peuvent laisser un feedback positif ou négatif. Ton rating moyen reflète la qualité de tes échanges. Un bon rating inspire confiance aux autres."
     },
     {
-      question: "Qu'est-ce qu'un événement SIGNAL ?",
-      answer: "Les événements permettent de créer des rassemblements avec un SIGNAL isolé. L'organisateur génère un QR code pour valider les présences. Parfait pour les meetups, révisions, ou soirées !"
+      question: "Qu'est-ce qu'un événement EASY ?",
+      answer: "Les événements permettent de créer des rassemblements avec un signal isolé. L'organisateur génère un QR code pour valider les présences. Parfait pour les meetups, révisions, ou soirées !"
     },
     {
       question: "Comment contacter le support ?",
-      answer: "Tu peux nous écrire à support@signal-app.fr ou rejoindre notre communauté Discord. Nous répondons généralement sous 24h en semaine."
+      answer: "Tu peux nous écrire à support@easy-app.fr ou rejoindre notre communauté Discord. Nous répondons généralement sous 24h en semaine."
     },
     {
-      question: "SIGNAL est-il gratuit ?",
-      answer: "Oui, SIGNAL est entièrement gratuit ! Certaines fonctionnalités premium (mode fantôme) seront disponibles prochainement."
+      question: "EASY est-il gratuit ?",
+      answer: "Oui, EASY est entièrement gratuit ! Certaines fonctionnalités premium (mode fantôme) seront disponibles prochainement."
     },
     {
       question: "Comment fonctionne le mini-chat ?",
@@ -73,7 +73,7 @@ export default function HelpPage() {
   }, [searchQuery]);
 
   const supportLinks = [
-    { icon: <Mail className="h-5 w-5" />, label: 'Nous contacter', href: 'mailto:support@signal-app.fr' },
+    { icon: <Mail className="h-5 w-5" />, label: 'Nous contacter', href: 'mailto:support@easy-app.fr' },
     { icon: <MessageCircle className="h-5 w-5" />, label: 'Communauté', href: 'https://discord.gg', external: true },
     { icon: <FileText className="h-5 w-5" />, label: 'Conditions d\'utilisation', href: '/terms' },
     { icon: <Shield className="h-5 w-5" />, label: 'Politique de confidentialité', href: '/privacy' },
