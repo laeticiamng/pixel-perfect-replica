@@ -482,7 +482,7 @@ export default function LandingPage() {
           </div>
           
           <div className="text-center text-xs text-muted-foreground">
-            <p className="font-medium">SIGNAL v1.0.0</p>
+            <p className="font-medium">SIGNAL v1.1.0 • PWA</p>
             <p>Made with ❤️ in France par EmotionsCare Sasu</p>
           </div>
         </div>

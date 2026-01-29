@@ -2,7 +2,7 @@
 
 **SIGNAL** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton signal, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
 
-![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript) ![Supabase](https://img.shields.io/badge/Lovable_Cloud-Supabase-3FCF8E?logo=supabase) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss) ![Vitest](https://img.shields.io/badge/Tests-Vitest-6E9F18?logo=vitest)
+![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript) ![Supabase](https://img.shields.io/badge/Lovable_Cloud-Supabase-3FCF8E?logo=supabase) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss) ![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa) ![Vitest](https://img.shields.io/badge/Tests-Vitest-6E9F18?logo=vitest)
 
 ---
 
@@ -10,10 +10,28 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.0.0 |
-| **Statut** | ✅ Audit complet terminé (Score: 18.9/20) |
-| **Plateforme** | Web (PWA mobile-first) |
+| **Version** | 1.1.0 |
+| **Statut** | ✅ Production Ready |
+| **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud (Supabase) |
+
+---
+
+## 🚀 Installation Rapide
+
+### Sur mobile (recommandé)
+1. Ouvre l'app dans ton navigateur
+2. Va sur `/install` pour les instructions
+3. **iPhone/iPad** : Partager → Sur l'écran d'accueil
+4. **Android** : Menu ⋮ → Installer l'application
+
+### Développement local
+```bash
+git clone <YOUR_GIT_URL>
+cd signal-app
+npm install
+npm run dev
+```
 
 ---
 
@@ -28,13 +46,30 @@
 | **Révélation progressive** | Rapproche-toi à < 50m pour voir le profil complet |
 | **Icebreakers** | Phrases d'accroche contextuelles selon l'activité |
 | **Filtres d'activité** | Filtre les utilisateurs par type d'activité |
-| **Expiration automatique** | Signaux expirent après 4 heures |
+| **Expiration automatique** | Signaux expirent après 2 heures (extensibles) |
+
+### 📱 Progressive Web App (PWA)
+| Fonctionnalité | Description |
+|----------------|-------------|
+| **Installable** | Installe l'app sur ton écran d'accueil |
+| **Mode hors-ligne** | Cache intelligent avec service worker |
+| **Notifications push** | Alertes quand quelqu'un arrive à proximité |
+| **Navigation gestuelle** | Swipe horizontal entre les pages principales |
+| **Breadcrumbs** | Navigation intuitive sur les pages profondes |
+
+### 🔔 Notifications
+| Fonctionnalité | Description |
+|----------------|-------------|
+| **Push natifs** | Notifications même quand l'app est fermée |
+| **Alertes proximité** | Notification quand quelqu'un nouveau arrive |
+| **Vibration** | Feedback haptique configurable |
+| **Sons** | Alertes sonores personnalisables |
 
 ### 🔒 Confidentialité & Sécurité
 | Fonctionnalité | Description |
 |----------------|-------------|
 | **Ghost Mode** | Masque ta présence sur le radar |
-| **Floutage GPS** | Coordonnées approximatives pour protéger ta position |
+| **Floutage GPS** | Coordonnées approximatives (~100m) |
 | **RLS Policies** | Sécurité niveau base de données |
 | **Purge 30 jours** | Suppression automatique des données de localisation |
 | **Bouton d'urgence** | Alerte rapide avec contacts d'urgence |
@@ -64,7 +99,7 @@
 |-------------|-------|
 | **React 18** | Framework UI avec hooks |
 | **TypeScript** | Typage statique |
-| **Vite** | Build tool |
+| **Vite + PWA** | Build tool avec service worker |
 | **Tailwind CSS** | Styling avec design tokens |
 | **shadcn/ui** | Composants UI accessibles |
 | **Framer Motion** | Animations fluides |
@@ -80,7 +115,8 @@
 | **Storage** | Avatars utilisateurs |
 | **RLS** | Row Level Security |
 | **Realtime** | Subscriptions temps réel |
-| **Functions** | Logique SQL métier |
+| **Edge Functions** | Notifications push |
+| **Functions SQL** | Logique métier |
 
 ---
 
@@ -98,16 +134,16 @@
 │  ├── university        ├── lat/lng            ├── icebreaker│
 │  └── bio               └── expires_at         └── feedback  │
 │                                                              │
-│  user_settings         user_stats             emergency_    │
-│  ├── ghost_mode        ├── interactions       contacts      │
-│  ├── visibility_dist   ├── hours_active       ├── name      │
-│  ├── push_notifs       ├── rating             └── phone     │
-│  └── vibration         └── total_ratings                    │
+│  user_settings         user_stats             push_         │
+│  ├── ghost_mode        ├── interactions       subscriptions │
+│  ├── visibility_dist   ├── hours_active       ├── endpoint  │
+│  ├── push_notifs       ├── rating             ├── p256dh    │
+│  └── vibration         └── total_ratings      └── auth      │
 │                                                              │
-│  reports               app_feedback           user_roles    │
-│  ├── reporter_id       ├── rating             ├── user_id   │
-│  ├── reported_id       └── message            └── role      │
-│  └── reason                                                  │
+│  emergency_contacts    reports                app_feedback  │
+│  ├── name              ├── reporter_id        ├── rating    │
+│  └── phone             ├── reported_id        └── message   │
+│                        └── reason                            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -121,32 +157,43 @@
 | `increment_interactions` | Compteur d'interactions |
 | `check_report_rate_limit` | Rate limiting signalements |
 
+### Edge Functions
+| Fonction | Description |
+|----------|-------------|
+| `send-push-notification` | Envoi de notifications push |
+
 ---
 
 ## 📱 Routes de l'Application
 
-| Route | Page | Auth |
-|-------|------|------|
-| `/` | Landing | ❌ |
-| `/onboarding` | Inscription | ❌ |
-| `/forgot-password` | Mot de passe oublié | ❌ |
-| `/reset-password` | Reset mot de passe | ❌ |
-| `/terms` | CGU | ❌ |
-| `/privacy` | Politique confidentialité | ❌ |
-| `/map` | Radar principal | ✅ |
-| `/reveal/:userId` | Révélation profil | ✅ |
-| `/profile` | Mon profil | ✅ |
-| `/profile/edit` | Modifier profil | ✅ |
-| `/settings` | Paramètres | ✅ |
-| `/notifications-settings` | Notifications | ✅ |
-| `/privacy-settings` | Confidentialité | ✅ |
-| `/change-password` | Changer mot de passe | ✅ |
-| `/people-met` | Historique rencontres | ✅ |
-| `/statistics` | Statistiques | ✅ |
-| `/report` | Signaler | ✅ |
-| `/feedback` | Avis | ✅ |
-| `/help` | Aide | ✅ |
-| `/diagnostics` | Debug | ✅ |
+### Routes Publiques
+| Route | Page | Description |
+|-------|------|-------------|
+| `/` | Landing | Page d'accueil |
+| `/onboarding` | Inscription/Connexion | Création de compte |
+| `/install` | Installation PWA | Guide d'installation |
+| `/forgot-password` | Mot de passe oublié | Réinitialisation |
+| `/reset-password` | Reset mot de passe | Nouveau mot de passe |
+| `/terms` | CGU | Conditions d'utilisation |
+| `/privacy` | Confidentialité | Politique de confidentialité |
+
+### Routes Protégées (Auth requise)
+| Route | Page | Description |
+|-------|------|-------------|
+| `/map` | Radar | Page principale avec carte |
+| `/reveal/:userId` | Révélation | Profil complet d'un utilisateur |
+| `/profile` | Mon profil | Vue de son profil |
+| `/profile/edit` | Modifier profil | Édition du profil |
+| `/settings` | Paramètres | Configuration générale |
+| `/notifications-settings` | Notifications | Config des alertes |
+| `/privacy-settings` | Confidentialité | Ghost mode, visibilité |
+| `/change-password` | Mot de passe | Changer son mot de passe |
+| `/people-met` | Rencontres | Historique des interactions |
+| `/statistics` | Statistiques | Graphiques d'activité |
+| `/report` | Signaler | Signaler un problème |
+| `/feedback` | Avis | Donner son avis |
+| `/help` | Aide | FAQ et support |
+| `/diagnostics` | Debug | Informations techniques |
 
 ---
 
@@ -175,6 +222,11 @@
 - **Glow**: `.glow-coral`, `.glow-green`, `.glow-yellow`
 - **Animations**: `pulse-signal`, `float`, `ripple`, `radar-sweep`
 
+### Navigation Mobile
+- **Swipe horizontal** entre Map ↔ Profile ↔ Settings
+- **Breadcrumbs** automatiques sur pages profondes
+- **Bottom navigation** fixe avec 3 onglets principaux
+
 ---
 
 ## 🧪 Tests
@@ -200,89 +252,37 @@ npm run test -- src/test/auth.test.ts
 
 ---
 
-## 🚀 Installation
+## ✅ Checklist Qualité
 
-### Prérequis
-- Node.js 18+ ou Bun
+### Fonctionnalités ✅
+- [x] PWA installable (iOS + Android)
+- [x] Notifications push natives
+- [x] Navigation par gestes (swipe)
+- [x] Breadcrumbs automatiques
+- [x] Mode hors-ligne partiel
+- [x] Thème clair/sombre
 
-### Développement local
-```bash
-# Cloner
-git clone <YOUR_GIT_URL>
-cd signal-app
+### Sécurité ✅
+- [x] Authentification avec auto-confirm
+- [x] Row Level Security sur toutes les tables
+- [x] Validation inputs (client + serveur)
+- [x] Sanitization HTML (XSS protection)
+- [x] Rate limiting sur signalements
+- [x] Ghost mode pour confidentialité
+- [x] Floutage coordonnées GPS
 
-# Installer
-npm install  # ou bun install
-
-# Lancer
-npm run dev  # ou bun dev
-```
-
-### Variables d'environnement
-Configurées automatiquement par Lovable Cloud :
-```env
-VITE_SUPABASE_URL=https://xxx.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGc...
-```
-
-### Scripts
-```bash
-npm run dev      # Serveur dev
-npm run build    # Build production
-npm run preview  # Preview build
-npm run lint     # ESLint
-npm run test     # Vitest
-```
-
----
-
-## ✅ Audit & Qualité
-
-### Score Global: 18.9/20
-
-| Module | Score |
-|--------|-------|
-| Authentification | 17/20 |
-| Carte/Radar | 19/20 |
-| Reveal | 18/20 |
-| Profil | 19/20 |
-| Paramètres | 19/20 |
-| Statistiques | 18/20 |
-| Personnes rencontrées | 18/20 |
-| Sécurité & Urgence | 18/20 |
-| Tests | 15/20 |
-| Accessibilité | 18/20 |
-
-### Checklist ✅
-- [x] Smoke tests passent
-- [x] Auth + RLS testées
+### Accessibilité ✅
 - [x] Aria-labels sur tous les boutons icônes
+- [x] Focus visible pour navigation clavier
 - [x] Skeletons sur pages avec data
 - [x] Couleurs via tokens CSS (thémées)
-- [x] Realtime subscription active
-- [x] Focus visible pour accessibilité
-- [x] Export GDPR fonctionnel
-- [x] Bouton d'urgence avec contacts
+- [x] Contraste suffisant
 
----
-
-## 🔐 Sécurité
-
-### Mesures implémentées
-- ✅ Authentification Supabase avec auto-confirm
-- ✅ Row Level Security sur toutes les tables
-- ✅ Validation inputs (client + serveur)
-- ✅ Sanitization HTML (XSS protection)
-- ✅ Rate limiting sur signalements
-- ✅ HTTPS obligatoire
-- ✅ Ghost mode pour confidentialité
-- ✅ Floutage coordonnées GPS
-
-### Conformité GDPR
-- Export données personnelles
-- Suppression compte avec cascade
-- Politique confidentialité
-- Consentement cookies
+### GDPR ✅
+- [x] Export données personnelles
+- [x] Suppression compte avec cascade
+- [x] Politique confidentialité
+- [x] Consentement cookies
 
 ---
 
@@ -315,10 +315,12 @@ npm run test     # Vitest
 - **Docs**: [docs.lovable.dev](https://docs.lovable.dev)
 - **Discord**: [Communauté Lovable](https://discord.com/channels/1119885301872070706/1280461670979993613)
 - **Feedback**: Page Feedback dans l'app
+- **Email**: support@signal-app.fr
 
 ---
 
 <p align="center">
   <strong>📡 SIGNAL</strong> — Vois qui est ouvert à l'interaction autour de toi<br>
-  Fait avec ❤️ et <a href="https://lovable.dev">Lovable</a>
+  <em>Version 1.1.0 • PWA • Notifications Push</em><br><br>
+  Fait avec ❤️ par EmotionsCare Sasu
 </p>
