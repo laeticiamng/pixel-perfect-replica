@@ -1,4 +1,4 @@
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -258,6 +258,20 @@ export default function SettingsPage() {
             <span className="font-medium">Diagnostics (Dev)</span>
           </button>
         )}
+
+        {/* Install App */}
+        <button 
+          onClick={() => navigate('/install')}
+          className="w-full glass rounded-xl p-4 flex items-center gap-4 text-coral hover:bg-coral/10 transition-colors"
+        >
+          <div className="p-2 rounded-lg bg-coral/20">
+            <Download className="h-5 w-5" />
+          </div>
+          <div className="text-left">
+            <span className="font-medium">Installer l'app</span>
+            <p className="text-sm text-muted-foreground">Ajouter à l'écran d'accueil</p>
+          </div>
+        </button>
 
         {/* Reset Settings */}
         <Button
