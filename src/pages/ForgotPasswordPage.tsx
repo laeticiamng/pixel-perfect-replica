@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
+import { PageLayout } from '@/components/PageLayout';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -58,7 +59,7 @@ export default function ForgotPasswordPage() {
 
   if (isSent) {
     return (
-      <div className="min-h-screen bg-gradient-radial flex flex-col items-center justify-center px-6">
+      <PageLayout className="flex flex-col items-center justify-center px-6" showOrbs={true}>
         <div className="relative mb-8 animate-scale-in">
           <div className="absolute inset-0 rounded-full bg-signal-green/30 blur-xl animate-breathing" />
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-signal-green/30 to-signal-green/10 flex items-center justify-center relative shadow-medium">
@@ -78,12 +79,12 @@ export default function ForgotPasswordPage() {
         >
           Retour à la connexion
         </Button>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col px-6 py-8 safe-bottom">
+    <PageLayout className="flex flex-col px-6 py-8 safe-bottom">
       {/* Header */}
       <header className="flex items-center gap-4 mb-8">
         <button
@@ -146,6 +147,6 @@ export default function ForgotPasswordPage() {
           Retour à la connexion
         </button>
       </div>
-    </div>
+    </PageLayout>
   );
 }

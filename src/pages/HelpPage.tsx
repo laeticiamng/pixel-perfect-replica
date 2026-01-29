@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronRight, ExternalLink, Mail, MessageCircle, FileText, Shield, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { PageLayout } from '@/components/PageLayout';
 
 export default function HelpPage() {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export default function HelpPage() {
   ];
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+    <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
@@ -162,6 +163,6 @@ export default function HelpPage() {
           <p className="text-xs text-muted-foreground mt-1">Made with ❤️ in Paris</p>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }

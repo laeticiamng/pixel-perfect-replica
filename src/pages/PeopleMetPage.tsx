@@ -5,6 +5,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { ACTIVITIES } from '@/types/signal';
 import { Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { PageLayout } from '@/components/PageLayout';
 import { ProfileCardSkeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -85,7 +86,7 @@ export default function PeopleMetPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+      <PageLayout className="pb-8 safe-bottom">
         <header className="safe-top px-6 py-4 flex items-center gap-4">
           <button
             onClick={() => navigate('/profile')}
@@ -100,12 +101,12 @@ export default function PeopleMetPage() {
             <ProfileCardSkeleton key={i} />
           ))}
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-8 safe-bottom">
+    <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
@@ -234,6 +235,6 @@ export default function PeopleMetPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }

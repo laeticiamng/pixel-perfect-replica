@@ -1,5 +1,6 @@
 import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
+import { PageLayout } from '@/components/PageLayout';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
@@ -75,7 +76,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial pb-28">
+    <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto w-full">
         <header className="safe-top px-6 py-6">
           <h1 className="text-2xl font-bold text-foreground">Paramètres</h1>
@@ -214,6 +215,6 @@ export default function SettingsPage() {
       </div>
 
       <BottomNav />
-    </div>
+    </PageLayout>
   );
 }
