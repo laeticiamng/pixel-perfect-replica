@@ -63,6 +63,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "active_signals_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "active_signals_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
@@ -310,6 +317,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events_public"
             referencedColumns: ["id"]
           },
           {
@@ -782,6 +796,69 @@ export type Database = {
       }
     }
     Views: {
+      events_public: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ends_at: string | null
+          id: string | null
+          is_active: boolean | null
+          latitude: number | null
+          location_name: string | null
+          longitude: number | null
+          max_participants: number | null
+          name: string | null
+          organizer_id: string | null
+          starts_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          max_participants?: number | null
+          name?: string | null
+          organizer_id?: string | null
+          starts_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          max_participants?: number | null
+          name?: string | null
+          organizer_id?: string | null
+          starts_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_organizer_id_fkey"
+            columns: ["organizer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles_public: {
         Row: {
           avatar_url: string | null
@@ -887,6 +964,18 @@ export type Database = {
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       increment_interactions: {
         Args: { p_user_id: string }
+        Returns: undefined
+      }
+      submit_rating: {
+        Args: { p_rating: number; p_target_user_id: string }
+        Returns: undefined
+      }
+      update_user_stats_safe: {
+        Args: {
+          p_hours_active?: number
+          p_interactions?: number
+          p_user_id: string
+        }
         Returns: undefined
       }
     }
