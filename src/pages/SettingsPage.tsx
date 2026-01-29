@@ -1,4 +1,4 @@
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -114,6 +114,47 @@ export default function SettingsPage() {
           </div>
           <ThemeToggle />
         </motion.div>
+
+        {/* Quick Access Section */}
+        <div className="glass rounded-xl overflow-hidden">
+          <div className="px-4 py-3 border-b border-border/50">
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              Accès rapide
+            </span>
+          </div>
+          
+          <button
+            onClick={() => navigate('/notifications-settings')}
+            className="w-full flex items-center justify-between gap-4 px-4 py-3.5 hover:bg-muted/50 active:bg-muted/70 transition-colors border-b border-border/50"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
+                <Bell className="h-5 w-5" />
+              </div>
+              <div className="text-left">
+                <span className="font-medium text-foreground">Notifications</span>
+                <p className="text-sm text-muted-foreground">Gérer les alertes et sons</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+          
+          <button
+            onClick={() => navigate('/privacy-settings')}
+            className="w-full flex items-center justify-between gap-4 px-4 py-3.5 hover:bg-muted/50 active:bg-muted/70 transition-colors"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
+                <Shield className="h-5 w-5" />
+              </div>
+              <div className="text-left">
+                <span className="font-medium text-foreground">Confidentialité</span>
+                <p className="text-sm text-muted-foreground">Données et contacts d'urgence</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </div>
 
         {/* Security Section */}
         <div className="glass rounded-xl p-4">
