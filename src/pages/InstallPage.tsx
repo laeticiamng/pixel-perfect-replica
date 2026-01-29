@@ -70,7 +70,7 @@ export default function InstallPage() {
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
-        <h1 className="text-xl font-bold text-foreground">Installer SIGNAL</h1>
+        <h1 className="text-xl font-bold text-foreground">Installer EASY</h1>
       </header>
 
       <div className="px-6 space-y-8 animate-slide-up">
@@ -78,7 +78,7 @@ export default function InstallPage() {
         <div className="text-center py-8">
           <div className="relative inline-block mb-6">
             <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-xl glow-coral">
-              <span className="text-4xl font-bold text-white">S</span>
+              <span className="text-4xl font-bold text-white">E</span>
             </div>
             <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-signal-green flex items-center justify-center">
               <Sparkles className="h-4 w-4 text-white" />
@@ -86,12 +86,12 @@ export default function InstallPage() {
           </div>
           
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            {isInstalled ? 'App installée ! 🎉' : 'Installe SIGNAL'}
+            {isInstalled ? 'App installée ! 🎉' : 'Installe EASY'}
           </h2>
           <p className="text-muted-foreground">
             {isInstalled 
-              ? 'Tu peux maintenant utiliser SIGNAL depuis ton écran d\'accueil'
-              : 'Accède à SIGNAL directement depuis ton écran d\'accueil'
+              ? 'Tu peux maintenant utiliser EASY depuis ton écran d\'accueil'
+              : 'Accède à EASY directement depuis ton écran d\'accueil'
             }
           </p>
         </div>
@@ -102,7 +102,7 @@ export default function InstallPage() {
               <Check className="h-8 w-8 text-signal-green" />
             </div>
             <p className="text-foreground font-medium mb-4">
-              SIGNAL est installé sur ton appareil !
+              EASY est installé sur ton appareil !
             </p>
             <Button
               onClick={() => navigate('/map')}
@@ -165,7 +165,7 @@ export default function InstallPage() {
                     <div>
                       <p className="font-medium text-foreground">Appuie sur "Ajouter"</p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        SIGNAL apparaîtra sur ton écran d'accueil
+                        EASY apparaîtra sur ton écran d'accueil
                       </p>
                     </div>
                   </div>

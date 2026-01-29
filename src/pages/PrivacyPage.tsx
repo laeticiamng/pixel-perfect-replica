@@ -25,7 +25,7 @@ export default function PrivacyPage() {
           </p>
 
           <p className="text-foreground">
-            Chez SIGNAL, nous prenons votre vie privée très au sérieux. Cette politique 
+            Chez EASY, nous prenons votre vie privée très au sérieux. Cette politique 
             explique comment nous collectons, utilisons et protégeons vos données.
           </p>
 
@@ -123,7 +123,7 @@ export default function PrivacyPage() {
           <section className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground">6. Cookies</h2>
             <p className="text-muted-foreground">
-              SIGNAL utilise uniquement des cookies techniques essentiels au fonctionnement 
+              EASY utilise uniquement des cookies techniques essentiels au fonctionnement 
               de l'application (session, authentification). Nous n'utilisons pas de cookies 
               de tracking ou publicitaires.
             </p>
@@ -133,13 +133,13 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-foreground">7. Contact DPO</h2>
             <p className="text-muted-foreground">
               Pour exercer vos droits ou toute question relative à vos données :
-              <a href="mailto:dpo@signal-app.fr" className="text-coral ml-1">dpo@signal-app.fr</a>
+              <a href="mailto:dpo@easy-app.fr" className="text-coral ml-1">dpo@easy-app.fr</a>
             </p>
           </section>
         </div>
 
         <p className="text-center text-xs text-muted-foreground">
-          © 2026 SIGNAL. Tous droits réservés.
+          © 2026 EASY. Tous droits réservés.
         </p>
       </div>
     </PageLayout>
