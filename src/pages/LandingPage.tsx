@@ -184,10 +184,31 @@ export default function LandingPage() {
     <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <FloatingOrbs />
       
+      {/* Header with Logo */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-lg">
+              <span className="text-white font-black text-lg">E</span>
+            </div>
+            <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">
+              EASY
+            </span>
+          </div>
+          <Button
+            onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
+            variant="ghost"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Se connecter
+          </Button>
+        </div>
+      </header>
+      
       {/* Hero Section - Full Screen */}
       <motion.section 
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="min-h-screen flex flex-col items-center justify-center px-6 relative z-10"
+        className="min-h-screen flex flex-col items-center justify-center px-6 relative z-10 pt-16"
       >
         {/* Badge */}
         <motion.div
