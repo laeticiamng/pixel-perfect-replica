@@ -214,7 +214,7 @@ export default function LandingPage() {
           </span>
           <br />
           <span className="bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent">
-            ouvert.
+            ouvert à l'interaction.
           </span>
         </motion.h1>
         
