@@ -1,4 +1,4 @@
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download, BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -10,6 +10,7 @@ import { DeleteAccountDialog } from '@/components/DeleteAccountDialog';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
@@ -17,6 +18,7 @@ import { cn } from '@/lib/utils';
 export default function SettingsPage() {
   const navigate = useNavigate();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
+  const { isAdmin } = useAdminCheck();
   const {
     settings,
     setGhostMode,
@@ -245,6 +247,22 @@ export default function SettingsPage() {
             )}
           </div>
         ))}
+
+        {/* Admin Dashboard (admin only) */}
+        {isAdmin && (
+          <button 
+            onClick={() => navigate('/admin')}
+            className="w-full glass rounded-xl p-4 flex items-center gap-4 text-coral hover:bg-coral/10 transition-colors"
+          >
+            <div className="p-2 rounded-lg bg-coral/20">
+              <BarChart3 className="h-5 w-5" />
+            </div>
+            <div className="text-left">
+              <span className="font-medium">Dashboard Admin</span>
+              <p className="text-sm text-muted-foreground">Analytics & Engagement</p>
+            </div>
+          </button>
+        )}
 
         {/* Diagnostics (dev only) */}
         {isDev && (

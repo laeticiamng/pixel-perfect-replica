@@ -32,8 +32,10 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import InstallPage from "./pages/InstallPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AnalyticsProvider } from "./hooks/useAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -155,6 +157,11 @@ function AnimatedRoutes() {
               <ChangePasswordPage />
             </ProtectedRoute>
           } />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminDashboardPage />
+            </ProtectedRoute>
+          } />
           
           
           {/* Catch-all */}
@@ -191,9 +198,11 @@ const App = () => (
               }}
             />
             <BrowserRouter>
-              <AnimatedRoutes />
-              <CookieConsent />
-              <OfflineBanner />
+              <AnalyticsProvider>
+                <AnimatedRoutes />
+                <CookieConsent />
+                <OfflineBanner />
+              </AnalyticsProvider>
             </BrowserRouter>
           </TooltipProvider>
         </ThemeInitializer>
