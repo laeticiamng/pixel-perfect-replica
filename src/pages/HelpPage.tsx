@@ -1,8 +1,11 @@
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ChevronRight, ExternalLink, Mail, MessageCircle, Bug, FileText, Shield } from 'lucide-react';
+import { ArrowLeft, ChevronRight, ExternalLink, Mail, MessageCircle, FileText, Shield, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 export default function HelpPage() {
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
 
   const faqs = [
     {
@@ -21,7 +24,33 @@ export default function HelpPage() {
       question: "Comment signaler un comportement inapproprié ?",
       answer: "Tu peux signaler un problème via le menu Support dans ton profil. Notre équipe traitera ta demande rapidement."
     },
+    {
+      question: "Comment supprimer mon compte ?",
+      answer: "Va dans Paramètres, puis clique sur 'Supprimer mon compte'. Tu devras confirmer en tapant SUPPRIMER."
+    },
+    {
+      question: "Mes données sont-elles sécurisées ?",
+      answer: "Oui, nous utilisons le chiffrement et des politiques de sécurité strictes. Tu peux exporter tes données depuis les paramètres de confidentialité."
+    },
+    {
+      question: "Qu'est-ce que la distance de visibilité ?",
+      answer: "C'est le rayon maximum dans lequel tu verras les autres signaux. Tu peux l'ajuster de 50m à 500m dans les paramètres."
+    },
+    {
+      question: "Comment fonctionne le rating ?",
+      answer: "Après chaque interaction, les utilisateurs peuvent laisser un feedback positif ou négatif. Ton rating moyen reflète la qualité de tes échanges."
+    },
   ];
+
+  const filteredFaqs = useMemo(() => {
+    if (!searchQuery.trim()) return faqs;
+    const query = searchQuery.toLowerCase();
+    return faqs.filter(
+      faq => 
+        faq.question.toLowerCase().includes(query) ||
+        faq.answer.toLowerCase().includes(query)
+    );
+  }, [searchQuery]);
 
   const supportLinks = [
     { icon: <Mail className="h-5 w-5" />, label: 'Nous contacter', href: 'mailto:support@signal-app.fr' },
@@ -44,21 +73,39 @@ export default function HelpPage() {
       </header>
 
       <div className="px-6 space-y-6">
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Rechercher une question..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+          />
+        </div>
+
         {/* FAQ Section */}
         <div>
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Questions fréquentes
+            Questions fréquentes {searchQuery && `(${filteredFaqs.length} résultats)`}
           </h2>
           <div className="glass rounded-xl overflow-hidden">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className={`p-4 ${index !== faqs.length - 1 ? 'border-b border-border' : ''}`}
-              >
-                <p className="font-medium text-foreground mb-2">{faq.question}</p>
-                <p className="text-sm text-muted-foreground">{faq.answer}</p>
+            {filteredFaqs.length > 0 ? (
+              filteredFaqs.map((faq, index) => (
+                <div
+                  key={index}
+                  className={`p-4 ${index !== filteredFaqs.length - 1 ? 'border-b border-border' : ''}`}
+                >
+                  <p className="font-medium text-foreground mb-2">{faq.question}</p>
+                  <p className="text-sm text-muted-foreground">{faq.answer}</p>
+                </div>
+              ))
+            ) : (
+              <div className="p-6 text-center">
+                <p className="text-muted-foreground">Aucune question trouvée</p>
+                <p className="text-sm text-muted-foreground mt-1">Essaie avec d'autres mots-clés</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
 

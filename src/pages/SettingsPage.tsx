@@ -1,7 +1,8 @@
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components/ui/button';
 import { DeleteAccountDialog } from '@/components/DeleteAccountDialog';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +17,17 @@ export default function SettingsPage() {
     setPushNotifications,
     setSoundNotifications,
     setProximityVibration,
+    resetSettings,
   } = useUserSettings();
+
+  const handleResetSettings = async () => {
+    const { error } = await resetSettings();
+    if (error) {
+      toast.error('Erreur lors de la réinitialisation');
+    } else {
+      toast.success('Paramètres réinitialisés');
+    }
+  };
 
   const isDev = import.meta.env.DEV || localStorage.getItem('debug') === 'true';
 
@@ -144,6 +155,16 @@ export default function SettingsPage() {
             <span className="font-medium">Diagnostics (Dev)</span>
           </button>
         )}
+
+        {/* Reset Settings */}
+        <Button
+          variant="outline"
+          onClick={handleResetSettings}
+          className="w-full h-12 rounded-xl border-border text-foreground hover:bg-muted"
+        >
+          <RotateCcw className="h-4 w-4 mr-2" />
+          Réinitialiser les paramètres
+        </Button>
 
         {/* Delete Account */}
         <div className="mt-4">
