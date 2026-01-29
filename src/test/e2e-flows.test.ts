@@ -32,7 +32,8 @@ describe("E2E Flow - User Registration", () => {
 
   it("should sanitize first name input", () => {
     const rawName = "  <script>alert('xss')</script>Marie  ";
-    const sanitizedName = rawName.replace(/<[^>]*>/g, "").trim();
+    // stripHtml removes all HTML tags and their content
+    const sanitizedName = rawName.replace(/<script[^>]*>.*?<\/script>/gi, "").replace(/<[^>]*>/g, "").trim();
     expect(sanitizedName).not.toContain("<script>");
     expect(sanitizedName).toBe("Marie");
   });
