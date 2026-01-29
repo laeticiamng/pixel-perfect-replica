@@ -285,6 +285,9 @@ export default function BinomePage() {
         <SheetContent side="bottom" className="h-[90vh] overflow-y-auto">
           <SheetHeader className="mb-6">
             <SheetTitle>Créer un créneau</SheetTitle>
+            <SheetDescription>
+              Planifie une session avec d'autres personnes dans ta ville
+            </SheetDescription>
           </SheetHeader>
           <CreateSessionForm
             onSubmit={handleCreate}
