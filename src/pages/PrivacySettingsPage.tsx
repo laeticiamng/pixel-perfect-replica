@@ -221,6 +221,34 @@ export default function PrivacySettingsPage() {
           </Button>
         </div>
 
+        {/* Blocked Users */}
+        <button
+          onClick={() => navigate('/blocked-users')}
+          className="w-full glass rounded-xl p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors"
+        >
+          <div className="p-2 rounded-lg bg-destructive/20 text-destructive">
+            <Shield className="h-5 w-5" />
+          </div>
+          <div className="text-left flex-1">
+            <p className="font-medium text-foreground">Utilisateurs bloqués</p>
+            <p className="text-sm text-muted-foreground">Gérer les personnes que tu as bloquées</p>
+          </div>
+        </button>
+
+        {/* Data Export Page */}
+        <button
+          onClick={() => navigate('/data-export')}
+          className="w-full glass rounded-xl p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors"
+        >
+          <div className="p-2 rounded-lg bg-coral/20 text-coral">
+            <Download className="h-5 w-5" />
+          </div>
+          <div className="text-left flex-1">
+            <p className="font-medium text-foreground">Export complet des données</p>
+            <p className="text-sm text-muted-foreground">Télécharge toutes tes données (RGPD)</p>
+          </div>
+        </button>
+
         {/* Link to Privacy Policy */}
         <button
           onClick={() => navigate('/privacy')}
