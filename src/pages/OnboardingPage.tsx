@@ -150,10 +150,10 @@ export default function OnboardingPage() {
         return (
           <div className="space-y-6 animate-slide-up" onKeyPress={handleKeyPress}>
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-foreground mb-2">
+              <h2 className="text-2xl font-bold text-foreground mb-3">
                 {isLogin ? 'Content de te revoir !' : 'Créons ton compte'}
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-gray-300">
                 {isLogin ? 'Entre tes identifiants' : 'Remplis ces infos pour commencer'}
               </p>
             </div>
@@ -261,10 +261,10 @@ export default function OnboardingPage() {
               )}
             </div>
             
-            <h2 className="text-2xl font-bold text-foreground mb-2">
+            <h2 className="text-2xl font-bold text-foreground mb-3">
               Active la localisation
             </h2>
-            <p className="text-muted-foreground max-w-xs mx-auto">
+            <p className="text-gray-300 max-w-xs mx-auto leading-relaxed">
               Pour voir les signaux autour de toi, on a besoin de ta position. 
               Elle reste privée et n'est jamais stockée.
             </p>
@@ -305,32 +305,32 @@ export default function OnboardingPage() {
               Tu es prêt !
             </h2>
             
-            <p className="text-muted-foreground mb-8">
+            <p className="text-gray-300 mb-8">
               Voici comment fonctionnent les signaux :
             </p>
             
             <div className="space-y-4 text-left">
-              <div className="glass rounded-xl p-4 flex items-center gap-4">
-                <div className="w-6 h-6 rounded-full bg-signal-green glow-green" />
+              <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                <div className="w-7 h-7 rounded-full bg-signal-green glow-green shadow-lg" />
                 <div>
-                  <p className="font-semibold text-foreground">Signal vert</p>
-                  <p className="text-sm text-muted-foreground">Ouvert à l'interaction</p>
+                  <p className="font-bold text-foreground">Signal vert</p>
+                  <p className="text-sm text-gray-300">Ouvert à l'interaction</p>
                 </div>
               </div>
               
-              <div className="glass rounded-xl p-4 flex items-center gap-4">
-                <div className="w-6 h-6 rounded-full bg-signal-yellow glow-yellow" />
+              <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                <div className="w-7 h-7 rounded-full bg-signal-yellow glow-yellow shadow-lg" />
                 <div>
-                  <p className="font-semibold text-foreground">Signal jaune</p>
-                  <p className="text-sm text-muted-foreground">Ouvert sous conditions</p>
+                  <p className="font-bold text-foreground">Signal jaune</p>
+                  <p className="text-sm text-gray-300">Ouvert sous conditions</p>
                 </div>
               </div>
               
-              <div className="glass rounded-xl p-4 flex items-center gap-4">
-                <div className="w-6 h-6 rounded-full bg-signal-red glow-red" />
+              <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform">
+                <div className="w-7 h-7 rounded-full bg-signal-red glow-red shadow-lg" />
                 <div>
-                  <p className="font-semibold text-foreground">Signal rouge</p>
-                  <p className="text-sm text-muted-foreground">Pas disponible</p>
+                  <p className="font-bold text-foreground">Signal rouge</p>
+                  <p className="text-sm text-gray-300">Pas disponible</p>
                 </div>
               </div>
             </div>

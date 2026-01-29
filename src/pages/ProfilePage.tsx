@@ -89,11 +89,11 @@ export default function ProfilePage() {
           <h1 className="text-2xl font-bold text-foreground mb-1 animate-fade-in">
             {profile?.first_name || 'Utilisateur'}
           </h1>
-          <p className="text-muted-foreground text-sm mb-1 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+          <p className="text-gray-300 text-sm mb-1 animate-fade-in" style={{ animationDelay: '0.05s' }}>
             {profile?.email}
           </p>
           {profile?.university && (
-            <p className="text-muted-foreground text-sm animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <p className="text-gray-400 text-sm animate-fade-in" style={{ animationDelay: '0.1s' }}>
               🎓 {profile.university}
             </p>
           )}
@@ -102,24 +102,24 @@ export default function ProfilePage() {
           <div className="flex gap-6 mt-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
             <button 
               onClick={() => navigate('/statistics')}
-              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 transition-all duration-300"
+              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{stats?.interactions || 0}</p>
-              <p className="text-xs text-muted-foreground">Interactions</p>
+              <p className="text-xs text-gray-400 font-medium">Interactions</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
-              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 transition-all duration-300"
+              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
-              <p className="text-xs text-muted-foreground">Actif</p>
+              <p className="text-xs text-gray-400 font-medium">Actif</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
-              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 transition-all duration-300"
+              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.rating?.toFixed(1) || '5.0'}</p>
-              <p className="text-xs text-muted-foreground">Rating</p>
+              <p className="text-xs text-gray-400 font-medium">Rating</p>
             </button>
           </div>
         </div>
@@ -129,7 +129,7 @@ export default function ProfilePage() {
       <div className="px-6 space-y-6">
         {menuSections.map((section, sectionIdx) => (
           <div key={section.title} className="animate-slide-up" style={{ animationDelay: `${0.2 + sectionIdx * 0.1}s` }}>
-            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 px-1">
+            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1">
               {section.title}
             </h2>
             <div className="glass rounded-2xl overflow-hidden shadow-soft">
@@ -145,13 +145,13 @@ export default function ProfilePage() {
                   }}
                   className={cn(
                     'w-full flex items-center gap-4 px-5 py-4 transition-all duration-200',
-                    'hover:bg-muted/50 active:bg-muted/70',
+                    'hover:bg-muted/50 active:bg-muted/70 active:scale-[0.98]',
                     index !== section.items.length - 1 && 'border-b border-border/50'
                   )}
                 >
                   <span className="text-coral">{item.icon}</span>
                   <span className="flex-1 text-left text-foreground font-medium">{item.label}</span>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
                 </button>
               ))}
             </div>
@@ -161,15 +161,15 @@ export default function ProfilePage() {
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all duration-200 shadow-soft animate-slide-up"
+          className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-destructive/10 text-destructive hover:bg-destructive/20 active:scale-[0.98] transition-all duration-200 shadow-soft animate-slide-up"
           style={{ animationDelay: '0.5s' }}
         >
           <LogOut className="h-5 w-5" />
-          <span className="font-semibold">Déconnexion</span>
+          <span className="font-bold">Déconnexion</span>
         </button>
 
         {/* Version */}
-        <p className="text-center text-xs text-muted-foreground py-4">
+        <p className="text-center text-xs text-gray-500 py-4 font-medium">
           SIGNAL v1.0.0
         </p>
       </div>
