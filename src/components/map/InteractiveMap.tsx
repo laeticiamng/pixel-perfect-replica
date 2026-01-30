@@ -255,8 +255,9 @@ export function InteractiveMap({
 
   return (
     <div 
-      className={cn("relative rounded-2xl overflow-hidden", className)}
+      className={cn("relative rounded-2xl overflow-hidden [&_.mapboxgl-canvas]:cursor-grab [&_.mapboxgl-canvas:active]:cursor-grabbing", className)}
       data-map-container
+      style={{ touchAction: 'none' }}
     >
       <Map
         ref={mapRef}
@@ -265,9 +266,8 @@ export function InteractiveMap({
         onLoad={handleLoad}
         mapboxAccessToken={mapboxToken}
         mapStyle={currentMapStyle}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', cursor: 'grab' }}
         attributionControl={false}
-        reuseMaps
         dragPan={true}
         scrollZoom={true}
         boxZoom={true}
@@ -276,7 +276,6 @@ export function InteractiveMap({
         touchZoomRotate={true}
         touchPitch={true}
         dragRotate={true}
-        interactive={true}
       >
         <NavigationControl position="bottom-right" showCompass={true} showZoom={true} />
         <GeolocateControl 
