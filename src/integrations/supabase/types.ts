@@ -495,6 +495,9 @@ export type Database = {
           id: string
           is_premium: boolean
           purchased_sessions: number | null
+          shadow_ban_reason: string | null
+          shadow_banned: boolean
+          shadow_banned_until: string | null
           university: string | null
           updated_at: string
         }
@@ -508,6 +511,9 @@ export type Database = {
           id: string
           is_premium?: boolean
           purchased_sessions?: number | null
+          shadow_ban_reason?: string | null
+          shadow_banned?: boolean
+          shadow_banned_until?: string | null
           university?: string | null
           updated_at?: string
         }
@@ -521,6 +527,9 @@ export type Database = {
           id?: string
           is_premium?: boolean
           purchased_sessions?: number | null
+          shadow_ban_reason?: string | null
+          shadow_banned?: boolean
+          shadow_banned_until?: string | null
           university?: string | null
           updated_at?: string
         }
@@ -626,6 +635,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      reveal_logs: {
+        Row: {
+          created_at: string
+          id: string
+          revealed_user_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          revealed_user_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          revealed_user_id?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       scheduled_sessions: {
         Row: {
@@ -1118,6 +1148,8 @@ export type Database = {
       }
       can_create_session: { Args: { p_user_id: string }; Returns: boolean }
       check_report_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
+      check_reveal_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
+      cleanup_expired_shadow_bans: { Args: never; Returns: undefined }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       cleanup_rate_limit_logs: { Args: never; Returns: undefined }
@@ -1330,6 +1362,7 @@ export type Database = {
       }
       join_session: { Args: { p_session_id: string }; Returns: boolean }
       leave_session: { Args: { p_session_id: string }; Returns: boolean }
+      log_reveal: { Args: { p_revealed_user_id: string }; Returns: boolean }
       submit_rating: {
         Args: { p_rating: number; p_target_user_id: string }
         Returns: undefined

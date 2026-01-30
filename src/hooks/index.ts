@@ -23,7 +23,8 @@ export { useToast } from './use-toast';
 export { useAnalytics } from './useAnalytics';
 export { useNetworkStatus } from './useNetworkStatus';
 export { useSwipeNavigation } from './useSwipeNavigation';
-export { useRateLimit } from './useRateLimit';
+export { useRateLimit, RATE_LIMIT_PRESETS } from './useRateLimit';
+export { useRevealRateLimit } from './useRevealRateLimit';
 
 // Feature hooks
 export { useAdminAlerts } from './useAdminAlerts';

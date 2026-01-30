@@ -107,4 +107,5 @@ export const RATE_LIMIT_PRESETS = {
   passwordReset: { maxAttempts: 3, windowMs: 300000, blockDurationMs: 600000 },
   report: { maxAttempts: 5, windowMs: 3600000, blockDurationMs: 3600000 },
   feedback: { maxAttempts: 10, windowMs: 3600000, blockDurationMs: 1800000 },
+  reveal: { maxAttempts: 10, windowMs: 3600000, blockDurationMs: 1800000 }, // 10/hour
 };
