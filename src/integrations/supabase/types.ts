@@ -1152,6 +1152,7 @@ export type Database = {
       cleanup_expired_shadow_bans: { Args: never; Returns: undefined }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
+      cleanup_old_reveal_logs: { Args: never; Returns: undefined }
       cleanup_rate_limit_logs: { Args: never; Returns: undefined }
       consume_purchased_session: {
         Args: { p_user_id: string }
