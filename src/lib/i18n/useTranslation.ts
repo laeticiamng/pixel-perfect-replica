@@ -1,39 +1,36 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { translations, Locale, setCurrentLocale, getCurrentLocale } from './translations';
+import { useEffect, useCallback } from 'react';
+import { translations, Locale, setCurrentLocale } from './translations';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface I18nStore {
   locale: Locale;
+  isHydrated: boolean;
   setLocale: (locale: Locale) => void;
+  setHydrated: () => void;
 }
 
 export const useI18nStore = create<I18nStore>()(
   persist(
     (set) => ({
       locale: 'en', // Default to English
+      isHydrated: false,
       setLocale: (locale) => {
         setCurrentLocale(locale);
         set({ locale });
       },
+      setHydrated: () => set({ isHydrated: true }),
     }),
     {
       name: 'easy-i18n',
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated();
+      },
     }
   )
 );
-
-type NestedKeyOf<T> = T extends object
-  ? { [K in keyof T]: K extends string
-      ? T[K] extends { en: string; fr: string }
-        ? K
-        : T[K] extends object
-        ? `${K}.${NestedKeyOf<T[K]>}`
-        : never
-      : never
-    }[keyof T]
-  : never;
-
-type TranslationPath = NestedKeyOf<typeof translations> | keyof typeof translations;
 
 function getNestedValue(obj: any, path: string): { en: string; fr: string } | undefined {
   const keys = path.split('.');
@@ -52,7 +49,42 @@ function getNestedValue(obj: any, path: string): { en: string; fr: string } | un
 }
 
 export function useTranslation() {
-  const { locale, setLocale } = useI18nStore();
+  const { locale, setLocale, isHydrated } = useI18nStore();
+  const { user, isAuthenticated } = useAuth();
+
+  // Sync locale from database on mount (when authenticated)
+  useEffect(() => {
+    if (!isAuthenticated || !user || !isHydrated) return;
+
+    const fetchLanguagePreference = async () => {
+      const { data, error } = await supabase
+        .from('user_settings')
+        .select('language_preference')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!error && data?.language_preference) {
+        const dbLocale = data.language_preference as Locale;
+        if (dbLocale !== locale) {
+          setLocale(dbLocale);
+        }
+      }
+    };
+
+    fetchLanguagePreference();
+  }, [isAuthenticated, user, isHydrated]);
+
+  // Save locale to database when it changes (if authenticated)
+  const updateLocale = useCallback(async (newLocale: Locale) => {
+    setLocale(newLocale);
+    
+    if (isAuthenticated && user) {
+      await supabase
+        .from('user_settings')
+        .update({ language_preference: newLocale })
+        .eq('user_id', user.id);
+    }
+  }, [isAuthenticated, user, setLocale]);
 
   const t = (key: string, replacements?: Record<string, string | number>): string => {
     const translation = getNestedValue(translations, key);
@@ -75,13 +107,13 @@ export function useTranslation() {
   };
 
   const toggleLocale = () => {
-    setLocale(locale === 'en' ? 'fr' : 'en');
+    updateLocale(locale === 'en' ? 'fr' : 'en');
   };
 
   return {
     t,
     locale,
-    setLocale,
+    setLocale: updateLocale,
     toggleLocale,
     isEnglish: locale === 'en',
     isFrench: locale === 'fr',

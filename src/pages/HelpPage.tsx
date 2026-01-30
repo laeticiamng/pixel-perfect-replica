@@ -5,78 +5,88 @@ import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/lib/i18n';
 
 export default function HelpPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const faqs = [
     {
-      question: "Comment fonctionne EASY ?",
-      answer: "EASY te permet de signaler que tu es ouvert à l'interaction dans un lieu. Les autres utilisateurs peuvent voir ton signal et venir te parler avec un icebreaker suggéré."
+      questionKey: 'help.howDoesEasyWork',
+      answerKey: 'help.howDoesEasyWorkAnswer',
     },
     {
-      question: "Ma position est-elle stockée ?",
-      answer: "Non, ta position n'est jamais stockée sur nos serveurs. Elle est utilisée uniquement en temps réel pour afficher les signaux autour de toi. Les coordonnées sont automatiquement effacées après 24h."
+      questionKey: 'help.isMyLocationStored',
+      answerKey: 'help.isMyLocationStoredAnswer',
     },
     {
-      question: "Qu'est-ce que le mode fantôme ?",
-      answer: "Le mode fantôme (Premium) te permet de voir les signaux des autres sans que les tiens soient visibles. Parfait pour observer avant de te lancer !"
+      questionKey: 'help.whatIsGhostMode',
+      answerKey: 'help.whatIsGhostModeAnswer',
     },
     {
-      question: "Comment signaler un comportement inapproprié ?",
-      answer: "Tu peux signaler un problème via le menu Support dans ton profil, ou directement sur la page de la personne concernée via le bouton drapeau. Notre équipe modère les signalements en moins de 24h."
+      questionKey: 'help.howToReportBehavior',
+      answerKey: 'help.howToReportBehaviorAnswer',
     },
     {
-      question: "Comment supprimer mon compte ?",
-      answer: "Va dans Paramètres, puis clique sur 'Supprimer mon compte'. Tu devras confirmer en tapant SUPPRIMER. Toutes tes données seront définitivement supprimées."
+      questionKey: 'help.howToDeleteAccount',
+      answerKey: 'help.howToDeleteAccountAnswer',
     },
     {
-      question: "Mes données sont-elles sécurisées ?",
-      answer: "Oui, nous utilisons le chiffrement TLS, des politiques RLS (Row Level Security) sur chaque table, et tes données ne sont jamais partagées. Tu peux exporter tes données RGPD depuis les paramètres de confidentialité."
+      questionKey: 'help.isMyDataSecure',
+      answerKey: 'help.isMyDataSecureAnswer',
     },
     {
-      question: "Qu'est-ce que la distance de visibilité ?",
-      answer: "C'est le rayon maximum dans lequel tu verras les autres signaux. Tu peux l'ajuster de 50m à 500m dans les paramètres. Plus la distance est petite, plus les rencontres seront proches !"
+      questionKey: 'help.whatIsVisibilityDistance',
+      answerKey: 'help.whatIsVisibilityDistanceAnswer',
     },
     {
-      question: "Comment fonctionne le rating ?",
-      answer: "Après chaque interaction, les utilisateurs peuvent laisser un feedback positif ou négatif. Ton rating moyen reflète la qualité de tes échanges. Un bon rating inspire confiance aux autres."
+      questionKey: 'help.howDoesRatingWork',
+      answerKey: 'help.howDoesRatingWorkAnswer',
     },
     {
-      question: "Qu'est-ce qu'un événement EASY ?",
-      answer: "Les événements permettent de créer des rassemblements avec un signal isolé. L'organisateur génère un QR code pour valider les présences. Parfait pour les meetups, révisions, ou soirées !"
+      questionKey: 'help.whatIsEvent',
+      answerKey: 'help.whatIsEventAnswer',
     },
     {
-      question: "Comment contacter le support ?",
-      answer: "Tu peux nous écrire à support@easy-app.fr ou rejoindre notre communauté Discord. Nous répondons généralement sous 24h en semaine."
+      questionKey: 'help.howToContactSupport',
+      answerKey: 'help.howToContactSupportAnswer',
     },
     {
-      question: "EASY est-il gratuit ?",
-      answer: "Oui, EASY est entièrement gratuit ! Certaines fonctionnalités premium (mode fantôme) seront disponibles prochainement."
+      questionKey: 'help.isEasyFree',
+      answerKey: 'help.isEasyFreeAnswer',
     },
     {
-      question: "Comment fonctionne le mini-chat ?",
-      answer: "Après avoir confirmé une interaction avec 'J'ai parlé', un mini-chat s'ouvre pour continuer la conversation. Les messages sont chiffrés et limités à cette interaction."
+      questionKey: 'help.howDoesMiniChatWork',
+      answerKey: 'help.howDoesMiniChatWorkAnswer',
     },
   ];
 
+  const translatedFaqs = useMemo(() => 
+    faqs.map(faq => ({
+      question: t(faq.questionKey),
+      answer: t(faq.answerKey),
+    })),
+    [t]
+  );
+
   const filteredFaqs = useMemo(() => {
-    if (!searchQuery.trim()) return faqs;
+    if (!searchQuery.trim()) return translatedFaqs;
     const query = searchQuery.toLowerCase();
-    return faqs.filter(
+    return translatedFaqs.filter(
       faq => 
         faq.question.toLowerCase().includes(query) ||
         faq.answer.toLowerCase().includes(query)
     );
-  }, [searchQuery]);
+  }, [searchQuery, translatedFaqs]);
 
   const supportLinks = [
-    { icon: <Mail className="h-5 w-5" />, label: 'Nous contacter', href: 'mailto:support@easy-app.fr' },
-    { icon: <MessageCircle className="h-5 w-5" />, label: 'Communauté', href: 'https://discord.gg', external: true },
-    { icon: <FileText className="h-5 w-5" />, label: 'Conditions d\'utilisation', href: '/terms' },
-    { icon: <Shield className="h-5 w-5" />, label: 'Politique de confidentialité', href: '/privacy' },
+    { icon: <Mail className="h-5 w-5" />, label: t('help.contactUs'), href: 'mailto:support@easy-app.fr' },
+    { icon: <MessageCircle className="h-5 w-5" />, label: t('help.community'), href: 'https://discord.gg', external: true },
+    { icon: <FileText className="h-5 w-5" />, label: t('help.termsOfUse'), href: '/terms' },
+    { icon: <Shield className="h-5 w-5" />, label: t('help.privacyPolicy'), href: '/privacy' },
   ];
 
   return (
@@ -86,13 +96,13 @@ export default function HelpPage() {
         <button
           onClick={() => navigate(user ? '/profile' : '/')}
           className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
-          aria-label={user ? "Retour au profil" : "Retour à l'accueil"}
+          aria-label={user ? t('help.backToProfile') : t('help.backToHome')}
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
-        <h1 className="text-xl font-bold text-foreground">Aide & FAQ</h1>
+        <h1 className="text-xl font-bold text-foreground">{t('help.title')}</h1>
         <span className="ml-auto px-2 py-1 text-xs font-medium bg-coral/20 text-coral rounded-lg">
-          {faqs.length} questions
+          {faqs.length} {t('questions')}
         </span>
       </header>
 
@@ -118,7 +128,7 @@ export default function HelpPage() {
         >
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Rechercher une question..."
+            placeholder={t('help.searchQuestion')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
@@ -133,7 +143,7 @@ export default function HelpPage() {
           }}
         >
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Questions fréquentes {searchQuery && `(${filteredFaqs.length} résultats)`}
+            {t('help.frequentQuestions')} {searchQuery && `(${filteredFaqs.length} ${t('results')})`}
           </h2>
           <div className="glass rounded-xl overflow-hidden">
             {filteredFaqs.length > 0 ? (
@@ -148,8 +158,8 @@ export default function HelpPage() {
               ))
             ) : (
               <div className="p-6 text-center">
-                <p className="text-muted-foreground">Aucune question trouvée</p>
-                <p className="text-sm text-muted-foreground mt-1">Essaie avec d'autres mots-clés</p>
+                <p className="text-muted-foreground">{t('help.noQuestionFound')}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t('help.tryOtherKeywords')}</p>
               </div>
             )}
           </div>
@@ -163,7 +173,7 @@ export default function HelpPage() {
           }}
         >
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Support
+            {t('help.support')}
           </h2>
           <div className="glass rounded-xl overflow-hidden">
             {supportLinks.map((link, index) => {
@@ -213,7 +223,7 @@ export default function HelpPage() {
           }}
         >
           <p className="text-xs text-muted-foreground">EASY v1.2.0</p>
-          <p className="text-xs text-muted-foreground mt-1">Made with ❤️ in France par EmotionsCare Sasu</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>
       </motion.div>
     </PageLayout>

@@ -9,14 +9,15 @@ import { PageLayout } from '@/components/PageLayout';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { useEvents, Event } from '@/hooks/useEvents';
 import { useLocationStore } from '@/stores/locationStore';
-import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 import { format, addHours } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, enUS } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 
 export default function EventsPage() {
   const navigate = useNavigate();
-  const { events, myEvents, joinedEvents, isLoading, createEvent, joinEvent, leaveEvent, isParticipating } = useEvents();
+  const { t, locale } = useTranslation();
+  const { events, myEvents, isLoading, createEvent, joinEvent, leaveEvent, isParticipating } = useEvents();
   const { position } = useLocationStore();
   
   const [showCreate, setShowCreate] = useState(false);
@@ -29,14 +30,16 @@ export default function EventsPage() {
   const [startsAt, setStartsAt] = useState('');
   const [duration, setDuration] = useState(2); // hours
 
+  const dateLocale = locale === 'fr' ? fr : enUS;
+
   const handleCreateEvent = async () => {
     if (!name.trim() || !locationName.trim() || !startsAt) {
-      toast.error('Remplis tous les champs obligatoires');
+      toast.error(t('events.fillRequired'));
       return;
     }
 
     if (!position) {
-      toast.error('Position GPS requise');
+      toast.error(t('events.gpsRequired'));
       return;
     }
 
@@ -57,9 +60,9 @@ export default function EventsPage() {
     setIsCreating(false);
 
     if (error) {
-      toast.error('Erreur lors de la création');
+      toast.error(t('events.createError'));
     } else {
-      toast.success('Événement créé !');
+      toast.success(t('events.eventCreated'));
       setShowCreate(false);
       resetForm();
     }
@@ -76,18 +79,18 @@ export default function EventsPage() {
   const handleJoinEvent = async (eventId: string) => {
     const { error } = await joinEvent(eventId);
     if (error) {
-      toast.error('Erreur lors de l\'inscription');
+      toast.error(t('events.joinError'));
     } else {
-      toast.success('Inscrit à l\'événement !');
+      toast.success(t('events.joined'));
     }
   };
 
   const handleLeaveEvent = async (eventId: string) => {
     const { error } = await leaveEvent(eventId);
     if (error) {
-      toast.error('Erreur lors de la désinscription');
+      toast.error(t('events.leaveError'));
     } else {
-      toast.success('Désinscrit de l\'événement');
+      toast.success(t('events.left'));
     }
   };
 
@@ -104,7 +107,7 @@ export default function EventsPage() {
           </div>
           {isJoined && (
             <span className="text-xs bg-signal-green/20 text-signal-green px-2 py-1 rounded-full">
-              Inscrit ✓
+              {t('events.registered')} ✓
             </span>
           )}
         </div>
@@ -117,11 +120,11 @@ export default function EventsPage() {
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
-            <span>{format(new Date(event.starts_at), 'PPP à HH:mm', { locale: fr })}</span>
+            <span>{format(new Date(event.starts_at), 'PPP à HH:mm', { locale: dateLocale })}</span>
           </div>
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
-            <span>Max {event.max_participants}</span>
+            <span>{t('events.max')} {event.max_participants}</span>
           </div>
         </div>
 
@@ -135,7 +138,7 @@ export default function EventsPage() {
                 className="flex-1"
               >
                 <QrCode className="h-4 w-4 mr-2" />
-                Voir QR Code
+                {t('events.viewQrCode')}
               </Button>
               <Button
                 variant="ghost"
@@ -143,7 +146,7 @@ export default function EventsPage() {
                 onClick={() => handleLeaveEvent(event.id)}
                 className="text-destructive"
               >
-                Quitter
+                {t('events.leave')}
               </Button>
             </>
           ) : (
@@ -152,7 +155,7 @@ export default function EventsPage() {
               onClick={() => handleJoinEvent(event.id)}
               className="w-full bg-coral hover:bg-coral-dark"
             >
-              Rejoindre
+              {t('events.join')}
             </Button>
           )}
         </div>
@@ -167,11 +170,11 @@ export default function EventsPage() {
           <button
             onClick={() => navigate('/map')}
             className="p-2 rounded-lg hover:bg-muted transition-colors"
-            aria-label="Retour à la carte"
+            aria-label={t('events.backToMap')}
           >
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
-          <h1 className="text-xl font-bold text-foreground">Événements</h1>
+          <h1 className="text-xl font-bold text-foreground">{t('events.title')}</h1>
         </div>
         <Breadcrumbs className="px-2" />
       </header>
@@ -184,7 +187,7 @@ export default function EventsPage() {
             className="w-full h-14 bg-coral hover:bg-coral-dark rounded-xl gap-2"
           >
             <Plus className="h-5 w-5" />
-            Créer un événement
+            {t('events.createEvent')}
           </Button>
         )}
 
@@ -192,12 +195,12 @@ export default function EventsPage() {
         {showCreate && (
           <Card className="glass border-0 animate-slide-up">
             <CardHeader>
-              <CardTitle>Nouvel événement</CardTitle>
-              <CardDescription>Crée un événement avec signal isolé</CardDescription>
+              <CardTitle>{t('events.newEvent')}</CardTitle>
+              <CardDescription>{t('events.newEventDesc')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Nom *</label>
+                <label className="text-sm font-medium">{t('events.name')} *</label>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value.slice(0, 100))}
@@ -207,7 +210,7 @@ export default function EventsPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Lieu *</label>
+                <label className="text-sm font-medium">{t('events.location')} *</label>
                 <Input
                   value={locationName}
                   onChange={(e) => setLocationName(e.target.value.slice(0, 200))}
@@ -217,18 +220,18 @@ export default function EventsPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Description</label>
+                <label className="text-sm font-medium">{t('events.description')}</label>
                 <Textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value.slice(0, 500))}
-                  placeholder="Décris ton événement..."
+                  placeholder={t('events.describeEvent')}
                   className="bg-muted border-border rounded-xl min-h-[80px]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Début *</label>
+                  <label className="text-sm font-medium">{t('events.start')} *</label>
                   <Input
                     type="datetime-local"
                     value={startsAt}
@@ -237,7 +240,7 @@ export default function EventsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Durée (h)</label>
+                  <label className="text-sm font-medium">{t('events.durationHours')}</label>
                   <Input
                     type="number"
                     min={1}
@@ -258,7 +261,7 @@ export default function EventsPage() {
                   }}
                   className="flex-1 rounded-xl"
                 >
-                  Annuler
+                  {t('cancel')}
                 </Button>
                 <Button
                   onClick={handleCreateEvent}
@@ -268,7 +271,7 @@ export default function EventsPage() {
                   {isCreating ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    'Créer'
+                    t('create')
                   )}
                 </Button>
               </div>
@@ -280,7 +283,7 @@ export default function EventsPage() {
         {myEvents.length > 0 && (
           <div className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="text-coral">📍</span> Mes événements
+              <span className="text-coral">📍</span> {t('events.myEvents')}
             </h2>
             {myEvents.map(event => (
               <EventCard 
@@ -295,7 +298,7 @@ export default function EventsPage() {
         {/* All Events */}
         <div className="space-y-3">
           <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <span className="text-signal-green">🎉</span> Événements à venir
+            <span className="text-signal-green">🎉</span> {t('events.upcomingEvents')}
           </h2>
           
           {isLoading ? (
@@ -305,8 +308,8 @@ export default function EventsPage() {
           ) : events.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-4xl mb-4">📅</p>
-              <p className="text-muted-foreground">Aucun événement pour le moment</p>
-              <p className="text-sm text-muted-foreground mt-1">Crée le premier !</p>
+              <p className="text-muted-foreground">{t('events.noEvents')}</p>
+              <p className="text-sm text-muted-foreground mt-1">{t('events.noEventsDescription')}</p>
             </div>
           ) : (
             events

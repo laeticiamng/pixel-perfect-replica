@@ -919,6 +919,7 @@ export type Database = {
           created_at: string
           ghost_mode: boolean
           id: string
+          language_preference: string | null
           proximity_vibration: boolean
           push_notifications: boolean
           sound_notifications: boolean
@@ -930,6 +931,7 @@ export type Database = {
           created_at?: string
           ghost_mode?: boolean
           id?: string
+          language_preference?: string | null
           proximity_vibration?: boolean
           push_notifications?: boolean
           sound_notifications?: boolean
@@ -941,6 +943,7 @@ export type Database = {
           created_at?: string
           ghost_mode?: boolean
           id?: string
+          language_preference?: string | null
           proximity_vibration?: boolean
           push_notifications?: boolean
           sound_notifications?: boolean
