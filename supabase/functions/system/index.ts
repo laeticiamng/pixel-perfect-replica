@@ -77,6 +77,72 @@ type SystemRequest =
 type AnySupabaseClient = SupabaseClient<any, any, any>;
 
 // ============================================================
+// AUTHENTICATION HELPERS
+// ============================================================
+
+interface AuthResult {
+  authenticated: boolean;
+  userId?: string;
+  isAdmin?: boolean;
+  error?: string;
+}
+
+async function validateAuth(
+  req: Request,
+  supabase: AnySupabaseClient,
+  requireAdmin: boolean = false
+): Promise<AuthResult> {
+  const authHeader = req.headers.get("Authorization");
+  
+  if (!authHeader) {
+    return { authenticated: false, error: "Missing Authorization header" };
+  }
+
+  const token = authHeader.replace("Bearer ", "");
+  
+  if (!token || token === authHeader) {
+    return { authenticated: false, error: "Invalid Authorization header format" };
+  }
+
+  try {
+    // Create a client with the user's token to get their identity
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: `Bearer ${token}` } }
+    });
+
+    const { data: { user }, error: userError } = await userClient.auth.getUser();
+    
+    if (userError || !user) {
+      console.error("[system/auth] Token validation failed:", userError);
+      return { authenticated: false, error: "Invalid or expired token" };
+    }
+
+    let isAdmin = false;
+    
+    if (requireAdmin) {
+      // Check if user has admin role using service role client
+      const { data: hasRole } = await supabase.rpc('has_role', {
+        _user_id: user.id,
+        _role: 'admin'
+      });
+      
+      isAdmin = hasRole === true;
+      
+      if (!isAdmin) {
+        return { authenticated: true, userId: user.id, isAdmin: false, error: "Admin role required" };
+      }
+    }
+
+    return { authenticated: true, userId: user.id, isAdmin };
+  } catch (error) {
+    console.error("[system/auth] Error validating token:", error);
+    return { authenticated: false, error: "Token validation failed" };
+  }
+}
+
+// ============================================================
 // HANDLERS
 // ============================================================
 
@@ -87,7 +153,7 @@ function handleHealth(): Response {
       action: "health",
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "1.1.0",
+      version: "1.2.0",
       actions: [
         "health",
         "get-stats",
@@ -98,6 +164,16 @@ function handleHealth(): Response {
         "check-shadow-bans",
         "send-error-alert"
       ],
+      auth_required: {
+        "health": "none",
+        "get-stats": "admin",
+        "get-user-quota": "authenticated",
+        "get-system-logs": "admin",
+        "get-error-rate": "admin",
+        "cleanup-expired": "admin",
+        "check-shadow-bans": "admin",
+        "send-error-alert": "admin"
+      }
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
@@ -190,7 +266,8 @@ async function handleGetStats(
 
 async function handleGetUserQuota(
   payload: GetUserQuotaRequest,
-  supabase: AnySupabaseClient
+  supabase: AnySupabaseClient,
+  requestingUserId: string
 ): Promise<Response> {
   const { user_id } = payload;
 
@@ -198,6 +275,14 @@ async function handleGetUserQuota(
     return new Response(
       JSON.stringify({ error: "Missing required field: user_id" }),
       { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  // Users can only query their own quota (admins can query anyone via admin endpoints)
+  if (user_id !== requestingUserId) {
+    return new Response(
+      JSON.stringify({ error: "Cannot query another user's quota" }),
+      { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 
@@ -407,6 +492,18 @@ async function handleCleanupExpired(
     results.interaction_locations = { deleted: 0, error: String(err) };
   }
 
+  // Cleanup rate limit logs
+  try {
+    const { error } = await supabase.rpc('cleanup_rate_limit_logs');
+    if (error) {
+      results.rate_limit_logs = { deleted: 0, error: error.message };
+    } else {
+      results.rate_limit_logs = { deleted: 0 };
+    }
+  } catch (err) {
+    results.rate_limit_logs = { deleted: 0, error: String(err) };
+  }
+
   console.log("[system/cleanup-expired] Cleanup completed:", results);
 
   return new Response(
@@ -578,36 +675,136 @@ const handler = async (req: Request): Promise<Response> => {
 
     switch (action) {
       case "health":
+        // Health check doesn't require auth
         response = handleHealth();
         break;
 
-      case "get-stats":
+      case "get-stats": {
+        // Requires admin role
+        const authResult = await validateAuth(req, supabase, true);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (!authResult.isAdmin) {
+          return new Response(
+            JSON.stringify({ error: "Admin role required" }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
         response = await handleGetStats(body as GetStatsRequest, supabase);
         break;
+      }
 
-      case "get-user-quota":
-        response = await handleGetUserQuota(body as GetUserQuotaRequest, supabase);
+      case "get-user-quota": {
+        // Requires authentication
+        const authResult = await validateAuth(req, supabase, false);
+        if (!authResult.authenticated || !authResult.userId) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        response = await handleGetUserQuota(body as GetUserQuotaRequest, supabase, authResult.userId);
         break;
+      }
 
-      case "get-system-logs":
+      case "get-system-logs": {
+        // Requires admin role
+        const authResult = await validateAuth(req, supabase, true);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (!authResult.isAdmin) {
+          return new Response(
+            JSON.stringify({ error: "Admin role required" }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
         response = await handleGetSystemLogs(body as GetSystemLogsRequest, supabase);
         break;
+      }
 
-      case "get-error-rate":
+      case "get-error-rate": {
+        // Requires admin role
+        const authResult = await validateAuth(req, supabase, true);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (!authResult.isAdmin) {
+          return new Response(
+            JSON.stringify({ error: "Admin role required" }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
         response = await handleGetErrorRate(body as GetErrorRateRequest, supabase);
         break;
+      }
 
-      case "cleanup-expired":
+      case "cleanup-expired": {
+        // Requires admin role
+        const authResult = await validateAuth(req, supabase, true);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (!authResult.isAdmin) {
+          return new Response(
+            JSON.stringify({ error: "Admin role required" }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
         response = await handleCleanupExpired(supabase);
         break;
+      }
 
-      case "check-shadow-bans":
+      case "check-shadow-bans": {
+        // Requires admin role
+        const authResult = await validateAuth(req, supabase, true);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (!authResult.isAdmin) {
+          return new Response(
+            JSON.stringify({ error: "Admin role required" }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
         response = await handleCheckShadowBans(supabase);
         break;
+      }
 
-      case "send-error-alert":
+      case "send-error-alert": {
+        // Requires admin role
+        const authResult = await validateAuth(req, supabase, true);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (!authResult.isAdmin) {
+          return new Response(
+            JSON.stringify({ error: "Admin role required" }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
         response = await handleSendErrorAlert(body as SendErrorAlertRequest, supabase);
         break;
+      }
 
       default:
         response = new Response(
