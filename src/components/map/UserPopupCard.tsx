@@ -144,16 +144,10 @@ export function UserPopupCard({
         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
         size="lg"
       >
-        <MessageCircle className="h-4 w-4 mr-2" />
-        {user.distance && user.distance <= 50 ? 'Aller lui parler' : 'Voir le profil'}
+        <User className="h-4 w-4 mr-2" />
+        Voir le profil
       </Button>
 
-      {/* Hint for close users */}
-      {user.distance && user.distance <= 50 && (
-        <p className="text-xs text-muted-foreground text-center mt-2">
-          💡 Tu es assez proche pour voir son profil complet !
-        </p>
-      )}
     </div>
   );
 }
