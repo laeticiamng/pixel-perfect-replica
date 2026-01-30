@@ -256,7 +256,7 @@ export default function MapPage() {
 
   return (
     <PageLayout className="pb-28" animate={false}>
-      <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col overflow-hidden">
+      <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
         {/* Header */}
         <header className="safe-top px-6 py-4">
         <div className="glass-strong rounded-2xl p-4 shadow-medium">
