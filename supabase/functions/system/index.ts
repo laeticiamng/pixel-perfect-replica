@@ -516,6 +516,18 @@ async function handleCleanupExpired(
     results.reveal_logs = { deleted: 0, error: String(err) };
   }
 
+  // Cleanup old analytics events (GDPR - 90 days retention)
+  try {
+    const { error } = await supabase.rpc('cleanup_old_analytics_events');
+    if (error) {
+      results.analytics_events = { deleted: 0, error: error.message };
+    } else {
+      results.analytics_events = { deleted: 0 }; // Function doesn't return count
+    }
+  } catch (err) {
+    results.analytics_events = { deleted: 0, error: String(err) };
+  }
+
   console.log("[system/cleanup-expired] Cleanup completed:", results);
 
   return new Response(
