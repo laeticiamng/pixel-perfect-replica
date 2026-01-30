@@ -140,12 +140,13 @@ export default function BinomePage() {
           </div>
           <Button 
             size="sm" 
-            className="bg-coral hover:bg-coral/90"
+            className="bg-coral hover:bg-coral/90 whitespace-nowrap"
             onClick={handleOpenCreate}
             disabled={!canCreate}
           >
-            <Plus className="h-4 w-4 mr-1" />
-            Créer {!isPremium && remaining < 5 && `(${remaining})`}
+            <Plus className="h-4 w-4 sm:mr-1" />
+            <span className="hidden sm:inline">Créer</span>
+            {!isPremium && remaining < 5 && <span className="ml-1">({remaining})</span>}
           </Button>
         </div>
         
