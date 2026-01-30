@@ -18,31 +18,33 @@ import {
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { ThemeToggle } from '../ThemeToggle';
+import { LanguageToggle } from '../LanguageToggle';
 import { useShortcutHint } from '@/hooks/useKeyboardShortcuts';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useShowNewBadge } from '@/components/binome/NewBadge';
+import { useTranslation } from '@/lib/i18n';
 
 interface NavItem {
   to: string;
   icon: React.ReactNode;
-  label: string;
+  labelKey: string;
   group?: string;
   showNewBadge?: boolean;
 }
 
 const mainNavItems: NavItem[] = [
-  { to: '/map', icon: <MapPin className="h-5 w-5" />, label: 'Carte', group: 'main' },
-  { to: '/binome', icon: <Users2 className="h-5 w-5" />, label: 'Réserver', group: 'main', showNewBadge: true },
-  { to: '/events', icon: <CalendarDays className="h-5 w-5" />, label: 'Événements', group: 'main' },
-  { to: '/profile', icon: <User className="h-5 w-5" />, label: 'Profil', group: 'main' },
+  { to: '/map', icon: <MapPin className="h-5 w-5" />, labelKey: 'nav.map', group: 'main' },
+  { to: '/binome', icon: <Users2 className="h-5 w-5" />, labelKey: 'nav.book', group: 'main', showNewBadge: true },
+  { to: '/events', icon: <CalendarDays className="h-5 w-5" />, labelKey: 'nav.events', group: 'main' },
+  { to: '/profile', icon: <User className="h-5 w-5" />, labelKey: 'nav.profile', group: 'main' },
 ];
 
 const secondaryNavItems: NavItem[] = [
-  { to: '/statistics', icon: <BarChart3 className="h-5 w-5" />, label: 'Statistiques', group: 'account' },
-  { to: '/notifications-settings', icon: <Bell className="h-5 w-5" />, label: 'Notifications', group: 'account' },
-  { to: '/privacy-settings', icon: <Shield className="h-5 w-5" />, label: 'Confidentialité', group: 'account' },
-  { to: '/settings', icon: <Settings className="h-5 w-5" />, label: 'Paramètres', group: 'account' },
-  { to: '/help', icon: <HelpCircle className="h-5 w-5" />, label: 'Aide', group: 'support' },
+  { to: '/statistics', icon: <BarChart3 className="h-5 w-5" />, labelKey: 'nav.statistics', group: 'account' },
+  { to: '/notifications-settings', icon: <Bell className="h-5 w-5" />, labelKey: 'nav.notifications', group: 'account' },
+  { to: '/privacy-settings', icon: <Shield className="h-5 w-5" />, labelKey: 'nav.privacy', group: 'account' },
+  { to: '/settings', icon: <Settings className="h-5 w-5" />, labelKey: 'nav.settings', group: 'account' },
+  { to: '/help', icon: <HelpCircle className="h-5 w-5" />, labelKey: 'nav.help', group: 'support' },
 ];
 
 export function DesktopSidebar() {
@@ -51,6 +53,7 @@ export function DesktopSidebar() {
   const { cmdKey } = useShortcutHint();
   const [collapsed, setCollapsed] = useState(false);
   const showBinomeBadge = useShowNewBadge();
+  const { t } = useTranslation();
   
   // Toggle sidebar with keyboard shortcut (Cmd+B or Ctrl+B)
   const toggleSidebar = useCallback(() => {
@@ -78,12 +81,13 @@ export function DesktopSidebar() {
   const renderNavItem = (item: NavItem) => {
     const isActive = location.pathname === item.to;
     const shouldShowBadge = item.showNewBadge && showBinomeBadge && !isActive;
+    const label = t(item.labelKey);
     
     const linkContent = (
       <RouterNavLink
         key={item.to}
         to={item.to}
-        aria-label={`Naviguer vers ${item.label}`}
+        aria-label={label}
         aria-current={isActive ? 'page' : undefined}
         className={cn(
           'flex items-center gap-3 rounded-xl transition-all duration-200 relative group',
@@ -108,7 +112,7 @@ export function DesktopSidebar() {
         </span>
         {!collapsed && (
           <span className="text-sm flex items-center gap-2">
-            {item.label}
+            {label}
             {shouldShowBadge && (
               <span className="text-[10px] font-bold text-white bg-coral px-1.5 py-0.5 rounded-full">
                 New
@@ -126,7 +130,7 @@ export function DesktopSidebar() {
             {linkContent}
           </TooltipTrigger>
           <TooltipContent side="right" className="font-medium flex items-center gap-2">
-            {item.label}
+            {label}
             {shouldShowBadge && (
               <span className="text-[10px] font-bold text-white bg-coral px-1.5 py-0.5 rounded-full">
                 New
@@ -166,7 +170,7 @@ export function DesktopSidebar() {
             {!collapsed && (
               <div>
                 <h1 className="text-xl font-bold text-coral">EASY</h1>
-                <p className="text-xs text-muted-foreground">Rencontres IRL</p>
+                <p className="text-xs text-muted-foreground">{t('nav.irlMeetings')}</p>
               </div>
             )}
           </div>
@@ -180,7 +184,7 @@ export function DesktopSidebar() {
               className="w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-muted/50 hover:bg-muted border border-border/50 text-muted-foreground hover:text-foreground transition-all"
             >
               <Search className="h-4 w-4" />
-              <span className="text-sm flex-1 text-left">Rechercher...</span>
+              <span className="text-sm flex-1 text-left">{t('search')}...</span>
               <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-background/80 border border-border text-xs font-mono">
                 {cmdKey}K
               </kbd>
@@ -200,7 +204,7 @@ export function DesktopSidebar() {
                 </button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                Rechercher ({cmdKey}K)
+                {t('search')} ({cmdKey}K)
               </TooltipContent>
             </Tooltip>
           </div>
@@ -235,7 +239,7 @@ export function DesktopSidebar() {
                   </TooltipTrigger>
                   <TooltipContent side="right">
                     <p className="font-medium">{profile.first_name}</p>
-                    <p className="text-xs text-muted-foreground">{profile.university || 'Étudiant'}</p>
+                    <p className="text-xs text-muted-foreground">{profile.university || t('nav.student')}</p>
                   </TooltipContent>
                 </Tooltip>
               ) : (
@@ -258,7 +262,7 @@ export function DesktopSidebar() {
                       {profile.first_name}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
-                      {profile.university || 'Étudiant'}
+                      {profile.university || t('nav.student')}
                     </p>
                   </div>
                 </>
@@ -276,7 +280,7 @@ export function DesktopSidebar() {
           <div className="space-y-1">
             {!collapsed && (
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 mb-2">
-                Navigation
+                {t('nav.navigation')}
               </p>
             )}
             {mainNavItems.map(renderNavItem)}
@@ -286,7 +290,7 @@ export function DesktopSidebar() {
           <div className="space-y-1">
             {!collapsed && (
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 mb-2">
-                Compte
+                {t('nav.account')}
               </p>
             )}
             {secondaryNavItems.map(renderNavItem)}
@@ -298,16 +302,20 @@ export function DesktopSidebar() {
           "border-t border-border/50 space-y-2 transition-all duration-300",
           collapsed ? "p-2" : "p-4"
         )}>
-          {/* Theme Toggle */}
+          {/* Theme & Language Toggles */}
           {!collapsed && (
             <div className="flex items-center justify-between px-4 py-2">
-              <span className="text-sm text-muted-foreground">Thème</span>
-              <ThemeToggle compact showLabels={false} />
+              <span className="text-sm text-muted-foreground">{t('nav.theme')}</span>
+              <div className="flex items-center gap-2">
+                <LanguageToggle />
+                <ThemeToggle compact showLabels={false} />
+              </div>
             </div>
           )}
 
           {collapsed && (
-            <div className="flex justify-center py-2">
+            <div className="flex flex-col items-center gap-2 py-2">
+              <LanguageToggle compact />
               <ThemeToggle compact showLabels={false} />
             </div>
           )}
@@ -324,7 +332,7 @@ export function DesktopSidebar() {
                 </button>
               </TooltipTrigger>
               <TooltipContent side="right">
-                Déconnexion
+                {t('nav.logout')}
               </TooltipContent>
             </Tooltip>
           ) : (
@@ -333,7 +341,7 @@ export function DesktopSidebar() {
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
             >
               <LogOut className="h-5 w-5" />
-              <span className="text-sm">Déconnexion</span>
+              <span className="text-sm">{t('nav.logout')}</span>
             </button>
           )}
 
@@ -346,14 +354,14 @@ export function DesktopSidebar() {
                   "w-full flex items-center justify-center gap-2 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all",
                   collapsed ? "px-2" : "px-4"
                 )}
-                aria-label={collapsed ? "Étendre la sidebar" : "Réduire la sidebar"}
+                aria-label={collapsed ? t('nav.expand') : t('nav.collapse')}
               >
                 {collapsed ? (
                   <ChevronRight className="h-4 w-4 transition-transform duration-200 hover:translate-x-0.5" />
                 ) : (
                   <>
                     <ChevronLeft className="h-4 w-4 transition-transform duration-200 hover:-translate-x-0.5" />
-                    <span className="text-xs">Réduire</span>
+                    <span className="text-xs">{t('nav.collapse')}</span>
                     <kbd className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-background/80 border border-border font-mono">
                       {cmdKey}B
                     </kbd>
@@ -363,7 +371,7 @@ export function DesktopSidebar() {
             </TooltipTrigger>
             {collapsed && (
               <TooltipContent side="right">
-                Étendre ({cmdKey}B)
+                {t('nav.expand')} ({cmdKey}B)
               </TooltipContent>
             )}
           </Tooltip>

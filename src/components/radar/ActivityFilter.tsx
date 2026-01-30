@@ -1,5 +1,6 @@
 import { ACTIVITIES, ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 interface ActivityFilterProps {
   selectedActivities: ActivityType[];
@@ -9,6 +10,7 @@ interface ActivityFilterProps {
 
 export function ActivityFilter({ selectedActivities, onToggle, onClear }: ActivityFilterProps) {
   const hasFilters = selectedActivities.length > 0;
+  const { t } = useTranslation();
   
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
@@ -21,7 +23,7 @@ export function ActivityFilter({ selectedActivities, onToggle, onClear }: Activi
             : 'bg-muted text-muted-foreground hover:bg-muted/80'
         )}
       >
-        Tous
+        {t('all')}
       </button>
       
       {ACTIVITIES.map((activity) => {
@@ -38,7 +40,7 @@ export function ActivityFilter({ selectedActivities, onToggle, onClear }: Activi
             )}
           >
             <span>{activity.emoji}</span>
-            <span>{activity.label}</span>
+            <span>{t(activity.labelKey)}</span>
           </button>
         );
       })}

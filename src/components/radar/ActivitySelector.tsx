@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import { ActivityType, ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 interface ActivitySelectorProps {
   selectedActivity: ActivityType | null;
@@ -9,6 +10,8 @@ interface ActivitySelectorProps {
 
 export const ActivitySelector = forwardRef<HTMLDivElement, ActivitySelectorProps>(
   function ActivitySelector({ selectedActivity, onSelect }, ref) {
+    const { t } = useTranslation();
+    
     return (
       <div ref={ref} className="grid grid-cols-3 gap-3">
         {ACTIVITIES.map((activity) => (
@@ -28,7 +31,7 @@ export const ActivitySelector = forwardRef<HTMLDivElement, ActivitySelectorProps
               'text-sm font-medium',
               selectedActivity === activity.id ? 'text-coral' : 'text-muted-foreground'
             )}>
-              {activity.label}
+              {t(activity.labelKey)}
             </span>
           </button>
         ))}

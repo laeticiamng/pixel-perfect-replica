@@ -10,6 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n";
 
 interface ConfirmDialogProps {
   trigger: React.ReactNode;
@@ -26,12 +27,14 @@ export function ConfirmDialog({
   trigger,
   title,
   description,
-  confirmText = "Confirmer",
-  cancelText = "Annuler",
+  confirmText,
+  cancelText,
   onConfirm,
   variant = 'default',
   isLoading = false,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
+  
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -46,7 +49,7 @@ export function ConfirmDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel className="border-border text-foreground hover:bg-muted">
-            {cancelText}
+            {cancelText || t('cancel')}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
@@ -57,7 +60,7 @@ export function ConfirmDialog({
                 : 'bg-coral hover:bg-coral-dark text-primary-foreground'
             )}
           >
-            {isLoading ? 'Chargement...' : confirmText}
+            {isLoading ? t('loading') : (confirmText || t('confirm'))}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

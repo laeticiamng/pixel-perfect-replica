@@ -1,9 +1,11 @@
 import { WifiOff } from 'lucide-react';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 export function OfflineBanner() {
   const { isOnline } = useNetworkStatus();
+  const { t } = useTranslation();
 
   if (isOnline) return null;
 
@@ -16,7 +18,7 @@ export function OfflineBanner() {
       )}
     >
       <WifiOff className="h-4 w-4" />
-      <span>Pas de connexion internet</span>
+      <span>{t('errors.noConnection')}</span>
     </div>
   );
 }

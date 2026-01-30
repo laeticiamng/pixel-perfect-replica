@@ -83,7 +83,7 @@ export default function PeopleMetPage() {
   };
 
   const getActivityData = (activityId: string) => {
-    return ACTIVITIES.find(a => a.id === activityId) || { emoji: '✨', label: 'Autre' };
+    return ACTIVITIES.find(a => a.id === activityId) || { emoji: '✨', label: 'Other', labelKey: 'activities.other' };
   };
 
   if (isLoading) {

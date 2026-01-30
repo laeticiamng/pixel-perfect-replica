@@ -6,7 +6,7 @@ import { PageLayout } from '@/components/PageLayout';
 import { IcebreakerCard, VerificationBadges, MiniChat } from '@/components/social';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
-import { ACTIVITIES, ICEBREAKERS } from '@/types/signal';
+import { ACTIVITIES, ICEBREAKERS, getIcebreaker as getIcebreakerFn } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
@@ -52,8 +52,8 @@ export default function ProximityRevealPage() {
 
   const generateIcebreaker = useCallback(() => {
     if (user) {
-      const icebreakers = ICEBREAKERS[user.activity as keyof typeof ICEBREAKERS] || ICEBREAKERS.other;
-      setIcebreaker(icebreakers[Math.floor(Math.random() * icebreakers.length)]);
+      const icebreaker = getIcebreakerFn(user.activity as any, 'en');
+      setIcebreaker(icebreaker);
     }
   }, [user]);
 

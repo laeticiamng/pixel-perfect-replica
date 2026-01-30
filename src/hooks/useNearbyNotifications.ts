@@ -118,9 +118,10 @@ export function useNearbyNotifications({ isActive, onNewUserNearby }: UseNearbyN
 
     // Also show native push notification if enabled
     if (settings.push_notifications) {
+      const activityLabel = activity?.label || 'an activity';
       showNativeNotification(
-        'Nouveau signal à proximité 📍',
-        `${firstName} est près de toi et fait : ${activity?.label || 'une activité'}`,
+        'New signal nearby 📍',
+        `${firstName} is near you and doing: ${activityLabel}`,
         activity?.emoji
       );
     }

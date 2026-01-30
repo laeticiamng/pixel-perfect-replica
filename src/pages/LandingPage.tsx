@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { useTranslation } from '@/lib/i18n';
+import { LanguageToggle } from '@/components/LanguageToggle';
 
 // Animated text that reveals on scroll
 function RevealText({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -36,6 +38,7 @@ function FloatingOrbs() {
 
 // Signal demo animation
 function SignalDemo() {
+  const { t } = useTranslation();
   const [activeSignal, setActiveSignal] = useState(0);
   
   useEffect(() => {
@@ -46,9 +49,9 @@ function SignalDemo() {
   }, []);
   
   const signals = [
-    { color: 'bg-signal-green', glow: 'glow-green', label: 'Réviser', emoji: '📚' },
-    { color: 'bg-signal-green', glow: 'glow-green', label: 'Sport', emoji: '🏃' },
-    { color: 'bg-signal-yellow', glow: 'glow-yellow', label: 'Discuter', emoji: '☕' },
+    { color: 'bg-signal-green', glow: 'glow-green', label: t('activities.studying'), emoji: '📚' },
+    { color: 'bg-signal-green', glow: 'glow-green', label: t('activities.sport'), emoji: '🏃' },
+    { color: 'bg-signal-yellow', glow: 'glow-yellow', label: t('activities.talking'), emoji: '☕' },
   ];
   
   return (
@@ -139,11 +142,13 @@ function FeatureCard({ icon, title, description, delay = 0 }: { icon: string; ti
 
 // Comparison section
 function ComparisonSection() {
+  const { t } = useTranslation();
+  
   const comparisons = [
-    { old: '"Je suis là"', new: '"Je suis ouvert à l\'interaction"' },
-    { old: 'Profils passifs', new: 'Intentions actives' },
-    { old: 'Espoir de match', new: 'Consentement mutuel' },
-    { old: 'Approche gênante', new: 'Approche naturelle' },
+    { old: t('landing.imHere'), new: t('landing.imOpenToInteract') },
+    { old: t('landing.passiveProfiles'), new: t('landing.activeIntentions') },
+    { old: t('landing.hopeForMatch'), new: t('landing.mutualConsent') },
+    { old: t('landing.awkwardApproach'), new: t('landing.naturalApproach') },
   ];
   
   return (
@@ -165,6 +170,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const containerRef = useRef(null);
+  const { t } = useTranslation();
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -195,13 +201,16 @@ export default function LandingPage() {
               EASY
             </span>
           </div>
-          <Button
-            onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
-            variant="ghost"
-            className="text-muted-foreground hover:text-foreground"
-          >
-            Se connecter
-          </Button>
+          <div className="flex items-center gap-3">
+            <LanguageToggle />
+            <Button
+              onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
+              variant="ghost"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              {t('auth.signIn')}
+            </Button>
+          </div>
         </div>
       </header>
       
@@ -219,7 +228,7 @@ export default function LandingPage() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-coral/30">
             <Sparkles className="h-4 w-4 text-coral" />
-            <span className="text-sm font-medium text-foreground">La rencontre réinventée</span>
+            <span className="text-sm font-medium text-foreground">{t('landing.meetingsReinvented')}</span>
           </div>
         </motion.div>
         
@@ -231,11 +240,11 @@ export default function LandingPage() {
           className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-6"
         >
           <span className="bg-gradient-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent">
-            Vois qui est
+            {t('landing.seeWhoIsOpen')}
           </span>
           <br />
           <span className="bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent">
-            ouvert à l'interaction.
+            {t('landing.openToInteract')}
           </span>
         </motion.h1>
         
@@ -246,9 +255,9 @@ export default function LandingPage() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-lg md:text-xl text-muted-foreground text-center max-w-lg mb-12 leading-relaxed"
         >
-          Groupes de motivation, amis, travail, amour...
+          {t('landing.motivationGroups')}
           <br className="hidden sm:block" />
-          <span className="text-foreground font-medium">Crée du lien en vrai, plus facilement, ici et maintenant.</span>
+          <span className="text-foreground font-medium">{t('landing.createRealConnections')}</span>
         </motion.p>
         
         {/* CTA Buttons */}
@@ -263,7 +272,7 @@ export default function LandingPage() {
             size="lg"
             className="h-14 px-8 text-lg font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-lg hover:shadow-coral/25 transition-all duration-300 hover:scale-105"
           >
-            Commencer
+            {t('landing.getStarted')}
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <Button
@@ -272,7 +281,7 @@ export default function LandingPage() {
             size="lg"
             className="h-14 px-8 text-lg font-medium rounded-full border-2 border-muted hover:border-coral/50 hover:bg-coral/5 transition-all duration-300"
           >
-            Se connecter
+            {t('auth.signIn')}
           </Button>
         </motion.div>
         
@@ -302,17 +311,17 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto">
           <RevealText>
             <p className="text-2xl md:text-3xl lg:text-4xl font-medium text-center leading-relaxed">
-              <span className="text-muted-foreground">Tu veux rencontrer quelqu'un.</span>
+              <span className="text-muted-foreground">{t('landing.youWantToMeet')}</span>
               <br />
-              <span className="text-muted-foreground">Mais tu ne sais jamais si cette personne</span>
+              <span className="text-muted-foreground">{t('landing.butYouNeverKnow')}</span>
               <br />
-              <span className="text-foreground font-bold">veut être approchée.</span>
+              <span className="text-foreground font-bold">{t('landing.wantsToBeApproached')}</span>
             </p>
           </RevealText>
           
           <RevealText delay={0.2}>
             <div className="mt-12 text-center">
-              <p className="text-lg text-coral font-semibold">Jusqu'à maintenant.</p>
+              <p className="text-lg text-coral font-semibold">{t('landing.untilNow')}</p>
             </div>
           </RevealText>
         </div>
@@ -323,15 +332,15 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto text-center">
           <RevealText>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-              Le <span className="text-coral">signal vert</span>
-              <br />change tout.
+              {t('landing.greenSignalChanges')}
+              <br />{t('landing.changesEverything')}
             </h2>
           </RevealText>
           
           <RevealText delay={0.2}>
             <p className="text-lg text-muted-foreground mb-12 max-w-lg mx-auto">
-              Quand quelqu'un active son signal, ça veut dire une chose :
-              <br /><span className="text-foreground font-semibold">"Je suis ouvert·e à l'interaction."</span>
+              {t('landing.whenSomeoneActivates')}
+              <br /><span className="text-foreground font-semibold">{t('landing.iAmOpenToInteract')}</span>
             </p>
           </RevealText>
           
@@ -341,8 +350,8 @@ export default function LandingPage() {
           
           <RevealText delay={0.6}>
             <p className="mt-12 text-sm text-muted-foreground">
-              Plus de malaise. Plus de "je dérange ou pas ?"
-              <br />Le premier pas est déjà fait des deux côtés.
+              {t('landing.noMoreAwkward')}
+              <br />{t('landing.firstStepDone')}
             </p>
           </RevealText>
         </div>
@@ -353,27 +362,27 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <RevealText>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
-              Pourquoi ça change tout
+              {t('landing.whyItChanges')}
             </h2>
           </RevealText>
           
           <div className="grid md:grid-cols-3 gap-6">
             <FeatureCard
               icon="🤝"
-              title="Lutte contre la solitude"
-              description="Tu n'es plus seul·e à vouloir rencontrer quelqu'un. Ici, tout le monde cherche la même chose."
+              title={t('landing.fightLoneliness')}
+              description={t('landing.fightLonelinessDesc')}
               delay={0}
             />
             <FeatureCard
               icon="✨"
-              title="Zéro approche gênante"
-              description="Pas de 'tu veux un café ?' random. Les deux personnes ont déjà dit oui."
+              title={t('landing.noAwkwardApproach')}
+              description={t('landing.noAwkwardApproachDesc')}
               delay={0.1}
             />
             <FeatureCard
               icon="📍"
-              title="Ancré dans le réel"
-              description="Pas de swipe infini. Des vraies personnes, au même endroit, au même moment."
+              title={t('landing.anchoredInReal')}
+              description={t('landing.anchoredInRealDesc')}
               delay={0.2}
             />
           </div>
@@ -385,10 +394,10 @@ export default function LandingPage() {
         <div className="max-w-2xl mx-auto">
           <RevealText>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              On ne connecte pas des profils.
+              {t('landing.weConnectIntentions')}
             </h2>
             <p className="text-xl text-coral font-semibold text-center mb-12">
-              On connecte des intentions.
+              {t('landing.weConnectIntentions2')}
             </p>
           </RevealText>
           
@@ -401,16 +410,16 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <RevealText>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
-              Ça marche partout
+              {t('landing.worksEverywhere')}
             </h2>
           </RevealText>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { emoji: '📚', place: 'Bibliothèque', action: 'Réviser ensemble' },
-              { emoji: '🏋️', place: 'Salle de sport', action: 'S\'entraîner à deux' },
-              { emoji: '☕', place: 'Café', action: 'Discuter' },
-              { emoji: '💻', place: 'Coworking', action: 'Brainstormer' },
+              { emoji: '📚', place: t('landing.library'), action: t('landing.studyTogether') },
+              { emoji: '🏋️', place: t('landing.gym'), action: t('landing.trainTogether') },
+              { emoji: '☕', place: t('landing.cafe'), action: t('landing.chat') },
+              { emoji: '💻', place: t('landing.coworking'), action: t('landing.brainstorm') },
             ].map((item, i) => (
               <RevealText key={i} delay={i * 0.1}>
                 <div className="p-6 rounded-2xl glass text-center hover:border-coral/30 border border-transparent transition-all duration-300">
@@ -429,18 +438,18 @@ export default function LandingPage() {
         <div className="max-w-3xl mx-auto text-center">
           <RevealText>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
-              <span className="text-muted-foreground">Prêt·e à</span>
+              <span className="text-muted-foreground">{t('landing.readyToConnect')}</span>
               <br />
               <span className="bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent">
-                te connecter ?
+                {t('landing.connect')}
               </span>
             </h2>
           </RevealText>
           
           <RevealText delay={0.2}>
             <p className="text-lg text-muted-foreground mb-12 max-w-md mx-auto">
-              Rejoins la révolution des rencontres intentionnelles.
-              <br />C'est gratuit. C'est maintenant.
+              {t('landing.joinRevolution')}
+              <br />{t('landing.itsFreeNow')}
             </p>
           </RevealText>
           
@@ -450,7 +459,7 @@ export default function LandingPage() {
               size="lg"
               className="h-16 px-12 text-xl font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl hover:shadow-coral/30 transition-all duration-300 hover:scale-105"
             >
-              Commencer maintenant
+              {t('landing.startNow')}
               <ArrowRight className="ml-3 h-6 w-6" />
             </Button>
           </RevealText>
@@ -473,38 +482,38 @@ export default function LandingPage() {
                 onClick={() => navigate('/install')}
                 className="hover:text-coral transition-colors font-medium"
               >
-                📲 Installer
+                📲 {t('landing.install')}
               </button>
               <button 
                 onClick={() => navigate('/help')}
                 className="hover:text-foreground transition-colors"
               >
-                Aide
+                {t('nav.help')}
               </button>
               <button 
                 onClick={() => navigate('/terms')}
                 className="hover:text-foreground transition-colors"
               >
-                Conditions
+                {t('landing.terms')}
               </button>
               <button 
                 onClick={() => navigate('/privacy')}
                 className="hover:text-foreground transition-colors"
               >
-                Confidentialité
+                {t('nav.privacy')}
               </button>
               <a 
                 href="mailto:support@easy-app.fr"
                 className="hover:text-foreground transition-colors"
               >
-                Contact
+                {t('landing.contact')}
               </a>
             </div>
           </div>
           
           <div className="text-center text-xs text-muted-foreground">
             <p className="font-medium">EASY v1.2.0 • PWA</p>
-            <p>Made with ❤️ in France par EmotionsCare Sasu</p>
+            <p>{t('landing.madeWith')}</p>
           </div>
         </div>
       </footer>
