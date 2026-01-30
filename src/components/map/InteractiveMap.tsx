@@ -269,8 +269,14 @@ export function InteractiveMap({
         attributionControl={false}
         reuseMaps
         dragPan={true}
+        scrollZoom={true}
+        boxZoom={true}
+        doubleClickZoom={true}
+        keyboard={true}
         touchZoomRotate={true}
         touchPitch={true}
+        dragRotate={true}
+        interactive={true}
       >
         <NavigationControl position="bottom-right" showCompass={true} showZoom={true} />
         <GeolocateControl 
