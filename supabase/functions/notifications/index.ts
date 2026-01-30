@@ -75,6 +75,72 @@ type NotificationRequest = AdminAlertRequest | PushNotificationRequest | Session
 type AnySupabaseClient = SupabaseClient<any, any, any>;
 
 // ============================================================
+// AUTHENTICATION HELPERS
+// ============================================================
+
+interface AuthResult {
+  authenticated: boolean;
+  userId?: string;
+  isAdmin?: boolean;
+  error?: string;
+}
+
+async function validateAuth(
+  req: Request,
+  supabase: AnySupabaseClient,
+  requireAdmin: boolean = false
+): Promise<AuthResult> {
+  const authHeader = req.headers.get("Authorization");
+  
+  if (!authHeader) {
+    return { authenticated: false, error: "Missing Authorization header" };
+  }
+
+  const token = authHeader.replace("Bearer ", "");
+  
+  if (!token || token === authHeader) {
+    return { authenticated: false, error: "Invalid Authorization header format" };
+  }
+
+  try {
+    // Create a client with the user's token to get their identity
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: `Bearer ${token}` } }
+    });
+
+    const { data: { user }, error: userError } = await userClient.auth.getUser();
+    
+    if (userError || !user) {
+      console.error("[notifications/auth] Token validation failed:", userError);
+      return { authenticated: false, error: "Invalid or expired token" };
+    }
+
+    let isAdmin = false;
+    
+    if (requireAdmin) {
+      // Check if user has admin role using service role client
+      const { data: hasRole } = await supabase.rpc('has_role', {
+        _user_id: user.id,
+        _role: 'admin'
+      });
+      
+      isAdmin = hasRole === true;
+      
+      if (!isAdmin) {
+        return { authenticated: true, userId: user.id, isAdmin: false, error: "Admin role required" };
+      }
+    }
+
+    return { authenticated: true, userId: user.id, isAdmin };
+  } catch (error) {
+    console.error("[notifications/auth] Error validating token:", error);
+    return { authenticated: false, error: "Token validation failed" };
+  }
+}
+
+// ============================================================
 // HANDLERS
 // ============================================================
 
@@ -366,8 +432,14 @@ function handleHealth(): Response {
       action: "health",
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "1.1.0",
+      version: "1.2.0",
       actions: ["send-admin-alert", "send-push", "send-session-reminders", "health"],
+      auth_required: {
+        "send-admin-alert": "admin",
+        "send-push": "authenticated",
+        "send-session-reminders": "admin",
+        "health": "none"
+      }
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
@@ -397,7 +469,7 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(
         JSON.stringify({
           error: "Missing 'action' field",
-          availableActions: ["send-admin-alert", "send-push", "health"],
+          availableActions: ["send-admin-alert", "send-push", "send-session-reminders", "health"],
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
@@ -408,21 +480,61 @@ const handler = async (req: Request): Promise<Response> => {
     let response: Response;
 
     switch (action) {
-      case "send-admin-alert":
-        response = await handleAdminAlert(body as AdminAlertRequest, supabase);
-        break;
-
-      case "send-push":
-        response = await handlePushNotification(body as PushNotificationRequest, supabase);
-        break;
-
-      case "send-session-reminders":
-        response = await handleSessionReminders(supabase);
-        break;
-
       case "health":
+        // Health check doesn't require auth
         response = handleHealth();
         break;
+
+      case "send-admin-alert": {
+        // Requires admin role
+        const authResult = await validateAuth(req, supabase, true);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (!authResult.isAdmin) {
+          return new Response(
+            JSON.stringify({ error: "Admin role required" }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        response = await handleAdminAlert(body as AdminAlertRequest, supabase);
+        break;
+      }
+
+      case "send-push": {
+        // Requires authentication
+        const authResult = await validateAuth(req, supabase, false);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        response = await handlePushNotification(body as PushNotificationRequest, supabase);
+        break;
+      }
+
+      case "send-session-reminders": {
+        // Requires admin role (for CRON jobs, use service role key in headers)
+        const authResult = await validateAuth(req, supabase, true);
+        if (!authResult.authenticated) {
+          return new Response(
+            JSON.stringify({ error: authResult.error || "Unauthorized" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        if (!authResult.isAdmin) {
+          return new Response(
+            JSON.stringify({ error: "Admin role required" }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        response = await handleSessionReminders(supabase);
+        break;
+      }
 
       default:
         response = new Response(
