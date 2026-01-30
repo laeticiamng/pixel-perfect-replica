@@ -10,7 +10,7 @@ import { SessionCard } from '@/components/binome/SessionCard';
 import { SessionFilters } from '@/components/binome/SessionFilters';
 import { CreateSessionForm } from '@/components/binome/CreateSessionForm';
 import { SessionQuotaBadge } from '@/components/binome/SessionQuotaBadge';
-import { BinomeOnboarding, BinomeDescriptionCard, WhyEasySection, WhyEasyCondensed, TestimonialsSection } from '@/components/binome/BinomeOnboarding';
+import { BinomeOnboarding, BinomeDescriptionCard, WhyEasySection, WhyEasyCondensed, TestimonialsSection, CommunityStats } from '@/components/binome';
 import { useBinomeSessions, type SessionFilters as Filters, type CreateSessionInput } from '@/hooks/useBinomeSessions';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useAuth } from '@/contexts/AuthContext';
@@ -163,6 +163,11 @@ export default function BinomePage() {
         {/* Description Card */}
         <div className="mt-4">
           <BinomeDescriptionCard />
+        </div>
+
+        {/* Community Stats */}
+        <div className="mt-4">
+          <CommunityStats />
         </div>
       </header>
 

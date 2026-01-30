@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { ConfettiCelebration } from './ConfettiCelebration';
 
 interface BinomeOnboardingProps {
   onComplete: () => void;
@@ -56,6 +57,7 @@ const features = [
 export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboardingProps) {
   const [showDialog, setShowDialog] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     // Check if user has already seen onboarding
@@ -67,8 +69,12 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
 
   const handleComplete = () => {
     localStorage.setItem(ONBOARDING_KEY, 'true');
-    setShowDialog(false);
-    onComplete();
+    setShowConfetti(true);
+    // Keep dialog open briefly to show confetti
+    setTimeout(() => {
+      setShowDialog(false);
+      onComplete();
+    }, 1500);
   };
 
   const handleSkip = () => {
@@ -92,8 +98,10 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
   };
 
   return (
-    <Dialog open={showDialog} onOpenChange={setShowDialog}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+    <>
+      <ConfettiCelebration trigger={showConfetti} />
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Heart className="h-6 w-6 text-coral" />
@@ -180,6 +188,7 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
         </div>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
 
