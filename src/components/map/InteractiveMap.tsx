@@ -96,8 +96,29 @@ export function InteractiveMap({
   useEffect(() => {
     const fetchToken = async () => {
       try {
+        // Check if user is authenticated first
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session) {
+          console.warn('[InteractiveMap] No active session, cannot fetch mapbox token');
+          setError('Connexion requise pour voir la carte');
+          setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase.functions.invoke('get-mapbox-token');
-        if (error) throw error;
+        
+        if (error) {
+          // Handle auth errors specifically
+          if (error.message?.includes('401') || error.message?.includes('token')) {
+            console.warn('[InteractiveMap] Auth error fetching token:', error.message);
+            setError('Session expirée, veuillez vous reconnecter');
+          } else {
+            throw error;
+          }
+          return;
+        }
+        
         if (data?.token) {
           setMapboxToken(data.token);
         } else {
@@ -105,7 +126,7 @@ export function InteractiveMap({
         }
       } catch (err: unknown) {
         console.error('Failed to fetch Mapbox token:', err);
-        setError('Failed to load map');
+        setError('Impossible de charger la carte');
       } finally {
         setIsLoading(false);
       }
