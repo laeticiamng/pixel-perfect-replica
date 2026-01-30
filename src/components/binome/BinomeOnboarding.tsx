@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Calendar, Users, MapPin, MessageCircle, CheckCircle2, Star, Clock, ChevronRight, Sparkles } from 'lucide-react';
+import { X, Calendar, Users, MapPin, MessageCircle, CheckCircle2, Star, Clock, ChevronRight, Sparkles, Heart, HandHeart, Users2, Smile } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -20,29 +20,29 @@ const ONBOARDING_KEY = 'binome_onboarding_completed';
 
 const steps = [
   {
-    icon: <Calendar className="h-8 w-8 text-coral" />,
+    icon: <Heart className="h-8 w-8 text-coral" />,
+    title: "Lutte contre la solitude",
+    description: "EASY te connecte avec des personnes qui partagent tes envies. Fini l'isolement : trouve un binôme pour réviser, manger, faire du sport ou simplement discuter."
+  },
+  {
+    icon: <Calendar className="h-8 w-8 text-signal-green" />,
     title: "Crée ou rejoins un créneau",
-    description: "Planifie une session de 45min, 1h30 ou 3h dans ta ville. Choisis l'activité qui te correspond : étudier, manger, sport..."
+    description: "Planifie une session de 45min, 1h30 ou 3h dans ta ville. Choisis l'activité : étudier, travailler, sport, repas, discussion..."
   },
   {
-    icon: <Users className="h-8 w-8 text-signal-green" />,
+    icon: <Users className="h-8 w-8 text-primary" />,
     title: "Trouve ton binôme",
-    description: "D'autres utilisateurs peuvent rejoindre ton créneau. Maximum 4 participants par session pour garder une ambiance conviviale."
+    description: "D'autres personnes peuvent rejoindre ton créneau. Maximum 4 participants pour une ambiance conviviale et des liens authentiques."
   },
   {
-    icon: <MapPin className="h-8 w-8 text-primary" />,
-    title: "Check-in sur place",
-    description: "Le jour J, confirme ta présence en arrivant sur le lieu (à moins de 200m). Tu as 15 minutes avant et après l'heure prévue."
+    icon: <MapPin className="h-8 w-8 text-coral" />,
+    title: "Rencontre en vrai",
+    description: "Le jour J, confirme ta présence sur place (check-in GPS). C'est l'occasion de créer de vraies connexions humaines !"
   },
   {
-    icon: <MessageCircle className="h-8 w-8 text-coral" />,
-    title: "Discute et organise",
-    description: "Utilise le chat intégré pour coordonner les détails avec ton binôme : point de rencontre exact, changements de dernière minute..."
-  },
-  {
-    icon: <Star className="h-8 w-8 text-yellow-500" />,
-    title: "Laisse un feedback",
-    description: "Après la session, évalue ton expérience. Les feedbacks positifs améliorent ton score de fiabilité et ta visibilité !"
+    icon: <HandHeart className="h-8 w-8 text-signal-green" />,
+    title: "Crée du lien durable",
+    description: "Chaque rencontre peut devenir une amitié, un groupe de motivation, ou plus encore. Évalue ton expérience pour aider la communauté à grandir."
   }
 ];
 
@@ -95,11 +95,11 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Users className="h-6 w-6 text-coral" />
-            Bienvenue dans Réserver un Binôme !
+            <Heart className="h-6 w-6 text-coral" />
+            Bienvenue sur EASY !
           </DialogTitle>
           <DialogDescription>
-            Planifie des sessions avec d'autres personnes dans ta ville
+            Crée du lien en vrai. Lutte contre la solitude.
           </DialogDescription>
         </DialogHeader>
 
@@ -197,7 +197,7 @@ export function BinomeDescriptionCard() {
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-xl bg-coral/10 shrink-0">
-              <Users className="h-5 w-5 text-coral" />
+              <Heart className="h-5 w-5 text-coral" />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-foreground text-sm mb-1">
@@ -227,5 +227,75 @@ export function BinomeDescriptionCard() {
         />
       )}
     </>
+  );
+}
+
+// "Pourquoi EASY ?" section with human benefits
+const whyEasyBenefits = [
+  {
+    icon: <Heart className="h-6 w-6 text-coral" />,
+    title: "Lutte contre la solitude",
+    description: "Ne reste plus seul·e. Trouve quelqu'un pour partager un moment, une activité, une discussion."
+  },
+  {
+    icon: <Users2 className="h-6 w-6 text-signal-green" />,
+    title: "Crée du lien authentique",
+    description: "Amitié, groupe de motivation, entraide... Chaque rencontre peut devenir une relation durable."
+  },
+  {
+    icon: <Smile className="h-6 w-6 text-primary" />,
+    title: "Améliore ton bien-être",
+    description: "Les interactions sociales réduisent le stress, boostent la motivation et donnent du sens au quotidien."
+  },
+  {
+    icon: <HandHeart className="h-6 w-6 text-coral" />,
+    title: "Construis ta communauté",
+    description: "Rejoins des personnes qui partagent tes centres d'intérêt et crée ton propre réseau de soutien."
+  }
+];
+
+export function WhyEasySection() {
+  return (
+    <Card className="bg-gradient-to-br from-background to-muted/30 border-border/50">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+          <Heart className="h-5 w-5 text-coral" />
+          Pourquoi EASY ?
+        </CardTitle>
+        <CardDescription>
+          Plus qu'une app de rencontre : un outil pour créer du lien en vrai
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {whyEasyBenefits.map((benefit, idx) => (
+            <div 
+              key={idx} 
+              className="flex items-start gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
+            >
+              <div className="p-2 rounded-lg bg-background/80 shrink-0">
+                {benefit.icon}
+              </div>
+              <div className="min-w-0">
+                <h4 className="font-semibold text-foreground text-sm mb-0.5">
+                  {benefit.title}
+                </h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {benefit.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-4 p-3 rounded-xl bg-coral/5 border border-coral/20">
+          <p className="text-sm text-center text-muted-foreground">
+            <span className="font-semibold text-coral">La solitude touche 1 étudiant sur 2.</span>
+            <br />
+            EASY t'aide à briser l'isolement, une rencontre à la fois.
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
