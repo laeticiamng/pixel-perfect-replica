@@ -398,7 +398,7 @@ export default function MapPage() {
       )}
 
       {/* Interactive Map */}
-      <div className="flex-1 px-4 sm:px-6 min-h-[400px]">
+      <div className="flex-1 px-4 sm:px-6" style={{ minHeight: '400px', height: '50vh' }}>
         <InteractiveMap
           nearbyUsers={filteredNearbyUsers.map(u => ({
             id: u.id,
@@ -417,7 +417,7 @@ export default function MapPage() {
           myActivity={myActivity}
           onUserClick={handleUserClick}
           visibilityDistance={settings.visibility_distance}
-          className="w-full h-full min-h-[350px] sm:min-h-[400px]"
+          className="w-full h-full"
           userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
           activityFilters={activityFilters}
           onActivityFilterToggle={toggleActivityFilter}
