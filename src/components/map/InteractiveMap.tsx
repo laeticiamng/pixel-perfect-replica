@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Map, { Marker, NavigationControl, GeolocateControl, Source, Layer, Popup } from 'react-map-gl/mapbox';
 import type { MapRef, ViewStateChangeEvent } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useLocationStore } from '@/stores/locationStore';
 import { supabase } from '@/integrations/supabase/client';
@@ -320,80 +321,83 @@ export function InteractiveMap({
           </AnimatedMarker>
         )}
 
-        {/* Clustered nearby users markers */}
-        {clusters.map((cluster) => {
-          const [longitude, latitude] = cluster.geometry.coordinates;
-          const { cluster: isCluster, point_count, cluster_id, user } = cluster.properties;
+        {/* Clustered nearby users markers with AnimatePresence for smooth filtering */}
+        <AnimatePresence mode="popLayout">
+          {clusters.map((cluster) => {
+            const [longitude, latitude] = cluster.geometry.coordinates;
+            const { cluster: isCluster, point_count, cluster_id, user } = cluster.properties;
 
-          if (isCluster) {
+            if (isCluster) {
+              return (
+                <Marker
+                  key={`cluster-${cluster_id}`}
+                  latitude={latitude}
+                  longitude={longitude}
+                  anchor="center"
+                >
+                  <ClusterMarker
+                    pointCount={point_count || 0}
+                    onClick={() => handleClusterClick(cluster_id!, longitude, latitude)}
+                  />
+                </Marker>
+              );
+            }
+
+            // Single user marker with animation
+            if (!user) return null;
+
             return (
-              <Marker
-                key={`cluster-${cluster_id}`}
-                latitude={latitude}
-                longitude={longitude}
-                anchor="center"
+              <AnimatedMarker
+                key={user.id}
+                markerKey={user.id}
+                latitude={user.latitude}
+                longitude={user.longitude}
+                onClick={() => handleMarkerClick(user as unknown as NearbyUser)}
               >
-                <ClusterMarker
-                  pointCount={point_count || 0}
-                  onClick={() => handleClusterClick(cluster_id!, longitude, latitude)}
-                />
-              </Marker>
-            );
-          }
-
-          // Single user marker with animation
-          if (!user) return null;
-
-          return (
-            <AnimatedMarker
-              key={user.id}
-              latitude={user.latitude}
-              longitude={user.longitude}
-              onClick={() => handleMarkerClick(user as unknown as NearbyUser)}
-            >
-              <button
-                className="relative cursor-pointer transform transition-transform hover:scale-110 active:scale-95"
-                aria-label={`Signal ${user.signal} - ${user.firstName}`}
-              >
-                {/* Signal glow */}
-                <div className={cn(
-                  'absolute -inset-1 rounded-full opacity-40 blur-sm',
-                  getSignalColor(user.signal)
-                )} />
-                
-                {/* Main marker */}
-                <div className={cn(
-                  'relative w-12 h-12 rounded-full flex items-center justify-center border-3 border-white shadow-lg',
-                  getSignalColor(user.signal)
-                )}>
-                  {user.avatar_url ? (
-                    <img 
-                      src={user.avatar_url} 
-                      alt={user.firstName}
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-lg font-bold text-white">
-                      {user.firstName?.charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-                
-                {/* Activity badge */}
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-background border-2 border-white shadow-md flex items-center justify-center text-xs">
-                  {getActivityEmoji(user.activity)}
-                </div>
-                
-                {/* Distance badge */}
-                {user.distance && (
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-background/90 border border-border text-[10px] font-medium text-foreground shadow">
-                    {user.distance < 1000 ? `${Math.round(user.distance)}m` : `${(user.distance / 1000).toFixed(1)}km`}
+                <button
+                  className="relative cursor-pointer transform transition-transform hover:scale-110 active:scale-95"
+                  aria-label={`Signal ${user.signal} - ${user.firstName}`}
+                >
+                  {/* Signal glow */}
+                  <div className={cn(
+                    'absolute -inset-1 rounded-full opacity-40 blur-sm',
+                    getSignalColor(user.signal)
+                  )} />
+                  
+                  {/* Main marker */}
+                  <div className={cn(
+                    'relative w-12 h-12 rounded-full flex items-center justify-center border-3 border-white shadow-lg',
+                    getSignalColor(user.signal)
+                  )}>
+                    {user.avatar_url ? (
+                      <img 
+                        src={user.avatar_url} 
+                        alt={user.firstName}
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-lg font-bold text-white">
+                        {user.firstName?.charAt(0).toUpperCase()}
+                      </span>
+                    )}
                   </div>
-                )}
-              </button>
-            </AnimatedMarker>
-          );
-        })}
+                  
+                  {/* Activity badge */}
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-background border-2 border-white shadow-md flex items-center justify-center text-xs">
+                    {getActivityEmoji(user.activity)}
+                  </div>
+                  
+                  {/* Distance badge */}
+                  {user.distance && (
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-background/90 border border-border text-[10px] font-medium text-foreground shadow">
+                      {user.distance < 1000 ? `${Math.round(user.distance)}m` : `${(user.distance / 1000).toFixed(1)}km`}
+                    </div>
+                  )}
+                </button>
+              </AnimatedMarker>
+            );
+          })}
+        </AnimatePresence>
 
         {/* User popup card */}
         {selectedUser && (

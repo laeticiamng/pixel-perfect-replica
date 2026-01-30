@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Marker } from 'react-map-gl/mapbox';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { ACTIVITIES } from '@/types/signal';
 
 interface AnimatedMarkerProps {
   latitude: number;
@@ -9,6 +9,7 @@ interface AnimatedMarkerProps {
   children: React.ReactNode;
   onClick?: () => void;
   animationDuration?: number;
+  markerKey?: string;
 }
 
 export function AnimatedMarker({
@@ -17,6 +18,7 @@ export function AnimatedMarker({
   children,
   onClick,
   animationDuration = 1000,
+  markerKey,
 }: AnimatedMarkerProps) {
   const [currentPos, setCurrentPos] = useState({ lat: latitude, lng: longitude });
   const [isAnimating, setIsAnimating] = useState(false);
@@ -73,12 +75,22 @@ export function AnimatedMarker({
       anchor="center"
       onClick={onClick}
     >
-      <div className={cn(
-        'transition-transform duration-200',
-        isAnimating && 'scale-105'
-      )}>
+      <motion.div
+        key={markerKey}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.5 }}
+        transition={{ 
+          duration: 0.3, 
+          ease: [0.4, 0, 0.2, 1]
+        }}
+        className={cn(
+          'transition-transform duration-200',
+          isAnimating && 'scale-105'
+        )}
+      >
         {children}
-      </div>
+      </motion.div>
     </Marker>
   );
 }
