@@ -174,10 +174,19 @@ export function InteractiveMap({
     }
   }, []);
 
-  // Update bounds on initial load
+  // Update bounds on initial load and enable all interactions
   const handleLoad = useCallback(() => {
     const map = mapRef.current?.getMap();
     if (map) {
+      // Explicitly enable all interactions on the native map object
+      map.dragPan.enable();
+      map.scrollZoom.enable();
+      map.boxZoom.enable();
+      map.doubleClickZoom.enable();
+      map.keyboard.enable();
+      map.dragRotate.enable();
+      map.touchZoomRotate.enable();
+      
       const mapBounds = map.getBounds();
       if (mapBounds) {
         setBounds([
