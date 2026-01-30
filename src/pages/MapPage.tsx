@@ -58,6 +58,7 @@ export default function MapPage() {
     mySignal,
     activity: myActivity, 
     nearbyUsers, 
+    isDemoMode,
     activateSignal, 
     deactivateSignal,
     extendSignal,
@@ -326,8 +327,13 @@ export default function MapPage() {
             >
               <Filter className="h-4 w-4" />
             </button>
-            <p className="text-muted-foreground text-sm">
-              <span className="text-signal-green font-bold">{openUsersCount}</span> {openUsersCount === 1 ? 'personne ouverte à l\'interaction' : 'personnes ouvertes à l\'interaction'}
+            <p className="text-muted-foreground text-sm flex items-center gap-2">
+              <span className="text-signal-green font-bold">{openUsersCount}</span> {openUsersCount === 1 ? 'personne ouverte' : 'personnes ouvertes'}
+              {isDemoMode && (
+                <span className="px-2 py-0.5 rounded-full bg-signal-yellow/20 text-signal-yellow text-xs font-medium border border-signal-yellow/30">
+                  Démo
+                </span>
+              )}
             </p>
           </div>
           <button

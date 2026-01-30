@@ -36,6 +36,7 @@ export function useActiveSignal() {
   const [mySignal, setMySignal] = useState<ActiveSignal | null>(null);
   const [nearbyUsers, setNearbyUsers] = useState<NearbyUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(false);
 
   // Fetch my current signal
   const fetchMySignal = useCallback(async () => {
@@ -267,9 +268,11 @@ export function useActiveSignal() {
           distance: calculateDistance(position.latitude, position.longitude, u.position.latitude, u.position.longitude),
         })).filter(u => u.distance <= maxDistance).sort((a, b) => (a.distance || 0) - (b.distance || 0));
         setNearbyUsers(mocksWithDistance);
+        setIsDemoMode(true);
         return;
       }
 
+      setIsDemoMode(false);
       setNearbyUsers(nearby);
     } catch (err) {
       console.error('Error in fetchNearbyUsers:', err);
@@ -336,6 +339,7 @@ export function useActiveSignal() {
     mySignal,
     nearbyUsers,
     isLoading,
+    isDemoMode,
     isActive: !!mySignal,
     activity: mySignal?.activity as ActivityType | null,
     activateSignal,
