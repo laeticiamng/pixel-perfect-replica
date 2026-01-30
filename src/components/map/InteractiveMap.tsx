@@ -234,10 +234,7 @@ export function InteractiveMap({
 
   return (
     <div 
-      className={cn("relative rounded-2xl overflow-hidden", className)}
-      onTouchStart={(e) => e.stopPropagation()}
-      onTouchMove={(e) => e.stopPropagation()}
-      onTouchEnd={(e) => e.stopPropagation()}
+      className={cn("relative rounded-2xl overflow-hidden touch-none", className)}
     >
       <Map
         ref={mapRef}
