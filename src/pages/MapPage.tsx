@@ -391,8 +391,8 @@ export default function MapPage() {
       )}
 
       {/* Radar Map */}
-      <div className="flex-1 flex items-center justify-center px-6">
-        <div className="relative w-full max-w-sm aspect-square">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6">
+        <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg aspect-square">
           {/* Radar circles with enhanced styling */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="absolute w-full h-full rounded-full border border-coral/10" />
