@@ -6,13 +6,13 @@ import { BottomNav } from '@/components/BottomNav';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
 import { PageLayout } from '@/components/PageLayout';
 import { 
-  SignalMarker, 
   ActivitySelector, 
   ActivityFilter, 
   ExpirationTimer, 
   LocationDescriptionInput, 
-  SearchingIndicator 
-} from '@/components/radar';
+  SearchingIndicator,
+  InteractiveMap
+} from '@/components/map';
 import { EmergencyButton } from '@/components/safety';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
@@ -391,88 +391,28 @@ export default function MapPage() {
         </div>
       )}
 
-      {/* Radar Map */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6">
-        <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg aspect-square">
-          {/* Radar circles with enhanced styling */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="absolute w-full h-full rounded-full border border-coral/10" />
-            <div className="absolute w-3/4 h-3/4 rounded-full border border-coral/15" />
-            <div className="absolute w-1/2 h-1/2 rounded-full border border-coral/20" />
-            <div className="absolute w-1/4 h-1/4 rounded-full border border-coral/25 bg-coral/5" />
-          </div>
-          
-          {/* Distance labels */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="absolute top-1 text-[10px] text-muted-foreground font-medium">
-              {settings.visibility_distance}m
-            </span>
-            <span className="absolute top-1/4 text-[10px] text-muted-foreground/70">
-              {Math.round(settings.visibility_distance * 0.75)}m
-            </span>
-          </div>
-          
-          {/* Radar sweep effect with enhanced gradient */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="absolute w-full h-full animate-radar-sweep origin-center">
-              <div 
-                className="absolute top-1/2 left-1/2 w-1/2 h-1"
-                style={{
-                  background: 'linear-gradient(90deg, hsl(var(--coral) / 0.6), hsl(var(--coral) / 0.2), transparent)',
-                  transformOrigin: 'left center',
-                  borderRadius: '2px',
-                }}
-              />
-            </div>
-          </div>
-          
-          {/* Center point (user) with enhanced effects */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-            <div className={cn(
-              'w-10 h-10 rounded-full flex items-center justify-center relative shadow-medium',
-              isActive ? 'bg-gradient-to-br from-coral to-coral-dark glow-coral animate-pulse-signal' : 'bg-muted'
-            )}>
-              <span className="text-sm font-bold text-primary-foreground">
-                {profile?.first_name?.charAt(0).toUpperCase() || '?'}
-              </span>
-            </div>
-            {/* Multiple ripple effects */}
-            {isActive && (
-              <>
-                <div className="absolute inset-0 rounded-full bg-coral/25 animate-ripple" />
-                <div className="absolute inset-0 rounded-full bg-coral/15 animate-ripple" style={{ animationDelay: '0.5s' }} />
-              </>
-            )}
-          </div>
-
-          {/* Nearby users */}
-          {filteredNearbyUsers.map((nearbyUser, index) => {
-            const pos = getRadarPosition(index, filteredNearbyUsers.length, nearbyUser.distance);
-            const isClose = nearbyUser.distance && nearbyUser.distance < 50;
-            
-            return (
-              <div
-                key={nearbyUser.id}
-                className="absolute transition-all duration-500"
-                style={{
-                  left: `${pos.x}%`,
-                  top: `${pos.y}%`,
-                  transform: 'translate(-50%, -50%)',
-                }}
-              >
-                <SignalMarker
-                  signal={nearbyUser.signal}
-                  activity={nearbyUser.activity}
-                  distance={nearbyUser.distance}
-                  firstName={nearbyUser.firstName}
-                  isClose={isClose}
-                  onClick={() => handleUserClick(nearbyUser.id, nearbyUser.distance)}
-                  size="sm"
-                />
-              </div>
-            );
-          })}
-        </div>
+      {/* Interactive Map */}
+      <div className="flex-1 px-4 sm:px-6 min-h-[400px]">
+        <InteractiveMap
+          nearbyUsers={filteredNearbyUsers.map(u => ({
+            id: u.id,
+            user_id: u.id,
+            firstName: u.firstName,
+            signal: u.signal,
+            activity: u.activity,
+            latitude: u.position?.latitude || 0,
+            longitude: u.position?.longitude || 0,
+            distance: u.distance,
+            avatar_url: undefined,
+            rating: u.rating,
+          }))}
+          isActive={isActive}
+          myActivity={myActivity}
+          onUserClick={handleUserClick}
+          visibilityDistance={settings.visibility_distance}
+          className="w-full h-full min-h-[350px] sm:min-h-[400px]"
+          userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
+        />
       </div>
 
       {/* Signal Button */}
