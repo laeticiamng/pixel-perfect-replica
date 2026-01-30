@@ -32,8 +32,8 @@ export function PageLayout({
   const content = (
     <div className={cn(
       "min-h-screen min-h-[100dvh] bg-gradient-radial relative",
-      // Use CSS variable for sidebar width to handle collapsed state gracefully
-      showSidebar && "lg:pl-[72px] xl:pl-64 transition-all duration-300",
+      // Sidebar is 256px (w-64) when expanded, must apply correct left padding
+      showSidebar && "lg:pl-64",
       className
     )}>
       {showOrbs && <FloatingOrbs />}
