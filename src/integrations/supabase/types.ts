@@ -1151,6 +1151,7 @@ export type Database = {
       check_reveal_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       cleanup_expired_shadow_bans: { Args: never; Returns: undefined }
       cleanup_expired_signals: { Args: never; Returns: undefined }
+      cleanup_old_analytics_events: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       cleanup_old_reveal_logs: { Args: never; Returns: undefined }
       cleanup_rate_limit_logs: { Args: never; Returns: undefined }
