@@ -104,7 +104,7 @@ export default function ProfilePage() {
           )}
           
           {/* Stats with enhanced styling */}
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 mt-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
             <button 
               onClick={() => navigate('/statistics')}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
@@ -134,7 +134,7 @@ export default function ProfilePage() {
       <div className="px-6 space-y-6">
         {menuSections.map((section, sectionIdx) => (
           <div key={section.title} className="animate-slide-up" style={{ animationDelay: `${0.2 + sectionIdx * 0.1}s` }}>
-            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1">
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 px-1">
               {section.title}
             </h2>
             <div className="glass rounded-2xl overflow-hidden shadow-soft">
@@ -156,7 +156,7 @@ export default function ProfilePage() {
                 >
                   <span className="text-coral">{item.icon}</span>
                   <span className="flex-1 text-left text-foreground font-medium">{item.label}</span>
-                  <ChevronRight className="h-4 w-4 text-gray-400" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </button>
               ))}
             </div>
@@ -174,7 +174,7 @@ export default function ProfilePage() {
         </button>
 
         {/* Version */}
-        <p className="text-center text-xs text-gray-500 py-4 font-medium">
+        <p className="text-center text-xs text-muted-foreground py-4 font-medium">
           EASY v1.2.0
         </p>
       </div>
