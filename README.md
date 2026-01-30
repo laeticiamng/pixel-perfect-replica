@@ -339,6 +339,45 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 
 ---
 
+## 🔒 Sécurité & Conformité
+
+### Secrets & Variables d'environnement
+> ⚠️ **IMPORTANT** : Le fichier `.env` visible dans l'interface Lovable est **géré automatiquement par la plateforme** et n'est **JAMAIS poussé sur GitHub**. Les secrets (clés API, tokens) sont stockés de manière sécurisée via Lovable Cloud Secrets.
+
+| Aspect | Implémentation |
+|--------|----------------|
+| **Secrets** | Stockés dans Lovable Cloud Secrets (jamais en clair) |
+| **Clés Supabase** | Auto-injectées par Lovable Cloud |
+| **API Keys tierces** | Gérées via Edge Functions (serveur uniquement) |
+| **Variables publiques** | Préfixées `VITE_` pour le build client |
+
+### Row Level Security (RLS)
+- ✅ **RLS activé sur TOUTES les tables** (deny by default)
+- ✅ Policies testées : User A ne voit pas les données de User B
+- ✅ Utilisateurs non-authentifiés : accès refusé systématique
+- ✅ Fonctions SQL avec `SECURITY DEFINER` + `search_path = 'public'`
+
+### Anti-stalking & Anti-harcèlement
+| Protection | Description |
+|------------|-------------|
+| **Blocage utilisateur** | Table `user_blocks` bidirectionnelle |
+| **Rate limiting** | Max 5 signalements/heure (`check_report_rate_limit`) |
+| **Ghost mode** | Invisible sur le radar (paramètre utilisateur) |
+| **Floutage GPS** | Précision ~100m (`fuzz_coordinates`) |
+| **Purge données** | Locations supprimées après 30 jours |
+| **Bouton d'urgence** | Contacts d'urgence préenregistrés |
+
+### Observabilité
+| Composant | Implémentation |
+|-----------|----------------|
+| **Logs Edge Functions** | Console.log structurés + timestamps |
+| **Analytics events** | Table `analytics_events` avec catégories |
+| **Error tracking** | Action `get-error-rate` dans system function |
+| **Alertes admin** | Table `alert_logs` + préférences admin |
+| **Page Diagnostics** | `/diagnostics` (version, auth, latence API) |
+
+---
+
 ## 🔍 Audit & Qualité (v1.3)
 
 L'audit complet de la plateforme a été réalisé le 30 janvier 2026. Voir `AUDIT_COMPLETE_FINAL.md` pour les détails.
@@ -358,6 +397,7 @@ L'audit complet de la plateforme a été réalisé le 30 janvier 2026. Voir `AUD
 | Fonctions SQL | 40+ |
 | Edge Functions | 8 |
 | RLS Policies | Actives sur toutes les tables |
+| Linter Supabase | 1 warning mineur (extension in public) |
 
 ---
 
