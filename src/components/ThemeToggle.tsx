@@ -21,7 +21,7 @@ export function ThemeToggle({ className, showLabels = true, compact = false }: T
   // Compact mode: only show icons with current selection highlighted
   if (compact) {
     return (
-      <div className={cn('flex gap-1 p-1 rounded-xl bg-muted/50', className)}>
+      <div className={cn('flex gap-1 p-1 rounded-xl bg-muted/80 border border-border/50', className)}>
         {options.map((option) => {
           const Icon = option.icon;
           const isActive = theme === option.value;
@@ -34,8 +34,8 @@ export function ThemeToggle({ className, showLabels = true, compact = false }: T
                   className={cn(
                     'p-2 rounded-lg transition-all duration-200',
                     isActive
-                      ? 'bg-coral text-primary-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                      ? 'bg-coral text-white shadow-sm'
+                      : 'text-foreground/70 hover:text-foreground hover:bg-background/50'
                   )}
                 >
                   <Icon className="h-4 w-4" />
