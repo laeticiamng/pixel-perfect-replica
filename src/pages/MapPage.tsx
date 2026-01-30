@@ -4,6 +4,7 @@ import { X, Radio, RefreshCw, Info, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
+import { PageLayout } from '@/components/PageLayout';
 import { 
   SignalMarker, 
   ActivitySelector, 
@@ -253,8 +254,8 @@ export default function MapPage() {
   };
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gradient-radial flex flex-col pb-28">
-      <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col">
+    <PageLayout className="pb-28" animate={false}>
+      <div className="max-w-2xl mx-auto w-full min-h-[100dvh] flex flex-col">
         {/* Header */}
         <header className="safe-top px-6 py-4">
         <div className="glass-strong rounded-2xl p-4 shadow-medium">
@@ -564,6 +565,6 @@ export default function MapPage() {
 
       <BottomNav />
       </div>
-    </div>
+    </PageLayout>
   );
 }
