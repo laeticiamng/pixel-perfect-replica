@@ -1,5 +1,8 @@
 // Map-related components barrel export
 export { InteractiveMap } from './InteractiveMap';
+export { AnimatedMarker } from './AnimatedMarker';
+export { MapStyleSelector, MAP_STYLES, type MapStyleType } from './MapStyleSelector';
+export { ClusterMarker } from './ClusterMarker';
 
 // Re-export from new organized folders
 export { ActivityFilter } from '../radar';
