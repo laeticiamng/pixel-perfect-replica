@@ -24,12 +24,13 @@ export default function EditProfilePage() {
   const [firstName, setFirstName] = useState(profile?.first_name || '');
   const [university, setUniversity] = useState(profile?.university || '');
   const [bio, setBio] = useState('');
+  const [birthYear, setBirthYear] = useState<string>('');
   const [favoriteActivities, setFavoriteActivities] = useState<ActivityType[]>([]);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Fetch current bio and favorite activities from database
+  // Fetch current bio, favorite activities, and birth year from database
   useEffect(() => {
     const fetchProfileData = async () => {
       if (!user) return;
@@ -38,12 +39,23 @@ export default function EditProfilePage() {
         .select('bio, favorite_activities')
         .eq('id', user.id)
         .single();
+      
+      // Also fetch birth_year separately (may not be in types yet)
+      const { data: birthData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
       if (data) {
         if (data.bio) setBio(data.bio);
         if (data.favorite_activities) {
           setFavoriteActivities(data.favorite_activities as ActivityType[]);
         }
       }
+      // Cast to access birth_year even if not in types
+      const profileData = birthData as { birth_year?: number } | null;
+      if (profileData?.birth_year) setBirthYear(String(profileData.birth_year));
     };
     fetchProfileData();
   }, [user]);
@@ -154,6 +166,16 @@ export default function EditProfilePage() {
       }
     }
 
+    // Validate birth year if provided
+    if (birthYear) {
+      const yearNum = parseInt(birthYear, 10);
+      const currentYear = new Date().getFullYear();
+      if (isNaN(yearNum) || yearNum < 1920 || yearNum > currentYear - 13) {
+        toast.error('Année de naissance invalide (min 13 ans)');
+        return;
+      }
+    }
+
     // Validate bio length
     if (sanitizedBio.length > BIO_MAX_LENGTH) {
       toast.error(`La bio ne doit pas dépasser ${BIO_MAX_LENGTH} caractères`);
@@ -162,7 +184,7 @@ export default function EditProfilePage() {
     
     setIsLoading(true);
 
-    // Update profile including bio and favorite activities
+    // Update profile including bio, birth_year and favorite activities
     const { error: profileError } = await supabase
       .from('profiles')
       .update({
@@ -170,6 +192,7 @@ export default function EditProfilePage() {
         university: sanitizedUniversity || null,
         avatar_url: avatarUrl || null,
         bio: sanitizedBio || null,
+        birth_year: birthYear ? parseInt(birthYear, 10) : null,
         favorite_activities: favoriteActivities,
       })
       .eq('id', user?.id);
@@ -322,6 +345,23 @@ export default function EditProfilePage() {
             value={favoriteActivities}
             onChange={setFavoriteActivities}
           />
+
+          {/* Birth Year - Private, used for age-based matching */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Année de naissance</label>
+            <Input
+              type="number"
+              placeholder="Ex: 2000"
+              value={birthYear}
+              onChange={(e) => setBirthYear(e.target.value)}
+              min={1920}
+              max={new Date().getFullYear() - 13}
+              className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+            />
+            <p className="text-xs text-muted-foreground">
+              🔒 Jamais affiché — utilisé uniquement pour te proposer des personnes d'âge proche
+            </p>
+          </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Email</label>
