@@ -292,6 +292,7 @@ export const translations = {
     deleteAccountConfirm: { en: 'Type DELETE to confirm', fr: 'Tape SUPPRIMER pour confirmer' },
     exportData: { en: 'Export my data', fr: 'Exporter mes données' },
     blockedUsers: { en: 'Blocked users', fr: 'Utilisateurs bloqués' },
+    noBlockedUsers: { en: 'No blocked users', fr: 'Aucun utilisateur bloqué' },
     ghostMode: { en: 'Ghost mode', fr: 'Mode fantôme' },
     ghostModeDesc: { en: 'See without being seen', fr: 'Vois sans être vu' },
     visibilityDistance: { en: 'Visibility distance', fr: 'Distance de visibilité' },

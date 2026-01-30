@@ -8,7 +8,14 @@ interface ExportData {
   stats: any;
   interactions: any[];
   feedback: any[];
+  emergencyContacts: any[];
+  blocks: any[];
+  reports: any[];
+  sessions: any[];
+  reliability: any;
+  badges: any[];
   exportedAt: string;
+  dataRetentionInfo: string;
 }
 
 export function useGdprExport() {
@@ -27,13 +34,25 @@ export function useGdprExport() {
         { data: settings },
         { data: stats },
         { data: interactions },
-        { data: feedback }
+        { data: feedback },
+        { data: emergencyContacts },
+        { data: blocks },
+        { data: reports },
+        { data: sessions },
+        { data: reliability },
+        { data: badges }
       ] = await Promise.all([
         supabase.from('profiles').select('*').eq('id', user.id).single(),
         supabase.from('user_settings').select('*').eq('user_id', user.id).single(),
         supabase.from('user_stats').select('*').eq('user_id', user.id).single(),
         supabase.from('interactions').select('*').eq('user_id', user.id),
-        supabase.from('app_feedback').select('*').eq('user_id', user.id)
+        supabase.from('app_feedback').select('*').eq('user_id', user.id),
+        supabase.from('emergency_contacts').select('*').eq('user_id', user.id),
+        supabase.from('user_blocks').select('blocked_id, created_at, reason').eq('blocker_id', user.id),
+        supabase.from('reports').select('reason, description, created_at').eq('reporter_id', user.id),
+        supabase.from('scheduled_sessions').select('*').eq('creator_id', user.id),
+        supabase.from('user_reliability').select('*').eq('user_id', user.id).single(),
+        supabase.from('verification_badges').select('badge_type, verified_at').eq('user_id', user.id)
       ]);
 
       const exportData: ExportData = {
@@ -41,6 +60,9 @@ export function useGdprExport() {
           first_name: profile.first_name,
           email: profile.email,
           university: profile.university,
+          bio: profile.bio,
+          favorite_activities: profile.favorite_activities,
+          is_premium: profile.is_premium,
           created_at: profile.created_at,
           updated_at: profile.updated_at
         } : null,
@@ -49,7 +71,8 @@ export function useGdprExport() {
           visibility_distance: settings.visibility_distance,
           push_notifications: settings.push_notifications,
           sound_notifications: settings.sound_notifications,
-          proximity_vibration: settings.proximity_vibration
+          proximity_vibration: settings.proximity_vibration,
+          language_preference: settings.language_preference
         } : null,
         stats: stats ? {
           interactions: stats.interactions,
@@ -60,7 +83,8 @@ export function useGdprExport() {
         interactions: (interactions || []).map(i => ({
           activity: i.activity,
           created_at: i.created_at,
-          feedback: i.feedback
+          feedback: i.feedback,
+          icebreaker: i.icebreaker
           // Location data excluded for privacy
         })),
         feedback: (feedback || []).map(f => ({
@@ -68,7 +92,45 @@ export function useGdprExport() {
           message: f.message,
           created_at: f.created_at
         })),
-        exportedAt: new Date().toISOString()
+        emergencyContacts: (emergencyContacts || []).map(c => ({
+          name: c.name,
+          phone: c.phone,
+          created_at: c.created_at
+        })),
+        blocks: (blocks || []).map(b => ({
+          blocked_id: b.blocked_id,
+          reason: b.reason,
+          created_at: b.created_at
+        })),
+        reports: (reports || []).map(r => ({
+          reason: r.reason,
+          description: r.description,
+          created_at: r.created_at
+        })),
+        sessions: (sessions || []).map(s => ({
+          activity: s.activity,
+          city: s.city,
+          location_name: s.location_name,
+          scheduled_date: s.scheduled_date,
+          start_time: s.start_time,
+          duration_minutes: s.duration_minutes,
+          status: s.status,
+          created_at: s.created_at
+        })),
+        reliability: reliability ? {
+          reliability_score: reliability.reliability_score,
+          sessions_created: reliability.sessions_created,
+          sessions_joined: reliability.sessions_joined,
+          sessions_completed: reliability.sessions_completed,
+          positive_feedback_count: reliability.positive_feedback_count,
+          total_feedback_count: reliability.total_feedback_count
+        } : null,
+        badges: (badges || []).map(b => ({
+          badge_type: b.badge_type,
+          verified_at: b.verified_at
+        })),
+        exportedAt: new Date().toISOString(),
+        dataRetentionInfo: 'Les données de localisation sont automatiquement supprimées après 30 jours. Les signaux actifs expirent après 2 heures.'
       };
 
       setIsExporting(false);
@@ -91,7 +153,7 @@ export function useGdprExport() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `signal-data-export-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `easy-data-export-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
