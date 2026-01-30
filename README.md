@@ -383,6 +383,18 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 | **Effacement** | Suppression compte (cascade) |
 | **Portabilité** | Export JSON |
 
+#### Politiques de rétention des données
+| Données | Rétention | Nettoyage |
+|---------|-----------|-----------|
+| **Signaux actifs** | 2 heures max | Automatique à expiration |
+| **Localisations d'interactions** | 30 jours | Cron quotidien 3h UTC |
+| **Logs de rate limiting** | 24 heures | Cron quotidien 3h UTC |
+| **Logs de révélation** | 90 jours | Cron quotidien 3h UTC |
+| **Événements analytics** | 90 jours | Cron quotidien 3h UTC |
+| **Shadow bans temporaires** | Durée définie | Nettoyage automatique |
+
+> ⏰ **Automatisation** : Un cron job (`daily-cleanup-expired`) s'exécute chaque jour à 3h00 UTC pour purger les données expirées via l'edge function `/system`.
+
 ### Observabilité
 | Composant | Implémentation |
 |-----------|----------------|
