@@ -222,7 +222,7 @@ export default function HelpPage() {
             visible: { opacity: 1, transition: { duration: 0.4, delay: 0.2 } },
           }}
         >
-          <p className="text-xs text-muted-foreground">EASY v1.2.0</p>
+          <p className="text-xs text-muted-foreground">EASY v1.3.0</p>
           <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>
       </motion.div>

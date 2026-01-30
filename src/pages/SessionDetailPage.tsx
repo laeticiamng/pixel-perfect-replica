@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { 
   ArrowLeft, Calendar, Clock, MapPin, Users, 
   MessageCircle, Shield, Loader2, AlertTriangle,
-  CheckCircle2, Navigation
+  CheckCircle2, Navigation, Ban
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SessionChat } from '@/components/binome/SessionChat';
+import { SessionCheckin } from '@/components/binome/SessionCheckin';
 import { SessionFeedbackForm } from '@/components/binome/SessionFeedbackForm';
 import { TestimonialForm } from '@/components/binome/TestimonialForm';
 import { supabase } from '@/integrations/supabase/client';
@@ -33,6 +34,8 @@ interface SessionDetail {
   activity: ActivityType;
   city: string;
   location_name: string | null;
+  latitude: number | null;
+  longitude: number | null;
   note: string | null;
   max_participants: number;
   status: string;
@@ -361,6 +364,39 @@ export default function SessionDetailPage() {
               </Button>
             ) : null}
           </div>
+        )}
+
+        {/* Check-in Card for Participants */}
+        {isParticipant && session.latitude && session.longitude && (
+          <SessionCheckin
+            sessionId={session.id}
+            sessionLocation={{
+              latitude: session.latitude as unknown as number,
+              longitude: session.longitude as unknown as number,
+              name: session.location_name || undefined,
+            }}
+            scheduledDate={session.scheduled_date}
+            startTime={session.start_time}
+            onCheckinComplete={() => fetchSessionDetails()}
+            onCheckoutComplete={() => {
+              fetchSessionDetails();
+              setHasCheckedOut(true);
+            }}
+          />
+        )}
+
+        {/* Check-in Card for Participants (no location) */}
+        {isParticipant && (!session.latitude || !session.longitude) && (
+          <SessionCheckin
+            sessionId={session.id}
+            scheduledDate={session.scheduled_date}
+            startTime={session.start_time}
+            onCheckinComplete={() => fetchSessionDetails()}
+            onCheckoutComplete={() => {
+              fetchSessionDetails();
+              setHasCheckedOut(true);
+            }}
+          />
         )}
 
         {/* Tabs: Participants & Chat */}

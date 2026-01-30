@@ -178,7 +178,7 @@ export default function ProfilePage() {
 
         {/* Version */}
         <p className="text-center text-xs text-muted-foreground py-4 font-medium">
-          EASY v1.2.0
+          EASY v1.3.0
         </p>
       </div>
 
