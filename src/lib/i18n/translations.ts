@@ -269,6 +269,14 @@ export const translations = {
     note: { en: 'Note', fr: 'Note' },
     creator: { en: 'Creator', fr: 'Créateur' },
     loadingError: { en: 'Error loading sessions', fr: 'Erreur lors du chargement' },
+    checkin: { en: 'Check-in', fr: 'Pointage' },
+    checkout: { en: 'Check-out', fr: 'Fin de session' },
+    checkinSuccess: { en: 'Check-in successful!', fr: 'Pointage réussi !' },
+    checkoutSuccess: { en: 'Session completed! See you soon!', fr: 'Session terminée ! À bientôt !' },
+    tooFar: { en: 'Too far from the location', fr: 'Trop loin du lieu' },
+    notYet: { en: 'Check-in not available yet', fr: 'Pointage pas encore disponible' },
+    blockUser: { en: 'Block user', fr: 'Bloquer l\'utilisateur' },
+    unblockUser: { en: 'Unblock user', fr: 'Débloquer l\'utilisateur' },
   },
 
   // Settings
