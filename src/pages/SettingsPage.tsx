@@ -1,4 +1,4 @@
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download, BarChart3 } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download, BarChart3, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -8,15 +8,18 @@ import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { DeleteAccountDialog } from '@/components/DeleteAccountDialog';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { LanguageToggle } from '@/components/LanguageToggle';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
+import { useTranslation } from '@/lib/i18n';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { isAdmin } = useAdminCheck();
   const {
@@ -32,9 +35,9 @@ export default function SettingsPage() {
   const handleResetSettings = async () => {
     const { error } = await resetSettings();
     if (error) {
-      toast.error('Erreur lors de la réinitialisation');
+      toast.error(t('settings.resetError'));
     } else {
-      toast.success('Paramètres réinitialisés');
+      toast.success(t('settings.settingsReset'));
     }
   };
 
@@ -43,8 +46,8 @@ export default function SettingsPage() {
   const settingsItems = [
     {
       icon: <Ghost className="h-5 w-5" />,
-      label: 'Mode fantôme',
-      description: 'Vois sans être vu',
+      label: t('settings.ghostMode'),
+      description: t('settings.ghostModeDesc'),
       type: 'toggle' as const,
       value: settings.ghost_mode,
       onChange: (v: boolean) => setGhostMode(v),
@@ -52,7 +55,7 @@ export default function SettingsPage() {
     },
     {
       icon: <Ruler className="h-5 w-5" />,
-      label: 'Distance de visibilité',
+      label: t('settings.visibilityDistance'),
       description: `${settings.visibility_distance}m`,
       type: 'slider' as const,
       value: settings.visibility_distance,
@@ -60,21 +63,21 @@ export default function SettingsPage() {
     },
     {
       icon: <Bell className="h-5 w-5" />,
-      label: 'Notifications push',
+      label: t('settings.pushNotifications'),
       type: 'toggle' as const,
       value: settings.push_notifications,
       onChange: (v: boolean) => setPushNotifications(v),
     },
     {
       icon: <Volume2 className="h-5 w-5" />,
-      label: 'Son des notifications',
+      label: t('settings.soundNotifications'),
       type: 'toggle' as const,
       value: settings.sound_notifications,
       onChange: (v: boolean) => setSoundNotifications(v),
     },
     {
       icon: <Vibrate className="h-5 w-5" />,
-      label: 'Vibration proximité',
+      label: t('settings.proximityVibration'),
       type: 'toggle' as const,
       value: settings.proximity_vibration,
       onChange: (v: boolean) => setProximityVibration(v),
@@ -85,7 +88,7 @@ export default function SettingsPage() {
     <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto w-full">
         <header className="safe-top px-6 py-6">
-          <h1 className="text-2xl font-bold text-foreground">Paramètres</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t('settings.title')}</h1>
         </header>
 
       <motion.div 
@@ -100,6 +103,28 @@ export default function SettingsPage() {
           },
         }}
       >
+        {/* Language Section */}
+        <motion.div 
+          className="glass rounded-xl p-4"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+          }}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
+                <Globe className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="font-medium text-foreground">{t('settings.language')}</span>
+                <p className="text-sm text-muted-foreground mt-0.5">{t('settings.languageDesc')}</p>
+              </div>
+            </div>
+            <LanguageToggle />
+          </div>
+        </motion.div>
+
         {/* Theme Section */}
         <motion.div 
           className="glass rounded-xl p-4"
@@ -113,8 +138,8 @@ export default function SettingsPage() {
               <Palette className="h-5 w-5" />
             </div>
             <div>
-              <span className="font-medium text-foreground">Thème</span>
-              <p className="text-sm text-muted-foreground mt-0.5">Personnalise l'apparence</p>
+              <span className="font-medium text-foreground">{t('settings.theme')}</span>
+              <p className="text-sm text-muted-foreground mt-0.5">{t('settings.themeDesc')}</p>
             </div>
           </div>
           <ThemeToggle />
@@ -124,7 +149,7 @@ export default function SettingsPage() {
         <div className="glass rounded-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-border/50">
             <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-              Accès rapide
+              {t('settings.quickAccess')}
             </span>
           </div>
           
@@ -137,8 +162,8 @@ export default function SettingsPage() {
                 <Bell className="h-5 w-5" />
               </div>
               <div className="text-left">
-                <span className="font-medium text-foreground">Notifications</span>
-                <p className="text-sm text-muted-foreground">Gérer les alertes et sons</p>
+                <span className="font-medium text-foreground">{t('settings.notifications')}</span>
+                <p className="text-sm text-muted-foreground">{t('settings.manageAlerts')}</p>
               </div>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -153,8 +178,8 @@ export default function SettingsPage() {
                 <Shield className="h-5 w-5" />
               </div>
               <div className="text-left">
-                <span className="font-medium text-foreground">Confidentialité</span>
-                <p className="text-sm text-muted-foreground">Données et contacts d'urgence</p>
+                <span className="font-medium text-foreground">{t('settings.privacy')}</span>
+                <p className="text-sm text-muted-foreground">{t('settings.dataAndEmergency')}</p>
               </div>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
@@ -168,8 +193,8 @@ export default function SettingsPage() {
               <Lock className="h-5 w-5" />
             </div>
             <div>
-              <span className="font-medium text-foreground">Sécurité</span>
-              <p className="text-sm text-muted-foreground mt-0.5">Gère la sécurité de ton compte</p>
+              <span className="font-medium text-foreground">{t('settings.security')}</span>
+              <p className="text-sm text-muted-foreground mt-0.5">{t('settings.securityDesc')}</p>
             </div>
           </div>
           <button
@@ -180,7 +205,7 @@ export default function SettingsPage() {
             )}
           >
             <Key className="h-5 w-5 text-muted-foreground" />
-            <span className="text-foreground font-medium">Changer le mot de passe</span>
+            <span className="text-foreground font-medium">{t('settings.changePassword')}</span>
           </button>
         </div>
 
@@ -199,7 +224,7 @@ export default function SettingsPage() {
                     <span className="font-medium text-foreground">{item.label}</span>
                     {item.premium && (
                       <span className="px-2 py-0.5 text-xs font-medium bg-coral/20 text-coral rounded-full">
-                        Premium
+                        {t('misc.premium')}
                       </span>
                     )}
                   </div>
@@ -216,11 +241,11 @@ export default function SettingsPage() {
                   checked={item.value as boolean}
                   onCheckedChange={(checked) => {
                     if (item.premium) {
-                      toast('Cette fonctionnalité est Premium !', { icon: '⭐' });
+                      toast(t('settings.premiumFeature'), { icon: '⭐' });
                       return;
                     }
                     item.onChange(checked);
-                    toast.success('Paramètre mis à jour');
+                    toast.success(t('settings.settingUpdated'));
                   }}
                   disabled={item.premium}
                 />
@@ -258,8 +283,8 @@ export default function SettingsPage() {
               <BarChart3 className="h-5 w-5" />
             </div>
             <div className="text-left">
-              <span className="font-medium">Dashboard Admin</span>
-              <p className="text-sm text-muted-foreground">Analytics & Engagement</p>
+              <span className="font-medium">{t('settings.adminDashboard')}</span>
+              <p className="text-sm text-muted-foreground">{t('settings.analyticsEngagement')}</p>
             </div>
           </button>
         )}
@@ -273,7 +298,7 @@ export default function SettingsPage() {
             <div className="p-2 rounded-lg bg-signal-yellow/20">
               <Bug className="h-5 w-5" />
             </div>
-            <span className="font-medium">Diagnostics (Dev)</span>
+            <span className="font-medium">{t('settings.diagnostics')}</span>
           </button>
         )}
 
@@ -286,8 +311,8 @@ export default function SettingsPage() {
             <Download className="h-5 w-5" />
           </div>
           <div className="text-left">
-            <span className="font-medium">Installer l'app</span>
-            <p className="text-sm text-muted-foreground">Ajouter à l'écran d'accueil</p>
+            <span className="font-medium">{t('settings.installApp')}</span>
+            <p className="text-sm text-muted-foreground">{t('settings.addToHomeScreen')}</p>
           </div>
         </button>
 
@@ -298,7 +323,7 @@ export default function SettingsPage() {
           className="w-full h-12 rounded-xl border-border text-foreground hover:bg-muted"
         >
           <RotateCcw className="h-4 w-4 mr-2" />
-          Réinitialiser les paramètres
+          {t('settings.resetSettings')}
         </Button>
 
         {/* Delete Account */}

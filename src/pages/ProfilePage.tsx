@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
-import { PageLayout, AnimatedSection } from '@/components/PageLayout';
+import { PageLayout } from '@/components/PageLayout';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
+import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -25,10 +26,11 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const { profile, stats, signOut } = useAuth();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
+  const { t } = useTranslation();
 
   const handleLogout = async () => {
     await signOut();
-    toast.success('À bientôt !');
+    toast.success(t('profile.seeYouSoon'));
     navigate('/');
   };
 
@@ -42,26 +44,26 @@ export default function ProfilePage() {
 
   const menuSections: MenuSection[] = [
     {
-      title: 'Compte',
+      title: t('profile.account'),
       items: [
-        { icon: <User className="h-5 w-5" />, label: 'Modifier le profil', route: '/profile/edit' },
-        { icon: <Bell className="h-5 w-5" />, label: 'Notifications', onClick: handleNotifications },
-        { icon: <Lock className="h-5 w-5" />, label: 'Confidentialité', onClick: handlePrivacy },
+        { icon: <User className="h-5 w-5" />, label: t('profile.editProfile'), route: '/profile/edit' },
+        { icon: <Bell className="h-5 w-5" />, label: t('settings.notifications'), onClick: handleNotifications },
+        { icon: <Lock className="h-5 w-5" />, label: t('settings.privacy'), onClick: handlePrivacy },
       ],
     },
     {
-      title: 'Historique',
+      title: t('profile.history'),
       items: [
-        { icon: <BarChart3 className="h-5 w-5" />, label: 'Mes statistiques', route: '/statistics' },
-        { icon: <Users className="h-5 w-5" />, label: 'Personnes rencontrées', route: '/people-met' },
+        { icon: <BarChart3 className="h-5 w-5" />, label: t('profile.myStats'), route: '/statistics' },
+        { icon: <Users className="h-5 w-5" />, label: t('profile.peopleMet'), route: '/people-met' },
       ],
     },
     {
-      title: 'Support',
+      title: t('profile.support'),
       items: [
-        { icon: <HelpCircle className="h-5 w-5" />, label: 'Aide & FAQ', route: '/help' },
-        { icon: <MessageSquare className="h-5 w-5" />, label: 'Donner un feedback', route: '/feedback' },
-        { icon: <AlertTriangle className="h-5 w-5" />, label: 'Signaler un problème', route: '/report' },
+        { icon: <HelpCircle className="h-5 w-5" />, label: t('profile.helpFaq'), route: '/help' },
+        { icon: <MessageSquare className="h-5 w-5" />, label: t('profile.giveFeedback'), route: '/feedback' },
+        { icon: <AlertTriangle className="h-5 w-5" />, label: t('profile.reportProblem'), route: '/report' },
       ],
     },
   ];
@@ -92,7 +94,7 @@ export default function ProfilePage() {
           
           {/* Name & Info */}
           <h1 className="text-2xl font-bold text-foreground mb-1 animate-fade-in">
-            {profile?.first_name || 'Utilisateur'}
+            {profile?.first_name || t('profile.user')}
           </h1>
           <p className="text-muted-foreground text-sm mb-1 animate-fade-in" style={{ animationDelay: '0.05s' }}>
             {profile?.email}
@@ -110,21 +112,21 @@ export default function ProfilePage() {
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{stats?.interactions || 0}</p>
-              <p className="text-xs text-muted-foreground font-medium">Interactions</p>
+              <p className="text-xs text-muted-foreground font-medium">{t('profile.interactions')}</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
-              <p className="text-xs text-muted-foreground font-medium">Actif</p>
+              <p className="text-xs text-muted-foreground font-medium">{t('profile.active')}</p>
             </button>
             <button 
               onClick={() => navigate('/statistics')}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.rating?.toFixed(1) || '5.0'}</p>
-              <p className="text-xs text-muted-foreground font-medium">Rating</p>
+              <p className="text-xs text-muted-foreground font-medium">{t('profile.rating')}</p>
             </button>
           </div>
         </div>
@@ -170,7 +172,7 @@ export default function ProfilePage() {
           style={{ animationDelay: '0.5s' }}
         >
           <LogOut className="h-5 w-5" />
-          <span className="font-bold">Déconnexion</span>
+          <span className="font-bold">{t('nav.logout')}</span>
         </button>
 
         {/* Version */}
