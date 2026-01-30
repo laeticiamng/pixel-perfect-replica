@@ -1206,8 +1206,8 @@ export type Database = {
         }
         Returns: {
           activity: Database["public"]["Enums"]["activity_type"]
+          age_diff: number
           city: string
-          created_at: string
           creator_avatar: string
           creator_id: string
           creator_name: string

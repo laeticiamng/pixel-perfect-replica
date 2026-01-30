@@ -170,12 +170,64 @@ export function useActiveSignal() {
     return { data, error };
   };
 
-  // Fetch nearby users with signals (respects ghost mode)
+  // Fetch nearby users with signals (respects ghost mode, sorted by age proximity)
   const fetchNearbyUsers = useCallback(async (maxDistance: number = 200) => {
     if (!user || !position) return;
 
     try {
-      // Get all active signals except current user
+      // Try to use the new sorted function first (cast to bypass types until they sync)
+      const { data: sortedSignals, error: rpcError } = await (supabase as any)
+        .rpc('get_nearby_signals_sorted', {
+          user_lat: position.latitude,
+          user_lon: position.longitude,
+          max_distance_meters: maxDistance
+        });
+
+      if (!rpcError && sortedSignals && sortedSignals.length > 0) {
+        // Use RPC results (already filtered and sorted by age proximity)
+        const nearby: NearbyUser[] = sortedSignals.map((signal: {
+          id: string;
+          user_id: string;
+          first_name: string;
+          avatar_url: string | null;
+          activity: ActivityType;
+          signal_type: SignalType;
+          latitude: number;
+          longitude: number;
+          started_at: string;
+          rating: number;
+          age_diff: number;
+        }) => {
+          const distance = calculateDistance(
+            position.latitude,
+            position.longitude,
+            Number(signal.latitude),
+            Number(signal.longitude)
+          );
+
+          return {
+            id: signal.user_id,
+            firstName: signal.first_name || 'Anonyme',
+            signal: signal.signal_type as SignalType,
+            activity: signal.activity as ActivityType,
+            distance,
+            activeSince: new Date(signal.started_at),
+            rating: signal.rating ? Number(signal.rating) : 5.0,
+            position: {
+              latitude: Number(signal.latitude),
+              longitude: Number(signal.longitude),
+            },
+          };
+        }).filter((u: NearbyUser) => u.distance <= maxDistance);
+
+        if (nearby.length > 0) {
+          setIsDemoMode(false);
+          setNearbyUsers(nearby);
+          return;
+        }
+      }
+
+      // Fallback to original logic if RPC fails or returns nothing
       const { data: signals, error } = await supabase
         .from('active_signals')
         .select(`
@@ -197,6 +249,14 @@ export function useActiveSignal() {
 
       if (!signals || signals.length === 0) {
         setNearbyUsers([]);
+        // Show demo users if no real users
+        const mockUsers = generateMockUsers(position.latitude, position.longitude, 8);
+        const mocksWithDistance = mockUsers.map(u => ({
+          ...u,
+          distance: calculateDistance(position.latitude, position.longitude, u.position.latitude, u.position.longitude),
+        })).filter(u => u.distance <= maxDistance).sort((a, b) => (a.distance || 0) - (b.distance || 0));
+        setNearbyUsers(mocksWithDistance);
+        setIsDemoMode(true);
         return;
       }
 
@@ -260,7 +320,6 @@ export function useActiveSignal() {
         .sort((a, b) => a.distance - b.distance);
 
       // If no real users found, add demo users so the map isn't empty
-      // This helps users understand the app's functionality
       if (nearby.length === 0) {
         const mockUsers = generateMockUsers(position.latitude, position.longitude, 8);
         const mocksWithDistance = mockUsers.map(u => ({
