@@ -395,9 +395,10 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 
 ### Plan de maintenance automatique (Cron Jobs)
 
-| Job | Schedule | Action | Edge Function |
-|-----|----------|--------|---------------|
-| `daily-cleanup-expired` | `0 3 * * *` (3h00 UTC) | Purge données expirées | `/system?action=cleanup-expired` |
+| Job | Schedule | Action | Méthode |
+|-----|----------|--------|---------|
+| `daily-cleanup-expired` | `0 3 * * *` (3h00 UTC) | Purge données expirées | Edge Function `/system` |
+| `hourly-cleanup-shadow-bans` | `0 * * * *` (chaque heure) | Lever shadow-bans expirés | SQL direct |
 
 #### Détail des tâches exécutées
 ```
@@ -409,14 +410,23 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 │  3. cleanup_rate_limit_logs()      → Rate limits > 24h          │
 │  4. cleanup_old_reveal_logs()      → Reveals > 90j              │
 │  5. cleanup_old_analytics_events() → Analytics > 90j            │
-│  6. cleanup_expired_shadow_bans()  → Shadow bans expirés        │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│  ⏰ CRON: hourly-cleanup-shadow-bans (chaque heure à :00)       │
+├─────────────────────────────────────────────────────────────────┤
+│  1. cleanup_expired_shadow_bans()  → Lever bans temporaires     │
+│     - Réactive les comptes après expiration du délai            │
+│     - Reset: shadow_banned = false, shadow_banned_until = NULL  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 #### Configuration technique
 - **Extensions requises** : `pg_cron` (pg_catalog), `pg_net` (extensions)
-- **Méthode** : `net.http_post()` vers Edge Function avec JWT
-- **Monitoring** : Logs disponibles dans Cloud → Edge Function Logs
+- **Méthodes** : 
+  - `net.http_post()` vers Edge Function (tâches complexes)
+  - SQL direct via `cron.schedule()` (tâches simples)
+- **Monitoring** : Logs dans `cron.job_run_details` + Cloud Logs
 
 > 💡 **Note** : Les cron jobs sont configurés dans PostgreSQL via `cron.schedule()`. Pour modifier la fréquence, utilisez la syntaxe cron standard (ex: `*/15 * * * *` pour toutes les 15 minutes).
 
