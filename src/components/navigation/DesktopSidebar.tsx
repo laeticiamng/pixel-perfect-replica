@@ -20,17 +20,19 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ThemeToggle } from '../ThemeToggle';
 import { useShortcutHint } from '@/hooks/useKeyboardShortcuts';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useShowNewBadge } from '@/components/binome/NewBadge';
 
 interface NavItem {
   to: string;
   icon: React.ReactNode;
   label: string;
   group?: string;
+  showNewBadge?: boolean;
 }
 
 const mainNavItems: NavItem[] = [
   { to: '/map', icon: <MapPin className="h-5 w-5" />, label: 'Carte', group: 'main' },
-  { to: '/binome', icon: <Users2 className="h-5 w-5" />, label: 'Réserver', group: 'main' },
+  { to: '/binome', icon: <Users2 className="h-5 w-5" />, label: 'Réserver', group: 'main', showNewBadge: true },
   { to: '/events', icon: <CalendarDays className="h-5 w-5" />, label: 'Événements', group: 'main' },
   { to: '/profile', icon: <User className="h-5 w-5" />, label: 'Profil', group: 'main' },
 ];
@@ -48,6 +50,7 @@ export function DesktopSidebar() {
   const { profile, signOut } = useAuth();
   const { cmdKey } = useShortcutHint();
   const [collapsed, setCollapsed] = useState(false);
+  const showBinomeBadge = useShowNewBadge();
   
   // Open command palette
   const openCommandPalette = () => {
@@ -56,6 +59,7 @@ export function DesktopSidebar() {
   
   const renderNavItem = (item: NavItem) => {
     const isActive = location.pathname === item.to;
+    const shouldShowBadge = item.showNewBadge && showBinomeBadge && !isActive;
     
     const linkContent = (
       <RouterNavLink
@@ -64,7 +68,7 @@ export function DesktopSidebar() {
         aria-label={`Naviguer vers ${item.label}`}
         aria-current={isActive ? 'page' : undefined}
         className={cn(
-          'flex items-center gap-3 rounded-xl transition-all duration-200',
+          'flex items-center gap-3 rounded-xl transition-all duration-200 relative',
           'hover:bg-muted/50',
           collapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3',
           isActive
@@ -73,12 +77,25 @@ export function DesktopSidebar() {
         )}
       >
         <span className={cn(
-          'transition-all flex-shrink-0',
+          'transition-all flex-shrink-0 relative',
           isActive && 'drop-shadow-[0_0_8px_hsl(var(--coral)/0.5)]'
         )}>
           {item.icon}
+          {/* New badge indicator */}
+          {shouldShowBadge && (
+            <span className="absolute -top-1 -right-1 flex items-center justify-center w-2 h-2 bg-coral rounded-full animate-pulse" />
+          )}
         </span>
-        {!collapsed && <span className="text-sm">{item.label}</span>}
+        {!collapsed && (
+          <span className="text-sm flex items-center gap-2">
+            {item.label}
+            {shouldShowBadge && (
+              <span className="text-[10px] font-bold text-white bg-coral px-1.5 py-0.5 rounded-full">
+                New
+              </span>
+            )}
+          </span>
+        )}
       </RouterNavLink>
     );
 
@@ -88,8 +105,13 @@ export function DesktopSidebar() {
           <TooltipTrigger asChild>
             {linkContent}
           </TooltipTrigger>
-          <TooltipContent side="right" className="font-medium">
+          <TooltipContent side="right" className="font-medium flex items-center gap-2">
             {item.label}
+            {shouldShowBadge && (
+              <span className="text-[10px] font-bold text-white bg-coral px-1.5 py-0.5 rounded-full">
+                New
+              </span>
+            )}
           </TooltipContent>
         </Tooltip>
       );
