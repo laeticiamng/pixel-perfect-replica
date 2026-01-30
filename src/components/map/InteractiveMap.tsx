@@ -266,6 +266,11 @@ export function InteractiveMap({
     <div 
       className={cn("relative rounded-2xl overflow-hidden", className)}
       data-map-container
+      style={{ 
+        touchAction: 'none',
+        WebkitUserSelect: 'none',
+        userSelect: 'none',
+      }}
     >
       <Map
         ref={mapRef}
@@ -278,16 +283,21 @@ export function InteractiveMap({
         onLoad={handleLoad}
         mapboxAccessToken={mapboxToken}
         mapStyle={currentMapStyle}
-        style={{ width: '100%', height: '100%' }}
+        style={{ 
+          width: '100%', 
+          height: '100%',
+          cursor: 'grab',
+        }}
         attributionControl={false}
-        dragPan
-        scrollZoom
-        boxZoom
-        doubleClickZoom
-        keyboard
-        touchZoomRotate
-        touchPitch
-        dragRotate
+        interactive={true}
+        dragPan={true}
+        scrollZoom={true}
+        boxZoom={true}
+        doubleClickZoom={true}
+        keyboard={true}
+        touchZoomRotate={true}
+        touchPitch={true}
+        dragRotate={true}
       >
         <NavigationControl position="bottom-right" showCompass={true} showZoom={true} />
         <GeolocateControl 
