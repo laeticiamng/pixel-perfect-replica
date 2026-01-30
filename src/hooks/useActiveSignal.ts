@@ -258,9 +258,10 @@ export function useActiveSignal() {
         .filter(u => u.distance <= maxDistance)
         .sort((a, b) => a.distance - b.distance);
 
-      // If no real users, add mock users for demo/testing
-      if (nearby.length === 0 && import.meta.env.DEV) {
-        const mockUsers = generateMockUsers(position.latitude, position.longitude, 12);
+      // If no real users found, add demo users so the map isn't empty
+      // This helps users understand the app's functionality
+      if (nearby.length === 0) {
+        const mockUsers = generateMockUsers(position.latitude, position.longitude, 8);
         const mocksWithDistance = mockUsers.map(u => ({
           ...u,
           distance: calculateDistance(position.latitude, position.longitude, u.position.latitude, u.position.longitude),
