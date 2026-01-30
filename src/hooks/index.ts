@@ -36,4 +36,5 @@ export { usePushSubscription } from './usePushSubscription';
 export { useSystemStats } from './useSystemStats';
 export { useVerificationBadges } from './useVerificationBadges';
 export { useSessionQuota } from './useSessionQuota';
+export { useSubscription } from './useSubscription';
 export { useKeyboardShortcuts, useShortcutHint } from './useKeyboardShortcuts';

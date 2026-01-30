@@ -1,0 +1,94 @@
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+
+interface SubscriptionStatus {
+  subscribed: boolean;
+  productId: string | null;
+  subscriptionEnd: string | null;
+  plan: 'monthly' | 'yearly' | null;
+}
+
+export function useSubscription() {
+  const { user, refreshProfile } = useAuth();
+  const [status, setStatus] = useState<SubscriptionStatus | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const checkSubscription = useCallback(async () => {
+    if (!user) {
+      setStatus(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('check-subscription');
+      
+      if (fnError) throw fnError;
+      
+      setStatus({
+        subscribed: data.subscribed,
+        productId: data.product_id,
+        subscriptionEnd: data.subscription_end,
+        plan: data.plan,
+      });
+
+      // Refresh profile to get updated is_premium status
+      await refreshProfile();
+    } catch (err) {
+      console.error('[useSubscription] Error:', err);
+      setError(err instanceof Error ? err.message : 'Erreur de vérification');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, refreshProfile]);
+
+  const createCheckout = async (plan: 'monthly' | 'yearly') => {
+    if (!user) throw new Error('Utilisateur non connecté');
+
+    const { data, error: fnError } = await supabase.functions.invoke('create-checkout', {
+      body: { plan },
+    });
+
+    if (fnError) throw fnError;
+    if (data.error) throw new Error(data.error);
+
+    return data.url;
+  };
+
+  const openCustomerPortal = async () => {
+    if (!user) throw new Error('Utilisateur non connecté');
+
+    const { data, error: fnError } = await supabase.functions.invoke('customer-portal');
+
+    if (fnError) throw fnError;
+    if (data.error) throw new Error(data.error);
+
+    return data.url;
+  };
+
+  useEffect(() => {
+    checkSubscription();
+  }, [checkSubscription]);
+
+  // Auto-refresh every 60 seconds
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(checkSubscription, 60000);
+    return () => clearInterval(interval);
+  }, [user, checkSubscription]);
+
+  return {
+    status,
+    isLoading,
+    error,
+    checkSubscription,
+    createCheckout,
+    openCustomerPortal,
+    isSubscribed: status?.subscribed ?? false,
+  };
+}
