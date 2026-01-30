@@ -2,7 +2,7 @@
 
 **EASY** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton signal, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
 
-![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript) ![Supabase](https://img.shields.io/badge/Lovable_Cloud-Supabase-3FCF8E?logo=supabase) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss) ![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa) ![Vitest](https://img.shields.io/badge/Tests-Vitest-6E9F18?logo=vitest)
+![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript) ![Supabase](https://img.shields.io/badge/Lovable_Cloud-Supabase-3FCF8E?logo=supabase) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss) ![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa) ![Vitest](https://img.shields.io/badge/Tests-164_tests-6E9F18?logo=vitest) ![Audit](https://img.shields.io/badge/Audit-Complet-green)
 
 ---
 
@@ -10,10 +10,12 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.2.0 |
+| **Version** | 1.3.0 |
 | **Statut** | ✅ Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
-| **Backend** | Lovable Cloud (Supabase) |
+| **Backend** | Lovable Cloud |
+| **Dernière mise à jour** | 30 janvier 2026 |
+| **Audit** | ✅ Complet (voir AUDIT_COMPLETE_FINAL.md) |
 
 ---
 
@@ -239,16 +241,18 @@ npm run test
 npm run test -- src/test/auth.test.ts
 ```
 
-### Suite de tests
+### Suite de tests (164 tests)
 | Fichier | Description |
 |---------|-------------|
-| `smoke.test.ts` | Tests de base |
+| `smoke.test.ts` | Tests de base (28 tests) |
 | `auth.test.ts` | Authentification |
 | `security.test.ts` | Validation & sécurité |
 | `distance.test.ts` | Calcul Haversine |
 | `e2e-flows.test.ts` | Parcours utilisateur |
+| `e2e-critical-paths.test.tsx` | Chemins critiques |
 | `components.test.tsx` | Tests composants React |
 | `rls-permissions.test.ts` | Policies RLS |
+| `premium-pricing.test.ts` | Tests pricing Premium |
 
 ---
 
@@ -331,11 +335,34 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 | **Feedback post-session** | Évalue les participants après la session |
 | **Score de fiabilité** | Les utilisateurs ponctuels et agréables ont un meilleur score |
 | **Rappels automatiques** | Notifications 1h et 15min avant la session |
+| **Quota mensuel** | 3 sessions gratuites/mois, sessions supplémentaires en Premium |
+
+---
+
+## 🔍 Audit & Qualité (v1.3)
+
+L'audit complet de la plateforme a été réalisé le 30 janvier 2026. Voir `AUDIT_COMPLETE_FINAL.md` pour les détails.
+
+### Corrections appliquées
+- ✅ OfflineBanner avec forwardRef (résout warning React)
+- ✅ BottomNav ajouté sur toutes les pages
+- ✅ Lien Premium ajouté dans le profil
+- ✅ Traductions complètes FR/EN
+- ✅ Mode démo pour la carte (affiche des utilisateurs de test)
+
+### Métriques
+| Métrique | Valeur |
+|----------|--------|
+| Tests | 164 (100% passent) |
+| Tables Supabase | 25+ |
+| Fonctions SQL | 40+ |
+| Edge Functions | 8 |
+| RLS Policies | Actives sur toutes les tables |
 
 ---
 
 <p align="center">
   <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 1.2.0 • PWA • Mode Binôme • Notifications Push</em><br><br>
+  <em>Version 1.3.0 • PWA • Mode Binôme • Notifications Push • Audit Complet</em><br><br>
   Fait avec ❤️ in France par EmotionsCare Sasu
 </p>
