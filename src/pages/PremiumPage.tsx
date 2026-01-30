@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Crown, Check, Zap, Shield, Infinity, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, Crown, Check, Zap, Shield, Infinity, Loader2, ExternalLink } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { useSubscription } from '@/hooks/useSubscription';
 import toast from 'react-hot-toast';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 const PREMIUM_FEATURES = [
   {
@@ -49,11 +51,29 @@ const PRICING = {
 
 export default function PremiumPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, profile } = useAuth();
+  const { status, isLoading: isCheckingSubscription, createCheckout, openCustomerPortal, checkSubscription } = useSubscription();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isLoading, setIsLoading] = useState(false);
 
-  const isPremium = profile?.is_premium;
+  const isPremium = profile?.is_premium || status?.subscribed;
+
+  // Handle success/cancel URL params
+  useEffect(() => {
+    const success = searchParams.get('success');
+    const canceled = searchParams.get('canceled');
+
+    if (success === 'true') {
+      toast.success('🎉 Bienvenue dans le club Premium !');
+      checkSubscription();
+      // Clear URL params
+      navigate('/premium', { replace: true });
+    } else if (canceled === 'true') {
+      toast('Paiement annulé', { icon: '🔙' });
+      navigate('/premium', { replace: true });
+    }
+  }, [searchParams, navigate, checkSubscription]);
 
   const handleSubscribe = async () => {
     if (!user) {
@@ -65,20 +85,28 @@ export default function PremiumPage() {
     setIsLoading(true);
 
     try {
-      // For now, show a message that Stripe checkout is coming
-      // In production, this would redirect to Stripe Checkout
-      toast.success('Fonctionnalité bientôt disponible ! 🚀');
-      
-      // TODO: Implement Stripe Checkout
-      // const { data, error } = await supabase.functions.invoke('create-checkout-session', {
-      //   body: { plan: selectedPlan }
-      // });
-      // if (data?.url) {
-      //   window.location.href = data.url;
-      // }
+      const checkoutUrl = await createCheckout(selectedPlan);
+      if (checkoutUrl) {
+        window.open(checkoutUrl, '_blank');
+      }
     } catch (error) {
       console.error('[PremiumPage] Subscribe error:', error);
-      toast.error('Une erreur est survenue');
+      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setIsLoading(true);
+    try {
+      const portalUrl = await openCustomerPortal();
+      if (portalUrl) {
+        window.open(portalUrl, '_blank');
+      }
+    } catch (error) {
+      console.error('[PremiumPage] Portal error:', error);
+      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue');
     } finally {
       setIsLoading(false);
     }
@@ -104,11 +132,18 @@ export default function PremiumPage() {
           <h2 className="text-2xl font-bold text-foreground mb-2">
             Tu es Premium ! 🎉
           </h2>
-          <p className="text-muted-foreground mb-8">
+          <p className="text-muted-foreground mb-2">
             Merci pour ton soutien. Profite de tous les avantages !
           </p>
+          
+          {status?.subscriptionEnd && (
+            <p className="text-sm text-muted-foreground mb-8">
+              Renouvellement le {format(new Date(status.subscriptionEnd), 'd MMMM yyyy', { locale: fr })}
+              {status.plan && ` (plan ${status.plan === 'yearly' ? 'annuel' : 'mensuel'})`}
+            </p>
+          )}
 
-          <Card className="glass text-left">
+          <Card className="glass text-left mb-6">
             <CardContent className="py-6 space-y-4">
               {PREMIUM_FEATURES.map((feature, i) => (
                 <div key={i} className="flex items-center gap-4">
@@ -124,6 +159,22 @@ export default function PremiumPage() {
               ))}
             </CardContent>
           </Card>
+
+          <Button
+            onClick={handleManageSubscription}
+            disabled={isLoading}
+            variant="outline"
+            className="w-full"
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Gérer mon abonnement
+              </>
+            )}
+          </Button>
         </div>
       </PageLayout>
     );
