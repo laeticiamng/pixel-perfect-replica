@@ -11,6 +11,7 @@ import { loginSchema } from '@/lib/validation';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { cn } from '@/lib/utils';
 import { lovable } from '@/integrations/lovable';
+import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
 
 type Step = 1 | 2 | 3;
@@ -19,6 +20,7 @@ export default function OnboardingPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.state?.isLogin || false;
+  const { t } = useTranslation();
   
   const [step, setStep] = useState<Step>(1);
   const [email, setEmail] = useState('');
@@ -42,12 +44,11 @@ export default function OnboardingPage() {
     try {
       const result = await lovable.auth.signInWithOAuth('google');
       if (result.error) {
-        toast.error('Erreur de connexion Google');
+        toast.error(t('auth.googleError'));
         console.error('Google OAuth error:', result.error);
       }
-      // If redirected, the page will reload with the session
     } catch (err) {
-      toast.error('Erreur de connexion Google');
+      toast.error(t('auth.googleError'));
       console.error(err);
     } finally {
       setIsGoogleLoading(false);
@@ -58,9 +59,9 @@ export default function OnboardingPage() {
   useEffect(() => {
     if (position && locationStatus === 'loading') {
       setLocationStatus('success');
-      toast.success('Position obtenue !');
+      toast.success(t('onboarding.locationObtained') + ' !');
     }
-  }, [position, locationStatus]);
+  }, [position, locationStatus, t]);
 
   // Watch for location errors
   useEffect(() => {
@@ -93,22 +94,21 @@ export default function OnboardingPage() {
       }
       return true;
     } else {
-      // For registration, validate all fields together using Zod for better email validation
       const emailResult = loginSchema.shape.email.safeParse(email);
       if (!emailResult.success) {
-        setErrors({ email: 'Email invalide' });
+        setErrors({ email: t('auth.invalidEmail') });
         return false;
       }
       if (password.length < 6) {
-        setErrors({ password: 'Mot de passe trop court (min 6 caractères)' });
+        setErrors({ password: t('auth.passwordTooShort') });
         return false;
       }
       if (!firstName.trim()) {
-        setErrors({ firstName: 'Prénom requis' });
+        setErrors({ firstName: t('auth.firstNameRequired') });
         return false;
       }
       if (firstName.length > 50) {
-        setErrors({ firstName: 'Prénom trop long (max 50 caractères)' });
+        setErrors({ firstName: t('auth.firstNameTooLong') });
         return false;
       }
       return true;
@@ -120,10 +120,9 @@ export default function OnboardingPage() {
       if (!validateStep1()) return;
       
       if (isLogin) {
-        // Check rate limit for login
         const { allowed, message } = loginRateLimit.checkRateLimit();
         if (!allowed) {
-          toast.error(message || 'Trop de tentatives');
+          toast.error(message || t('auth.tooManyAttempts'));
           return;
         }
         
@@ -134,22 +133,21 @@ export default function OnboardingPage() {
         
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
-            toast.error('Email ou mot de passe incorrect');
+            toast.error(t('auth.invalidCredentials'));
           } else if (error.message.includes('Email not confirmed')) {
-            toast.error('Veuillez confirmer votre email');
+            toast.error(t('auth.confirmEmail'));
           } else {
-            toast.error(error.message || 'Erreur de connexion');
+            toast.error(error.message || t('errors.generic'));
           }
         } else {
           loginRateLimit.reset();
-          toast.success('Bienvenue !');
+          toast.success(t('auth.welcome'));
           setStep(2);
         }
       } else {
-        // Check rate limit for signup
         const { allowed, message } = signupRateLimit.checkRateLimit();
         if (!allowed) {
-          toast.error(message || 'Trop de tentatives');
+          toast.error(message || t('auth.tooManyAttempts'));
           return;
         }
         
@@ -160,13 +158,13 @@ export default function OnboardingPage() {
         
         if (error) {
           if (error.message.includes('User already registered')) {
-            toast.error('Un compte existe déjà avec cet email');
+            toast.error(t('auth.accountExists'));
           } else {
-            toast.error(error.message || 'Erreur lors de l\'inscription');
+            toast.error(error.message || t('errors.generic'));
           }
         } else {
           signupRateLimit.reset();
-          toast.success('Compte créé avec succès !');
+          toast.success(t('auth.accountCreated'));
           setStep(2);
         }
       }
@@ -189,7 +187,6 @@ export default function OnboardingPage() {
   const handleLocationRequest = () => {
     setLocationStatus('loading');
     startWatching();
-    // The useEffect hooks will handle the success/error state based on store updates
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -205,10 +202,10 @@ export default function OnboardingPage() {
           <div className="space-y-6 animate-slide-up" onKeyPress={handleKeyPress}>
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-3">
-                {isLogin ? 'Content de te revoir !' : 'Créons ton compte'}
+                {isLogin ? t('auth.welcomeBack') : t('auth.createAccount')}
               </h2>
               <p className="text-muted-foreground">
-                {isLogin ? 'Entre tes identifiants' : 'Remplis ces infos pour commencer'}
+                {isLogin ? t('auth.enterCredentials') : t('auth.fillInfo')}
               </p>
             </div>
             
@@ -216,7 +213,7 @@ export default function OnboardingPage() {
               <div className="space-y-2">
                 <Input
                   type="email"
-                  placeholder="ton.email@universite.fr"
+                  placeholder={t('auth.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={cn(
@@ -234,7 +231,7 @@ export default function OnboardingPage() {
                 <div className="relative">
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Mot de passe"
+                    placeholder={t('auth.password')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={cn(
@@ -264,7 +261,7 @@ export default function OnboardingPage() {
                   <div className="space-y-2">
                     <Input
                       type="text"
-                      placeholder="Prénom"
+                      placeholder={t('auth.firstName')}
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       className={cn(
@@ -280,7 +277,7 @@ export default function OnboardingPage() {
                   
                   <Input
                     type="text"
-                    placeholder="Université (optionnel)"
+                    placeholder={t('auth.universityOptional')}
                     value={university}
                     onChange={(e) => setUniversity(e.target.value)}
                     className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
@@ -295,7 +292,7 @@ export default function OnboardingPage() {
                   onClick={() => navigate('/forgot-password')}
                   className="text-sm text-coral hover:text-coral-dark transition-colors"
                 >
-                  Mot de passe oublié ?
+                  {t('auth.forgotPassword')}
                 </button>
               )}
               
@@ -305,7 +302,7 @@ export default function OnboardingPage() {
                   <div className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">ou</span>
+                  <span className="bg-background px-2 text-muted-foreground">{t('or')}</span>
                 </div>
               </div>
               
@@ -339,7 +336,7 @@ export default function OnboardingPage() {
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                       />
                     </svg>
-                    Continuer avec Google
+                    {t('auth.continueWithGoogle')}
                   </>
                 )}
               </Button>
@@ -361,11 +358,10 @@ export default function OnboardingPage() {
             </div>
             
             <h2 className="text-2xl font-bold text-foreground mb-3">
-              Active la localisation
+              {t('onboarding.enableLocation')}
             </h2>
             <p className="text-muted-foreground max-w-xs mx-auto leading-relaxed">
-              Pour voir les signaux autour de toi, on a besoin de ta position. 
-              Elle reste privée et n'est jamais stockée.
+              {t('onboarding.locationExplain')}
             </p>
             
             <Button
@@ -381,15 +377,15 @@ export default function OnboardingPage() {
               {locationStatus === 'success' ? (
                 <>
                   <Check className="mr-2 h-5 w-5" />
-                  Position obtenue
+                  {t('onboarding.locationObtained')}
                 </>
               ) : locationStatus === 'loading' ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Localisation...
+                  {t('onboarding.locating')}
                 </>
               ) : (
-                'Autoriser la localisation'
+                t('onboarding.allowLocation')
               )}
             </Button>
             
@@ -399,13 +395,13 @@ export default function OnboardingPage() {
                 onClick={() => setStep(3)}
                 className="text-sm text-muted-foreground hover:text-foreground underline transition-colors"
               >
-                Passer pour l'instant
+                {t('onboarding.skipForNow')}
               </button>
             )}
             
             {locationStatus !== 'success' && (
               <p className="text-xs text-muted-foreground/70">
-                Tu pourras activer la localisation plus tard dans les paramètres
+                {t('onboarding.enableLater')}
               </p>
             )}
           </div>
@@ -417,42 +413,42 @@ export default function OnboardingPage() {
             <div className="text-6xl mb-6">🎉</div>
             
             <h2 className="text-2xl font-bold text-foreground mb-2">
-              Tu es prêt !
+              {t('onboarding.youReReady')}
             </h2>
             
             <p className="text-coral font-semibold mb-2">
-              Ici, tout le monde est ouvert à l'interaction.
+              {t('onboarding.everyoneOpen')}
             </p>
             
             <p className="text-muted-foreground mb-6 text-sm">
-              Active ton signal pour montrer que tu veux rencontrer quelqu'un :
+              {t('onboarding.activateSignal')}
             </p>
             
             <div className="space-y-4 text-left">
               <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform border border-signal-green/30">
                 <div className="w-7 h-7 rounded-full bg-signal-green glow-green shadow-lg" />
                 <div>
-                  <p className="font-bold text-signal-green">Signal vert</p>
-                  <p className="text-sm text-foreground font-medium">"Je suis ouvert·e à l'interaction"</p>
-                  <p className="text-xs text-muted-foreground">Je veux faire cette activité avec quelqu'un</p>
+                  <p className="font-bold text-signal-green">{t('signals.green')}</p>
+                  <p className="text-sm text-foreground font-medium">{t('signals.greenDesc')}</p>
+                  <p className="text-xs text-muted-foreground">{t('signals.greenSubDesc')}</p>
                 </div>
               </div>
               
               <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform">
                 <div className="w-7 h-7 rounded-full bg-signal-yellow glow-yellow shadow-lg" />
                 <div>
-                  <p className="font-bold text-signal-yellow">Signal jaune</p>
-                  <p className="text-sm text-foreground font-medium">"Ouvert·e sous conditions"</p>
-                  <p className="text-xs text-muted-foreground">Dépend de l'activité ou du contexte</p>
+                  <p className="font-bold text-signal-yellow">{t('signals.yellow')}</p>
+                  <p className="text-sm text-foreground font-medium">{t('signals.yellowDesc')}</p>
+                  <p className="text-xs text-muted-foreground">{t('signals.yellowSubDesc')}</p>
                 </div>
               </div>
               
               <div className="glass rounded-xl p-4 flex items-center gap-4 hover:scale-[1.02] transition-transform">
                 <div className="w-7 h-7 rounded-full bg-signal-red glow-red shadow-lg" />
                 <div>
-                  <p className="font-bold text-signal-red">Signal rouge</p>
-                  <p className="text-sm text-foreground font-medium">"Pas disponible"</p>
-                  <p className="text-xs text-muted-foreground">Visible mais ne souhaite pas être approché</p>
+                  <p className="font-bold text-signal-red">{t('signals.red')}</p>
+                  <p className="text-sm text-foreground font-medium">{t('signals.redDesc')}</p>
+                  <p className="text-xs text-muted-foreground">{t('signals.redSubDesc')}</p>
                 </div>
               </div>
             </div>
@@ -503,12 +499,12 @@ export default function OnboardingPage() {
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : step === totalSteps ? (
-            "C'est parti !"
+            t('onboarding.letsGo')
           ) : step === 2 && locationStatus !== 'success' ? (
-            "Passer"
+            t('skip')
           ) : (
             <>
-              Continuer
+              {t('continue')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </>
           )}

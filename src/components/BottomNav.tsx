@@ -3,11 +3,12 @@ import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
 import { MapPin, User, Settings, CalendarDays, Users2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useShowNewBadge } from '@/components/binome/NewBadge';
+import { useTranslation } from '@/lib/i18n';
 
 interface NavItem {
   to: string;
   icon: React.ReactNode;
-  label: string;
+  labelKey: string;
   showNewBadge?: boolean;
 }
 
@@ -15,13 +16,14 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
   function BottomNav(_, ref) {
     const location = useLocation();
     const showBinomeBadge = useShowNewBadge();
+    const { t } = useTranslation();
 
     const navItems: NavItem[] = [
-      { to: '/map', icon: <MapPin className="h-6 w-6" />, label: 'Carte' },
-      { to: '/binome', icon: <Users2 className="h-6 w-6" />, label: 'Réserver', showNewBadge: showBinomeBadge },
-      { to: '/events', icon: <CalendarDays className="h-6 w-6" />, label: 'Events' },
-      { to: '/profile', icon: <User className="h-6 w-6" />, label: 'Profil' },
-      { to: '/settings', icon: <Settings className="h-5 w-5" />, label: 'Réglages' },
+      { to: '/map', icon: <MapPin className="h-6 w-6" />, labelKey: 'nav.map' },
+      { to: '/binome', icon: <Users2 className="h-6 w-6" />, labelKey: 'nav.book', showNewBadge: showBinomeBadge },
+      { to: '/events', icon: <CalendarDays className="h-6 w-6" />, labelKey: 'nav.events' },
+      { to: '/profile', icon: <User className="h-6 w-6" />, labelKey: 'nav.profile' },
+      { to: '/settings', icon: <Settings className="h-5 w-5" />, labelKey: 'nav.settings' },
     ];
 
     return (
@@ -31,11 +33,12 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
             <div className="flex items-center justify-around py-3.5 px-6">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.to;
+                const label = t(item.labelKey);
                 return (
                   <RouterNavLink
                     key={item.to}
                     to={item.to}
-                    aria-label={`Naviguer vers ${item.label}`}
+                    aria-label={label}
                     aria-current={isActive ? 'page' : undefined}
                     className={cn(
                       'flex flex-col items-center gap-1.5 transition-all duration-300 relative',
@@ -60,7 +63,7 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
                     <span className={cn(
                       'text-xs',
                       isActive ? 'font-bold' : 'font-medium'
-                    )}>{item.label}</span>
+                    )}>{label}</span>
                   </RouterNavLink>
                 );
               })}

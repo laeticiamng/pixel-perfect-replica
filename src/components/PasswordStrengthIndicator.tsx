@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { getPasswordStrength } from '@/lib/validation';
+import { useTranslation } from '@/lib/i18n';
 
 interface PasswordStrengthIndicatorProps {
   password: string;
@@ -7,6 +8,7 @@ interface PasswordStrengthIndicatorProps {
 
 export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicatorProps) {
   const strength = getPasswordStrength(password);
+  const { t } = useTranslation();
   
   if (!password) return null;
   
@@ -29,7 +31,7 @@ export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicato
         strength.score > 2 && strength.score <= 4 && 'text-signal-yellow',
         strength.score > 4 && 'text-signal-green',
       )}>
-        Force : {strength.label}
+        {t('auth.strength')} : {strength.label}
       </p>
     </div>
   );

@@ -1,5 +1,6 @@
 import { ACTIVITIES, ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 const MAX_FAVORITES = 6;
 
@@ -14,6 +15,8 @@ export function FavoriteActivitiesSelector({
   onChange, 
   className 
 }: FavoriteActivitiesSelectorProps) {
+  const { t } = useTranslation();
+  
   const toggleActivity = (activity: ActivityType) => {
     if (value.includes(activity)) {
       onChange(value.filter(a => a !== activity));
@@ -26,7 +29,7 @@ export function FavoriteActivitiesSelector({
     <div className={cn("space-y-3", className)}>
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-foreground">
-          Activités favorites
+          {t('profile.favoriteActivities')}
         </label>
         <span className={cn(
           "text-xs font-medium",
@@ -41,6 +44,7 @@ export function FavoriteActivitiesSelector({
         {ACTIVITIES.map((activity) => {
           const isSelected = value.includes(activity.id);
           const isDisabled = !isSelected && value.length >= MAX_FAVORITES;
+          const label = t(activity.labelKey);
           
           return (
             <button
@@ -56,17 +60,17 @@ export function FavoriteActivitiesSelector({
                 isDisabled && "opacity-50 cursor-not-allowed"
               )}
               aria-pressed={isSelected}
-              aria-label={`${activity.label} ${isSelected ? 'sélectionné' : ''}`}
+              aria-label={`${label} ${isSelected ? 'selected' : ''}`}
             >
               <span>{activity.emoji}</span>
-              <span>{activity.label}</span>
+              <span>{label}</span>
             </button>
           );
         })}
       </div>
       
       <p className="text-xs text-muted-foreground">
-        Choisis jusqu'à {MAX_FAVORITES} activités qui te correspondent le mieux
+        {t('profile.chooseActivities', { max: MAX_FAVORITES })}
       </p>
     </div>
   );
