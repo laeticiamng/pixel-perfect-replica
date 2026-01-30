@@ -233,7 +233,12 @@ export function InteractiveMap({
   }
 
   return (
-    <div className={cn("relative rounded-2xl overflow-hidden", className)}>
+    <div 
+      className={cn("relative rounded-2xl overflow-hidden", className)}
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+      onTouchEnd={(e) => e.stopPropagation()}
+    >
       <Map
         ref={mapRef}
         {...viewState}
@@ -244,6 +249,9 @@ export function InteractiveMap({
         style={{ width: '100%', height: '100%' }}
         attributionControl={false}
         reuseMaps
+        dragPan={true}
+        touchZoomRotate={true}
+        touchPitch={true}
       >
         <NavigationControl position="bottom-right" showCompass={true} showZoom={true} />
         <GeolocateControl 

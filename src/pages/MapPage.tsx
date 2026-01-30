@@ -201,7 +201,11 @@ export default function MapPage() {
   };
 
   const handleUserClick = (userId: string, distance?: number) => {
-    if (distance && distance > 50) {
+    // In demo mode or if no distance, allow access
+    // In real mode, require distance <= visibility_distance (more lenient than 50m)
+    const maxRevealDistance = isDemoMode ? Infinity : settings.visibility_distance;
+    
+    if (distance && distance > maxRevealDistance) {
       toast('Rapproche-toi pour voir qui c\'est !', { icon: '👀' });
     } else {
       // Vibrate when close enough
@@ -311,39 +315,57 @@ export default function MapPage() {
           </div>
         </div>
         
-        {/* Filters & Open signals count */}
-        <div className="mt-3 flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              aria-label={showFilters ? "Masquer les filtres" : "Afficher les filtres d'activité"}
-              aria-expanded={showFilters}
-              className={cn(
-                "p-2 rounded-lg transition-colors",
-                showFilters || activityFilters.length > 0
-                  ? "bg-coral text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Filter className="h-4 w-4" />
-            </button>
-            <p className="text-muted-foreground text-sm flex items-center gap-2">
-              <span className="text-signal-green font-bold">{openUsersCount}</span> {openUsersCount === 1 ? 'personne ouverte' : 'personnes ouvertes'}
-              {isDemoMode && (
-                <span className="px-2 py-0.5 rounded-full bg-signal-yellow/20 text-signal-yellow text-xs font-medium border border-signal-yellow/30">
-                  Démo
-                </span>
-              )}
-            </p>
+        {/* Inline mini-legend + Open signals count */}
+        <div className="mt-3 px-1">
+          {/* Mini legend - always visible */}
+          <div className="flex items-center gap-4 mb-2 text-xs">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-signal-green" />
+              <span className="text-muted-foreground">Ouvert</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-signal-yellow" />
+              <span className="text-muted-foreground">Conditionnel</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-coral" />
+              <span className="text-muted-foreground">Toi</span>
+            </div>
           </div>
-          <button
-            onClick={() => setShowLegend(!showLegend)}
-            aria-label={showLegend ? "Masquer la légende" : "Afficher la légende"}
-            aria-expanded={showLegend}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <Info className="h-4 w-4" />
-          </button>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                aria-label={showFilters ? "Masquer les filtres" : "Afficher les filtres d'activité"}
+                aria-expanded={showFilters}
+                className={cn(
+                  "p-2 rounded-lg transition-colors",
+                  showFilters || activityFilters.length > 0
+                    ? "bg-coral text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Filter className="h-4 w-4" />
+              </button>
+              <p className="text-muted-foreground text-sm flex items-center gap-2">
+                <span className="text-signal-green font-bold">{openUsersCount}</span> {openUsersCount === 1 ? 'personne ouverte' : 'personnes ouvertes'}
+                {isDemoMode && (
+                  <span className="px-2 py-0.5 rounded-full bg-signal-yellow/20 text-signal-yellow text-xs font-medium border border-signal-yellow/30">
+                    Démo
+                  </span>
+                )}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowLegend(!showLegend)}
+              aria-label={showLegend ? "Masquer la légende" : "Afficher la légende"}
+              aria-expanded={showLegend}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <Info className="h-4 w-4" />
+            </button>
+          </div>
         </div>
         
         {/* Activity Filters */}
