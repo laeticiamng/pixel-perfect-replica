@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { logger } from '@/lib/logger';
+import { generateMockUsers } from '@/utils/mockData';
 
 type SignalType = 'green' | 'yellow' | 'red';
 type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
@@ -256,6 +257,17 @@ export function useActiveSignal() {
         })
         .filter(u => u.distance <= maxDistance)
         .sort((a, b) => a.distance - b.distance);
+
+      // If no real users, add mock users for demo/testing
+      if (nearby.length === 0 && import.meta.env.DEV) {
+        const mockUsers = generateMockUsers(position.latitude, position.longitude, 12);
+        const mocksWithDistance = mockUsers.map(u => ({
+          ...u,
+          distance: calculateDistance(position.latitude, position.longitude, u.position.latitude, u.position.longitude),
+        })).filter(u => u.distance <= maxDistance).sort((a, b) => (a.distance || 0) - (b.distance || 0));
+        setNearbyUsers(mocksWithDistance);
+        return;
+      }
 
       setNearbyUsers(nearby);
     } catch (err) {

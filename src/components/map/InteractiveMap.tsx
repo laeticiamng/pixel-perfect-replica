@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import Map, { Marker, NavigationControl, GeolocateControl, Source, Layer } from 'react-map-gl/mapbox';
+import Map, { Marker, NavigationControl, GeolocateControl, Source, Layer, Popup } from 'react-map-gl/mapbox';
 import type { MapRef, ViewStateChangeEvent } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { cn } from '@/lib/utils';
 import { useLocationStore } from '@/stores/locationStore';
 import { supabase } from '@/integrations/supabase/client';
 import { useTheme } from '@/hooks/useTheme';
-import { ACTIVITIES } from '@/types/signal';
+import { ACTIVITIES, ActivityType } from '@/types/signal';
 import { AnimatedMarker } from './AnimatedMarker';
 import { MapStyleSelector, MAP_STYLES, MapStyleType } from './MapStyleSelector';
 import { ClusterMarker } from './ClusterMarker';
+import { ActivityFilterBar } from './ActivityFilterBar';
+import { UserPopupCard } from './UserPopupCard';
 import { useClustering, ClusterPoint } from '@/hooks/useClustering';
 
 interface NearbyUser {
@@ -23,6 +25,7 @@ interface NearbyUser {
   distance?: number;
   avatar_url?: string;
   rating?: number;
+  activeSince?: Date;
 }
 
 interface InteractiveMapProps {
@@ -33,6 +36,8 @@ interface InteractiveMapProps {
   visibilityDistance: number;
   className?: string;
   userInitial?: string;
+  activityFilters?: ActivityType[];
+  onActivityFilterToggle?: (activity: ActivityType) => void;
 }
 
 export function InteractiveMap({
@@ -43,6 +48,8 @@ export function InteractiveMap({
   visibilityDistance,
   className,
   userInitial = '?',
+  activityFilters = [],
+  onActivityFilterToggle,
 }: InteractiveMapProps) {
   const mapRef = useRef<MapRef>(null);
   const { position } = useLocationStore();
@@ -52,6 +59,7 @@ export function InteractiveMap({
   const [error, setError] = useState<string | null>(null);
   const [mapStyle, setMapStyle] = useState<MapStyleType>('streets');
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
+  const [selectedUser, setSelectedUser] = useState<NearbyUser | null>(null);
   const [viewState, setViewState] = useState({
     latitude: position?.latitude || 48.8566,
     longitude: position?.longitude || 2.3522,
@@ -168,6 +176,18 @@ export function InteractiveMap({
       duration: 500,
     });
   }, [getClusterExpansionZoom]);
+
+  const handleMarkerClick = useCallback((user: NearbyUser) => {
+    // Find the full user from nearbyUsers for activeSince
+    const fullUser = nearbyUsers.find(u => u.id === user.id);
+    setSelectedUser(fullUser || user as NearbyUser);
+  }, [nearbyUsers]);
+
+  const handlePopupContact = useCallback((userId: string) => {
+    const user = nearbyUsers.find(u => u.user_id === userId);
+    onUserClick(userId, user?.distance);
+    setSelectedUser(null);
+  }, [nearbyUsers, onUserClick]);
 
   const getActivityEmoji = (activity: string) => {
     const act = ACTIVITIES.find(a => a.id === activity);
@@ -329,7 +349,7 @@ export function InteractiveMap({
               key={user.id}
               latitude={user.latitude}
               longitude={user.longitude}
-              onClick={() => onUserClick(user.user_id, user.distance)}
+              onClick={() => handleMarkerClick(user as unknown as NearbyUser)}
             >
               <button
                 className="relative cursor-pointer transform transition-transform hover:scale-110 active:scale-95"
@@ -374,6 +394,26 @@ export function InteractiveMap({
             </AnimatedMarker>
           );
         })}
+
+        {/* User popup card */}
+        {selectedUser && (
+          <Popup
+            latitude={selectedUser.latitude}
+            longitude={selectedUser.longitude}
+            anchor="bottom"
+            onClose={() => setSelectedUser(null)}
+            closeButton={false}
+            closeOnClick={false}
+            offset={25}
+            className="!p-0 !bg-transparent [&_.mapboxgl-popup-content]:!p-0 [&_.mapboxgl-popup-content]:!bg-transparent [&_.mapboxgl-popup-content]:!shadow-none [&_.mapboxgl-popup-tip]:!border-t-transparent"
+          >
+            <UserPopupCard
+              user={selectedUser}
+              onClose={() => setSelectedUser(null)}
+              onContact={handlePopupContact}
+            />
+          </Popup>
+        )}
       </Map>
 
       {/* Map style selector */}
@@ -383,6 +423,16 @@ export function InteractiveMap({
           onStyleChange={setMapStyle}
         />
       </div>
+
+      {/* Activity filter bar */}
+      {onActivityFilterToggle && (
+        <div className="absolute top-3 right-3 z-10">
+          <ActivityFilterBar
+            selectedActivities={activityFilters}
+            onToggle={onActivityFilterToggle}
+          />
+        </div>
+      )}
 
       {/* Map overlay gradient at bottom for better UI */}
       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background/80 to-transparent pointer-events-none" />
