@@ -104,7 +104,7 @@ export default function BinomePage() {
             <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-foreground mb-2">Connexion requise</h2>
             <p className="text-muted-foreground mb-4">
-              Connecte-toi pour accéder au mode Binôme
+              Connecte-toi pour réserver un binôme
             </p>
             <Button onClick={() => navigate('/')} className="bg-coral hover:bg-coral/90">
               Se connecter
@@ -130,8 +130,8 @@ export default function BinomePage() {
               <ArrowLeft className="h-6 w-6 text-foreground" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Mode Binôme</h1>
-              <p className="text-sm text-muted-foreground">Sessions planifiées</p>
+              <h1 className="text-xl font-bold text-foreground">Réserver un Binôme</h1>
+              <p className="text-sm text-muted-foreground">Planifie tes sessions</p>
             </div>
           </div>
           <Button 

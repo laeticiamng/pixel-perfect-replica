@@ -11,7 +11,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { to: '/map', icon: <MapPin className="h-6 w-6" />, label: 'Carte' },
-  { to: '/binome', icon: <Users2 className="h-6 w-6" />, label: 'Binôme' },
+  { to: '/binome', icon: <Users2 className="h-6 w-6" />, label: 'Réserver' },
   { to: '/events', icon: <CalendarDays className="h-6 w-6" />, label: 'Events' },
   { to: '/profile', icon: <User className="h-6 w-6" />, label: 'Profil' },
   { to: '/settings', icon: <Settings className="h-5 w-5" />, label: 'Réglages' },
