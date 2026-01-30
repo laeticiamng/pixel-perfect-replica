@@ -393,7 +393,32 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 | **Événements analytics** | 90 jours | Cron quotidien 3h UTC |
 | **Shadow bans temporaires** | Durée définie | Nettoyage automatique |
 
-> ⏰ **Automatisation** : Un cron job (`daily-cleanup-expired`) s'exécute chaque jour à 3h00 UTC pour purger les données expirées via l'edge function `/system`.
+### Plan de maintenance automatique (Cron Jobs)
+
+| Job | Schedule | Action | Edge Function |
+|-----|----------|--------|---------------|
+| `daily-cleanup-expired` | `0 3 * * *` (3h00 UTC) | Purge données expirées | `/system?action=cleanup-expired` |
+
+#### Détail des tâches exécutées
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  🕐 CRON: daily-cleanup-expired (quotidien à 3h00 UTC)          │
+├─────────────────────────────────────────────────────────────────┤
+│  1. cleanup_expired_signals()      → Signaux expirés            │
+│  2. cleanup_old_interaction_locations() → Positions > 30j      │
+│  3. cleanup_rate_limit_logs()      → Rate limits > 24h          │
+│  4. cleanup_old_reveal_logs()      → Reveals > 90j              │
+│  5. cleanup_old_analytics_events() → Analytics > 90j            │
+│  6. cleanup_expired_shadow_bans()  → Shadow bans expirés        │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Configuration technique
+- **Extensions requises** : `pg_cron` (pg_catalog), `pg_net` (extensions)
+- **Méthode** : `net.http_post()` vers Edge Function avec JWT
+- **Monitoring** : Logs disponibles dans Cloud → Edge Function Logs
+
+> 💡 **Note** : Les cron jobs sont configurés dans PostgreSQL via `cron.schedule()`. Pour modifier la fréquence, utilisez la syntaxe cron standard (ex: `*/15 * * * *` pour toutes les 15 minutes).
 
 ### Observabilité
 | Composant | Implémentation |
@@ -402,6 +427,7 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 | **Analytics** | Table `analytics_events` |
 | **Alertes admin** | `alert_logs` + préférences |
 | **Diagnostics** | Page `/diagnostics` |
+| **Cron logs** | `cron.job_run_details` (PostgreSQL) |
 
 ---
 
