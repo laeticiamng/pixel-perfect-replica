@@ -999,6 +999,51 @@ export type Database = {
           },
         ]
       }
+      user_testimonials: {
+        Row: {
+          activity: string
+          created_at: string
+          id: string
+          is_approved: boolean
+          quote: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          activity: string
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          quote: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          activity?: string
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          quote?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_testimonials_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_testimonials_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       verification_badges: {
         Row: {
           badge_type: string
@@ -1068,6 +1113,14 @@ export type Database = {
           note: string
           scheduled_date: string
           start_time: string
+        }[]
+      }
+      get_community_stats: {
+        Args: never
+        Returns: {
+          active_users_now: number
+          completed_sessions: number
+          sessions_this_month: number
         }[]
       }
       get_current_month_usage: {
