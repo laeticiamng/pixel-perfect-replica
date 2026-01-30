@@ -1,0 +1,293 @@
+import { useEffect, useRef, useState, useCallback } from 'react';
+import Map, { Marker, NavigationControl, GeolocateControl, Source, Layer } from 'react-map-gl/mapbox';
+import type { MapRef, ViewStateChangeEvent } from 'react-map-gl/mapbox';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { cn } from '@/lib/utils';
+import { useLocationStore } from '@/stores/locationStore';
+import { supabase } from '@/integrations/supabase/client';
+import { useTheme } from '@/hooks/useTheme';
+import { ACTIVITIES } from '@/types/signal';
+
+interface NearbyUser {
+  id: string;
+  user_id: string;
+  firstName: string;
+  signal: 'green' | 'yellow' | 'red';
+  activity: string;
+  latitude: number;
+  longitude: number;
+  distance?: number;
+  avatar_url?: string;
+  rating?: number;
+}
+
+interface InteractiveMapProps {
+  nearbyUsers: NearbyUser[];
+  isActive: boolean;
+  myActivity?: string | null;
+  onUserClick: (userId: string, distance?: number) => void;
+  visibilityDistance: number;
+  className?: string;
+  userInitial?: string;
+}
+
+export function InteractiveMap({
+  nearbyUsers,
+  isActive,
+  myActivity,
+  onUserClick,
+  visibilityDistance,
+  className,
+  userInitial = '?',
+}: InteractiveMapProps) {
+  const mapRef = useRef<MapRef>(null);
+  const { position } = useLocationStore();
+  const { theme } = useTheme();
+  const [mapboxToken, setMapboxToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [viewState, setViewState] = useState({
+    latitude: position?.latitude || 48.8566,
+    longitude: position?.longitude || 2.3522,
+    zoom: 15,
+    bearing: 0,
+    pitch: 45,
+  });
+
+  // Fetch Mapbox token
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('get-mapbox-token');
+        if (error) throw error;
+        if (data?.token) {
+          setMapboxToken(data.token);
+        } else {
+          throw new Error('No token returned');
+        }
+      } catch (err: unknown) {
+        console.error('Failed to fetch Mapbox token:', err);
+        setError('Failed to load map');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchToken();
+  }, []);
+
+  // Update map center when position changes
+  useEffect(() => {
+    if (position && mapRef.current) {
+      mapRef.current.flyTo({
+        center: [position.longitude, position.latitude],
+        duration: 1000,
+        essential: true,
+      });
+    }
+  }, [position]);
+
+  // Initial centering
+  useEffect(() => {
+    if (position) {
+      setViewState(prev => ({
+        ...prev,
+        latitude: position.latitude,
+        longitude: position.longitude,
+      }));
+    }
+  }, [position]);
+
+  const handleMove = useCallback((evt: ViewStateChangeEvent) => {
+    setViewState(evt.viewState);
+  }, []);
+
+  const getActivityEmoji = (activity: string) => {
+    const act = ACTIVITIES.find(a => a.id === activity);
+    return act?.emoji || '✨';
+  };
+
+  const getSignalColor = (signal: string) => {
+    switch (signal) {
+      case 'green': return 'bg-signal-green';
+      case 'yellow': return 'bg-signal-yellow';
+      case 'red': return 'bg-signal-red';
+      default: return 'bg-coral';
+    }
+  };
+
+  const mapStyle = theme === 'dark' 
+    ? 'mapbox://styles/mapbox/dark-v11'
+    : 'mapbox://styles/mapbox/light-v11';
+
+  if (isLoading) {
+    return (
+      <div className={cn("flex items-center justify-center bg-muted rounded-2xl", className)}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-coral border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-muted-foreground">Loading map...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !mapboxToken) {
+    return (
+      <div className={cn("flex items-center justify-center bg-muted rounded-2xl", className)}>
+        <div className="flex flex-col items-center gap-3 text-center p-6">
+          <span className="text-4xl">🗺️</span>
+          <p className="text-sm text-muted-foreground">{error || 'Map unavailable'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={cn("relative rounded-2xl overflow-hidden", className)}>
+      <Map
+        ref={mapRef}
+        {...viewState}
+        onMove={handleMove}
+        mapboxAccessToken={mapboxToken}
+        mapStyle={mapStyle}
+        style={{ width: '100%', height: '100%' }}
+        attributionControl={false}
+        reuseMaps
+      >
+        <NavigationControl position="bottom-right" showCompass={true} showZoom={true} />
+        <GeolocateControl 
+          position="bottom-right" 
+          trackUserLocation={true}
+          showUserHeading={true}
+        />
+
+        {/* Visibility radius circle */}
+        {position && (
+          <Source
+            id="visibility-radius"
+            type="geojson"
+            data={{
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [position.longitude, position.latitude],
+              },
+              properties: {},
+            }}
+          >
+            <Layer
+              id="visibility-radius-fill"
+              type="circle"
+              paint={{
+                'circle-radius': {
+                  stops: [
+                    [0, 0],
+                    [20, visibilityDistance * 1.5],
+                  ],
+                  base: 2,
+                },
+                'circle-color': 'hsl(10, 90%, 60%)',
+                'circle-opacity': 0.08,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': 'hsl(10, 90%, 60%)',
+                'circle-stroke-opacity': 0.3,
+              }}
+            />
+          </Source>
+        )}
+
+        {/* User's position marker */}
+        {position && (
+          <Marker
+            latitude={position.latitude}
+            longitude={position.longitude}
+            anchor="center"
+          >
+            <div className="relative">
+              <div className={cn(
+                'w-14 h-14 rounded-full flex items-center justify-center border-4 border-white shadow-xl',
+                isActive 
+                  ? 'bg-gradient-to-br from-coral to-coral-dark' 
+                  : 'bg-muted'
+              )}>
+                <span className="text-xl font-bold text-white">
+                  {userInitial}
+                </span>
+              </div>
+              {/* Activity badge */}
+              {isActive && myActivity && (
+                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-background border-2 border-white shadow-md flex items-center justify-center text-sm">
+                  {getActivityEmoji(myActivity)}
+                </div>
+              )}
+              {/* Pulse effect when active */}
+              {isActive && (
+                <>
+                  <div className="absolute inset-0 rounded-full bg-coral/30 animate-ping" />
+                  <div className="absolute -inset-2 rounded-full border-2 border-coral/40 animate-pulse" />
+                </>
+              )}
+            </div>
+          </Marker>
+        )}
+
+        {/* Nearby users markers */}
+        {nearbyUsers.map((user) => (
+          <Marker
+            key={user.id}
+            latitude={user.latitude}
+            longitude={user.longitude}
+            anchor="center"
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              onUserClick(user.user_id, user.distance);
+            }}
+          >
+            <button
+              className="relative cursor-pointer transform transition-transform hover:scale-110 active:scale-95"
+              aria-label={`Signal ${user.signal} - ${user.firstName}`}
+            >
+              {/* Signal glow */}
+              <div className={cn(
+                'absolute -inset-1 rounded-full opacity-40 blur-sm',
+                getSignalColor(user.signal)
+              )} />
+              
+              {/* Main marker */}
+              <div className={cn(
+                'relative w-12 h-12 rounded-full flex items-center justify-center border-3 border-white shadow-lg',
+                getSignalColor(user.signal)
+              )}>
+                {user.avatar_url ? (
+                  <img 
+                    src={user.avatar_url} 
+                    alt={user.firstName}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="text-lg font-bold text-white">
+                    {user.firstName?.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+              
+              {/* Activity badge */}
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-background border-2 border-white shadow-md flex items-center justify-center text-xs">
+                {getActivityEmoji(user.activity)}
+              </div>
+              
+              {/* Distance badge */}
+              {user.distance && (
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-background/90 border border-border text-[10px] font-medium text-foreground shadow">
+                  {user.distance < 1000 ? `${Math.round(user.distance)}m` : `${(user.distance / 1000).toFixed(1)}km`}
+                </div>
+              )}
+            </button>
+          </Marker>
+        ))}
+      </Map>
+
+      {/* Map overlay gradient at bottom for better UI */}
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background/80 to-transparent pointer-events-none" />
+    </div>
+  );
+}

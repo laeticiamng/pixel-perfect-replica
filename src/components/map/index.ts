@@ -1,4 +1,6 @@
 // Map-related components barrel export
+export { InteractiveMap } from './InteractiveMap';
+
 // Re-export from new organized folders
 export { ActivityFilter } from '../radar';
 export { ActivitySelector } from '../radar';
