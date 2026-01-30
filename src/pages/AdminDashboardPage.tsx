@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Users, Activity, TrendingUp, Calendar,
   BarChart3, Clock, Eye, MousePointer, Shield, Bell,
-  RefreshCw, AlertTriangle, CheckCircle, Loader2
+  RefreshCw, AlertTriangle, CheckCircle, Loader2, Timer
 } from 'lucide-react';
 import { AlertPreferencesCard } from '@/components/admin/AlertPreferencesCard';
 import { AlertHistoryCard } from '@/components/admin/AlertHistoryCard';
+import { CronJobsMonitor } from '@/components/admin/CronJobsMonitor';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSystemStats } from '@/hooks/useSystemStats';
@@ -409,10 +410,14 @@ export default function AdminDashboardPage() {
 
         {/* Tabs for different analytics views */}
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-muted/30">
-            <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-            <TabsTrigger value="events">Événements</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 bg-muted/30">
+            <TabsTrigger value="overview">Vue</TabsTrigger>
+            <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="pages">Pages</TabsTrigger>
+            <TabsTrigger value="cron" className="flex items-center gap-1">
+              <Timer className="h-3 w-3" />
+              Cron
+            </TabsTrigger>
             <TabsTrigger value="alerts" className="flex items-center gap-1">
               <Bell className="h-3 w-3" />
               Alertes
@@ -633,6 +638,10 @@ export default function AdminDashboardPage() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="cron" className="space-y-6 mt-6">
+            <CronJobsMonitor />
           </TabsContent>
 
           <TabsContent value="alerts" className="space-y-6 mt-6">
