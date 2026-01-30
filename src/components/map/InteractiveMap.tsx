@@ -255,7 +255,8 @@ export function InteractiveMap({
 
   return (
     <div 
-      className={cn("relative rounded-2xl overflow-hidden touch-none", className)}
+      className={cn("relative rounded-2xl overflow-hidden", className)}
+      data-map-container
     >
       <Map
         ref={mapRef}
