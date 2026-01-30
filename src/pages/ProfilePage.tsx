@@ -104,7 +104,7 @@ export default function ProfilePage() {
           )}
           
           {/* Stats with enhanced styling */}
-          <div className="flex gap-6 mt-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
             <button 
               onClick={() => navigate('/statistics')}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"

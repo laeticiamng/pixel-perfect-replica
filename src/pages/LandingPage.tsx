@@ -52,7 +52,7 @@ function SignalDemo() {
   ];
   
   return (
-    <div className="relative w-64 h-64 mx-auto">
+    <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 mx-auto">
       {/* Radar circles */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="absolute w-full h-full rounded-full border border-coral/20" />
