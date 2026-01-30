@@ -304,12 +304,12 @@ export function DesktopSidebar() {
         )}>
           {/* Theme & Language Toggles */}
           {!collapsed && (
-            <div className="flex items-center justify-between px-4 py-2">
-              <span className="text-sm text-muted-foreground">{t('nav.theme')}</span>
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col gap-2 px-4 py-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">{t('nav.theme')}</span>
                 <LanguageToggle />
-                <ThemeToggle compact showLabels={false} />
               </div>
+              <ThemeToggle compact showLabels={false} />
             </div>
           )}
 
