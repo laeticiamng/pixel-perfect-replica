@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
 import { 
   MapPin, 
@@ -52,6 +52,24 @@ export function DesktopSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const showBinomeBadge = useShowNewBadge();
   
+  // Toggle sidebar with keyboard shortcut (Cmd+B or Ctrl+B)
+  const toggleSidebar = useCallback(() => {
+    setCollapsed(prev => !prev);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Cmd+B (Mac) or Ctrl+B (Windows/Linux)
+      if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleSidebar]);
+  
   // Open command palette
   const openCommandPalette = () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }));
@@ -68,7 +86,7 @@ export function DesktopSidebar() {
         aria-label={`Naviguer vers ${item.label}`}
         aria-current={isActive ? 'page' : undefined}
         className={cn(
-          'flex items-center gap-3 rounded-xl transition-all duration-200 relative',
+          'flex items-center gap-3 rounded-xl transition-all duration-200 relative group',
           'hover:bg-muted/50',
           collapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3',
           isActive
@@ -77,8 +95,10 @@ export function DesktopSidebar() {
         )}
       >
         <span className={cn(
-          'transition-all flex-shrink-0 relative',
-          isActive && 'drop-shadow-[0_0_8px_hsl(var(--coral)/0.5)]'
+          'transition-all duration-200 flex-shrink-0 relative',
+          isActive && 'drop-shadow-[0_0_8px_hsl(var(--coral)/0.5)]',
+          // Smooth hover animation for icons in collapsed mode
+          collapsed && 'group-hover:scale-110 group-hover:rotate-3'
         )}>
           {item.icon}
           {/* New badge indicator */}
@@ -318,23 +338,35 @@ export function DesktopSidebar() {
           )}
 
           {/* Collapse Toggle */}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className={cn(
-              "w-full flex items-center justify-center gap-2 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all",
-              collapsed ? "px-2" : "px-4"
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <button
+                onClick={toggleSidebar}
+                className={cn(
+                  "w-full flex items-center justify-center gap-2 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all",
+                  collapsed ? "px-2" : "px-4"
+                )}
+                aria-label={collapsed ? "Étendre la sidebar" : "Réduire la sidebar"}
+              >
+                {collapsed ? (
+                  <ChevronRight className="h-4 w-4 transition-transform duration-200 hover:translate-x-0.5" />
+                ) : (
+                  <>
+                    <ChevronLeft className="h-4 w-4 transition-transform duration-200 hover:-translate-x-0.5" />
+                    <span className="text-xs">Réduire</span>
+                    <kbd className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-background/80 border border-border font-mono">
+                      {cmdKey}B
+                    </kbd>
+                  </>
+                )}
+              </button>
+            </TooltipTrigger>
+            {collapsed && (
+              <TooltipContent side="right">
+                Étendre ({cmdKey}B)
+              </TooltipContent>
             )}
-            aria-label={collapsed ? "Étendre la sidebar" : "Réduire la sidebar"}
-          >
-            {collapsed ? (
-              <ChevronRight className="h-4 w-4" />
-            ) : (
-              <>
-                <ChevronLeft className="h-4 w-4" />
-                <span className="text-xs">Réduire</span>
-              </>
-            )}
-          </button>
+          </Tooltip>
         </div>
       </aside>
     </TooltipProvider>
