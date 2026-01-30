@@ -561,6 +561,27 @@ export type Database = {
           },
         ]
       }
+      rate_limit_logs: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reports: {
         Row: {
           created_at: string
@@ -1092,6 +1113,7 @@ export type Database = {
       check_report_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
+      cleanup_rate_limit_logs: { Args: never; Returns: undefined }
       fuzz_coordinates: { Args: { lat: number; lon: number }; Returns: Json }
       get_available_sessions: {
         Args: {
@@ -1140,6 +1162,23 @@ export type Database = {
         Returns: {
           active_users: number
           date: string
+        }[]
+      }
+      get_event_for_participant: {
+        Args: { p_event_id: string }
+        Returns: {
+          created_at: string
+          description: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          latitude: number
+          location_name: string
+          longitude: number
+          max_participants: number
+          name: string
+          organizer_id: string
+          starts_at: string
         }[]
       }
       get_event_for_user: {
@@ -1230,6 +1269,17 @@ export type Database = {
         Args: { profile_ids: string[] }
         Returns: {
           avatar_url: string
+          created_at: string
+          first_name: string
+          id: string
+          university: string
+        }[]
+      }
+      get_safe_profile: {
+        Args: { p_user_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
           created_at: string
           first_name: string
           id: string
