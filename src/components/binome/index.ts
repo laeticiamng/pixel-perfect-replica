@@ -6,4 +6,4 @@ export { SessionCheckin } from './SessionCheckin';
 export { SessionFeedbackForm } from './SessionFeedbackForm';
 export { SessionFilters } from './SessionFilters';
 export { SessionQuotaBadge } from './SessionQuotaBadge';
-export { BinomeOnboarding, BinomeDescriptionCard, WhyEasySection } from './BinomeOnboarding';
+export { BinomeOnboarding, BinomeDescriptionCard, WhyEasySection, WhyEasyCondensed, TestimonialsSection } from './BinomeOnboarding';

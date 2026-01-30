@@ -10,7 +10,7 @@ import { SessionCard } from '@/components/binome/SessionCard';
 import { SessionFilters } from '@/components/binome/SessionFilters';
 import { CreateSessionForm } from '@/components/binome/CreateSessionForm';
 import { SessionQuotaBadge } from '@/components/binome/SessionQuotaBadge';
-import { BinomeOnboarding, BinomeDescriptionCard, WhyEasySection } from '@/components/binome/BinomeOnboarding';
+import { BinomeOnboarding, BinomeDescriptionCard, WhyEasySection, WhyEasyCondensed, TestimonialsSection } from '@/components/binome/BinomeOnboarding';
 import { useBinomeSessions, type SessionFilters as Filters, type CreateSessionInput } from '@/hooks/useBinomeSessions';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useAuth } from '@/contexts/AuthContext';
@@ -206,26 +206,34 @@ export default function BinomePage() {
                 ))}
               </div>
             ) : filters.city ? (
-              <div className="text-center py-12">
-                <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-medium text-foreground mb-2">Aucun créneau trouvé</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Aucune session disponible à {filters.city} pour le moment
-                </p>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowCreateSheet(true)}
-                >
-                  Créer un créneau
-                </Button>
+              <div className="space-y-6">
+                <div className="text-center py-8">
+                  <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="font-medium text-foreground mb-2">Aucun créneau trouvé</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Aucune session disponible à {filters.city} pour le moment
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowCreateSheet(true)}
+                  >
+                    Créer un créneau
+                  </Button>
+                </div>
+                {/* Condensed Why EASY for empty state */}
+                <WhyEasyCondensed />
               </div>
             ) : (
-              <div className="text-center py-12">
-                <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-medium text-foreground mb-2">Recherche une ville</h3>
-                <p className="text-sm text-muted-foreground">
-                  Entre le nom d'une ville pour voir les créneaux disponibles
-                </p>
+              <div className="space-y-6">
+                <div className="text-center py-8">
+                  <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="font-medium text-foreground mb-2">Recherche une ville</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Entre le nom d'une ville pour voir les créneaux disponibles
+                  </p>
+                </div>
+                {/* Condensed Why EASY for initial state */}
+                <WhyEasyCondensed />
               </div>
             )}
           </TabsContent>
@@ -289,8 +297,14 @@ export default function BinomePage() {
         </Tabs>
 
         {/* Why EASY Section */}
+        {/* Why EASY Section */}
         <div className="mt-8">
           <WhyEasySection />
+        </div>
+
+        {/* Testimonials Section */}
+        <div className="mt-6">
+          <TestimonialsSection />
         </div>
       </div>
 

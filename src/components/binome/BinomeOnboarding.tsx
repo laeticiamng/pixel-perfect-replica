@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { X, Calendar, Users, MapPin, MessageCircle, CheckCircle2, Star, Clock, ChevronRight, Sparkles, Heart, HandHeart, Users2, Smile } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Calendar, Users, MapPin, MessageCircle, CheckCircle2, Star, Clock, ChevronRight, Sparkles, Heart, HandHeart, Users2, Smile, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -254,6 +255,36 @@ const whyEasyBenefits = [
   }
 ];
 
+// Animation variants for staggered cards
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: 20,
+    scale: 0.95
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 400,
+      damping: 25
+    }
+  }
+};
+
 export function WhyEasySection() {
   return (
     <Card className="bg-gradient-to-br from-background to-muted/30 border-border/50">
@@ -267,10 +298,17 @@ export function WhyEasySection() {
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <motion.div 
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
           {whyEasyBenefits.map((benefit, idx) => (
-            <div 
+            <motion.div 
               key={idx} 
+              variants={cardVariants}
               className="flex items-start gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
             >
               <div className="p-2 rounded-lg bg-background/80 shrink-0">
@@ -284,17 +322,118 @@ export function WhyEasySection() {
                   {benefit.description}
                 </p>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         
-        <div className="mt-4 p-3 rounded-xl bg-coral/5 border border-coral/20">
+        <motion.div 
+          className="mt-4 p-3 rounded-xl bg-coral/5 border border-coral/20"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+        >
           <p className="text-sm text-center text-muted-foreground">
             <span className="font-semibold text-coral">La solitude touche 1 étudiant sur 2.</span>
             <br />
             EASY t'aide à briser l'isolement, une rencontre à la fois.
           </p>
-        </div>
+        </motion.div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Condensed version for empty states
+export function WhyEasyCondensed() {
+  return (
+    <motion.div 
+      className="p-4 rounded-xl bg-gradient-to-r from-coral/5 to-signal-green/5 border border-coral/20"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <Heart className="h-5 w-5 text-coral" />
+        <h4 className="font-semibold text-foreground text-sm">Pourquoi créer un créneau ?</h4>
+      </div>
+      <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+        Fini la solitude ! Propose une activité et rencontre des personnes qui partagent tes envies. 
+        Chaque créneau peut devenir une amitié, un groupe de soutien, ou plus encore.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {["Réviser ensemble", "Déjeuner", "Sport", "Discuter"].map((activity) => (
+          <span 
+            key={activity}
+            className="px-2 py-1 text-xs rounded-full bg-background/80 text-muted-foreground border border-border/50"
+          >
+            {activity}
+          </span>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+// Testimonials section
+const testimonials = [
+  {
+    quote: "J'ai trouvé mon groupe de révisions grâce à EASY. On se retrouve chaque semaine à la BU et c'est devenu des vrais amis !",
+    author: "Marie, 21 ans",
+    activity: "Révisions"
+  },
+  {
+    quote: "En arrivant dans une nouvelle ville, j'avais du mal à rencontrer des gens. EASY m'a permis de me sentir moins seul dès la première semaine.",
+    author: "Thomas, 24 ans",
+    activity: "Sport & Discussions"
+  },
+  {
+    quote: "C'est super de pouvoir déjeuner avec quelqu'un plutôt que seule devant mon ordi. Ça change vraiment le quotidien !",
+    author: "Léa, 22 ans",
+    activity: "Déjeuner"
+  }
+];
+
+export function TestimonialsSection() {
+  return (
+    <Card className="bg-gradient-to-br from-background to-muted/30 border-border/50">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+          <Quote className="h-5 w-5 text-coral" />
+          Ils ont testé EASY
+        </CardTitle>
+        <CardDescription>
+          Des rencontres qui changent le quotidien
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <motion.div 
+          className="space-y-3"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
+          {testimonials.map((testimonial, idx) => (
+            <motion.div 
+              key={idx}
+              variants={cardVariants}
+              className="p-4 rounded-xl bg-muted/30 border border-border/30"
+            >
+              <p className="text-sm text-foreground italic mb-3">
+                "{testimonial.quote}"
+              </p>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-muted-foreground">
+                  — {testimonial.author}
+                </span>
+                <span className="px-2 py-0.5 text-xs rounded-full bg-coral/10 text-coral">
+                  {testimonial.activity}
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
       </CardContent>
     </Card>
   );
