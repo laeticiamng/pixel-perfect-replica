@@ -96,12 +96,12 @@ export function InteractiveMap({
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        // Check if user is authenticated first
-        const { data: { session } } = await supabase.auth.getSession();
+        // Try to refresh the session first to get a fresh token
+        const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
         
-        if (!session) {
-          console.warn('[InteractiveMap] No active session, cannot fetch mapbox token');
-          setError('Connexion requise pour voir la carte');
+        if (refreshError || !session) {
+          console.warn('[InteractiveMap] Session refresh failed:', refreshError?.message);
+          setError('Session expirée, veuillez vous reconnecter');
           setIsLoading(false);
           return;
         }
@@ -110,7 +110,7 @@ export function InteractiveMap({
         
         if (error) {
           // Handle auth errors specifically
-          if (error.message?.includes('401') || error.message?.includes('token')) {
+          if (error.message?.includes('401') || error.message?.includes('non-2xx')) {
             console.warn('[InteractiveMap] Auth error fetching token:', error.message);
             setError('Session expirée, veuillez vous reconnecter');
           } else {
