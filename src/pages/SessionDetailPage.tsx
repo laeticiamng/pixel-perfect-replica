@@ -16,6 +16,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { SessionChat } from '@/components/binome/SessionChat';
 import { SessionFeedbackForm } from '@/components/binome/SessionFeedbackForm';
+import { TestimonialForm } from '@/components/binome/TestimonialForm';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
@@ -43,6 +44,7 @@ interface Participant {
   user_id: string;
   joined_at: string;
   checked_in: boolean;
+  checked_out?: boolean;
   profile?: {
     first_name: string;
     avatar_url: string | null;
@@ -94,6 +96,8 @@ export default function SessionDetailPage() {
   const [isParticipant, setIsParticipant] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showTestimonial, setShowTestimonial] = useState(false);
+  const [hasCheckedOut, setHasCheckedOut] = useState(false);
 
   const fetchSessionDetails = useCallback(async () => {
     if (!sessionId) return;
@@ -122,7 +126,7 @@ export default function SessionDetailPage() {
       // Fetch participants
       const { data: participantsData, error: participantsError } = await supabase
         .from('session_participants')
-        .select('id, user_id, joined_at, checked_in')
+        .select('id, user_id, joined_at, checked_in, checked_out')
         .eq('session_id', sessionId);
 
       if (participantsError) throw participantsError;
@@ -141,12 +145,16 @@ export default function SessionDetailPage() {
 
         participantProfiles.push({
           ...p,
+          checked_out: p.checked_out,
           profile: profileData?.[0] || { first_name: 'Utilisateur', avatar_url: null },
           reliability: reliabilityData || undefined
         });
 
         if (p.user_id === user?.id) {
           setIsParticipant(true);
+          if (p.checked_out) {
+            setHasCheckedOut(true);
+          }
         }
       }
       setParticipants(participantProfiles);
@@ -166,6 +174,18 @@ export default function SessionDetailPage() {
 
           if (!feedbackData) {
             setShowFeedback(true);
+          }
+          
+          // Check if user has already submitted a testimonial
+          const { data: testimonialData } = await supabase
+            .from('user_testimonials')
+            .select('id')
+            .eq('session_id', sessionId)
+            .eq('user_id', user?.id)
+            .single();
+          
+          if (!testimonialData) {
+            setShowTestimonial(true);
           }
         }
       }
@@ -433,6 +453,16 @@ export default function SessionDetailPage() {
                 .map(p => ({ id: p.user_id, name: p.profile?.first_name || 'Participant' }))
             ]}
             onComplete={() => setShowFeedback(false)}
+          />
+        )}
+
+        {/* Testimonial Form (shown after check-out) */}
+        {(showTestimonial || hasCheckedOut) && isParticipant && (
+          <TestimonialForm
+            sessionId={session.id}
+            activity={activityLabels[session.activity]}
+            onSuccess={() => setShowTestimonial(false)}
+            onCancel={() => setShowTestimonial(false)}
           />
         )}
       </div>
