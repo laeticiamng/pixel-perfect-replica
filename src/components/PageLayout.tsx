@@ -32,7 +32,8 @@ export function PageLayout({
   const content = (
     <div className={cn(
       "min-h-screen min-h-[100dvh] bg-gradient-radial relative",
-      showSidebar && "lg:pl-64", // Add padding for sidebar on desktop
+      // Use CSS variable for sidebar width to handle collapsed state gracefully
+      showSidebar && "lg:pl-[72px] xl:pl-64 transition-all duration-300",
       className
     )}>
       {showOrbs && <FloatingOrbs />}
