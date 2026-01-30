@@ -19,6 +19,7 @@ import {
   ProximityRevealPage,
   AdminDashboardPage,
   PremiumPage,
+  ChangelogPage,
   NotFound,
   // Auth
   OnboardingPage,
@@ -107,6 +108,7 @@ function AnimatedRoutes() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/install" element={<InstallPage />} />
+          <Route path="/changelog" element={<ChangelogPage />} />
           
           {/* Protected Routes */}
           <Route path="/map" element={
