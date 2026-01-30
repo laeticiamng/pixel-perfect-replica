@@ -1,12 +1,11 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
 import { LanguageToggle } from '@/components/LanguageToggle';
-
 // Animated text that reveals on scroll
 function RevealText({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
@@ -201,7 +200,16 @@ export default function LandingPage() {
               EASY
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Button
+              onClick={() => navigate('/install')}
+              variant="ghost"
+              size="sm"
+              className="text-coral hover:text-coral-dark hover:bg-coral/10 gap-1.5"
+            >
+              <Download className="h-4 w-4" />
+              <span className="hidden sm:inline">{t('landing.install')}</span>
+            </Button>
             <LanguageToggle />
             <Button
               onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
