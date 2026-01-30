@@ -7,18 +7,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Easy+ Premium - 9.90€/mois
-const EASY_PLUS_PRICE_ID = "price_1SvGdpDFa5Y9NR1I1qP73OYs";
-
-// Legacy prices (kept for existing subscribers)
-const LEGACY_PRICES = {
-  monthly: "price_1SvEe4DFa5Y9NR1ImEz1QUFQ",
-  yearly: "price_1SvEe5DFa5Y9NR1IQGnbirFh",
-};
+// Session unitaire - 0.99€
+const SESSION_PRICE_ID = "price_1SvGdqDFa5Y9NR1IrL2P71Ms";
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
+  console.log(`[PURCHASE-SESSION] ${step}${detailsStr}`);
 };
 
 serve(async (req) => {
@@ -46,15 +40,9 @@ serve(async (req) => {
     
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { plan } = await req.json();
-    // Use Easy+ price by default, fall back to legacy for existing plans
-    let priceId = EASY_PLUS_PRICE_ID;
-    if (plan === "yearly") {
-      priceId = LEGACY_PRICES.yearly;
-    } else if (plan === "monthly_legacy") {
-      priceId = LEGACY_PRICES.monthly;
-    }
-    logStep("Plan selected", { plan, priceId });
+    const { quantity = 1 } = await req.json().catch(() => ({ quantity: 1 }));
+    const sessionQuantity = Math.min(Math.max(1, quantity), 10); // Limit 1-10 sessions per purchase
+    logStep("Quantity", { quantity: sessionQuantity });
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -68,21 +56,6 @@ serve(async (req) => {
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
       logStep("Existing customer found", { customerId });
-      
-      // Check if already has active subscription
-      const subscriptions = await stripe.subscriptions.list({
-        customer: customerId,
-        status: "active",
-        limit: 1,
-      });
-      
-      if (subscriptions.data.length > 0) {
-        logStep("User already has active subscription");
-        return new Response(
-          JSON.stringify({ error: "Tu as déjà un abonnement Premium actif !" }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-        );
-      }
     }
 
     const origin = req.headers.get("origin") || "https://pixel-perfect-clone-6574.lovable.app";
@@ -92,15 +65,17 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: priceId,
-          quantity: 1,
+          price: SESSION_PRICE_ID,
+          quantity: sessionQuantity,
         },
       ],
-      mode: "subscription",
-      success_url: `${origin}/premium?success=true`,
+      mode: "payment",
+      success_url: `${origin}/premium?session_purchased=${sessionQuantity}`,
       cancel_url: `${origin}/premium?canceled=true`,
       metadata: {
         user_id: user.id,
+        sessions_purchased: sessionQuantity.toString(),
+        type: "session_purchase",
       },
     });
 
