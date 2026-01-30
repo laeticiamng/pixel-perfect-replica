@@ -504,6 +504,18 @@ async function handleCleanupExpired(
     results.rate_limit_logs = { deleted: 0, error: String(err) };
   }
 
+  // Cleanup old reveal logs (GDPR - 90 days retention)
+  try {
+    const { error } = await supabase.rpc('cleanup_old_reveal_logs');
+    if (error) {
+      results.reveal_logs = { deleted: 0, error: error.message };
+    } else {
+      results.reveal_logs = { deleted: 0 }; // Function doesn't return count
+    }
+  } catch (err) {
+    results.reveal_logs = { deleted: 0, error: String(err) };
+  }
+
   console.log("[system/cleanup-expired] Cleanup completed:", results);
 
   return new Response(
