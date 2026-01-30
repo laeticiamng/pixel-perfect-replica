@@ -256,7 +256,7 @@ export default function MapPage() {
 
   return (
     <PageLayout className="pb-28" animate={false}>
-      <div className="max-w-2xl mx-auto w-full min-h-[100dvh] flex flex-col">
+      <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col overflow-hidden">
         {/* Header */}
         <header className="safe-top px-6 py-4">
         <div className="glass-strong rounded-2xl p-4 shadow-medium">
@@ -398,7 +398,7 @@ export default function MapPage() {
       )}
 
       {/* Interactive Map */}
-      <div className="flex-1 px-4 sm:px-6" style={{ minHeight: '400px', height: '50vh' }}>
+      <div className="flex-1 min-h-0 px-4 sm:px-6">
         <InteractiveMap
           nearbyUsers={filteredNearbyUsers.map(u => ({
             id: u.id,
