@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
 import { IcebreakerCard, VerificationBadges, MiniChat } from '@/components/social';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
+import { useRevealRateLimit } from '@/hooks/useRevealRateLimit';
 import { ACTIVITIES, ICEBREAKERS, getIcebreaker as getIcebreakerFn } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,6 +24,7 @@ export default function ProximityRevealPage() {
   const { userId } = useParams();
   const { nearbyUsers } = useActiveSignal();
   const { createInteraction, addFeedback } = useInteractions();
+  const { checkAndLogReveal, isChecking: isCheckingReveal } = useRevealRateLimit();
   
   const [icebreaker, setIcebreaker] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
@@ -30,13 +32,23 @@ export default function ProximityRevealPage() {
   const [isVibrating, setIsVibrating] = useState(false);
   const [interactionId, setInteractionId] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [revealBlocked, setRevealBlocked] = useState(false);
   
   const user = nearbyUsers.find(u => u.id === userId);
 
-  // Fetch extended profile data
+  // Check rate limit and fetch profile on mount
   useEffect(() => {
-    const fetchProfile = async () => {
+    const initReveal = async () => {
       if (!userId) return;
+      
+      // Check and log reveal (rate limit)
+      const { allowed } = await checkAndLogReveal(userId);
+      if (!allowed) {
+        setRevealBlocked(true);
+        return;
+      }
+      
+      // Fetch extended profile data
       const { data } = await supabase
         .rpc('get_safe_public_profile', { profile_id: userId });
       if (data && data[0]) {
@@ -47,8 +59,8 @@ export default function ProximityRevealPage() {
         });
       }
     };
-    fetchProfile();
-  }, [userId]);
+    initReveal();
+  }, [userId, checkAndLogReveal]);
 
   const generateIcebreaker = useCallback(() => {
     if (user) {
@@ -58,7 +70,7 @@ export default function ProximityRevealPage() {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
+    if (user && !revealBlocked) {
       generateIcebreaker();
       
       // Vibrate on reveal
@@ -68,7 +80,7 @@ export default function ProximityRevealPage() {
         setTimeout(() => setIsVibrating(false), 300);
       }
     }
-  }, [user, generateIcebreaker]);
+  }, [user, generateIcebreaker, revealBlocked]);
 
   if (!user) {
     return (
@@ -78,6 +90,31 @@ export default function ProximityRevealPage() {
           <p className="text-foreground font-medium mb-2">Utilisateur non trouvé</p>
           <p className="text-muted-foreground text-sm mb-6">
             Cette personne a peut-être désactivé son signal
+          </p>
+          <Button 
+            onClick={() => navigate('/map')}
+            className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
+          >
+            Retour à la carte
+          </Button>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  // Rate limit exceeded - show warning
+  if (revealBlocked) {
+    return (
+      <PageLayout className="flex items-center justify-center px-6">
+        <div className="text-center">
+          <div className="text-6xl mb-4">⏱️</div>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <AlertTriangle className="h-5 w-5 text-signal-yellow" />
+            <p className="text-foreground font-medium">Limite atteinte</p>
+          </div>
+          <p className="text-muted-foreground text-sm mb-6">
+            Tu as consulté trop de profils récemment. 
+            <br />Réessaie dans 1 heure pour éviter le spam.
           </p>
           <Button 
             onClick={() => navigate('/map')}

@@ -17,7 +17,9 @@ type ActionType =
   | "get-user-quota" 
   | "get-system-logs" 
   | "get-error-rate"
-  | "cleanup-expired";
+  | "cleanup-expired"
+  | "check-shadow-bans"
+  | "send-error-alert";
 
 interface BaseRequest {
   action: ActionType;
@@ -52,13 +54,24 @@ interface CleanupExpiredRequest extends BaseRequest {
   action: "cleanup-expired";
 }
 
+interface CheckShadowBansRequest extends BaseRequest {
+  action: "check-shadow-bans";
+}
+
+interface SendErrorAlertRequest extends BaseRequest {
+  action: "send-error-alert";
+  threshold_percent?: number;
+}
+
 type SystemRequest = 
   | HealthRequest 
   | GetStatsRequest 
   | GetUserQuotaRequest 
   | GetSystemLogsRequest 
   | GetErrorRateRequest
-  | CleanupExpiredRequest;
+  | CleanupExpiredRequest
+  | CheckShadowBansRequest
+  | SendErrorAlertRequest;
 
 // deno-lint-ignore no-explicit-any
 type AnySupabaseClient = SupabaseClient<any, any, any>;
@@ -74,14 +87,16 @@ function handleHealth(): Response {
       action: "health",
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "1.0.0",
+      version: "1.1.0",
       actions: [
         "health",
         "get-stats",
         "get-user-quota",
         "get-system-logs",
         "get-error-rate",
-        "cleanup-expired"
+        "cleanup-expired",
+        "check-shadow-bans",
+        "send-error-alert"
       ],
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -407,6 +422,117 @@ async function handleCleanupExpired(
   );
 }
 
+async function handleCheckShadowBans(
+  supabase: AnySupabaseClient
+): Promise<Response> {
+  console.log("[system/check-shadow-bans] Running shadow-ban cleanup");
+
+  // Clean up expired shadow-bans
+  const { error } = await supabase.rpc('cleanup_expired_shadow_bans');
+
+  if (error) {
+    console.error("[system/check-shadow-bans] Error:", error);
+    return new Response(
+      JSON.stringify({ success: false, error: error.message }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
+  // Get count of currently shadow-banned users
+  const { count } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
+    .eq("shadow_banned", true);
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      action: "check-shadow-bans",
+      data: {
+        shadow_banned_count: count ?? 0,
+        cleanup_completed: true,
+        timestamp: new Date().toISOString(),
+      },
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+  );
+}
+
+async function handleSendErrorAlert(
+  payload: SendErrorAlertRequest,
+  supabase: AnySupabaseClient
+): Promise<Response> {
+  const thresholdPercent = payload.threshold_percent ?? 5;
+  const hoursBack = 1; // Check last hour
+
+  console.log(`[system/send-error-alert] Checking if error rate > ${thresholdPercent}%`);
+
+  const since = new Date(Date.now() - hoursBack * 60 * 60 * 1000).toISOString();
+
+  // Count error events
+  const { count: errorCount } = await supabase
+    .from("analytics_events")
+    .select("*", { count: "exact", head: true })
+    .eq("event_category", "error")
+    .gt("created_at", since);
+
+  // Count total events
+  const { count: totalCount } = await supabase
+    .from("analytics_events")
+    .select("*", { count: "exact", head: true })
+    .gt("created_at", since);
+
+  const errors = errorCount ?? 0;
+  const total = totalCount ?? 1;
+  const errorRate = total > 0 ? (errors / total) * 100 : 0;
+
+  // Check if alert is needed
+  const shouldAlert = errorRate >= thresholdPercent;
+
+  if (shouldAlert) {
+    // Get admin emails with alert_error_spike enabled
+    const { data: admins } = await supabase
+      .from("admin_alert_preferences")
+      .select("email, user_id")
+      .eq("alert_error_spike", true);
+
+    // Log the alert
+    if (admins && admins.length > 0) {
+      for (const admin of admins) {
+        await supabase.from("alert_logs").insert({
+          alert_type: "error_spike",
+          subject: `⚠️ Error rate spike: ${errorRate.toFixed(2)}%`,
+          recipient_email: admin.email,
+          metadata: {
+            error_rate: errorRate,
+            error_count: errors,
+            total_events: total,
+            threshold: thresholdPercent,
+            period_hours: hoursBack,
+          },
+        });
+      }
+
+      console.log(`[system/send-error-alert] Alert sent to ${admins.length} admins`);
+    }
+  }
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      action: "send-error-alert",
+      data: {
+        error_rate_percent: Math.round(errorRate * 100) / 100,
+        threshold_percent: thresholdPercent,
+        alert_triggered: shouldAlert,
+        admins_notified: shouldAlert ? (await supabase.from("admin_alert_preferences").select("email").eq("alert_error_spike", true)).data?.length ?? 0 : 0,
+        timestamp: new Date().toISOString(),
+      },
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+  );
+}
+
 // ============================================================
 // MAIN ROUTER
 // ============================================================
@@ -437,7 +563,9 @@ const handler = async (req: Request): Promise<Response> => {
             "get-user-quota",
             "get-system-logs",
             "get-error-rate",
-            "cleanup-expired"
+            "cleanup-expired",
+            "check-shadow-bans",
+            "send-error-alert"
           ],
         }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -473,6 +601,14 @@ const handler = async (req: Request): Promise<Response> => {
         response = await handleCleanupExpired(supabase);
         break;
 
+      case "check-shadow-bans":
+        response = await handleCheckShadowBans(supabase);
+        break;
+
+      case "send-error-alert":
+        response = await handleSendErrorAlert(body as SendErrorAlertRequest, supabase);
+        break;
+
       default:
         response = new Response(
           JSON.stringify({
@@ -483,7 +619,9 @@ const handler = async (req: Request): Promise<Response> => {
               "get-user-quota",
               "get-system-logs",
               "get-error-rate",
-              "cleanup-expired"
+              "cleanup-expired",
+              "check-shadow-bans",
+              "send-error-alert"
             ],
           }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }

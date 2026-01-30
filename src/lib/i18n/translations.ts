@@ -171,6 +171,14 @@ export const translations = {
     mutualConsent: { en: 'Mutual consent', fr: 'Consentement mutuel' },
     awkwardApproach: { en: 'Awkward approach', fr: 'Approche gênante' },
     naturalApproach: { en: 'Natural approach', fr: 'Approche naturelle' },
+    // Guardrails "100% réel"
+    realMeetingsGuarantee: { en: '100% Real Meetings Guarantee', fr: 'Garantie Rencontres 100% Réelles' },
+    notADatingApp: { en: 'This is NOT a dating app', fr: 'Ce n\'est PAS une app de rencontre amoureuse' },
+    forRealConnections: { en: 'For real, in-person connections', fr: 'Pour des connexions réelles, en personne' },
+    noVirtualChat: { en: 'No endless virtual chatting', fr: 'Pas de tchat virtuel sans fin' },
+    meetInPerson: { en: 'Meet the person, then chat', fr: 'Rencontre la personne, ensuite discute' },
+    safetyFirst: { en: 'Your safety is our priority', fr: 'Ta sécurité est notre priorité' },
+    safetyDesc: { en: 'Ghost mode, blocking, GPS fuzzing, panic button', fr: 'Mode fantôme, blocage, floutage GPS, bouton d\'urgence' },
   },
 
   // Profile
