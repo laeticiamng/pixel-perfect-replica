@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { useEvents, Event } from '@/hooks/useEvents';
 import { useLocationStore } from '@/stores/locationStore';
@@ -324,6 +325,8 @@ export default function EventsPage() {
           )}
         </div>
       </div>
+
+      <BottomNav />
     </PageLayout>
   );
 }

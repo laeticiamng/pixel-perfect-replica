@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight } from 'lucide-react';
+import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
@@ -47,6 +47,7 @@ export default function ProfilePage() {
       title: t('profile.account'),
       items: [
         { icon: <User className="h-5 w-5" />, label: t('profile.editProfile'), route: '/profile/edit' },
+        { icon: <Crown className="h-5 w-5" />, label: t('profile.goPremium'), route: '/premium' },
         { icon: <Bell className="h-5 w-5" />, label: t('settings.notifications'), onClick: handleNotifications },
         { icon: <Lock className="h-5 w-5" />, label: t('settings.privacy'), onClick: handlePrivacy },
       ],
