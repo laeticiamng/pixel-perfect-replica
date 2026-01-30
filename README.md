@@ -15,7 +15,8 @@
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud |
 | **Dernière mise à jour** | 30 janvier 2026 |
-| **Audit** | ✅ Complet (voir AUDIT_COMPLETE_FINAL.md) |
+| **Audit Sécurité** | ✅ Complet (voir SECURITY_ARCHITECTURE.md) |
+| **Tests** | 164 tests (100% passent) |
 
 ---
 
@@ -339,70 +340,83 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 
 ---
 
-## 🔒 Sécurité & Conformité
+## 🔒 Sécurité & Architecture
 
-### Secrets & Variables d'environnement
-> ⚠️ **IMPORTANT** : Le fichier `.env` visible dans l'interface Lovable est **géré automatiquement par la plateforme** et n'est **JAMAIS poussé sur GitHub**. Les secrets (clés API, tokens) sont stockés de manière sécurisée via Lovable Cloud Secrets.
+> 📖 **Documentation technique complète** : voir `SECURITY_ARCHITECTURE.md`
 
+### Authentification
 | Aspect | Implémentation |
 |--------|----------------|
-| **Secrets** | Stockés dans Lovable Cloud Secrets (jamais en clair) |
-| **Clés Supabase** | Auto-injectées par Lovable Cloud |
-| **API Keys tierces** | Gérées via Edge Functions (serveur uniquement) |
-| **Variables publiques** | Préfixées `VITE_` pour le build client |
+| **Méthode** | Email/password avec confirmation |
+| **Sessions** | JWT avec refresh automatique |
+| **Hashage** | bcrypt (géré par le backend) |
 
 ### Row Level Security (RLS)
 - ✅ **RLS activé sur TOUTES les tables** (deny by default)
 - ✅ Policies testées : User A ne voit pas les données de User B
 - ✅ Utilisateurs non-authentifiés : accès refusé systématique
 - ✅ Fonctions SQL avec `SECURITY DEFINER` + `search_path = 'public'`
+- ✅ **Scores de fiabilité protégés** : modification uniquement via RPC système
 
 ### Anti-stalking & Anti-harcèlement
 | Protection | Description |
 |------------|-------------|
 | **Blocage utilisateur** | Table `user_blocks` bidirectionnelle |
-| **Rate limiting** | Max 5 signalements/heure (`check_report_rate_limit`) |
-| **Ghost mode** | Invisible sur le radar (paramètre utilisateur) |
+| **Rate limiting** | 5 signalements/h, 10 révélations/jour |
+| **Shadow ban** | Isolation automatique des comptes toxiques |
+| **Ghost mode** | Invisible sur le radar |
 | **Floutage GPS** | Précision ~100m (`fuzz_coordinates`) |
 | **Purge données** | Locations supprimées après 30 jours |
 | **Bouton d'urgence** | Contacts d'urgence préenregistrés |
 
+### Edge Functions (Sécurité)
+- ✅ Validation JWT obligatoire
+- ✅ Extraction `user_id` depuis token (non-falsifiable)
+- ✅ Rate limiting côté serveur
+- ✅ Secrets via Lovable Cloud (jamais exposés)
+
+### Conformité RGPD
+| Droit | Implémentation |
+|-------|----------------|
+| **Accès** | Export complet `/data-export` |
+| **Rectification** | Édition `/profile/edit` |
+| **Effacement** | Suppression compte (cascade) |
+| **Portabilité** | Export JSON |
+
 ### Observabilité
 | Composant | Implémentation |
 |-----------|----------------|
-| **Logs Edge Functions** | Console.log structurés + timestamps |
-| **Analytics events** | Table `analytics_events` avec catégories |
-| **Error tracking** | Action `get-error-rate` dans system function |
-| **Alertes admin** | Table `alert_logs` + préférences admin |
-| **Page Diagnostics** | `/diagnostics` (version, auth, latence API) |
+| **Logs** | Console structurés + timestamps |
+| **Analytics** | Table `analytics_events` |
+| **Alertes admin** | `alert_logs` + préférences |
+| **Diagnostics** | Page `/diagnostics` |
 
 ---
 
 ## 🔍 Audit & Qualité (v1.3)
 
-L'audit complet de la plateforme a été réalisé le 30 janvier 2026. Voir `AUDIT_COMPLETE_FINAL.md` pour les détails.
+Audit de sécurité complet réalisé le **30 janvier 2026**.
 
 ### Corrections appliquées
-- ✅ OfflineBanner avec forwardRef (résout warning React)
-- ✅ BottomNav ajouté sur toutes les pages
-- ✅ Lien Premium ajouté dans le profil
-- ✅ Traductions complètes FR/EN
-- ✅ Mode démo pour la carte (affiche des utilisateurs de test)
+- ✅ RLS renforcé sur `user_reliability` (scores non-modifiables)
+- ✅ OfflineBanner avec forwardRef
+- ✅ BottomNav sur toutes les pages
+- ✅ Traductions FR/EN complètes
+- ✅ Mode démo pour la carte
 
 ### Métriques
 | Métrique | Valeur |
 |----------|--------|
 | Tests | 164 (100% passent) |
-| Tables Supabase | 25+ |
+| Tables | 25+ |
 | Fonctions SQL | 40+ |
 | Edge Functions | 8 |
-| RLS Policies | Actives sur toutes les tables |
-| Linter Supabase | 1 warning mineur (extension in public) |
+| RLS Policies | ✅ Toutes les tables |
 
 ---
 
 <p align="center">
   <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 1.3.0 • PWA • Mode Binôme • Notifications Push • Audit Complet</em><br><br>
+  <em>Version 1.3.0 • PWA • Mode Binôme • Sécurité Auditée</em><br><br>
   Fait avec ❤️ in France par EmotionsCare Sasu
 </p>
