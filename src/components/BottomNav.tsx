@@ -22,7 +22,7 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
     const location = useLocation();
 
     return (
-      <nav ref={ref} className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
+      <nav ref={ref} className="fixed bottom-0 left-0 right-0 z-50 safe-bottom lg:hidden">
         <div className="mx-auto max-w-[500px]">
           <div className="mx-4 mb-4 glass-strong rounded-2xl shadow-medium">
             <div className="flex items-center justify-around py-3.5 px-6">
