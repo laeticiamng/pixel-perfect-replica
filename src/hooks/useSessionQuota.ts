@@ -8,6 +8,8 @@ interface SessionUsage {
   isPremium: boolean;
   canCreate: boolean;
   remaining: number;
+  purchasedSessions: number;
+  freeRemaining: number;
 }
 
 export function useSessionQuota() {
@@ -31,21 +33,30 @@ export function useSessionQuota() {
       if (data && data.length > 0) {
         const row = data[0];
         const limit = row.sessions_limit === -1 ? Infinity : row.sessions_limit;
+        const purchased = row.purchased_sessions || 0;
+        const freeLimit = 2; // Free tier: 2 sessions/month
+        const freeUsed = Math.min(row.sessions_created, freeLimit);
+        const freeRemaining = Math.max(0, freeLimit - freeUsed);
+        
         setUsage({
           sessionsCreated: row.sessions_created,
           sessionsLimit: row.sessions_limit,
           isPremium: row.is_premium,
           canCreate: row.can_create,
           remaining: row.sessions_limit === -1 ? Infinity : Math.max(0, row.sessions_limit - row.sessions_created),
+          purchasedSessions: purchased,
+          freeRemaining,
         });
       } else {
         // Default for new users
         setUsage({
           sessionsCreated: 0,
-          sessionsLimit: 4,
+          sessionsLimit: 2,
           isPremium: false,
           canCreate: true,
-          remaining: 4,
+          remaining: 2,
+          purchasedSessions: 0,
+          freeRemaining: 2,
         });
       }
     } catch (err) {
@@ -53,10 +64,12 @@ export function useSessionQuota() {
       // Fallback
       setUsage({
         sessionsCreated: 0,
-        sessionsLimit: 4,
+        sessionsLimit: 2,
         isPremium: false,
         canCreate: true,
-        remaining: 4,
+        remaining: 2,
+        purchasedSessions: 0,
+        freeRemaining: 2,
       });
     } finally {
       setIsLoading(false);
@@ -72,7 +85,9 @@ export function useSessionQuota() {
     isLoading, 
     refetch: fetchUsage,
     canCreate: usage?.canCreate ?? true,
-    remaining: usage?.remaining ?? 4,
+    remaining: usage?.remaining ?? 2,
     isPremium: usage?.isPremium ?? false,
+    purchasedSessions: usage?.purchasedSessions ?? 0,
+    freeRemaining: usage?.freeRemaining ?? 2,
   };
 }

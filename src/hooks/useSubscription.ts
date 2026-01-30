@@ -6,8 +6,10 @@ interface SubscriptionStatus {
   subscribed: boolean;
   productId: string | null;
   subscriptionEnd: string | null;
-  plan: 'monthly' | 'yearly' | null;
+  plan: 'easyplus' | 'monthly' | 'yearly' | null;
 }
+
+export type PricingPlan = 'free' | 'session' | 'easyplus';
 
 export function useSubscription() {
   const { user, refreshProfile } = useAuth();
@@ -46,6 +48,49 @@ export function useSubscription() {
     }
   }, [user, refreshProfile]);
 
+  // Easy+ subscription checkout (9.90€/mois)
+  const createEasyPlusCheckout = async () => {
+    if (!user) throw new Error('Utilisateur non connecté');
+
+    const { data, error: fnError } = await supabase.functions.invoke('create-checkout', {
+      body: { plan: 'easyplus' },
+    });
+
+    if (fnError) throw fnError;
+    if (data.error) throw new Error(data.error);
+
+    return data.url;
+  };
+
+  // Session purchase (0.99€/session)
+  const purchaseSession = async (quantity: number = 1) => {
+    if (!user) throw new Error('Utilisateur non connecté');
+
+    const { data, error: fnError } = await supabase.functions.invoke('purchase-session', {
+      body: { quantity },
+    });
+
+    if (fnError) throw fnError;
+    if (data.error) throw new Error(data.error);
+
+    return data.url;
+  };
+
+  // Confirm session purchase after Stripe redirect
+  const confirmSessionPurchase = async (sessionsPurchased: number) => {
+    if (!user) throw new Error('Utilisateur non connecté');
+
+    const { data, error: fnError } = await supabase.functions.invoke('confirm-session-purchase', {
+      body: { sessions_purchased: sessionsPurchased },
+    });
+
+    if (fnError) throw fnError;
+    if (data.error) throw new Error(data.error);
+
+    return data;
+  };
+
+  // Legacy checkout for existing yearly plan
   const createCheckout = async (plan: 'monthly' | 'yearly') => {
     if (!user) throw new Error('Utilisateur non connecté');
 
@@ -88,6 +133,9 @@ export function useSubscription() {
     error,
     checkSubscription,
     createCheckout,
+    createEasyPlusCheckout,
+    purchaseSession,
+    confirmSessionPurchase,
     openCustomerPortal,
     isSubscribed: status?.subscribed ?? false,
   };

@@ -494,6 +494,7 @@ export type Database = {
           first_name: string
           id: string
           is_premium: boolean
+          purchased_sessions: number | null
           university: string | null
           updated_at: string
         }
@@ -506,6 +507,7 @@ export type Database = {
           first_name: string
           id: string
           is_premium?: boolean
+          purchased_sessions?: number | null
           university?: string | null
           updated_at?: string
         }
@@ -518,6 +520,7 @@ export type Database = {
           first_name?: string
           id?: string
           is_premium?: boolean
+          purchased_sessions?: number | null
           university?: string | null
           updated_at?: string
         }
@@ -1109,11 +1112,19 @@ export type Database = {
         Args: { p_hours: number; p_user_id: string }
         Returns: undefined
       }
+      add_purchased_sessions: {
+        Args: { p_count?: number; p_user_id: string }
+        Returns: number
+      }
       can_create_session: { Args: { p_user_id: string }; Returns: boolean }
       check_report_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       cleanup_rate_limit_logs: { Args: never; Returns: undefined }
+      consume_purchased_session: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
       fuzz_coordinates: { Args: { lat: number; lon: number }; Returns: Json }
       get_available_sessions: {
         Args: {
@@ -1153,6 +1164,7 @@ export type Database = {
         Returns: {
           can_create: boolean
           is_premium: boolean
+          purchased_sessions: number
           sessions_created: number
           sessions_limit: number
         }[]
