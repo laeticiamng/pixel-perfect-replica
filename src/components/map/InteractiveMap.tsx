@@ -61,13 +61,16 @@ export function InteractiveMap({
   const [mapStyle, setMapStyle] = useState<MapStyleType>('streets');
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
   const [selectedUser, setSelectedUser] = useState<NearbyUser | null>(null);
-  const [viewState, setViewState] = useState({
+  const [currentZoom, setCurrentZoom] = useState(15);
+  
+  // Initial view state - used for uncontrolled mode which works better across browsers
+  const initialViewState = useMemo(() => ({
     latitude: position?.latitude || 48.8566,
     longitude: position?.longitude || 2.3522,
     zoom: 15,
     bearing: 0,
     pitch: 45,
-  });
+  }), []);
 
   // Convert nearby users to cluster points
   const clusterPoints: ClusterPoint[] = useMemo(() => 
@@ -89,7 +92,7 @@ export function InteractiveMap({
   const { clusters, getClusterExpansionZoom } = useClustering({
     points: clusterPoints,
     bounds,
-    zoom: viewState.zoom,
+    zoom: currentZoom,
   });
 
   // Fetch Mapbox token
@@ -145,19 +148,11 @@ export function InteractiveMap({
     }
   }, [position]);
 
-  // Initial centering
-  useEffect(() => {
-    if (position) {
-      setViewState(prev => ({
-        ...prev,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      }));
-    }
-  }, [position]);
+  // No need for initial centering effect since we use initialViewState
 
   const handleMove = useCallback((evt: ViewStateChangeEvent) => {
-    setViewState(evt.viewState);
+    // Track current zoom for clustering
+    setCurrentZoom(evt.viewState.zoom);
     
     // Update bounds for clustering
     const map = mapRef.current?.getMap();
@@ -274,11 +269,7 @@ export function InteractiveMap({
     >
       <Map
         ref={mapRef}
-        latitude={viewState.latitude}
-        longitude={viewState.longitude}
-        zoom={viewState.zoom}
-        bearing={viewState.bearing}
-        pitch={viewState.pitch}
+        initialViewState={initialViewState}
         onMove={handleMove}
         onLoad={handleLoad}
         mapboxAccessToken={mapboxToken}
