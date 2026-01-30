@@ -35,16 +35,26 @@ serve(async (req) => {
     logStep("Function started");
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader?.startsWith("Bearer ")) {
+      throw new Error("No authorization header provided");
+    }
     
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
+    // Use getClaims for JWT validation without server round-trip
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
     
-    logStep("User authenticated", { userId: user.id, email: user.email });
+    if (claimsError || !claimsData?.claims?.sub) {
+      logStep("JWT validation failed", { error: claimsError?.message });
+      throw new Error("Session expirée, veuillez vous reconnecter");
+    }
+    
+    const userId = claimsData.claims.sub;
+    const userEmail = claimsData.claims.email as string;
+    
+    if (!userEmail) throw new Error("Email not available in token");
+    
+    logStep("User authenticated via claims", { userId, email: userEmail });
 
     const { plan } = await req.json();
     // Use Easy+ price by default, fall back to legacy for existing plans
@@ -62,7 +72,7 @@ serve(async (req) => {
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     
     // Check if customer already exists
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
     let customerId: string | undefined;
     
     if (customers.data.length > 0) {
@@ -89,7 +99,7 @@ serve(async (req) => {
     
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+      customer_email: customerId ? undefined : userEmail,
       line_items: [
         {
           price: priceId,
@@ -100,7 +110,7 @@ serve(async (req) => {
       success_url: `${origin}/premium?success=true`,
       cancel_url: `${origin}/premium?canceled=true`,
       metadata: {
-        user_id: user.id,
+        user_id: userId,
       },
     });
 

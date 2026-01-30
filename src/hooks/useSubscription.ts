@@ -52,6 +52,13 @@ export function useSubscription() {
   const createEasyPlusCheckout = async () => {
     if (!user) throw new Error('Utilisateur non connecté');
 
+    // Refresh session to ensure valid token
+    const { error: refreshError } = await supabase.auth.refreshSession();
+    if (refreshError) {
+      console.error('[useSubscription] Session refresh failed:', refreshError);
+      throw new Error('Session expirée, veuillez vous reconnecter');
+    }
+
     const { data, error: fnError } = await supabase.functions.invoke('create-checkout', {
       body: { plan: 'easyplus' },
     });
