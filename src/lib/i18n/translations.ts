@@ -177,6 +177,7 @@ export const translations = {
   profile: {
     title: { en: 'Profile', fr: 'Profil' },
     editProfile: { en: 'Edit profile', fr: 'Modifier le profil' },
+    goPremium: { en: 'Go Premium', fr: 'Passer Premium' },
     memberSince: { en: 'Member since', fr: 'Membre depuis' },
     interactions: { en: 'Interactions', fr: 'Interactions' },
     hoursActive: { en: 'Hours active', fr: 'Heures actives' },
