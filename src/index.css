@@ -612,3 +612,36 @@
 .safe-top {
   padding-top: max(env(safe-area-inset-top), 1rem);
 }
+
+/* Mapbox map interaction fixes for Chrome */
+.mapboxgl-map {
+  cursor: grab !important;
+  touch-action: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+.mapboxgl-map:active {
+  cursor: grabbing !important;
+}
+
+.mapboxgl-canvas {
+  cursor: inherit !important;
+  outline: none !important;
+}
+
+.mapboxgl-canvas-container {
+  cursor: inherit !important;
+}
+
+/* Ensure map controls don't interfere with dragging */
+.mapboxgl-ctrl-group {
+  pointer-events: auto;
+}
+
+[data-map-container] {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
