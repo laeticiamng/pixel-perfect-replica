@@ -7,6 +7,7 @@ export { default as MapPage } from './MapPage';
 export { default as ProximityRevealPage } from './ProximityRevealPage';
 export { default as AdminDashboardPage } from './AdminDashboardPage';
 export { default as PremiumPage } from './PremiumPage';
+export { default as ChangelogPage } from './ChangelogPage';
 export { default as NotFound } from './NotFound';
 
 // Auth pages
