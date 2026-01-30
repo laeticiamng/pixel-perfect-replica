@@ -226,6 +226,42 @@ export type Database = {
         }
         Relationships: []
       }
+      cron_job_executions: {
+        Row: {
+          completed_at: string | null
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          job_name: string
+          result: Json | null
+          started_at: string
+          status: string
+          triggered_by: string
+        }
+        Insert: {
+          completed_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          job_name: string
+          result?: Json | null
+          started_at?: string
+          status?: string
+          triggered_by?: string
+        }
+        Update: {
+          completed_at?: string | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          job_name?: string
+          result?: Json | null
+          started_at?: string
+          status?: string
+          triggered_by?: string
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           created_at: string
@@ -1152,6 +1188,7 @@ export type Database = {
       cleanup_expired_shadow_bans: { Args: never; Returns: undefined }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_analytics_events: { Args: never; Returns: undefined }
+      cleanup_old_cron_executions: { Args: never; Returns: undefined }
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       cleanup_old_reveal_logs: { Args: never; Returns: undefined }
       cleanup_rate_limit_logs: { Args: never; Returns: undefined }
