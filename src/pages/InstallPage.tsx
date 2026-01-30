@@ -86,12 +86,12 @@ export default function InstallPage() {
           </div>
           
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            {isInstalled ? 'App installée ! 🎉' : 'Installe EASY'}
+            {isInstalled ? 'App installée ! 🎉' : 'Installez EASY'}
           </h2>
           <p className="text-muted-foreground">
             {isInstalled 
-              ? 'Tu peux maintenant utiliser EASY depuis ton écran d\'accueil'
-              : 'Accède à EASY directement depuis ton écran d\'accueil'
+              ? 'Vous pouvez maintenant utiliser EASY depuis votre écran d\'accueil'
+              : 'Accédez à EASY directement depuis votre écran d\'accueil'
             }
           </p>
         </div>
@@ -102,7 +102,7 @@ export default function InstallPage() {
               <Check className="h-8 w-8 text-signal-green" />
             </div>
             <p className="text-foreground font-medium mb-4">
-              EASY est installé sur ton appareil !
+              EASY est installé sur votre appareil !
             </p>
             <Button
               onClick={() => navigate('/map')}
@@ -139,7 +139,7 @@ export default function InstallPage() {
                       <span className="text-coral font-bold">1</span>
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">Appuie sur le bouton Partager</p>
+                      <p className="font-medium text-foreground">Appuyez sur le bouton Partager</p>
                       <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                         <Share className="h-4 w-4" /> Icône carré avec flèche vers le haut
                       </p>
@@ -151,7 +151,7 @@ export default function InstallPage() {
                       <span className="text-coral font-bold">2</span>
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">Sélectionne "Sur l'écran d'accueil"</p>
+                      <p className="font-medium text-foreground">Sélectionnez "Sur l'écran d'accueil"</p>
                       <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                         <Plus className="h-4 w-4" /> Faire défiler si nécessaire
                       </p>
@@ -163,9 +163,9 @@ export default function InstallPage() {
                       <span className="text-coral font-bold">3</span>
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">Appuie sur "Ajouter"</p>
+                      <p className="font-medium text-foreground">Appuyez sur "Ajouter"</p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        EASY apparaîtra sur ton écran d'accueil
+                        EASY apparaîtra sur votre écran d'accueil
                       </p>
                     </div>
                   </div>
@@ -187,7 +187,7 @@ export default function InstallPage() {
                       <span className="text-coral font-bold">1</span>
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">Ouvre le menu Chrome</p>
+                      <p className="font-medium text-foreground">Ouvrez le menu Chrome</p>
                       <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                         <MoreVertical className="h-4 w-4" /> Les 3 points en haut à droite
                       </p>
@@ -199,7 +199,7 @@ export default function InstallPage() {
                       <span className="text-coral font-bold">2</span>
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">Sélectionne "Installer l'application"</p>
+                      <p className="font-medium text-foreground">Sélectionnez "Installer l'application"</p>
                       <p className="text-sm text-muted-foreground mt-1">
                         Ou "Ajouter à l'écran d'accueil"
                       </p>
@@ -211,9 +211,9 @@ export default function InstallPage() {
                       <span className="text-coral font-bold">3</span>
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">Confirme l'installation</p>
+                      <p className="font-medium text-foreground">Confirmez l'installation</p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        L'app sera installée sur ton téléphone
+                        L'app sera installée sur votre téléphone
                       </p>
                     </div>
                   </div>
@@ -226,7 +226,7 @@ export default function InstallPage() {
               <div className="glass rounded-xl p-6 text-center">
                 <Smartphone className="h-12 w-12 text-coral mx-auto mb-4" />
                 <p className="text-foreground font-medium mb-2">
-                  Ouvre cette page sur ton téléphone
+                  Ouvrez cette page sur votre téléphone
                 </p>
                 <p className="text-sm text-muted-foreground">
                   L'installation n'est disponible que sur mobile
