@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -556,7 +556,9 @@ export default function LandingPage() {
           </div>
           
           <div className="text-center text-xs text-muted-foreground">
-            <p className="font-medium">EASY v1.3.0 • PWA</p>
+            <Link to="/changelog" className="font-medium hover:text-coral transition-colors">
+              EASY v1.3.0 • PWA
+            </Link>
             <p>{t('landing.madeWith')}</p>
           </div>
         </div>

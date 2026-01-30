@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -177,9 +177,12 @@ export default function ProfilePage() {
         </button>
 
         {/* Version */}
-        <p className="text-center text-xs text-muted-foreground py-4 font-medium">
-          EASY v1.3.0
-        </p>
+        <Link 
+          to="/changelog" 
+          className="block text-center text-xs text-muted-foreground py-4 font-medium hover:text-coral transition-colors"
+        >
+          EASY v1.3.0 — Changelog
+        </Link>
       </div>
 
       {/* Swipe Indicator */}

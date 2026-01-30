@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, ChevronRight, ExternalLink, Mail, MessageCircle, FileText, Shield, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
@@ -222,7 +222,9 @@ export default function HelpPage() {
             visible: { opacity: 1, transition: { duration: 0.4, delay: 0.2 } },
           }}
         >
-          <p className="text-xs text-muted-foreground">EASY v1.3.0</p>
+          <Link to="/changelog" className="text-xs text-muted-foreground hover:text-coral transition-colors">
+            EASY v1.3.0
+          </Link>
           <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>
       </motion.div>
