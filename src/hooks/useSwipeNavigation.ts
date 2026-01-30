@@ -61,6 +61,12 @@ export function useSwipeNavigation(config: SwipeConfig = {}) {
   const handleTouchStart = useCallback((e: TouchEvent) => {
     if (!allowedRoutes.includes(location.pathname)) return;
     
+    // Don't intercept touches on interactive map elements
+    const target = e.target as HTMLElement;
+    if (target.closest('.mapboxgl-map') || target.closest('[data-map-container]')) {
+      return;
+    }
+    
     const touch = e.touches[0];
     touchState.current = {
       startX: touch.clientX,
