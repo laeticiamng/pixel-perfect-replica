@@ -62,6 +62,8 @@ export function InteractiveMap({
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
   const [selectedUser, setSelectedUser] = useState<NearbyUser | null>(null);
   const [currentZoom, setCurrentZoom] = useState(15);
+  const [mapReady, setMapReady] = useState(false);
+  const hasInitialCentered = useRef(false);
   
   // Initial view state - used for uncontrolled mode which works better across browsers
   const initialViewState = useMemo(() => ({
@@ -137,18 +139,36 @@ export function InteractiveMap({
     fetchToken();
   }, []);
 
-  // Update map center when position changes
+  // Center on user position when map is ready and position is available
   useEffect(() => {
-    if (position && mapRef.current) {
+    if (position && mapReady && mapRef.current && !hasInitialCentered.current) {
+      hasInitialCentered.current = true;
       mapRef.current.flyTo({
         center: [position.longitude, position.latitude],
-        duration: 1000,
+        zoom: 15,
+        duration: 1500,
         essential: true,
       });
     }
-  }, [position]);
+  }, [position, mapReady]);
 
-  // No need for initial centering effect since we use initialViewState
+  // Update map center when position changes significantly (more than 100m)
+  const lastCenteredPosition = useRef<{ lat: number; lng: number } | null>(null);
+  useEffect(() => {
+    if (position && mapReady && mapRef.current && hasInitialCentered.current) {
+      const lastPos = lastCenteredPosition.current;
+      if (!lastPos || 
+          Math.abs(position.latitude - lastPos.lat) > 0.001 || 
+          Math.abs(position.longitude - lastPos.lng) > 0.001) {
+        lastCenteredPosition.current = { lat: position.latitude, lng: position.longitude };
+        mapRef.current.flyTo({
+          center: [position.longitude, position.latitude],
+          duration: 1000,
+          essential: true,
+        });
+      }
+    }
+  }, [position, mapReady]);
 
   const handleMove = useCallback((evt: ViewStateChangeEvent) => {
     // Track current zoom for clustering
@@ -191,6 +211,9 @@ export function InteractiveMap({
           mapBounds.getNorth(),
         ]);
       }
+      
+      // Mark map as ready for centering
+      setMapReady(true);
     }
   }, []);
 
