@@ -1,12 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, UserX, Unlock, Loader2 } from 'lucide-react';
+import { ArrowLeft, UserX, Unlock, Loader2, Ban } from 'lucide-react';
 import { useUserBlocks } from '@/hooks/useUserBlocks';
 import { supabase } from '@/integrations/supabase/client';
 import { PageLayout } from '@/components/PageLayout';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Button } from '@/components/ui/button';
-import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { useTranslation } from '@/lib/i18n';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import toast from 'react-hot-toast';
 
 interface BlockedUserInfo {
@@ -21,10 +31,12 @@ interface BlockedUserInfo {
 
 export default function BlockedUsersPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { blocks, fetchBlocks, unblockUser, isLoading } = useUserBlocks();
   const [blockedUsers, setBlockedUsers] = useState<BlockedUserInfo[]>([]);
   const [loadingProfiles, setLoadingProfiles] = useState(true);
   const [userToUnblock, setUserToUnblock] = useState<string | null>(null);
+  const [isUnblocking, setIsUnblocking] = useState(false);
 
   useEffect(() => {
     fetchBlocks();
@@ -57,12 +69,17 @@ export default function BlockedUsersPage() {
     loadProfiles();
   }, [blocks]);
 
-  const handleUnblock = async (blockedId: string) => {
-    const { error } = await unblockUser(blockedId);
+  const handleUnblock = async () => {
+    if (!userToUnblock) return;
+    
+    setIsUnblocking(true);
+    const { error } = await unblockUser(userToUnblock);
+    setIsUnblocking(false);
+    
     if (error) {
-      toast.error('Erreur lors du déblocage');
+      toast.error(t('binome.unblockError') || 'Erreur lors du déblocage');
     } else {
-      toast.success('Utilisateur débloqué');
+      toast.success(t('binome.unblockUser') || 'Utilisateur débloqué');
     }
     setUserToUnblock(null);
   };
@@ -86,7 +103,7 @@ export default function BlockedUsersPage() {
           >
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
-          <h1 className="text-xl font-bold text-foreground">Utilisateurs bloqués</h1>
+          <h1 className="text-xl font-bold text-foreground">{t('settings.blockedUsers') || 'Utilisateurs bloqués'}</h1>
         </div>
         <Breadcrumbs className="px-2" />
       </header>
@@ -102,7 +119,7 @@ export default function BlockedUsersPage() {
               <UserX className="h-10 w-10 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              Aucun utilisateur bloqué
+              {t('settings.noBlockedUsers') || 'Aucun utilisateur bloqué'}
             </h3>
             <p className="text-muted-foreground text-center max-w-xs">
               Les utilisateurs que tu bloques n'apparaîtront plus sur ta carte et ne pourront pas te voir.
@@ -110,6 +127,9 @@ export default function BlockedUsersPage() {
           </div>
         ) : (
           <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {blockedUsers.length} {blockedUsers.length === 1 ? 'utilisateur bloqué' : 'utilisateurs bloqués'}
+            </p>
             {blockedUsers.map((user) => (
               <div
                 key={user.id}
@@ -142,7 +162,7 @@ export default function BlockedUsersPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setUserToUnblock(user.blocked_id)}
-                  disabled={isLoading}
+                  disabled={isLoading || isUnblocking}
                   className="gap-2"
                 >
                   <Unlock className="h-4 w-4" />
@@ -154,15 +174,24 @@ export default function BlockedUsersPage() {
         )}
       </div>
 
-      {userToUnblock && (
-        <ConfirmDialog
-          trigger={<span className="hidden" />}
-          title="Débloquer cet utilisateur ?"
-          description="Cette personne pourra à nouveau te voir sur la carte et interagir avec toi."
-          confirmText="Débloquer"
-          onConfirm={() => handleUnblock(userToUnblock)}
-        />
-      )}
+      {/* Unblock Confirmation Dialog */}
+      <AlertDialog open={!!userToUnblock} onOpenChange={(open) => !open && setUserToUnblock(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Débloquer cet utilisateur ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette personne pourra à nouveau te voir sur la carte et interagir avec toi.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isUnblocking}>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleUnblock} disabled={isUnblocking}>
+              {isUnblocking ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Débloquer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </PageLayout>
   );
 }
