@@ -405,6 +405,7 @@ export default function MapPage() {
             distance: u.distance,
             avatar_url: undefined,
             rating: u.rating,
+            activeSince: u.activeSince,
           }))}
           isActive={isActive}
           myActivity={myActivity}
@@ -412,6 +413,8 @@ export default function MapPage() {
           visibilityDistance={settings.visibility_distance}
           className="w-full h-full min-h-[350px] sm:min-h-[400px]"
           userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
+          activityFilters={activityFilters}
+          onActivityFilterToggle={toggleActivityFilter}
         />
       </div>
 
