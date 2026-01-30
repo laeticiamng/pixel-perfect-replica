@@ -10,6 +10,7 @@ import { SessionCard } from '@/components/binome/SessionCard';
 import { SessionFilters } from '@/components/binome/SessionFilters';
 import { CreateSessionForm } from '@/components/binome/CreateSessionForm';
 import { SessionQuotaBadge } from '@/components/binome/SessionQuotaBadge';
+import { BinomeOnboarding, BinomeDescriptionCard } from '@/components/binome/BinomeOnboarding';
 import { useBinomeSessions, type SessionFilters as Filters, type CreateSessionInput } from '@/hooks/useBinomeSessions';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useAuth } from '@/contexts/AuthContext';
@@ -118,6 +119,9 @@ export default function BinomePage() {
 
   return (
     <PageLayout className="pb-24 safe-bottom">
+      {/* Onboarding dialog for first-time users */}
+      <BinomeOnboarding onComplete={() => {}} />
+
       {/* Header */}
       <header className="safe-top px-6 py-4">
         <div className="flex items-center justify-between mb-4">
@@ -155,6 +159,11 @@ export default function BinomePage() {
             className="mt-2"
           />
         )}
+
+        {/* Description Card */}
+        <div className="mt-4">
+          <BinomeDescriptionCard />
+        </div>
       </header>
 
       <div className="px-6">
