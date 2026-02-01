@@ -40,3 +40,4 @@ export { useSessionQuota } from './useSessionQuota';
 export { useSubscription } from './useSubscription';
 export { useKeyboardShortcuts, useShortcutHint } from './useKeyboardShortcuts';
 export { useClustering } from './useClustering';
+export { useAIAssistant } from './useAIAssistant';
