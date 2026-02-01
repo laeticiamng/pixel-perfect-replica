@@ -10,7 +10,7 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.4.0 |
+| **Version** | 1.4.1 |
 | **Statut** | ✅ Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud |
