@@ -10,13 +10,15 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.3.0 |
+| **Version** | 1.4.0 |
 | **Statut** | ✅ Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud |
-| **Dernière mise à jour** | 30 janvier 2026 |
-| **Audit Sécurité** | ✅ Complet (voir SECURITY_ARCHITECTURE.md) |
+| **Dernière mise à jour** | 1er février 2026 |
+| **Audit Sécurité** | ✅ Complet v1.4 (voir AUDIT_FINAL_V1.4.md) |
 | **Tests** | 164 tests (100% passent) |
+| **RLS Policies** | ✅ 24/24 tables sécurisées |
+| **Linter Sécurité** | ✅ 0 erreur |
 
 ---
 
@@ -441,11 +443,17 @@ Nouvelle fonctionnalité permettant de planifier des sessions d'étude ou de tra
 
 ---
 
-## 🔍 Audit & Qualité (v1.3)
+## 🔍 Audit & Qualité (v1.4)
 
-Audit de sécurité complet réalisé le **30 janvier 2026**.
+Audit de sécurité complet réalisé le **1er février 2026**.
 
-### Corrections appliquées
+### Corrections v1.4
+- ✅ Cache intelligent pour les recommandations IA (30 min localStorage)
+- ✅ AnimatedMarker avec forwardRef (compatibilité React)
+- ✅ Composants settings standardisés (SettingsSection)
+- ✅ PageHeader réutilisable sur toutes les pages
+
+### Corrections v1.3
 - ✅ RLS renforcé sur `user_reliability` (scores non-modifiables)
 - ✅ OfflineBanner avec forwardRef
 - ✅ BottomNav sur toutes les pages
@@ -455,16 +463,29 @@ Audit de sécurité complet réalisé le **30 janvier 2026**.
 ### Métriques
 | Métrique | Valeur |
 |----------|--------|
-| Tests | 164 (100% passent) |
-| Tables | 25+ |
+| Tests automatisés | 164 (100% passent) |
+| Tables PostgreSQL | 25+ |
 | Fonctions SQL | 40+ |
-| Edge Functions | 8 |
-| RLS Policies | ✅ Toutes les tables |
+| Edge Functions | 8 déployées |
+| RLS Policies | ✅ 24/24 tables |
+| Linter sécurité | ✅ 0 erreur |
+
+### Architecture validée
+| Module | Status | Tests |
+|--------|--------|-------|
+| Auth | ✅ Complet | ✅ |
+| Map/Radar | ✅ Complet | ✅ |
+| Binôme | ✅ Complet | ✅ |
+| Events | ✅ Complet | ✅ |
+| Profile | ✅ Complet | ✅ |
+| Settings | ✅ Complet | ✅ |
+| Premium | ✅ Complet | ✅ |
+| Admin | ✅ Complet | ✅ |
 
 ---
 
 <p align="center">
   <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 1.3.0 • PWA • Mode Binôme • Sécurité Auditée</em><br><br>
+  <em>Version 1.4.0 • PWA • Mode Binôme • Sécurité Auditée</em><br><br>
   Fait avec ❤️ in France par EmotionsCare Sasu
 </p>
