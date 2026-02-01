@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Camera, Loader2, X } from 'lucide-react';
+import { Camera, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
 import { firstNameSchema, universitySchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
+import { PageHeader } from '@/components/shared';
 import { FavoriteActivitiesSelector } from '@/components/social';
 import { ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
@@ -211,18 +212,7 @@ export default function EditProfilePage() {
 
   return (
     <PageLayout className="pb-8 safe-bottom">
-      {/* Header */}
-      <header className="safe-top px-6 py-4 flex items-center justify-between">
-        <button
-          onClick={() => navigate('/profile')}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
-          aria-label="Retour au profil"
-        >
-          <ArrowLeft className="h-6 w-6 text-foreground" />
-        </button>
-        <h1 className="text-xl font-bold text-foreground">Modifier le profil</h1>
-        <div className="w-10" /> {/* Spacer */}
-      </header>
+      <PageHeader title="Modifier le profil" backTo="/profile" />
 
       <div className="px-6 py-8 animate-fade-in">
         {/* Avatar */}

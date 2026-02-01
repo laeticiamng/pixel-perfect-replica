@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Star } from 'lucide-react';
+import { Loader2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAppFeedback } from '@/hooks/useAppFeedback';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
 import { PageLayout } from '@/components/PageLayout';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { PageHeader } from '@/components/shared';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -48,20 +48,7 @@ export default function FeedbackPage() {
 
   return (
     <PageLayout className="pb-8 safe-bottom">
-      {/* Header */}
-      <header className="safe-top px-6 py-4">
-        <div className="flex items-center gap-4 mb-2">
-          <button
-            onClick={() => navigate('/profile')}
-            className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
-            aria-label="Retour au profil"
-          >
-            <ArrowLeft className="h-6 w-6 text-foreground" />
-          </button>
-          <h1 className="text-xl font-bold text-foreground">Donner un feedback</h1>
-        </div>
-        <Breadcrumbs className="px-2" />
-      </header>
+      <PageHeader title="Donner un feedback" backTo="/profile" />
 
       <div className="px-6 py-8 animate-slide-up">
         <div className="text-center mb-8">
