@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Sparkles, RefreshCw, Clock, MapPin, ChevronRight, Lightbulb } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Sparkles, RefreshCw, Clock, ChevronRight, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,6 +15,50 @@ interface SessionRecommendation {
   tip: string;
 }
 
+interface CachedRecommendations {
+  recommendations: SessionRecommendation[];
+  motivation: string;
+  timestamp: number;
+  userId: string;
+}
+
+const CACHE_KEY = 'ai_recommendations_cache';
+const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
+
+function getCachedRecommendations(userId: string): CachedRecommendations | null {
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (!cached) return null;
+    
+    const data: CachedRecommendations = JSON.parse(cached);
+    const isExpired = Date.now() - data.timestamp > CACHE_DURATION_MS;
+    const isSameUser = data.userId === userId;
+    
+    if (isExpired || !isSameUser) {
+      localStorage.removeItem(CACHE_KEY);
+      return null;
+    }
+    
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedRecommendations(userId: string, recommendations: SessionRecommendation[], motivation: string) {
+  try {
+    const data: CachedRecommendations = {
+      recommendations,
+      motivation,
+      timestamp: Date.now(),
+      userId,
+    };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 export function AIRecommendationsWidget() {
   const { user, profile } = useAuth();
   const { getSessionRecommendations, isLoading, error } = useAIAssistant();
@@ -22,26 +66,45 @@ export function AIRecommendationsWidget() {
   const [motivation, setMotivation] = useState<string>('');
   const [expanded, setExpanded] = useState(false);
   const [hasFetched, setHasFetched] = useState(false);
+  const [isFromCache, setIsFromCache] = useState(false);
 
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = useCallback(async (forceRefresh = false) => {
     if (!user) return;
     
+    // Check cache first (unless forcing refresh)
+    if (!forceRefresh) {
+      const cached = getCachedRecommendations(user.id);
+      if (cached) {
+        setRecommendations(cached.recommendations);
+        setMotivation(cached.motivation);
+        setHasFetched(true);
+        setIsFromCache(true);
+        return;
+      }
+    }
+    
+    setIsFromCache(false);
     const result = await getSessionRecommendations(user.id, {
       favorite_activities: (profile as any)?.favorite_activities || [],
     });
     
     if (result) {
-      setRecommendations(result.recommendations || []);
-      setMotivation(result.motivation || '');
+      const recs = result.recommendations || [];
+      const mot = result.motivation || '';
+      setRecommendations(recs);
+      setMotivation(mot);
       setHasFetched(true);
+      
+      // Cache the results
+      setCachedRecommendations(user.id, recs, mot);
     }
-  };
+  }, [user, profile, getSessionRecommendations]);
 
   useEffect(() => {
     if (user && !hasFetched && !isLoading) {
       fetchRecommendations();
     }
-  }, [user, hasFetched]);
+  }, [user, hasFetched, isLoading, fetchRecommendations]);
 
   const getActivityData = (activityId: ActivityType) => {
     return ACTIVITIES.find(a => a.id === activityId);
@@ -173,17 +236,24 @@ export function AIRecommendationsWidget() {
                 </div>
               )}
 
-              {/* Refresh button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={fetchRecommendations}
-                disabled={isLoading}
-                className="w-full"
-              >
-                <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
-                Rafraîchir les suggestions
-              </Button>
+              {/* Cache indicator + Refresh button */}
+              <div className="flex items-center justify-between gap-2">
+                {isFromCache && (
+                  <span className="text-xs text-muted-foreground">
+                    ⚡ Depuis le cache
+                  </span>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => fetchRecommendations(true)}
+                  disabled={isLoading}
+                  className={cn("flex-1", !isFromCache && "w-full")}
+                >
+                  <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
+                  {isFromCache ? 'Actualiser' : 'Rafraîchir les suggestions'}
+                </Button>
+              </div>
             </div>
           </motion.div>
         )}
