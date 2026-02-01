@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react';
+import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useReports } from '@/hooks/useReports';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
 import { PageLayout } from '@/components/PageLayout';
+import { PageHeader } from '@/components/shared';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -67,17 +68,7 @@ export default function ReportPage() {
 
   return (
     <PageLayout className="pb-8 safe-bottom">
-      {/* Header */}
-      <header className="safe-top px-6 py-4 flex items-center gap-4">
-        <button
-          onClick={() => navigate('/profile')}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
-          aria-label="Retour au profil"
-        >
-          <ArrowLeft className="h-6 w-6 text-foreground" />
-        </button>
-        <h1 className="text-xl font-bold text-foreground">Signaler un problème</h1>
-      </header>
+      <PageHeader title="Signaler un problème" backTo="/profile" />
 
       <div className="px-6 py-8">
         {/* Info Banner */}

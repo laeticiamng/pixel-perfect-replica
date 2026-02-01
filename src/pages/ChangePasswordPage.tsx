@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Eye, EyeOff, Lock, Check } from 'lucide-react';
+import { Loader2, Eye, EyeOff, Lock, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
 import { supabase } from '@/integrations/supabase/client';
 import { passwordSchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
-import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { PageHeader } from '@/components/shared';
 import toast from 'react-hot-toast';
 
 export default function ChangePasswordPage() {
@@ -95,20 +95,7 @@ export default function ChangePasswordPage() {
 
   return (
     <PageLayout className="pb-8 safe-bottom">
-      {/* Header */}
-      <header className="safe-top px-6 py-4">
-        <div className="flex items-center gap-4 mb-2">
-          <button
-            onClick={() => navigate('/settings')}
-            className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
-            aria-label="Retour aux paramètres"
-          >
-            <ArrowLeft className="h-6 w-6 text-foreground" />
-          </button>
-          <h1 className="text-xl font-bold text-foreground">Changer le mot de passe</h1>
-        </div>
-        <Breadcrumbs className="px-2" />
-      </header>
+      <PageHeader title="Changer le mot de passe" backTo="/settings" />
 
       <form onSubmit={handleSubmit} className="px-6 py-8 space-y-6 animate-slide-up">
         {/* Security Info */}
