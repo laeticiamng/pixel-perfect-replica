@@ -11,3 +11,4 @@ export { CommunityStats } from './CommunityStats';
 export { NewBadge, useShowNewBadge } from './NewBadge';
 export { ConfettiCelebration, celebrationBurst } from './ConfettiCelebration';
 export { TestimonialForm } from './TestimonialForm';
+export { AIRecommendationsWidget } from './AIRecommendationsWidget';

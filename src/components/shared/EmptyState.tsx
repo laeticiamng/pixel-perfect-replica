@@ -1,32 +1,44 @@
-import { ReactNode } from 'react';
+import { ReactNode, ComponentType } from 'react';
+import { LucideProps } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
-  icon: ReactNode;
+  icon: ComponentType<LucideProps> | ReactNode;
   title: string;
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
   actionVariant?: 'default' | 'outline' | 'ghost';
+  variant?: 'default' | 'outline';
   className?: string;
   children?: ReactNode;
 }
 
 export function EmptyState({
-  icon,
+  icon: Icon,
   title,
   description,
   actionLabel,
   onAction,
-  actionVariant = 'outline',
+  actionVariant = 'default',
+  variant = 'default',
   className,
   children,
 }: EmptyStateProps) {
+  // Check if icon is a Lucide component (function) or a ReactNode
+  const isLucideIcon = typeof Icon === 'function';
+  
   return (
     <div className={cn("text-center py-12", className)}>
-      <div className="text-muted-foreground mx-auto mb-4 [&>svg]:h-12 [&>svg]:w-12 [&>svg]:mx-auto">
-        {icon}
+      <div className="text-muted-foreground mx-auto mb-4">
+        {isLucideIcon ? (
+          <Icon className="h-12 w-12 mx-auto" />
+        ) : (
+          <div className="[&>svg]:h-12 [&>svg]:w-12 [&>svg]:mx-auto">
+            {Icon}
+          </div>
+        )}
       </div>
       <h3 className="font-medium text-foreground mb-2">{title}</h3>
       {description && (
@@ -36,9 +48,9 @@ export function EmptyState({
       )}
       {actionLabel && onAction && (
         <Button 
-          variant={actionVariant}
+          variant={variant === 'outline' ? 'outline' : actionVariant}
           onClick={onAction}
-          className={actionVariant === 'default' ? 'bg-coral hover:bg-coral/90' : ''}
+          className={actionVariant === 'default' && variant !== 'outline' ? 'bg-coral hover:bg-coral/90' : ''}
         >
           {actionLabel}
         </Button>

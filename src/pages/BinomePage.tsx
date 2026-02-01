@@ -1,16 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Calendar, Users, Clock, AlertCircle } from 'lucide-react';
+import { Plus, Calendar, Users, Clock } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
+import { PageHeader, EmptyState } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
-import { SessionCard } from '@/components/binome/SessionCard';
-import { SessionFilters } from '@/components/binome/SessionFilters';
-import { CreateSessionForm } from '@/components/binome/CreateSessionForm';
-import { SessionQuotaBadge } from '@/components/binome/SessionQuotaBadge';
-import { BinomeOnboarding, BinomeDescriptionCard, WhyEasySection, WhyEasyCondensed, TestimonialsSection, CommunityStats } from '@/components/binome';
+import { 
+  SessionCard, SessionFilters, CreateSessionForm, SessionQuotaBadge,
+  BinomeOnboarding, BinomeDescriptionCard, WhyEasySection, WhyEasyCondensed, 
+  TestimonialsSection, CommunityStats, AIRecommendationsWidget 
+} from '@/components/binome';
 import { useBinomeSessions, type SessionFilters as Filters, type CreateSessionInput } from '@/hooks/useBinomeSessions';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useAuth } from '@/contexts/AuthContext';
@@ -100,18 +101,13 @@ export default function BinomePage() {
   if (!user) {
     return (
       <PageLayout className="pb-24 safe-bottom">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-foreground mb-2">Connexion requise</h2>
-            <p className="text-muted-foreground mb-4">
-              Connecte-toi pour réserver un binôme
-            </p>
-            <Button onClick={() => navigate('/')} className="bg-coral hover:bg-coral/90">
-              Se connecter
-            </Button>
-          </div>
-        </div>
+        <EmptyState
+          icon={Users}
+          title="Connexion requise"
+          description="Connecte-toi pour réserver un binôme"
+          actionLabel="Se connecter"
+          onAction={() => navigate('/')}
+        />
         <BottomNav />
       </PageLayout>
     );
@@ -123,21 +119,11 @@ export default function BinomePage() {
       <BinomeOnboarding onComplete={() => {}} />
 
       {/* Header */}
-      <header className="safe-top px-6 py-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate('/map')}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
-              aria-label="Retour"
-            >
-              <ArrowLeft className="h-6 w-6 text-foreground" />
-            </button>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">Réserver un Binôme</h1>
-              <p className="text-sm text-muted-foreground">Planifie tes sessions</p>
-            </div>
-          </div>
+      <PageHeader
+        title="Réserver un Binôme"
+        subtitle="Planifie tes sessions"
+        backTo="/map"
+        action={
           <Button 
             size="sm" 
             className="bg-coral hover:bg-coral/90 whitespace-nowrap"
@@ -148,8 +134,10 @@ export default function BinomePage() {
             <span className="hidden sm:inline">Créer</span>
             {!isPremium && remaining < 5 && <span className="ml-1">({remaining})</span>}
           </Button>
-        </div>
+        }
+      />
         
+      <div className="px-6 space-y-4">
         {/* Quota Badge */}
         {usage && (
           <SessionQuotaBadge
@@ -157,22 +145,18 @@ export default function BinomePage() {
             sessionsLimit={usage.sessionsLimit}
             isPremium={usage.isPremium}
             canCreate={usage.canCreate}
-            className="mt-2"
           />
         )}
 
+        {/* AI Recommendations */}
+        <AIRecommendationsWidget />
+
         {/* Description Card */}
-        <div className="mt-4">
-          <BinomeDescriptionCard />
-        </div>
+        <BinomeDescriptionCard />
 
         {/* Community Stats */}
-        <div className="mt-4">
-          <CommunityStats />
-        </div>
-      </header>
+        <CommunityStats />
 
-      <div className="px-6">
         <Tabs defaultValue="search" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="search" className="flex items-center gap-1">
@@ -213,32 +197,23 @@ export default function BinomePage() {
               </div>
             ) : filters.city ? (
               <div className="space-y-6">
-                <div className="text-center py-8">
-                  <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="font-medium text-foreground mb-2">Aucun créneau trouvé</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Aucune session disponible à {filters.city} pour le moment
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowCreateSheet(true)}
-                  >
-                    Créer un créneau
-                  </Button>
-                </div>
-                {/* Condensed Why EASY for empty state */}
+                <EmptyState
+                  icon={Calendar}
+                  title="Aucun créneau trouvé"
+                  description={`Aucune session disponible à ${filters.city} pour le moment`}
+                  actionLabel="Créer un créneau"
+                  onAction={() => setShowCreateSheet(true)}
+                  variant="outline"
+                />
                 <WhyEasyCondensed />
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="text-center py-8">
-                  <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="font-medium text-foreground mb-2">Recherche une ville</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Entre le nom d'une ville pour voir les créneaux disponibles
-                  </p>
-                </div>
-                {/* Condensed Why EASY for initial state */}
+                <EmptyState
+                  icon={Calendar}
+                  title="Recherche une ville"
+                  description="Entre le nom d'une ville pour voir les créneaux disponibles"
+                />
                 <WhyEasyCondensed />
               </div>
             )}
@@ -259,20 +234,13 @@ export default function BinomePage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <Clock className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-medium text-foreground mb-2">Aucun créneau créé</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Tu n'as pas encore créé de créneau
-                </p>
-                <Button 
-                  className="bg-coral hover:bg-coral/90"
-                  onClick={() => setShowCreateSheet(true)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Créer mon premier créneau
-                </Button>
-              </div>
+              <EmptyState
+                icon={Clock}
+                title="Aucun créneau créé"
+                description="Tu n'as pas encore créé de créneau"
+                actionLabel="Créer mon premier créneau"
+                onAction={() => setShowCreateSheet(true)}
+              />
             )}
           </TabsContent>
 
@@ -291,13 +259,11 @@ export default function BinomePage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="font-medium text-foreground mb-2">Aucune session rejointe</h3>
-                <p className="text-sm text-muted-foreground">
-                  Explore les créneaux disponibles et rejoins une session !
-                </p>
-              </div>
+              <EmptyState
+                icon={Users}
+                title="Aucune session rejointe"
+                description="Explore les créneaux disponibles et rejoins une session !"
+              />
             )}
           </TabsContent>
         </Tabs>

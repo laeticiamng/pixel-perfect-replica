@@ -9,6 +9,7 @@ interface PageHeaderProps {
   backTo?: string;
   showBack?: boolean;
   rightContent?: ReactNode;
+  action?: ReactNode;
   className?: string;
 }
 
@@ -18,6 +19,7 @@ export function PageHeader({
   backTo,
   showBack = true,
   rightContent,
+  action,
   className,
 }: PageHeaderProps) {
   const navigate = useNavigate();
@@ -42,9 +44,10 @@ export function PageHeader({
             )}
           </div>
         </div>
-        {rightContent && (
+        {(rightContent || action) && (
           <div className="flex items-center gap-2">
             {rightContent}
+            {action}
           </div>
         )}
       </div>
