@@ -207,7 +207,11 @@ function AnimatedRoutes() {
               <EventDetailPage />
             </ProtectedRoute>
           } />
-          <Route path="/events/:eventId/checkin" element={<EventCheckinPage />} />
+          <Route path="/events/:eventId/checkin" element={
+            <ProtectedRoute>
+              <EventCheckinPage />
+            </ProtectedRoute>
+          } />
           <Route path="/binome" element={
             <ProtectedRoute>
               <BinomePage />

@@ -104,6 +104,8 @@ export function useActiveSignal() {
           latitude: position.latitude,
           longitude: position.longitude,
           accuracy: position.accuracy || null,
+          started_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
           location_description: locationDescription || null,
         })
         .select()

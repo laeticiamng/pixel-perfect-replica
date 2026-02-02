@@ -29,7 +29,11 @@ export default function ProfilePage() {
   const { t } = useTranslation();
 
   const handleLogout = async () => {
-    await signOut();
+    const { error } = await signOut();
+    if (error) {
+      toast.error(t('errors.generic'));
+      return;
+    }
     toast.success(t('profile.seeYouSoon'));
     navigate('/');
   };
