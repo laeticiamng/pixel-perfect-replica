@@ -58,18 +58,24 @@ export default function OnboardingPage() {
   // Watch for position changes to update locationStatus
   useEffect(() => {
     if (position && locationStatus === 'loading') {
-      setLocationStatus('success');
-      toast.success(t('onboarding.locationObtained') + ' !');
+      // If position was set alongside an error, it means demo fallback was used
+      if (locationError) {
+        setLocationStatus('error');
+        toast.error(locationError);
+      } else {
+        setLocationStatus('success');
+        toast.success(t('onboarding.locationObtained') + ' !');
+      }
     }
-  }, [position, locationStatus, t]);
+  }, [position, locationStatus, locationError, t]);
 
-  // Watch for location errors
+  // Watch for location errors (when no fallback position was set)
   useEffect(() => {
-    if (locationError && locationStatus === 'loading') {
+    if (locationError && !position && locationStatus === 'loading') {
       setLocationStatus('error');
       toast.error(locationError);
     }
-  }, [locationError, locationStatus]);
+  }, [locationError, position, locationStatus]);
 
   // If already authenticated, go directly to map
   useEffect(() => {

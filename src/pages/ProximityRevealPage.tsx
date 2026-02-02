@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
 import { IcebreakerCard, VerificationBadges, MiniChat } from '@/components/social';
@@ -33,21 +33,26 @@ export default function ProximityRevealPage() {
   const [interactionId, setInteractionId] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [revealBlocked, setRevealBlocked] = useState(false);
-  
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+
   const user = nearbyUsers.find(u => u.id === userId);
 
   // Check rate limit and fetch profile on mount
   useEffect(() => {
     const initReveal = async () => {
-      if (!userId) return;
-      
+      if (!userId) {
+        setIsLoadingProfile(false);
+        return;
+      }
+
       // Check and log reveal (rate limit)
       const { allowed } = await checkAndLogReveal(userId);
       if (!allowed) {
         setRevealBlocked(true);
+        setIsLoadingProfile(false);
         return;
       }
-      
+
       // Fetch extended profile data
       const { data } = await supabase
         .rpc('get_safe_public_profile', { profile_id: userId });
@@ -58,6 +63,7 @@ export default function ProximityRevealPage() {
           university: data[0].university,
         });
       }
+      setIsLoadingProfile(false);
     };
     initReveal();
   }, [userId, checkAndLogReveal]);
@@ -82,6 +88,17 @@ export default function ProximityRevealPage() {
     }
   }, [user, generateIcebreaker, revealBlocked]);
 
+  if (isLoadingProfile || isCheckingReveal) {
+    return (
+      <PageLayout className="flex items-center justify-center px-6">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-coral" />
+          <p className="text-muted-foreground">Chargement du profil...</p>
+        </div>
+      </PageLayout>
+    );
+  }
+
   if (!user) {
     return (
       <PageLayout className="flex items-center justify-center px-6">
@@ -91,7 +108,7 @@ export default function ProximityRevealPage() {
           <p className="text-muted-foreground text-sm mb-6">
             Cette personne a peut-être désactivé son signal
           </p>
-          <Button 
+          <Button
             onClick={() => navigate('/map')}
             className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
           >

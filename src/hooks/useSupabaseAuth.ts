@@ -226,8 +226,8 @@ export function useSupabaseAuth() {
   };
 
   const refreshProfile = async () => {
-    if (!authState.user) return;
-    
+    if (!authState.user) return { error: 'No user' };
+
     const data = await fetchProfile(authState.user.id);
     if (data) {
       setAuthState(prev => ({
@@ -235,7 +235,9 @@ export function useSupabaseAuth() {
         profile: data.profile,
         stats: data.stats,
       }));
+      return { error: null };
     }
+    return { error: 'Failed to refresh profile' };
   };
 
   return {
