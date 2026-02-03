@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Users, Activity, TrendingUp, Calendar,
   BarChart3, Clock, Eye, MousePointer, Shield, Bell,
-  RefreshCw, AlertTriangle, CheckCircle, Loader2, Timer
+  RefreshCw, AlertTriangle, CheckCircle, Loader2, Timer, Search
 } from 'lucide-react';
 import { AlertPreferencesCard } from '@/components/admin/AlertPreferencesCard';
 import { AlertHistoryCard } from '@/components/admin/AlertHistoryCard';
 import { CronJobsMonitor } from '@/components/admin/CronJobsMonitor';
+import { EventScraperCard } from '@/components/admin/EventScraperCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSystemStats } from '@/hooks/useSystemStats';
@@ -410,10 +411,14 @@ export default function AdminDashboardPage() {
 
         {/* Tabs for different analytics views */}
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 bg-muted/30">
+          <TabsList className="grid w-full grid-cols-6 bg-muted/30">
             <TabsTrigger value="overview">Vue</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="pages">Pages</TabsTrigger>
+            <TabsTrigger value="scraper" className="flex items-center gap-1">
+              <Search className="h-3 w-3" />
+              Scraper
+            </TabsTrigger>
             <TabsTrigger value="cron" className="flex items-center gap-1">
               <Timer className="h-3 w-3" />
               Cron
@@ -638,6 +643,10 @@ export default function AdminDashboardPage() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="scraper" className="space-y-6 mt-6">
+            <EventScraperCard />
           </TabsContent>
 
           <TabsContent value="cron" className="space-y-6 mt-6">

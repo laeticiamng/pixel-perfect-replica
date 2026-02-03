@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CalendarIcon, MapPin, Clock, Users, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SmartLocationRecommender } from '@/components/social';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -83,6 +84,14 @@ export function CreateSessionForm({ onSubmit, onCancel, isLoading }: CreateSessi
       note: '',
     },
   });
+
+  // Watch city value for AI recommendations
+  const cityValue = useWatch({ control: form.control, name: 'city' });
+
+  // Handle location selection from AI recommendations
+  const handleSelectLocation = (name: string, address: string) => {
+    form.setValue('location_name', name);
+  };
 
   const handleSubmit = async (data: FormData) => {
     if (!selectedActivity) {
@@ -267,6 +276,15 @@ export function CreateSessionForm({ onSubmit, onCancel, isLoading }: CreateSessi
             </FormItem>
           )}
         />
+
+        {/* AI Location Recommendations */}
+        {selectedActivity && cityValue && cityValue.length >= 2 && (
+          <SmartLocationRecommender
+            activity={selectedActivity}
+            city={cityValue}
+            onSelectLocation={handleSelectLocation}
+          />
+        )}
 
         {/* Participants */}
         <FormField
