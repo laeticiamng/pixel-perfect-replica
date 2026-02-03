@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePushNotifications } from './usePushNotifications';
 
 const MAX_MESSAGES = 10;
 
@@ -14,6 +15,7 @@ interface Message {
 
 export function useMessages(interactionId: string | null) {
   const { user } = useAuth();
+  const { showNotification, isSubscribed } = usePushNotifications();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +94,14 @@ export function useMessages(interactionId: string | null) {
             if (prev.some(m => m.id === newMessage.id)) return prev;
             return [...prev, newMessage];
           });
+          
+          // Show push notification for messages from other users
+          if (newMessage.sender_id !== user?.id && isSubscribed) {
+            showNotification('Nouveau message 💬', {
+              body: newMessage.content.slice(0, 100),
+              tag: `message-${newMessage.id}`,
+            });
+          }
         }
       )
       .subscribe();
