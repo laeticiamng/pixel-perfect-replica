@@ -46,7 +46,7 @@ function FloatingOrbs() {
 }
 
 // Signal demo animation
-function SignalDemo() {
+const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props, ref) {
   const { t } = useTranslation();
   const [activeSignal, setActiveSignal] = useState(0);
   
@@ -64,7 +64,7 @@ function SignalDemo() {
   ];
   
   return (
-    <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 mx-auto">
+    <div ref={ref} className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 mx-auto">
       {/* Radar circles */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="absolute w-full h-full rounded-full border border-coral/20" />
@@ -127,7 +127,8 @@ function SignalDemo() {
       </div>
     </div>
   );
-}
+});
+SignalDemo.displayName = 'SignalDemo';
 
 // Feature card with hover effect
 function FeatureCard({ icon, title, description, delay = 0 }: { icon: string; title: string; description: string; delay?: number }) {
