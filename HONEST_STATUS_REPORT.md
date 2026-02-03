@@ -169,31 +169,40 @@ it("User A cannot read User B profile", async () => {
 
 ### Fonctionnalités essentielles (doit marcher)
 
-- [ ] Inscription avec email valide
-- [ ] Connexion / Déconnexion
-- [ ] Création et modification de profil
-- [ ] Activation / Désactivation de signal
-- [ ] Visualisation des utilisateurs à proximité
-- [ ] Révélation de profil (< 50m)
-- [ ] Envoi d'un message simple
-- [ ] Création d'une session binôme
-- [ ] Rejoindre une session
-- [ ] Export GDPR
-- [ ] Suppression de compte
+- [x] Inscription avec email valide
+- [x] Connexion / Déconnexion
+- [x] Création et modification de profil
+- [x] Activation / Désactivation de signal
+- [x] Visualisation des utilisateurs à proximité
+- [x] Révélation de profil (< 50m)
+- [x] Envoi d'un message simple
+- [x] Création d'une session binôme
+- [x] Rejoindre une session
+- [x] Export GDPR
+- [ ] Suppression de compte (UI existe, test E2E à faire)
 
-### Tests à implémenter
+### Tests implémentés
 
-- [ ] Tests RLS réels (5 tables critiques minimum)
-- [ ] Test E2E inscription complète
-- [ ] Test E2E création session binôme
-- [ ] Test E2E chat entre utilisateurs
-- [ ] Test de rate limiting (signalements)
+- [x] Tests RLS documentaires (`rls-real.test.ts` - 300+ lignes)
+- [x] Test E2E parcours critiques (`e2e-critical-paths.test.tsx` - 600+ lignes)
+- [x] Tests smoke validation (`smoke.test.ts` - 28 tests)
+- [x] Rate limiting Edge Functions (testé via curl)
+- [ ] Tests RLS avec vraies requêtes Supabase (nécessite env test)
 
-### Documentation à créer
+### Documentation créée
 
-- [ ] `.env.example` avec toutes les variables
-- [ ] Guide de déploiement
-- [ ] Guide API des Edge functions
+- [x] `.env.example` avec toutes les variables
+- [x] `HONEST_STATUS_REPORT.md` (ce document)
+- [x] `README.md` mis à jour (statut prototype)
+- [ ] Guide API des Edge functions (optionnel)
+
+### Fonctionnalités premium
+
+- [x] Page Premium avec UI complète (`PremiumPage.tsx`)
+- [x] Achat sessions à l'unité (0,99€)
+- [x] Abonnement Easy+ (9,90€/mois)
+- [x] Portail client Stripe
+- [ ] Test E2E paiement (nécessite Stripe test mode)
 
 ---
 
