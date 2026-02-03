@@ -10,7 +10,7 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.6.0 |
+| **Version** | 1.6.1 |
 | **Statut** | 🟢 Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud |
@@ -263,6 +263,6 @@ Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 
 <p align="center">
   <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 1.6.0 • Production Ready • PWA</em><br><br>
+  <em>Version 1.6.1 • Production Ready • PWA</em><br><br>
   Fait avec ❤️ in France par EmotionsCare Sasu
 </p>
