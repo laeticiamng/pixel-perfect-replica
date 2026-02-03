@@ -172,34 +172,22 @@ export function useActiveSignal() {
     return { data, error };
   };
 
-  // Fetch nearby users with signals (respects ghost mode, sorted by age proximity)
+  // Fetch nearby users with signals (respects ghost mode)
   const fetchNearbyUsers = useCallback(async (maxDistance: number = 200) => {
     if (!user || !position) return;
 
     try {
-      // Try to use the new sorted function first (cast to bypass types until they sync)
-      const { data: sortedSignals, error: rpcError } = await (supabase as any)
-        .rpc('get_nearby_signals_sorted', {
+      // Use get_nearby_signals RPC (secure, respects ghost mode)
+      const { data: signals, error: rpcError } = await supabase
+        .rpc('get_nearby_signals', {
           user_lat: position.latitude,
           user_lon: position.longitude,
           max_distance_meters: maxDistance
         });
 
-      if (!rpcError && sortedSignals && sortedSignals.length > 0) {
-        // Use RPC results (already filtered and sorted by age proximity)
-        const nearby: NearbyUser[] = sortedSignals.map((signal: {
-          id: string;
-          user_id: string;
-          first_name: string;
-          avatar_url: string | null;
-          activity: ActivityType;
-          signal_type: SignalType;
-          latitude: number;
-          longitude: number;
-          started_at: string;
-          rating: number;
-          age_diff: number;
-        }) => {
+      if (!rpcError && signals && signals.length > 0) {
+        // Map RPC results to NearbyUser format
+        const nearby: NearbyUser[] = signals.map((signal) => {
           const distance = calculateDistance(
             position.latitude,
             position.longitude,
@@ -220,7 +208,8 @@ export function useActiveSignal() {
               longitude: Number(signal.longitude),
             },
           };
-        }).filter((u: NearbyUser) => u.distance <= maxDistance);
+        }).filter((u: NearbyUser) => u.distance <= maxDistance)
+          .sort((a, b) => a.distance - b.distance);
 
         if (nearby.length > 0) {
           setIsDemoMode(false);
@@ -229,8 +218,8 @@ export function useActiveSignal() {
         }
       }
 
-      // Fallback to original logic if RPC fails or returns nothing
-      const { data: signals, error } = await supabase
+      // Fallback if RPC returns nothing - use direct query
+      const { data: fallbackSignals, error: fallbackError } = await supabase
         .from('active_signals')
         .select(`
           id,
@@ -244,12 +233,12 @@ export function useActiveSignal() {
         .neq('user_id', user.id)
         .gte('expires_at', new Date().toISOString());
 
-      if (error) {
-        console.error('Error fetching nearby signals:', error);
+      if (fallbackError) {
+        console.error('Error fetching nearby signals:', fallbackError);
         return;
       }
 
-      if (!signals || signals.length === 0) {
+      if (!fallbackSignals || fallbackSignals.length === 0) {
         setNearbyUsers([]);
         // Show demo users if no real users
         const mockUsers = generateMockUsers(position.latitude, position.longitude, 8);
@@ -263,7 +252,7 @@ export function useActiveSignal() {
       }
 
       // Get profiles for these users using secure function (avoids exposing emails)
-      const userIds = signals.map(s => s.user_id);
+      const userIds = fallbackSignals.map(s => s.user_id);
       
       // Get user settings to filter out ghost mode users
       const { data: settingsData } = await supabase
@@ -291,7 +280,7 @@ export function useActiveSignal() {
         .in('user_id', visibleUserIds);
 
       // Calculate distances and combine data (only for visible users)
-      const nearby: NearbyUser[] = signals
+      const nearbyFiltered: NearbyUser[] = fallbackSignals
         .filter(signal => visibleUserIds.includes(signal.user_id))
         .map(signal => {
           const profile = profiles?.find(p => p.id === signal.user_id);
@@ -322,7 +311,7 @@ export function useActiveSignal() {
         .sort((a, b) => a.distance - b.distance);
 
       // If no real users found, add demo users so the map isn't empty
-      if (nearby.length === 0) {
+      if (nearbyFiltered.length === 0) {
         const mockUsers = generateMockUsers(position.latitude, position.longitude, 8);
         const mocksWithDistance = mockUsers.map(u => ({
           ...u,
@@ -334,7 +323,7 @@ export function useActiveSignal() {
       }
 
       setIsDemoMode(false);
-      setNearbyUsers(nearby);
+      setNearbyUsers(nearbyFiltered);
     } catch (err) {
       console.error('Error in fetchNearbyUsers:', err);
     }
