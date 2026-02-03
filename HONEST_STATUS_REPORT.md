@@ -116,10 +116,11 @@ it("User A cannot read User B profile", async () => {
 
 ### Phase 2 : Finaliser les fonctionnalités de base
 
-#### 2.1 Chat entre utilisateurs
+#### 2.1 Chat entre utilisateurs ✅
 - ✅ MiniChat existe et fonctionne (limité à 10 messages)
-- ⚠️ Pas de notifications de nouveaux messages
-- À faire : Realtime subscriptions pour les messages
+- ✅ SessionChat pour les sessions binôme
+- ✅ **Realtime activé** via Supabase Realtime (tables `messages` et `session_messages` en publication)
+- ⚠️ Pas de notifications push de nouveaux messages
 
 #### 2.2 Radar temps réel ✅
 - ✅ Affichage des signaux fonctionne
@@ -162,6 +163,12 @@ it("User A cannot read User B profile", async () => {
 - ✅ Rate limiting sur `ai-assistant` (20/min)
 - ✅ Rate limiting sur `voice-icebreaker` (5/min + 500 chars max)
 - ✅ Authentification requise pour `voice-icebreaker`
+
+#### 4.4 Cron jobs de maintenance ✅
+- ✅ `daily-cleanup-expired-signals` : 3h00 UTC - nettoyage signaux expirés
+- ✅ `hourly-cleanup-rate-limits` : toutes les heures - nettoyage logs rate limit
+- ✅ `hourly-cleanup-shadow-bans` : toutes les heures - levée bans expirés
+- ✅ `send-session-reminders` : toutes les 5 min - rappels sessions binôme
 
 ---
 

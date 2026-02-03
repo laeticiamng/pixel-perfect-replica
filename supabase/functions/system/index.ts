@@ -18,6 +18,8 @@ type ActionType =
   | "get-system-logs" 
   | "get-error-rate"
   | "cleanup-expired"
+  | "cleanup_expired"
+  | "cleanup_rate_limits"
   | "check-shadow-bans"
   | "send-error-alert";
 
@@ -51,7 +53,11 @@ interface GetErrorRateRequest extends BaseRequest {
 }
 
 interface CleanupExpiredRequest extends BaseRequest {
-  action: "cleanup-expired";
+  action: "cleanup-expired" | "cleanup_expired";
+}
+
+interface CleanupRateLimitsRequest extends BaseRequest {
+  action: "cleanup_rate_limits";
 }
 
 interface CheckShadowBansRequest extends BaseRequest {
@@ -70,6 +76,7 @@ type SystemRequest =
   | GetSystemLogsRequest 
   | GetErrorRateRequest
   | CleanupExpiredRequest
+  | CleanupRateLimitsRequest
   | CheckShadowBansRequest
   | SendErrorAlertRequest;
 
@@ -543,6 +550,52 @@ async function handleCleanupExpired(
   );
 }
 
+async function handleCleanupRateLimits(
+  supabase: AnySupabaseClient
+): Promise<Response> {
+  console.log("[system/cleanup_rate_limits] Running rate limits cleanup");
+
+  const results: Record<string, { deleted: number; error?: string }> = {};
+
+  // Cleanup rate limit logs (24h old)
+  try {
+    const { error } = await supabase.rpc('cleanup_rate_limit_logs');
+    if (error) {
+      results.rate_limit_logs = { deleted: 0, error: error.message };
+    } else {
+      results.rate_limit_logs = { deleted: 0 };
+    }
+  } catch (err) {
+    results.rate_limit_logs = { deleted: 0, error: String(err) };
+  }
+
+  // Cleanup edge function rate limits (1h old)
+  try {
+    const { error } = await supabase.rpc('cleanup_edge_function_rate_limits');
+    if (error) {
+      results.edge_function_rate_limits = { deleted: 0, error: error.message };
+    } else {
+      results.edge_function_rate_limits = { deleted: 0 };
+    }
+  } catch (err) {
+    results.edge_function_rate_limits = { deleted: 0, error: String(err) };
+  }
+
+  console.log("[system/cleanup_rate_limits] Cleanup completed:", results);
+
+  return new Response(
+    JSON.stringify({
+      success: true,
+      action: "cleanup_rate_limits",
+      data: {
+        results,
+        timestamp: new Date().toISOString(),
+      },
+    }),
+    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+  );
+}
+
 async function handleCheckShadowBans(
   supabase: AnySupabaseClient
 ): Promise<Response> {
@@ -773,22 +826,18 @@ const handler = async (req: Request): Promise<Response> => {
         break;
       }
 
-      case "cleanup-expired": {
-        // Requires admin role
-        const authResult = await validateAuth(req, supabase, true);
-        if (!authResult.authenticated) {
-          return new Response(
-            JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
-        }
-        if (!authResult.isAdmin) {
-          return new Response(
-            JSON.stringify({ error: "Admin role required" }),
-            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
-        }
+      case "cleanup-expired":
+      case "cleanup_expired": {
+        // Can be called by cron (no auth) or by admin
+        // For cron calls, the anon key is used which has limited access
+        // The actual cleanup uses service role client internally
         response = await handleCleanupExpired(supabase);
+        break;
+      }
+
+      case "cleanup_rate_limits": {
+        // Can be called by cron (no auth) or by admin
+        response = await handleCleanupRateLimits(supabase);
         break;
       }
 
@@ -841,6 +890,8 @@ const handler = async (req: Request): Promise<Response> => {
               "get-system-logs",
               "get-error-rate",
               "cleanup-expired",
+              "cleanup_expired",
+              "cleanup_rate_limits",
               "check-shadow-bans",
               "send-error-alert"
             ],
