@@ -262,6 +262,33 @@ export type Database = {
         }
         Relationships: []
       }
+      edge_function_rate_limits: {
+        Row: {
+          created_at: string
+          function_name: string
+          id: string
+          request_count: number
+          user_id: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          function_name: string
+          id?: string
+          request_count?: number
+          user_id: string
+          window_start?: string
+        }
+        Update: {
+          created_at?: string
+          function_name?: string
+          id?: string
+          request_count?: number
+          user_id?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       emergency_contacts: {
         Row: {
           created_at: string
@@ -1186,12 +1213,22 @@ export type Database = {
         Returns: number
       }
       can_create_session: { Args: { p_user_id: string }; Returns: boolean }
+      check_edge_function_rate_limit: {
+        Args: {
+          p_function_name: string
+          p_max_requests?: number
+          p_user_id: string
+          p_window_seconds?: number
+        }
+        Returns: boolean
+      }
       check_report_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       check_reveal_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       check_reveal_rate_limit_strict: {
         Args: { p_user_id: string }
         Returns: boolean
       }
+      cleanup_edge_function_rate_limits: { Args: never; Returns: undefined }
       cleanup_expired_shadow_bans: { Args: never; Returns: undefined }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_analytics_events: { Args: never; Returns: undefined }
