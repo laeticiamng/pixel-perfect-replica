@@ -524,6 +524,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          birth_year: number | null
           created_at: string
           email: string
           favorite_activities: string[] | null
@@ -540,6 +541,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          birth_year?: number | null
           created_at?: string
           email: string
           favorite_activities?: string[] | null
@@ -556,6 +558,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          birth_year?: number | null
           created_at?: string
           email?: string
           favorite_activities?: string[] | null
@@ -1185,6 +1188,10 @@ export type Database = {
       can_create_session: { Args: { p_user_id: string }; Returns: boolean }
       check_report_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       check_reveal_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
+      check_reveal_rate_limit_strict: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
       cleanup_expired_shadow_bans: { Args: never; Returns: undefined }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_analytics_events: { Args: never; Returns: undefined }
@@ -1398,6 +1405,10 @@ export type Database = {
       increment_interactions: {
         Args: { p_user_id: string }
         Returns: undefined
+      }
+      is_user_blocked: {
+        Args: { p_target_id: string; p_user_id: string }
+        Returns: boolean
       }
       join_session: { Args: { p_session_id: string }; Returns: boolean }
       leave_session: { Args: { p_session_id: string }; Returns: boolean }
