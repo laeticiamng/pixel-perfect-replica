@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
 const CONSENT_KEY = 'easy-cookie-consent';
 
-export function CookieConsent() {
+export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_props, ref) {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function CookieConsent() {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 z-40 animate-slide-up sm:left-auto sm:right-6 sm:max-w-sm">
+    <div ref={ref} className="fixed bottom-24 left-4 right-4 z-40 animate-slide-up sm:left-auto sm:right-6 sm:max-w-sm">
       <div className="glass-strong rounded-2xl p-4 shadow-xl border border-border bg-card">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
@@ -84,4 +84,6 @@ export function CookieConsent() {
       </div>
     </div>
   );
-}
+});
+
+CookieConsent.displayName = 'CookieConsent';
