@@ -2,27 +2,37 @@ import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Sparkles, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, forwardRef } from 'react';
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
 import { LanguageToggle } from '@/components/LanguageToggle';
 // Animated text that reveals on scroll
-function RevealText({ children, className = '', delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
-      transition={{ duration: 0.8, delay, ease: [0.25, 0.4, 0.25, 1] }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+const RevealText = forwardRef<HTMLDivElement, { children: React.ReactNode; className?: string; delay?: number }>(
+  function RevealText({ children, className = '', delay = 0 }, forwardedRef) {
+    const internalRef = useRef(null);
+    const isInView = useInView(internalRef, { once: true, margin: "-100px" });
+    
+    return (
+      <motion.div
+        ref={(node) => {
+          internalRef.current = node;
+          if (typeof forwardedRef === 'function') {
+            forwardedRef(node);
+          } else if (forwardedRef) {
+            forwardedRef.current = node;
+          }
+        }}
+        initial={{ opacity: 0, y: 60 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
+        transition={{ duration: 0.8, delay, ease: [0.25, 0.4, 0.25, 1] }}
+        className={className}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+);
+RevealText.displayName = 'RevealText';
 
 // Floating orbs background
 function FloatingOrbs() {
