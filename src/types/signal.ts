@@ -65,6 +65,16 @@ export const ACTIVITIES: ActivityOption[] = [
   { id: 'other', label: 'Autre', labelKey: 'activities.other', emoji: '✨' },
 ];
 
+// Activity configuration for UI components
+export const ACTIVITY_CONFIG: Record<ActivityType, { label: string; emoji: string; color: string }> = {
+  studying: { label: 'Réviser', emoji: '📚', color: 'bg-blue-500' },
+  eating: { label: 'Manger', emoji: '🍽️', color: 'bg-orange-500' },
+  working: { label: 'Bosser', emoji: '💻', color: 'bg-purple-500' },
+  talking: { label: 'Parler', emoji: '💬', color: 'bg-green-500' },
+  sport: { label: 'Sport', emoji: '🏃', color: 'bg-red-500' },
+  other: { label: 'Autre', emoji: '✨', color: 'bg-gray-500' },
+};
+
 export const ICEBREAKERS: Record<ActivityType, string[]> = {
   studying: [
     "What exam are you preparing for?",

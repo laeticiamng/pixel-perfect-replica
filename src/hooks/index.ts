@@ -41,3 +41,6 @@ export { useSubscription } from './useSubscription';
 export { useKeyboardShortcuts, useShortcutHint } from './useKeyboardShortcuts';
 export { useClustering } from './useClustering';
 export { useAIAssistant } from './useAIAssistant';
+export { useLocationRecommendations } from './useLocationRecommendations';
+export { useVoiceIcebreaker } from './useVoiceIcebreaker';
+export { useEventScraper } from './useEventScraper';

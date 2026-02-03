@@ -26,3 +26,12 @@ verify_jwt = false
 
 [functions.ai-assistant]
 verify_jwt = false
+
+[functions.scrape-events]
+verify_jwt = false
+
+[functions.recommend-locations]
+verify_jwt = false
+
+[functions.voice-icebreaker]
+verify_jwt = false
