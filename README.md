@@ -98,6 +98,7 @@ Variables optionnelles (pour les fonctionnalités premium) :
 | **Validation des inputs** | Schemas Zod côté client |
 | **Sanitization** | Protection XSS sur tous les champs texte |
 | **Rate limiting** | 5 signalements/h, 10 révélations/h |
+| **Rate limiting Edge Functions** | ai-assistant: 20/min, voice-icebreaker: 5/min |
 | **Floutage GPS** | Coordonnées arrondies à ~100m |
 | **Shadow ban automatique** | 3+ signalements en 24h |
 
@@ -105,7 +106,6 @@ Variables optionnelles (pour les fonctionnalités premium) :
 
 - Audit de sécurité externe non réalisé
 - Tests de pénétration non effectués
-- Rate limiting sur les Edge functions IA à ajouter
 
 ---
 

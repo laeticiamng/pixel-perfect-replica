@@ -38,6 +38,7 @@ Ce document présente un état des lieux honnête du projet EASY, suite à une r
 | **Validation des inputs** | ✅ Client-side | Zod schemas + sanitization |
 | **Rate limiting signalements** | ✅ Actif | 5/heure via SQL |
 | **Rate limiting révélations** | ✅ Actif | 10/heure, 50/jour |
+| **Rate limiting Edge Functions** | ✅ Actif | ai-assistant: 20/min, voice-icebreaker: 5/min |
 | **Floutage coordonnées** | ✅ Implémenté | ~100m précision (3 décimales) |
 | **Shadow ban automatique** | ✅ Actif | 3+ signalements en 24h |
 | **Nettoyage données** | ⚠️ Configuré | Cron jobs à valider manuellement |
@@ -61,14 +62,14 @@ Ce document présente un état des lieux honnête du projet EASY, suite à une r
 ### Tests réels vs affichés
 
 ```
-TESTS ACTUELS (problèmes identifiés) :
-├── smoke.test.ts (28 tests)     → ✅ Tests réels de validation
-├── auth.test.ts                 → ⚠️ Principalement des mocks
-├── rls-permissions.test.ts      → ❌ Aucun test réel (expect(true).toBe(true))
-├── e2e-flows.test.ts            → ⚠️ Tests de structure de données, pas E2E
-├── edge-cases.test.ts           → ✅ Tests de sanitization corrects
-├── hooks.test.ts                → ⚠️ Tests de présence d'API, pas de logique
-└── cache.test.ts                → ✅ Tests réels du cache
+TESTS ACTUELS (améliorés) :
+├── smoke.test.ts (28 tests)           → ✅ Tests réels de validation
+├── e2e-critical-paths.test.tsx        → ✅ Tests E2E avec logique métier (600+ lignes)
+├── rls-real.test.ts                   → ✅ Tests RLS documentaires (300+ lignes)
+├── auth.test.ts                       → ⚠️ Principalement des mocks
+├── edge-cases.test.ts                 → ✅ Tests de sanitization corrects
+├── hooks.test.ts                      → ⚠️ Tests de présence d'API
+└── cache.test.ts                      → ✅ Tests réels du cache
 ```
 
 ### Fonctionnalités premium non finalisées
@@ -105,9 +106,13 @@ it("User A cannot read User B profile", async () => {
 - Création session binôme
 - Export GDPR
 
-#### 1.3 Valider le floutage GPS
-- Vérifier que les coordonnées stockées sont bien arrondies
-- Ajouter un test de non-précision
+#### 1.3 Valider le floutage GPS ✅
+- ✅ Coordonnées arrondies à 3 décimales (~100m) via `fuzz_coordinates`
+- ✅ Test de précision dans `rls-real.test.ts`
+
+#### 1.4 Rate limiting Edge Functions ✅
+- ✅ `ai-assistant` : 20 requêtes/minute
+- ✅ `voice-icebreaker` : 5 requêtes/minute + limite 500 caractères
 
 ### Phase 2 : Finaliser les fonctionnalités de base
 
@@ -116,10 +121,10 @@ it("User A cannot read User B profile", async () => {
 - ⚠️ Pas de notifications de nouveaux messages
 - À faire : Realtime subscriptions pour les messages
 
-#### 2.2 Radar temps réel
+#### 2.2 Radar temps réel ✅
 - ✅ Affichage des signaux fonctionne
-- ⚠️ Pas de mise à jour temps réel automatique
-- À faire : Supabase Realtime pour `active_signals`
+- ✅ Mise à jour temps réel via Supabase Realtime (configuré dans `useActiveSignal.ts`)
+- ✅ Subscription aux changements `active_signals`
 
 #### 2.3 Notifications push
 - ✅ Infrastructure OK (VAPID keys, Edge function)
@@ -153,9 +158,10 @@ it("User A cannot read User B profile", async () => {
 - ✅ Déjà protégé par auth (vérifié dans le code)
 - ⚠️ Le token est renvoyé au client (acceptable pour un token public)
 
-#### 4.3 Rate limiting Edge functions
-- Ajouter du rate limiting sur `ai-assistant`
-- Ajouter du rate limiting sur `voice-icebreaker`
+#### 4.3 Rate limiting Edge functions ✅
+- ✅ Rate limiting sur `ai-assistant` (20/min)
+- ✅ Rate limiting sur `voice-icebreaker` (5/min + 500 chars max)
+- ✅ Authentification requise pour `voice-icebreaker`
 
 ---
 
