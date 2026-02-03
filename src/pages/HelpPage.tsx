@@ -222,8 +222,8 @@ export default function HelpPage() {
             visible: { opacity: 1, transition: { duration: 0.4, delay: 0.2 } },
           }}
         >
-          <Link to="/changelog" className="text-xs text-muted-foreground hover:text-coral transition-colors">
-            EASY v1.3.0
+          <Link to="/changelog" className="text-xs text-muted-foreground hover:text-coral transition-colors font-medium">
+            EASY v1.5.0
           </Link>
           <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>
