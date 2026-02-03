@@ -46,6 +46,7 @@ import {
   // Binome
   BinomePage,
   SessionDetailPage,
+  SessionHistoryPage,
   // Legal
   TermsPage,
   PrivacyPage,
@@ -220,6 +221,11 @@ function AnimatedRoutes() {
           <Route path="/binome/:sessionId" element={
             <ProtectedRoute>
               <SessionDetailPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/binome/history" element={
+            <ProtectedRoute>
+              <SessionHistoryPage />
             </ProtectedRoute>
           } />
           

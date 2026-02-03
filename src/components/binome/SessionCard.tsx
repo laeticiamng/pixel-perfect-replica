@@ -3,13 +3,15 @@ import { fr } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
 import { 
   Book, Laptop, Utensils, Dumbbell, MessageCircle, Star,
-  MapPin, Clock, Users, Calendar, Shield
+  MapPin, Clock, Users, Calendar, Shield, Download
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { exportSessionToCalendar } from '@/lib/calendarExport';
 import type { ScheduledSession, ActivityType } from '@/hooks/useBinomeSessions';
+import toast from 'react-hot-toast';
 
 interface SessionCardProps {
   session: ScheduledSession;
@@ -142,6 +144,21 @@ export function SessionCard({
 
         {/* Actions */}
         <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+          {/* Export to Calendar button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-coral"
+            onClick={(e) => {
+              e.stopPropagation();
+              exportSessionToCalendar(session);
+              toast.success('Session exportée vers le calendrier');
+            }}
+            title="Exporter vers le calendrier"
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+          
           {isOwner ? (
             <Button 
               variant="destructive" 

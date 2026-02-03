@@ -11,6 +11,7 @@ import { firstNameSchema, universitySchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
 import { PageHeader } from '@/components/shared';
 import { FavoriteActivitiesSelector } from '@/components/social';
+import { PublicProfilePreview } from '@/components/profile';
 import { ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -363,6 +364,11 @@ export default function EditProfilePage() {
             />
             <p className="text-xs text-muted-foreground">L'email ne peut pas être modifié</p>
           </div>
+        </div>
+
+        {/* Public Profile Preview */}
+        <div className="mt-6 flex justify-center">
+          <PublicProfilePreview />
         </div>
 
         {/* Save Button */}

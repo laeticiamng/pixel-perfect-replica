@@ -5,6 +5,7 @@ export { MapStyleSelector, MAP_STYLES, type MapStyleType } from './MapStyleSelec
 export { ClusterMarker } from './ClusterMarker';
 export { ActivityFilterBar } from './ActivityFilterBar';
 export { UserPopupCard } from './UserPopupCard';
+export { SignalHistoryPanel } from './SignalHistoryPanel';
 
 // Re-export from new organized folders
 export { ActivityFilter } from '../radar';
