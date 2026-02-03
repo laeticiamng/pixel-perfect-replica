@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Star, Loader2, Sparkles, ExternalLink, ChevronRight } from 'lucide-react';
+import { MapPin, Star, Loader2, Sparkles, ExternalLink, ChevronRight, RefreshCw, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,12 +22,24 @@ export function SmartLocationRecommender({
   className = '',
 }: SmartLocationRecommenderProps) {
   const { t } = useTranslation();
-  const { getRecommendations, recommendations, citations, isLoading, error } = useLocationRecommendations();
+  const { 
+    getRecommendations, 
+    refreshRecommendations,
+    recommendations, 
+    citations, 
+    isLoading, 
+    error,
+    isFromCache 
+  } = useLocationRecommendations();
   const [showRecommendations, setShowRecommendations] = useState(false);
 
   const handleGetRecommendations = async () => {
     setShowRecommendations(true);
     await getRecommendations(activity, city);
+  };
+
+  const handleRefresh = async () => {
+    await refreshRecommendations(activity, city);
   };
 
   const activityConfig = ACTIVITY_CONFIG[activity] || ACTIVITY_CONFIG.other;
@@ -51,9 +63,28 @@ export function SmartLocationRecommender({
       ) : (
         <Card className="overflow-hidden border-coral/20">
           <CardHeader className="pb-2 bg-gradient-to-r from-coral/10 to-transparent">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-coral" />
-              Recommandations IA - {city}
+            <CardTitle className="text-sm flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-coral" />
+                Recommandations IA - {city}
+                {isFromCache && (
+                  <Badge variant="secondary" className="text-xs gap-1">
+                    <Zap className="h-3 w-3" />
+                    Cache
+                  </Badge>
+                )}
+              </div>
+              {!isLoading && recommendations.length > 0 && (
+                <Button
+                  onClick={handleRefresh}
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  title="Actualiser les recommandations"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                </Button>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-3">
