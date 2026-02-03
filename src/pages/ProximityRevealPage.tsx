@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
-import { IcebreakerCard, VerificationBadges, MiniChat } from '@/components/social';
+import { IcebreakerCard, VerificationBadges, MiniChat, VoiceIcebreakerButton } from '@/components/social';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useRevealRateLimit } from '@/hooks/useRevealRateLimit';
@@ -302,6 +302,11 @@ export default function ProximityRevealPage() {
             icebreaker={icebreaker}
             onRefresh={handleRefreshIcebreaker}
           />
+          
+          {/* Voice Icebreaker Button */}
+          <div className="flex justify-center mt-4">
+            <VoiceIcebreakerButton text={icebreaker} />
+          </div>
 
           {/* Distance */}
           <p className="text-center text-muted-foreground mt-4">
