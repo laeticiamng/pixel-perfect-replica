@@ -44,3 +44,4 @@ export { useAIAssistant } from './useAIAssistant';
 export { useLocationRecommendations } from './useLocationRecommendations';
 export { useVoiceIcebreaker } from './useVoiceIcebreaker';
 export { useEventScraper } from './useEventScraper';
+export { useMapPageLogic } from './useMapPageLogic';
