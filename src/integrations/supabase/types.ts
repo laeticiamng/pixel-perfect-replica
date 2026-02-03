@@ -1308,6 +1308,23 @@ export type Database = {
           starts_at: string
         }[]
       }
+      get_event_for_participant_secure: {
+        Args: { p_event_id: string }
+        Returns: {
+          created_at: string
+          description: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          latitude: number
+          location_name: string
+          longitude: number
+          max_participants: number
+          name: string
+          organizer_id: string
+          starts_at: string
+        }[]
+      }
       get_event_for_user: {
         Args: { p_event_id: string }
         Returns: {
