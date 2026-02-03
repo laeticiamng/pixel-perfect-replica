@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -29,6 +30,40 @@ interface SessionRecommendationRequest {
   };
 }
 
+// Rate limit configuration
+const RATE_LIMIT_CONFIG: Record<string, { max_requests: number; window_seconds: number }> = {
+  icebreaker: { max_requests: 20, window_seconds: 60 }, // 20 requests per minute
+  'session-recommendations': { max_requests: 10, window_seconds: 60 }, // 10 requests per minute
+};
+
+// In-memory rate limiting (simple fallback, resets on function restart)
+const rateLimitCache = new Map<string, { count: number; resetTime: number }>();
+
+function checkInMemoryRateLimit(
+  userId: string,
+  action: string
+): { allowed: boolean; retryAfter?: number } {
+  const config = RATE_LIMIT_CONFIG[action] || { max_requests: 10, window_seconds: 60 };
+  const key = `${userId}:ai-assistant-${action}`;
+  const now = Date.now();
+  
+  const entry = rateLimitCache.get(key);
+  
+  if (!entry || now > entry.resetTime) {
+    // New window
+    rateLimitCache.set(key, { count: 1, resetTime: now + config.window_seconds * 1000 });
+    return { allowed: true };
+  }
+  
+  if (entry.count >= config.max_requests) {
+    const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
+    return { allowed: false, retryAfter };
+  }
+  
+  entry.count++;
+  return { allowed: true };
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -45,6 +80,45 @@ serve(async (req) => {
     const body = await req.json();
 
     console.log(`[ai-assistant] Action: ${action}`, JSON.stringify(body, null, 2));
+
+    // Create Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+
+    // Get user ID from auth header
+    const authHeader = req.headers.get('Authorization');
+    let userId: string | null = null;
+    
+    if (authHeader?.startsWith('Bearer ')) {
+      const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: authHeader } }
+      });
+      
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (!userError && userData?.user) {
+        userId = userData.user.id;
+      }
+    }
+
+    // Apply rate limiting if user is authenticated
+    if (userId) {
+      const rateLimitResult = checkInMemoryRateLimit(userId, action);
+      
+      if (!rateLimitResult.allowed) {
+        console.log(`[ai-assistant] Rate limit exceeded for user ${userId}, action: ${action}`);
+        return new Response(JSON.stringify({ 
+          error: 'Rate limit exceeded',
+          retry_after: rateLimitResult.retryAfter 
+        }), {
+          status: 429,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json',
+            'Retry-After': String(rateLimitResult.retryAfter || 60)
+          },
+        });
+      }
+    }
 
     if (action === 'icebreaker') {
       return await handleIcebreaker(body as IcebreakerRequest, LOVABLE_API_KEY);
