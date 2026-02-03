@@ -12,3 +12,4 @@ export { NewBadge, useShowNewBadge } from './NewBadge';
 export { ConfettiCelebration, celebrationBurst } from './ConfettiCelebration';
 export { TestimonialForm } from './TestimonialForm';
 export { AIRecommendationsWidget } from './AIRecommendationsWidget';
+export { TypingIndicator } from './TypingIndicator';
