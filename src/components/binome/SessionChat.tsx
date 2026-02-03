@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -26,6 +27,7 @@ interface SessionChatProps {
 
 export function SessionChat({ sessionId }: SessionChatProps) {
   const { user } = useAuth();
+  const { showNotification, isSubscribed } = usePushNotifications();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -90,6 +92,14 @@ export function SessionChat({ sessionId }: SessionChatProps) {
           };
 
           setMessages(prev => [...prev, msgWithProfile]);
+          
+          // Show push notification for messages from other users
+          if (newMsg.user_id !== user?.id && isSubscribed) {
+            showNotification(`${msgWithProfile.sender_name} 💬`, {
+              body: newMsg.content.slice(0, 100),
+              tag: `session-message-${newMsg.id}`,
+            });
+          }
         }
       )
       .subscribe();
