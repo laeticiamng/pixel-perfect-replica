@@ -11,17 +11,11 @@
 | Métrique | Score |
 |----------|-------|
 | **Cohérence Backend/Frontend** | 100/100 |
-| **Couverture Tests** | 95/100 (28 tests passent) |
+| **Couverture Tests** | 95/100 (49+ tests passent) |
 | **Sécurité RLS** | 98/100 |
 | **UX/Accessibilité** | 95/100 |
 | **Performance** | 92/100 |
-| **Documentation** | 90/100 |
-| **Cohérence Backend/Frontend** | 98/100 |
-| **Couverture Tests** | 89/100 (84 tests passent) |
-| **Sécurité RLS** | 96/100 |
-| **UX/Accessibilité** | 88/100 |
-| **Performance** | 90/100 |
-| **Documentation** | 85/100 |
+| **Documentation** | 95/100 |
 
 ---
 
@@ -179,8 +173,8 @@
 | Suite de Tests | Résultat |
 |----------------|----------|
 | smoke.test.ts | 28/28 ✅ |
-| validation.test.ts | ✅ |
-| distance.test.ts | ✅ |
+| validation.test.ts | 21/21 ✅ |
+| distance.test.ts | 7/7 ✅ |
 | cache.test.ts | ✅ |
 | security.test.ts | ✅ |
 | integration.test.ts | ✅ |

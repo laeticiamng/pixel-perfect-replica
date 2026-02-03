@@ -151,7 +151,7 @@ function FeatureCard({ icon, title, description, delay = 0 }: { icon: string; ti
 }
 
 // Comparison section
-function ComparisonSection() {
+const ComparisonSection = forwardRef<HTMLDivElement>(function ComparisonSection(_props, ref) {
   const { t } = useTranslation();
   
   const comparisons = [
@@ -162,7 +162,7 @@ function ComparisonSection() {
   ];
   
   return (
-    <div className="space-y-4">
+    <div ref={ref} className="space-y-4">
       {comparisons.map((item, i) => (
         <RevealText key={i} delay={i * 0.1}>
           <div className="flex items-center gap-4 p-4 rounded-2xl glass">
@@ -174,7 +174,8 @@ function ComparisonSection() {
       ))}
     </div>
   );
-}
+});
+ComparisonSection.displayName = 'ComparisonSection';
 
 export default function LandingPage() {
   const navigate = useNavigate();

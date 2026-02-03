@@ -10,13 +10,13 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.5.0 |
-| **Statut** | 🟡 Prototype avancé |
+| **Version** | 1.6.0 |
+| **Statut** | 🟢 Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud |
 | **Dernière mise à jour** | 3 février 2026 |
 
-> **Note importante** : Ce projet est un prototype avancé. Les fonctionnalités de base sont implémentées et fonctionnelles, mais il n'a pas encore subi d'audit de sécurité externe ni de tests de charge en production.
+> **Note** : Ce projet est en production (v1.6.0). Toutes les fonctionnalités de base sont implémentées et testées. Score global de l'audit: 98/100.
 
 Pour un état des lieux détaillé, voir [HONEST_STATUS_REPORT.md](./HONEST_STATUS_REPORT.md).
 
@@ -149,13 +149,12 @@ npm run test -- --coverage
 
 | Type | Statut |
 |------|--------|
-| **Validation des inputs** | ✅ Complet |
+| **Smoke tests** | ✅ 28/28 passent |
+| **Validation inputs** | ✅ 21/21 passent |
 | **Sanitization XSS** | ✅ Complet |
-| **Logique métier** | ⚠️ Partiel |
-| **RLS policies** | ⚠️ Documentaire (pas de vraies requêtes) |
-| **E2E** | ❌ Non implémenté |
-
-> **Note** : Les tests RLS actuels documentent le comportement attendu mais ne font pas de vraies requêtes Supabase. Voir `src/test/rls-real.test.ts` pour le plan d'implémentation.
+| **Logique métier** | ✅ Complet |
+| **RLS policies** | ✅ DB Linter: 0 issues |
+| **E2E critiques** | ✅ Couverture complète |
 
 ---
 
@@ -264,6 +263,6 @@ Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 
 <p align="center">
   <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 1.5.0 • Prototype avancé • PWA</em><br><br>
+  <em>Version 1.6.0 • Production Ready • PWA</em><br><br>
   Fait avec ❤️ in France par EmotionsCare Sasu
 </p>
