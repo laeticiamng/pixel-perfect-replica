@@ -9,7 +9,8 @@ import {
   ExpirationTimer, 
   LocationDescriptionInput, 
   SearchingIndicator,
-  InteractiveMap
+  InteractiveMap,
+  SignalHistoryPanel
 } from '@/components/map';
 import { EmergencyButton } from '@/components/safety';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
@@ -163,6 +164,7 @@ export default function MapPage() {
               >
                 <Info className="h-4 w-4" />
               </button>
+              <SignalHistoryPanel />
             </div>
           </div>
           
