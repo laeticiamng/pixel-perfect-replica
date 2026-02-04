@@ -8,10 +8,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { RecurrenceSelector, type RecurrenceType } from '@/components/events';
 import { useEvents, Event } from '@/hooks/useEvents';
 import { useLocationStore } from '@/stores/locationStore';
 import { useTranslation } from '@/lib/i18n';
-import { format, addHours } from 'date-fns';
+import { format, addHours, addWeeks, addMonths } from 'date-fns';
 import { fr, enUS } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 
@@ -30,6 +31,8 @@ export default function EventsPage() {
   const [locationName, setLocationName] = useState('');
   const [startsAt, setStartsAt] = useState('');
   const [duration, setDuration] = useState(2); // hours
+  const [recurrence, setRecurrence] = useState<RecurrenceType>('none');
+  const [occurrences, setOccurrences] = useState(4);
 
   const dateLocale = locale === 'fr' ? fr : enUS;
 
@@ -45,25 +48,68 @@ export default function EventsPage() {
     }
 
     setIsCreating(true);
-    const startDate = new Date(startsAt);
-    const endDate = addHours(startDate, duration);
+    
+    // Calculate dates to create
+    const datesToCreate: { startDate: Date; endDate: Date }[] = [];
+    const baseStartDate = new Date(startsAt);
+    
+    if (recurrence === 'none') {
+      datesToCreate.push({
+        startDate: baseStartDate,
+        endDate: addHours(baseStartDate, duration),
+      });
+    } else {
+      for (let i = 0; i < occurrences; i++) {
+        const startDate = recurrence === 'weekly'
+          ? addWeeks(baseStartDate, i)
+          : addMonths(baseStartDate, i);
+        datesToCreate.push({
+          startDate,
+          endDate: addHours(startDate, duration),
+        });
+      }
+    }
 
-    const { error } = await createEvent({
-      name: name.trim(),
-      description: description.trim() || undefined,
-      location_name: locationName.trim(),
-      latitude: position.latitude,
-      longitude: position.longitude,
-      starts_at: startDate,
-      ends_at: endDate,
-    });
+    let successCount = 0;
+    let hasError = false;
+
+    for (const { startDate, endDate } of datesToCreate) {
+      const { error } = await createEvent({
+        name: name.trim(),
+        description: description.trim() || undefined,
+        location_name: locationName.trim(),
+        latitude: position.latitude,
+        longitude: position.longitude,
+        starts_at: startDate,
+        ends_at: endDate,
+      });
+
+      if (error) {
+        hasError = true;
+      } else {
+        successCount++;
+      }
+    }
 
     setIsCreating(false);
 
-    if (error) {
+    if (hasError && successCount === 0) {
       toast.error(t('events.createError'));
+    } else if (hasError) {
+      toast.success(locale === 'fr' 
+        ? `${successCount} événements créés (certains ont échoué)`
+        : `${successCount} events created (some failed)`
+      );
+      setShowCreate(false);
+      resetForm();
     } else {
-      toast.success(t('events.eventCreated'));
+      toast.success(
+        recurrence === 'none'
+          ? t('events.eventCreated')
+          : locale === 'fr'
+            ? `${successCount} événements créés !`
+            : `${successCount} events created!`
+      );
       setShowCreate(false);
       resetForm();
     }
@@ -75,6 +121,8 @@ export default function EventsPage() {
     setLocationName('');
     setStartsAt('');
     setDuration(2);
+    setRecurrence('none');
+    setOccurrences(4);
   };
 
   const handleJoinEvent = async (eventId: string) => {
@@ -252,6 +300,14 @@ export default function EventsPage() {
                   />
                 </div>
               </div>
+
+              {/* Recurrence Selector */}
+              <RecurrenceSelector
+                value={recurrence}
+                onChange={setRecurrence}
+                occurrences={occurrences}
+                onOccurrencesChange={setOccurrences}
+              />
 
               <div className="flex gap-3 pt-2">
                 <Button
