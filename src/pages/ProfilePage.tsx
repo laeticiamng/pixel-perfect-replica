@@ -3,6 +3,7 @@ import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTri
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
+import { ProfileQRCode } from '@/components/profile';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useTranslation } from '@/lib/i18n';
@@ -108,6 +109,17 @@ export default function ProfilePage() {
             <p className="text-muted-foreground text-sm animate-fade-in" style={{ animationDelay: '0.1s' }}>
               🎓 {profile.university}
             </p>
+          )}
+          
+          {/* QR Code button */}
+          {profile?.id && (
+            <div className="mt-4 animate-fade-in" style={{ animationDelay: '0.12s' }}>
+              <ProfileQRCode
+                userId={profile.id}
+                firstName={profile.first_name}
+                avatarUrl={profile.avatar_url}
+              />
+            </div>
           )}
           
           {/* Stats with enhanced styling */}

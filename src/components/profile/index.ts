@@ -8,3 +8,4 @@ export { MiniChat } from '../social';
 export { VerificationBadges } from '../social';
 export { EmergencyContactsManager } from '../safety';
 export { PublicProfilePreview } from './PublicProfilePreview';
+export { ProfileQRCode } from './ProfileQRCode';
