@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Calendar, Users, Clock } from 'lucide-react';
+import { Plus, Calendar, Users, Clock, History } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
 import { PageHeader, EmptyState } from '@/components/shared';
@@ -156,6 +156,20 @@ export default function BinomePage() {
 
         {/* Community Stats */}
         <CommunityStats />
+
+        {/* History Link */}
+        <button
+          onClick={() => navigate('/binome/history')}
+          className="w-full glass rounded-xl p-3 flex items-center justify-between hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-coral/20 text-coral">
+              <History className="h-5 w-5" />
+            </div>
+            <span className="font-medium text-foreground">Historique des sessions</span>
+          </div>
+          <span className="text-muted-foreground text-sm">→</span>
+        </button>
 
         <Tabs defaultValue="search" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
