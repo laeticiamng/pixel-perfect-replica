@@ -223,7 +223,7 @@ export default function HelpPage() {
           }}
         >
           <Link to="/changelog" className="text-xs text-muted-foreground hover:text-coral transition-colors font-medium">
-            EASY v1.6.3
+            EASY v1.6.4
           </Link>
           <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Users, QrCode, Plus, Loader2 } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Users, QrCode, Plus, Loader2, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,7 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { RecurrenceSelector, type RecurrenceType } from '@/components/events';
+import { 
+  RecurrenceSelector, type RecurrenceType, 
+  EventCategorySelector, EventCategoryBadge, type EventCategory 
+} from '@/components/events';
 import { useEvents, Event } from '@/hooks/useEvents';
 import { useLocationStore } from '@/stores/locationStore';
 import { useTranslation } from '@/lib/i18n';
@@ -33,6 +36,9 @@ export default function EventsPage() {
   const [duration, setDuration] = useState(2); // hours
   const [recurrence, setRecurrence] = useState<RecurrenceType>('none');
   const [occurrences, setOccurrences] = useState(4);
+  const [category, setCategory] = useState<EventCategory | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<EventCategory | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
   const dateLocale = locale === 'fr' ? fr : enUS;
 
@@ -74,9 +80,14 @@ export default function EventsPage() {
     let hasError = false;
 
     for (const { startDate, endDate } of datesToCreate) {
+      // Include category tag in description for filtering
+      const descWithCategory = category 
+        ? `[${category}] ${description.trim() || ''}`
+        : description.trim() || undefined;
+        
       const { error } = await createEvent({
         name: name.trim(),
-        description: description.trim() || undefined,
+        description: descWithCategory,
         location_name: locationName.trim(),
         latitude: position.latitude,
         longitude: position.longitude,
@@ -123,7 +134,13 @@ export default function EventsPage() {
     setDuration(2);
     setRecurrence('none');
     setOccurrences(4);
+    setCategory(null);
   };
+
+  // Filter events by category
+  const filteredEvents = categoryFilter
+    ? events.filter(e => e.description?.includes(`[${categoryFilter}]`))
+    : events;
 
   const handleJoinEvent = async (eventId: string) => {
     const { error } = await joinEvent(eventId);
@@ -229,15 +246,52 @@ export default function EventsPage() {
       </header>
 
       <div className="px-6 space-y-6">
-        {/* Create Event Button */}
-        {!showCreate && (
+        {/* Filters and Create Button */}
+        <div className="flex gap-2">
+          {!showCreate && (
+            <Button
+              onClick={() => setShowCreate(true)}
+              className="flex-1 h-14 bg-coral hover:bg-coral-dark rounded-xl gap-2"
+            >
+              <Plus className="h-5 w-5" />
+              {t('events.createEvent')}
+            </Button>
+          )}
           <Button
-            onClick={() => setShowCreate(true)}
-            className="w-full h-14 bg-coral hover:bg-coral-dark rounded-xl gap-2"
+            variant={showFilters ? 'default' : 'outline'}
+            onClick={() => setShowFilters(!showFilters)}
+            className={`h-14 rounded-xl ${showFilters ? 'bg-coral hover:bg-coral-dark' : ''}`}
           >
-            <Plus className="h-5 w-5" />
-            {t('events.createEvent')}
+            <Filter className="h-5 w-5" />
           </Button>
+        </div>
+
+        {/* Category Filters */}
+        {showFilters && (
+          <div className="glass rounded-xl p-4 space-y-3 animate-slide-up">
+            <p className="text-sm font-medium text-muted-foreground">
+              {locale === 'fr' ? 'Filtrer par catégorie' : 'Filter by category'}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setCategoryFilter(null)}
+                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  !categoryFilter ? 'bg-coral text-white' : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                {locale === 'fr' ? 'Tous' : 'All'}
+              </button>
+              {(['social', 'academic', 'sport', 'culture', 'party', 'professional', 'other'] as EventCategory[]).map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setCategoryFilter(categoryFilter === cat ? null : cat)}
+                  className={`transition-all ${categoryFilter === cat ? 'ring-2 ring-coral' : ''}`}
+                >
+                  <EventCategoryBadge category={cat} size="sm" />
+                </button>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* Create Event Form */}
@@ -301,6 +355,12 @@ export default function EventsPage() {
                 </div>
               </div>
 
+              {/* Category Selector */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{locale === 'fr' ? 'Catégorie' : 'Category'}</label>
+                <EventCategorySelector value={category} onChange={setCategory} />
+              </div>
+
               {/* Recurrence Selector */}
               <RecurrenceSelector
                 value={recurrence}
@@ -362,14 +422,19 @@ export default function EventsPage() {
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
             </div>
-          ) : events.length === 0 ? (
+          ) : filteredEvents.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-4xl mb-4">📅</p>
-              <p className="text-muted-foreground">{t('events.noEvents')}</p>
+              <p className="text-muted-foreground">{categoryFilter ? (locale === 'fr' ? 'Aucun événement dans cette catégorie' : 'No events in this category') : t('events.noEvents')}</p>
               <p className="text-sm text-muted-foreground mt-1">{t('events.noEventsDescription')}</p>
+              {categoryFilter && (
+                <Button variant="link" onClick={() => setCategoryFilter(null)} className="mt-2 text-coral">
+                  {locale === 'fr' ? 'Voir tous les événements' : 'See all events'}
+                </Button>
+              )}
             </div>
           ) : (
-            events
+            filteredEvents
               .filter(e => !myEvents.some(me => me.id === e.id))
               .map(event => (
                 <EventCard 
