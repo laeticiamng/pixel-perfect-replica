@@ -10,9 +10,11 @@ import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { 
   RecurrenceSelector, type RecurrenceType, 
-  EventCategorySelector, EventCategoryBadge, type EventCategory 
+  EventCategorySelector, EventCategoryBadge, type EventCategory,
+  EventFavoriteButton
 } from '@/components/events';
 import { useEvents, Event } from '@/hooks/useEvents';
+import { useEventFavorites } from '@/hooks/useEventFavorites';
 import { useLocationStore } from '@/stores/locationStore';
 import { useTranslation } from '@/lib/i18n';
 import { format, addHours, addWeeks, addMonths } from 'date-fns';
@@ -23,6 +25,7 @@ export default function EventsPage() {
   const navigate = useNavigate();
   const { t, locale } = useTranslation();
   const { events, myEvents, isLoading, createEvent, joinEvent, leaveEvent, isParticipating } = useEvents();
+  const { isFavorite, toggleFavorite, isLoading: isFavLoading } = useEventFavorites();
   const { position } = useLocationStore();
   
   const [showCreate, setShowCreate] = useState(false);
@@ -171,11 +174,18 @@ export default function EventsPage() {
               {event.location_name}
             </CardDescription>
           </div>
-          {isJoined && (
-            <span className="text-xs bg-signal-green/20 text-signal-green px-2 py-1 rounded-full">
-              {t('events.registered')} ✓
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            <EventFavoriteButton
+              isFavorite={isFavorite(event.id)}
+              onToggle={() => toggleFavorite(event.id)}
+              isLoading={isFavLoading}
+            />
+            {isJoined && (
+              <span className="text-xs bg-signal-green/20 text-signal-green px-2 py-1 rounded-full">
+                {t('events.registered')} ✓
+              </span>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">

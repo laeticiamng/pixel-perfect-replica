@@ -10,13 +10,13 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.6.4 |
+| **Version** | 1.6.5 |
 | **Statut** | 🟢 Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud |
 | **Dernière mise à jour** | 4 février 2026 |
 
-> **Note** : Ce projet est en production (v1.6.4). Toutes les fonctionnalités de base sont implémentées et testées. Score global de l'audit: 99/100.
+> **Note** : Ce projet est en production (v1.6.5). Toutes les fonctionnalités de base sont implémentées et testées. Score global de l'audit: 99/100.
 
 Pour un état des lieux détaillé, voir [HONEST_STATUS_REPORT.md](./HONEST_STATUS_REPORT.md).
 
@@ -70,6 +70,7 @@ Variables optionnelles (pour les fonctionnalités premium) :
 | **PWA installable** | Fonctionne comme une app native |
 | **Blocage utilisateurs** | Bloque les utilisateurs indésirables |
 | **Signalement** | Signale les comportements inappropriés |
+| **Favoris événements** | Sauvegarde les événements qui t'intéressent |
 
 ### ⚠️ Partiellement implémentées
 

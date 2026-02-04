@@ -45,3 +45,4 @@ export { useLocationRecommendations } from './useLocationRecommendations';
 export { useVoiceIcebreaker } from './useVoiceIcebreaker';
 export { useEventScraper } from './useEventScraper';
 export { useMapPageLogic } from './useMapPageLogic';
+export { useEventFavorites } from './useEventFavorites';
