@@ -264,6 +264,8 @@ Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 
 <p align="center">
   <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 1.6.3 • Production Ready • PWA</em><br><br>
+  <em>Version 1.6.5 • Production Ready • PWA</em><br><br>
+  Fait avec ❤️ in France par EmotionsCare Sasu
+</p>
   Fait avec ❤️ in France par EmotionsCare Sasu
 </p>
