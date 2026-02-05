@@ -23,6 +23,7 @@ import {
   NotFound,
   // Auth
   OnboardingPage,
+  PostSignupOnboardingPage,
   ForgotPasswordPage,
   ResetPasswordPage,
   ChangePasswordPage,
@@ -105,6 +106,7 @@ function AnimatedRoutes() {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/welcome" element={<PostSignupOnboardingPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/terms" element={<TermsPage />} />

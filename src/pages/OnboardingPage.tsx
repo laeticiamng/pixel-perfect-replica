@@ -171,7 +171,8 @@ export default function OnboardingPage() {
         } else {
           signupRateLimit.reset();
           toast.success(t('auth.accountCreated'));
-          setStep(2);
+          // Redirect to post-signup onboarding flow
+          navigate('/welcome');
         }
       }
     } else if (step === 2) {
