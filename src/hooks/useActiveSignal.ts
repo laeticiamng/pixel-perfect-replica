@@ -363,27 +363,60 @@ export function useActiveSignal() {
   useEffect(() => {
     if (!user || !position) return;
 
+    // Initial fetch
+    fetchNearbyUsers(200);
+
     const channel = supabase
-      .channel('active-signals-changes')
+      .channel('active-signals-realtime')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
+          schema: 'public',
+          table: 'active_signals',
+        },
+        () => {
+          console.log('[Realtime] New signal activated nearby');
+          fetchNearbyUsers(200);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
           schema: 'public',
           table: 'active_signals',
         },
         (payload) => {
-          console.log('Signal change detected:', payload.eventType);
-          // Refetch nearby users when signals change
+          // Only refetch if it's not my own signal update
+          if (payload.new && (payload.new as { user_id: string }).user_id !== user.id) {
+            console.log('[Realtime] Signal updated nearby');
+            fetchNearbyUsers(200);
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'active_signals',
+        },
+        () => {
+          console.log('[Realtime] Signal deactivated nearby');
           fetchNearbyUsers(200);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('[Realtime] Connected to active_signals');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, position, fetchNearbyUsers]);
+  }, [user?.id, position?.latitude, position?.longitude, fetchNearbyUsers]);
 
   return {
     mySignal,
