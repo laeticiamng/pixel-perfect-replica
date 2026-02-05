@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import confetti from "canvas-confetti";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -61,6 +62,43 @@ const benefitVariants = {
       damping: 25,
     },
   },
+};
+
+// Confetti celebration function
+const triggerConfetti = () => {
+  const duration = 3000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+  const randomInRange = (min: number, max: number) =>
+    Math.random() * (max - min) + min;
+
+  const interval = setInterval(() => {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      return;
+    }
+
+    const particleCount = 50 * (timeLeft / duration);
+
+    // Confetti from left
+    confetti({
+      ...defaults,
+      particleCount,
+      origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      colors: ["#FF6B6B", "#FF8E8E", "#FFB4B4", "#4ECDC4", "#45B7AA"],
+    });
+
+    // Confetti from right
+    confetti({
+      ...defaults,
+      particleCount,
+      origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      colors: ["#FF6B6B", "#FF8E8E", "#FFB4B4", "#4ECDC4", "#45B7AA"],
+    });
+  }, 250);
 };
 
 interface BeforeInstallPromptEvent extends Event {
@@ -213,6 +251,7 @@ export default function InstallPage() {
     window.addEventListener("appinstalled", () => {
       setIsInstalled(true);
       setDeferredPrompt(null);
+      triggerConfetti();
     });
 
     return () => {
@@ -228,6 +267,7 @@ export default function InstallPage() {
 
     if (outcome === "accepted") {
       setIsInstalled(true);
+      triggerConfetti();
     }
     setDeferredPrompt(null);
   };
