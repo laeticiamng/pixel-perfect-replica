@@ -17,10 +17,50 @@ import {
   Home,
   Monitor,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/PageLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 24,
+    },
+  },
+};
+
+const benefitVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 400,
+      damping: 25,
+    },
+  },
+};
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -33,55 +73,106 @@ const InstallStep = ({
   title,
   description,
   highlight,
+  index = 0,
 }: {
   step: number;
   icon: React.ElementType;
   title: string;
   description: string;
   highlight?: string;
+  index?: number;
 }) => (
-  <Card className="border-0 bg-card/50 backdrop-blur-sm">
+  <motion.div
+    variants={itemVariants}
+    whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+    whileTap={{ scale: 0.98 }}
+  >
+    <Card className="border-0 bg-card/50 backdrop-blur-sm overflow-hidden">
     <CardContent className="p-4">
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center text-white font-bold shadow-lg">
+          <motion.div
+            className="w-10 h-10 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center text-white font-bold shadow-lg"
+            initial={{ rotate: -180, scale: 0 }}
+            animate={{ rotate: 0, scale: 1 }}
+            transition={{
+              type: "spring",
+              stiffness: 260,
+              damping: 20,
+              delay: 0.1 + index * 0.15,
+            }}
+          >
             {step}
-          </div>
+          </motion.div>
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-foreground mb-1">{title}</h4>
           <p className="text-sm text-muted-foreground">{description}</p>
           {highlight && (
-            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-coral/10 border border-coral/20">
+            <motion.div
+              className="mt-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-coral/10 border border-coral/20"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 + index * 0.15 }}
+            >
               <Icon className="h-4 w-4 text-coral" />
               <span className="text-sm font-medium text-coral">{highlight}</span>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
     </CardContent>
-  </Card>
+    </Card>
+  </motion.div>
 );
 
 const BenefitItem = ({
   icon: Icon,
   emoji,
   text,
+  index = 0,
 }: {
   icon?: React.ElementType;
   emoji?: string;
   text: string;
+  index?: number;
 }) => (
-  <div className="flex items-center gap-3 p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50">
+  <motion.div
+    variants={benefitVariants}
+    whileHover={{ x: 8, transition: { duration: 0.2 } }}
+    className="flex items-center gap-3 p-3 rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 cursor-default"
+  >
     {emoji ? (
-      <span className="text-xl">{emoji}</span>
+      <motion.span
+        className="text-xl"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{
+          type: "spring",
+          stiffness: 500,
+          damping: 15,
+          delay: 0.4 + index * 0.1,
+        }}
+      >
+        {emoji}
+      </motion.span>
     ) : Icon ? (
-      <div className="w-8 h-8 rounded-full bg-coral/10 flex items-center justify-center">
+      <motion.div
+        className="w-8 h-8 rounded-full bg-coral/10 flex items-center justify-center"
+        initial={{ scale: 0, rotate: -90 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{
+          type: "spring",
+          stiffness: 400,
+          damping: 15,
+          delay: 0.4 + index * 0.1,
+        }}
+      >
         <Icon className="h-4 w-4 text-coral" />
-      </div>
+      </motion.div>
     ) : null}
     <span className="text-foreground font-medium">{text}</span>
-  </div>
+  </motion.div>
 );
 
 export default function InstallPage() {
@@ -281,13 +372,19 @@ export default function InstallPage() {
                   Comment installer en 3 étapes
                 </h3>
 
-                <div className="space-y-3">
+                <motion.div
+                  className="space-y-3"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
                   <InstallStep
                     step={1}
                     icon={Share}
                     title="Ouvrez le menu Partager"
                     description="En bas de l'écran Safari, appuyez sur l'icône de partage"
                     highlight="Icône carrée avec flèche ↑"
+                    index={0}
                   />
 
                   <InstallStep
@@ -296,6 +393,7 @@ export default function InstallPage() {
                     title="Sélectionnez Sur l'écran d'accueil"
                     description="Faites défiler les options vers le bas si nécessaire pour trouver cette option"
                     highlight="Ajouter à l'écran d'accueil"
+                    index={1}
                   />
 
                   <InstallStep
@@ -303,8 +401,9 @@ export default function InstallPage() {
                     icon={Check}
                     title="Appuyez sur Ajouter"
                     description="Confirmez l'ajout en haut à droite. EASY sera ajouté à votre écran d'accueil"
+                    index={2}
                   />
-                </div>
+                </motion.div>
               </div>
             )}
 
@@ -330,13 +429,19 @@ export default function InstallPage() {
                   Comment installer en 3 étapes
                 </h3>
 
-                <div className="space-y-3">
+                <motion.div
+                  className="space-y-3"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
                   <InstallStep
                     step={1}
                     icon={MoreVertical}
                     title="Ouvrez le menu Chrome"
                     description="Appuyez sur les 3 points verticaux en haut à droite de votre navigateur"
                     highlight="Menu ⋮"
+                    index={0}
                   />
 
                   <InstallStep
@@ -345,6 +450,7 @@ export default function InstallPage() {
                     title="Sélectionnez Installer l'application"
                     description="Cette option peut aussi s'appeler Ajouter à l'écran d'accueil selon votre version"
                     highlight="Installer l'application"
+                    index={1}
                   />
 
                   <InstallStep
@@ -352,8 +458,9 @@ export default function InstallPage() {
                     icon={Check}
                     title="Confirmez l'installation"
                     description="Appuyez sur Installer dans la popup. EASY sera ajouté comme une application"
+                    index={2}
                   />
-                </div>
+                </motion.div>
               </div>
             )}
 
@@ -388,15 +495,21 @@ export default function InstallPage() {
                 Pourquoi installer ?
               </h3>
 
-              <div className="grid gap-3">
-                <BenefitItem icon={Zap} text="Chargement ultra-rapide" />
-                <BenefitItem icon={Wifi} text="Fonctionne hors connexion" />
-                <BenefitItem icon={Bell} text="Notifications en temps réel" />
+              <motion.div
+                className="grid gap-3"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <BenefitItem icon={Zap} text="Chargement ultra-rapide" index={0} />
+                <BenefitItem icon={Wifi} text="Fonctionne hors connexion" index={1} />
+                <BenefitItem icon={Bell} text="Notifications en temps réel" index={2} />
                 <BenefitItem
                   icon={Home}
                   text="Accès direct depuis l'écran d'accueil"
+                  index={3}
                 />
-              </div>
+              </motion.div>
 
               <p className="text-xs text-muted-foreground text-center pt-2">
                 EASY est une Progressive Web App (PWA) — pas besoin de passer
