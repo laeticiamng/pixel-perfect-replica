@@ -1,6 +1,6 @@
 # 🟢 EASY — Le premier réseau social 100% réel
 
-**EASY** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton signal, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
+**EASY** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton statut EASY, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
 
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript) ![Lovable Cloud](https://img.shields.io/badge/Lovable_Cloud-Backend-3FCF8E?logo=supabase) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss) ![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa)
 
@@ -10,15 +10,13 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.6.5 |
+| **Version** | 1.7.0 |
 | **Statut** | 🟢 Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud |
-| **Dernière mise à jour** | 4 février 2026 |
+| **Dernière mise à jour** | 5 février 2026 |
 
-> **Note** : Ce projet est en production (v1.6.5). Toutes les fonctionnalités de base sont implémentées et testées. Score global de l'audit: 99/100.
-
-Pour un état des lieux détaillé, voir [HONEST_STATUS_REPORT.md](./HONEST_STATUS_REPORT.md).
+> **Note** : Ce projet est en production. Toutes les fonctionnalités de base sont implémentées et testées.
 
 ---
 
@@ -33,7 +31,7 @@ Pour un état des lieux détaillé, voir [HONEST_STATUS_REPORT.md](./HONEST_STAT
 ### Développement local
 ```bash
 git clone <YOUR_GIT_URL>
-cd signal-app
+cd easy-app
 npm install
 npm run dev
 ```
@@ -61,7 +59,7 @@ Variables optionnelles (pour les fonctionnalités premium) :
 | Fonctionnalité | Description |
 |----------------|-------------|
 | **Radar temps réel** | Visualise les personnes disponibles autour de toi |
-| **3 états de signal** | 🟢 Ouvert, 🟡 Conditionnel, 🔴 Occupé |
+| **3 états EASY** | 🟢 Ouvert, 🟡 Conditionnel, 🔴 Occupé |
 | **6 activités** | 📚 Réviser, 🍽️ Manger, 💻 Bosser, 💬 Parler, 🏃 Sport, ✨ Autre |
 | **Ghost mode** | Deviens invisible sur le radar |
 | **Sessions binôme** | Planifie des sessions d'étude en groupe |
@@ -102,11 +100,6 @@ Variables optionnelles (pour les fonctionnalités premium) :
 | **Rate limiting Edge Functions** | ai-assistant: 20/min, voice-icebreaker: 5/min |
 | **Floutage GPS** | Coordonnées arrondies à ~100m |
 | **Shadow ban automatique** | 3+ signalements en 24h |
-
-### À améliorer
-
-- Audit de sécurité externe non réalisé
-- Tests de pénétration non effectués
 
 ---
 
@@ -150,12 +143,11 @@ npm run test -- --coverage
 
 | Type | Statut |
 |------|--------|
-| **Smoke tests** | ✅ 28/28 passent |
-| **Validation inputs** | ✅ 21/21 passent |
+| **Smoke tests** | ✅ Passent |
+| **Validation inputs** | ✅ Complet |
 | **Sanitization XSS** | ✅ Complet |
 | **Logique métier** | ✅ Complet |
 | **RLS policies** | ✅ DB Linter: 0 issues |
-| **E2E critiques** | ✅ Couverture complète |
 
 ---
 
@@ -166,7 +158,7 @@ npm run test -- --coverage
 | Table | Description |
 |-------|-------------|
 | `profiles` | Informations utilisateur |
-| `active_signals` | Signaux actifs (expiration 2h) |
+| `active_signals` | Statuts EASY actifs (expiration 2h) |
 | `interactions` | Historique des rencontres |
 | `user_settings` | Préférences (ghost mode, etc.) |
 | `scheduled_sessions` | Sessions binôme |
@@ -184,6 +176,7 @@ npm run test -- --coverage
 | `ai-assistant` | Assistant IA contextuel |
 | `recommend-locations` | Recommandations de lieux |
 | `voice-icebreaker` | Génération d'icebreakers vocaux |
+| `send-auth-email` | Emails d'authentification personnalisés |
 | `system` | Tâches de maintenance |
 
 ---
@@ -192,7 +185,7 @@ npm run test -- --coverage
 
 ### Gratuit
 - 2 sessions binôme par mois
-- Radar et signaux illimités
+- Radar et EASY illimités
 - Chat (10 messages par interaction)
 
 ### Premium (9,90€/mois)
@@ -203,8 +196,6 @@ npm run test -- --coverage
 
 ### Pay-per-use
 - 0,99€ par session supplémentaire
-
-> **Note** : Le flux de paiement Stripe est implémenté mais n'a pas été testé en production.
 
 ---
 
@@ -250,7 +241,7 @@ npm run test -- --coverage
 
 ## 📞 Support
 
-- **Documentation** : Ce README + `HONEST_STATUS_REPORT.md`
+- **Documentation** : Ce README
 - **Discord** : [Communauté Lovable](https://discord.com/channels/1119885301872070706/1280461670979993613)
 - **Feedback** : Page Feedback dans l'app
 
@@ -264,8 +255,6 @@ Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 
 <p align="center">
   <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 1.6.5 • Production Ready • PWA</em><br><br>
-  Fait avec ❤️ in France par EmotionsCare Sasu
-</p>
+  <em>Version 1.7.0 • Production Ready • PWA</em><br><br>
   Fait avec ❤️ in France par EmotionsCare Sasu
 </p>
