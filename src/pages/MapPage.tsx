@@ -10,16 +10,22 @@ import {
   LocationDescriptionInput, 
   SearchingIndicator,
   InteractiveMap,
-  SignalHistoryPanel
+  SignalHistoryPanel,
+  EmptyRadarState,
+  LocationPermissionScreen,
 } from '@/components/map';
 import { EmergencyButton } from '@/components/safety';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useMapPageLogic } from '@/hooks/useMapPageLogic';
+import { useLocationStore } from '@/stores/locationStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 
 export default function MapPage() {
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
+  const { position, error: locationError } = useLocationStore();
+  const { hasSeenLocationPrompt, setHasSeenLocationPrompt, showDemoSignals, setShowDemoSignals } = useSettingsStore();
   const {
     profile,
     settings,
@@ -57,6 +63,38 @@ export default function MapPage() {
   } = useMapPageLogic();
 
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
+
+  // Show location permission screen if not seen yet and no position
+  const showLocationPrompt = !hasSeenLocationPrompt && !position && !locationError;
+  
+  const handleRequestLocation = () => {
+    setHasSeenLocationPrompt(true);
+    // The location store will automatically request permission when startWatching is called
+  };
+
+  const handleSkipLocation = () => {
+    setHasSeenLocationPrompt(true);
+    setShowDemoSignals(true);
+  };
+
+  const handleEnableDemo = () => {
+    setShowDemoSignals(true);
+  };
+
+  // Show location permission screen
+  if (showLocationPrompt) {
+    return (
+      <PageLayout className="pb-28" animate={false}>
+        <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
+          <LocationPermissionScreen 
+            onRequestPermission={handleRequestLocation}
+            onSkip={handleSkipLocation}
+          />
+          <BottomNav />
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout className="pb-28" animate={false}>
@@ -221,29 +259,12 @@ export default function MapPage() {
 
         {/* Interactive Map */}
         <div className="flex-1 min-h-0 px-4 sm:px-6">
-          {filteredNearbyUsers.length === 0 && !isActive ? (
-            <div className="h-full flex flex-col items-center justify-center text-center px-6">
-              <div className="relative mb-6">
-                <div className="absolute inset-0 rounded-full bg-coral/20 blur-xl animate-breathing" />
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-coral/20 to-coral/10 flex items-center justify-center relative">
-                  <Radio className="h-12 w-12 text-coral" />
-                </div>
-              </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Personne autour de toi pour le moment
-              </h3>
-              <p className="text-muted-foreground text-sm mb-6 max-w-xs">
-                Active ton signal et invite tes amis à rejoindre EASY !
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={handleSignalToggle}
-                  className="px-6 py-3 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 glow-coral"
-                >
-                  Activer mon signal
-                </button>
-              </div>
-            </div>
+          {filteredNearbyUsers.length === 0 && !isActive && !isDemoMode ? (
+            <EmptyRadarState 
+              onActivateSignal={handleSignalToggle}
+              isDemoMode={isDemoMode}
+              onEnableDemo={showDemoSignals ? undefined : handleEnableDemo}
+            />
           ) : (
             <InteractiveMap
               nearbyUsers={filteredNearbyUsers.map(u => ({

@@ -184,6 +184,24 @@ export const translations = {
     liveDemo: { en: 'Live demo', fr: 'Démo live' },
   },
 
+  // Map page
+  map: {
+    locationNeeded: { en: 'Location needed', fr: 'Localisation nécessaire' },
+    locationExplain: { en: 'To see who\'s around you, we need access to your location. Your privacy is protected.', fr: 'Pour voir qui est autour de toi, on a besoin de ta position. Ta vie privée est protégée.' },
+    privacyGuarantee1: { en: 'Position never stored on our servers', fr: 'Position jamais stockée sur nos serveurs' },
+    privacyGuarantee2: { en: 'Visible only when signal is active', fr: 'Visible uniquement quand le signal est actif' },
+    privacyGuarantee3: { en: 'Coordinates fuzzed to ~100m', fr: 'Coordonnées floutées à ~100m' },
+    allowLocation: { en: 'Allow location', fr: 'Autoriser la localisation' },
+    useDemo: { en: 'Use demo mode instead', fr: 'Utiliser le mode démo' },
+    noOneAround: { en: 'No one around right now', fr: 'Personne autour de toi pour le moment' },
+    beTheFirst: { en: 'Activate your signal and be the first! Invite your friends to join EASY.', fr: 'Active ton signal et sois le premier ! Invite tes amis à rejoindre EASY.' },
+    activateMySignal: { en: 'Activate my signal', fr: 'Activer mon signal' },
+    inviteFriends: { en: 'Invite friends', fr: 'Inviter des amis' },
+    seeDemo: { en: 'See demo with fake signals', fr: 'Voir la démo avec de faux signaux' },
+    demoMode: { en: 'Demo mode', fr: 'Mode démo' },
+    demoModeDesc: { en: 'Show fake signals to discover the app', fr: 'Afficher de faux signaux pour découvrir l\'app' },
+  },
+
   // Profile
   profile: {
     title: { en: 'Profile', fr: 'Profil' },
