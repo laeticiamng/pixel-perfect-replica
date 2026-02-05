@@ -435,9 +435,16 @@ export default function EventsPage() {
             </div>
           ) : filteredEvents.length === 0 ? (
             <div className="text-center py-12">
+              <div className="w-20 h-20 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-4">
+                <Calendar className="h-10 w-10 text-muted-foreground" />
+              </div>
               <p className="text-4xl mb-4">📅</p>
-              <p className="text-muted-foreground">{categoryFilter ? (locale === 'fr' ? 'Aucun événement dans cette catégorie' : 'No events in this category') : t('events.noEvents')}</p>
-              <p className="text-sm text-muted-foreground mt-1">{t('events.noEventsDescription')}</p>
+              <p className="text-foreground font-medium mb-2">
+                {categoryFilter ? (locale === 'fr' ? 'Aucun événement dans cette catégorie' : 'No events in this category') : (locale === 'fr' ? 'Aucun événement à venir' : 'No upcoming events')}
+              </p>
+              <p className="text-sm text-muted-foreground mt-1 max-w-xs mx-auto">
+                {locale === 'fr' ? 'Crée le premier événement ou reviens bientôt !' : 'Create the first event or check back soon!'}
+              </p>
               {categoryFilter && (
                 <Button variant="link" onClick={() => setCategoryFilter(null)} className="mt-2 text-coral">
                   {locale === 'fr' ? 'Voir tous les événements' : 'See all events'}
