@@ -18,6 +18,7 @@ import {
   Monitor,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/PageLayout";
 import { Card, CardContent } from "@/components/ui/card";
@@ -466,27 +467,75 @@ export default function InstallPage() {
 
             {/* Desktop fallback */}
             {!isIOS && !isAndroid && !deferredPrompt && (
-              <Card className="border-border">
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                    <Monitor className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">
-                    Ordinateur détecté
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    L'installation PWA est optimisée pour mobile. Scannez ce QR
-                    code ou ouvrez cette page sur votre téléphone.
-                  </p>
-                  <div className="p-4 bg-muted rounded-xl inline-block">
-                    <Smartphone className="h-12 w-12 text-coral mx-auto" />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-4">
-                    Sur Chrome desktop, vous pouvez aussi cliquer sur l'icône
-                    d'installation dans la barre d'adresse
-                  </p>
-                </CardContent>
-              </Card>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <Card className="border-border overflow-hidden">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                        <Monitor className="h-6 w-6 text-muted-foreground" />
+                      </div>
+                      <div className="text-left">
+                        <h3 className="text-lg font-bold text-foreground">
+                          Ordinateur détecté
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          Scannez le QR code avec votre téléphone
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* QR Code */}
+                    <motion.div
+                      className="flex justify-center mb-6"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                    >
+                      <div className="relative p-4 bg-white rounded-2xl shadow-lg">
+                        <QRCodeSVG
+                          value={window.location.href}
+                          size={180}
+                          level="H"
+                          includeMargin={false}
+                          bgColor="#FFFFFF"
+                          fgColor="#1a1a2e"
+                        />
+                        {/* Logo overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-md">
+                            <span className="text-xl font-bold text-white">E</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    <div className="text-center space-y-3">
+                      <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                        <Smartphone className="h-4 w-4" />
+                        <span>Pointez l'appareil photo de votre téléphone</span>
+                      </div>
+
+                      <div className="flex items-center gap-2 justify-center">
+                        <div className="h-px flex-1 bg-border" />
+                        <span className="text-xs text-muted-foreground px-2">ou</span>
+                        <div className="h-px flex-1 bg-border" />
+                      </div>
+
+                      <p className="text-xs text-muted-foreground">
+                        Sur Chrome desktop, cliquez sur l'icône{" "}
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted">
+                          <Download className="h-3 w-3" />
+                        </span>{" "}
+                        dans la barre d'adresse
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             )}
 
             {/* Benefits */}
