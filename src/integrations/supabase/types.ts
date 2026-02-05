@@ -1425,6 +1425,32 @@ export type Database = {
         }[]
       }
       get_own_admin_email: { Args: never; Returns: string }
+      get_own_profile: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          bio: string
+          birth_year: number
+          created_at: string
+          email: string
+          favorite_activities: string[]
+          first_name: string
+          id: string
+          is_premium: boolean
+          purchased_sessions: number
+          university: string
+          updated_at: string
+        }[]
+      }
+      get_profile_for_display: {
+        Args: { p_user_id: string }
+        Returns: {
+          avatar_url: string
+          first_name: string
+          id: string
+          university: string
+        }[]
+      }
       get_public_profile: {
         Args: { profile_id: string }
         Returns: {
@@ -1476,6 +1502,18 @@ export type Database = {
           university: string
         }[]
       }
+      get_session_participants_public: {
+        Args: { p_session_id: string }
+        Returns: {
+          avatar_url: string
+          checked_in: boolean
+          first_name: string
+          id: string
+          joined_at: string
+          session_id: string
+          user_id: string
+        }[]
+      }
       get_sessions_needing_reminders: {
         Args: never
         Returns: {
@@ -1488,6 +1526,14 @@ export type Database = {
           session_date: string
           session_id: string
           start_time: string
+          user_id: string
+        }[]
+      }
+      get_user_reliability_public: {
+        Args: { p_user_id: string }
+        Returns: {
+          reliability_score: number
+          sessions_completed: number
           user_id: string
         }[]
       }
