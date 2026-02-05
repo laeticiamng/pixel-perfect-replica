@@ -1,8 +1,9 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Loader2 } from 'lucide-react';
+import { FullPageLoader } from '@/components/shared/FullPageLoader';
 import { useTranslation } from '@/lib/i18n';
+import toast from 'react-hot-toast';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -12,16 +13,21 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
   const { t } = useTranslation();
+  const hasShownToast = useRef(false);
+
+  // Show toast when redirecting unauthenticated user
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && !hasShownToast.current) {
+      hasShownToast.current = true;
+      toast.error(t('auth.loginRequired'), {
+        icon: '🔒',
+        duration: 4000,
+      });
+    }
+  }, [isLoading, isAuthenticated, t]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-radial flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-coral" />
-          <p className="text-muted-foreground">{t('loading')}</p>
-        </div>
-      </div>
-    );
+    return <FullPageLoader message={t('loading')} />;
   }
 
   if (!isAuthenticated) {

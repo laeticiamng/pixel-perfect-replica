@@ -15,6 +15,7 @@ export { ProtectedRoute } from '../ProtectedRoute';
 // New reusable components
 export { PageHeader } from './PageHeader';
 export { EmptyState } from './EmptyState';
+export { FullPageLoader } from './FullPageLoader';
 export { SettingsRow } from './SettingsRow';
 export { StatsGrid, StatCard } from './StatsGrid';
 export { LoadingSkeleton } from './LoadingSkeleton';
