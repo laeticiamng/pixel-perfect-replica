@@ -176,9 +176,10 @@ export default function EventsPage() {
           </div>
           <div className="flex items-center gap-2">
             <EventFavoriteButton
+              eventId={event.id}
               isFavorite={isFavorite(event.id)}
-              onToggle={() => toggleFavorite(event.id)}
-              isLoading={isFavLoading}
+              onToggle={toggleFavorite}
+              disabled={isFavLoading}
             />
             {isJoined && (
               <span className="text-xs bg-signal-green/20 text-signal-green px-2 py-1 rounded-full">

@@ -3,17 +3,19 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface EventFavoriteButtonProps {
+  eventId: string;
   isFavorite: boolean;
-  onToggle: () => void;
-  isLoading?: boolean;
+  onToggle: (eventId: string) => void | Promise<any>;
+  disabled?: boolean;
   size?: 'sm' | 'md';
   className?: string;
 }
 
 export function EventFavoriteButton({ 
+  eventId,
   isFavorite, 
   onToggle, 
-  isLoading = false,
+  disabled = false,
   size = 'sm',
   className 
 }: EventFavoriteButtonProps) {
@@ -25,9 +27,10 @@ export function EventFavoriteButton({
       size={size === 'sm' ? 'icon' : 'default'}
       onClick={(e) => {
         e.stopPropagation();
-        onToggle();
+        e.preventDefault();
+        onToggle(eventId);
       }}
-      disabled={isLoading}
+      disabled={disabled}
       className={cn(
         'transition-all',
         isFavorite 
@@ -38,7 +41,7 @@ export function EventFavoriteButton({
       )}
       aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
     >
-      {isLoading ? (
+      {disabled ? (
         <Loader2 className={cn(iconSize, 'animate-spin')} />
       ) : (
         <Heart 
