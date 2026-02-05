@@ -13,3 +13,6 @@ export { ConfettiCelebration, celebrationBurst } from './ConfettiCelebration';
 export { TestimonialForm } from './TestimonialForm';
 export { AIRecommendationsWidget } from './AIRecommendationsWidget';
 export { TypingIndicator } from './TypingIndicator';
+export { ChatMessageBubble } from './ChatMessageBubble';
+export { ChatInput } from './ChatInput';
+export { ChatEmptyState } from './ChatEmptyState';
