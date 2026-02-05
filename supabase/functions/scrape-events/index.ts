@@ -26,9 +26,52 @@ serve(async (req) => {
   }
 
   try {
-    const FIRECRAWL_API_KEY = Deno.env.get('FIRECRAWL_API_KEY');
+    // Require admin authentication for scraping (expensive operation)
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      console.log('[scrape-events] No authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+    const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    // Validate JWT using getUser
+    const { data: userData, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !userData?.user) {
+      console.log('[scrape-events] JWT validation failed:', authError?.message || 'No user');
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
+    // Check if user is admin (expensive operation requires admin privileges)
+    const { data: isAdmin, error: roleError } = await supabase.rpc('has_role', {
+      _user_id: userData.user.id,
+      _role: 'admin'
+    });
+
+    if (roleError || !isAdmin) {
+      console.log('[scrape-events] User is not admin:', userData.user.id);
+      return new Response(
+        JSON.stringify({ error: 'Admin privileges required' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      );
+    }
+
+    console.log('[scrape-events] Authenticated admin:', userData.user.id);
+
+    const FIRECRAWL_API_KEY = Deno.env.get('FIRECRAWL_API_KEY');
 
     if (!FIRECRAWL_API_KEY) {
       throw new Error('FIRECRAWL_API_KEY is not configured');
@@ -164,8 +207,8 @@ Si aucun événement n'est trouvé, retourne [].`,
 
     console.log('[scrape-events] Extracted events:', events.length);
 
-    // Store events in database
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    // Store events in database using service role for admin operation
+    const serviceSupabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     const importedEvents = [];
     for (const event of events) {
@@ -175,7 +218,7 @@ Si aucun événement n'est trouvé, retourne [].`,
       const latitude = 48.8566 + (Math.random() - 0.5) * 0.05;
       const longitude = 2.3522 + (Math.random() - 0.5) * 0.05;
 
-      const { data, error } = await supabase.from('events').insert({
+      const { data, error } = await serviceSupabase.from('events').insert({
         name: event.name,
         description: event.description || null,
         location_name: event.location_name || city,
