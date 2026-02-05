@@ -202,6 +202,22 @@ export const translations = {
     demoModeDesc: { en: 'Show fake signals to discover the app', fr: 'Afficher de faux signaux pour découvrir l\'app' },
   },
 
+  // Post-signup onboarding
+  postOnboarding: {
+    step1Title: { en: 'Allow your location', fr: 'Autorise ta position' },
+    step1Desc: { en: 'To see who\'s around you and be visible to others, we need your location.', fr: 'Pour voir qui est autour de toi et être visible des autres, on a besoin de ta position.' },
+    allowLocation: { en: 'Allow location', fr: 'Autoriser la localisation' },
+    skipForNow: { en: 'Skip for now', fr: 'Passer pour l\'instant' },
+    step2Title: { en: 'What are you doing?', fr: 'Tu fais quoi ?' },
+    step2Desc: { en: 'Choose your current activity so others can find you.', fr: 'Choisis ton activité pour que les autres puissent te trouver.' },
+    explorFirst: { en: 'Explore first', fr: 'Explorer d\'abord' },
+    step3Title: { en: 'Activate your signal!', fr: 'Active ton signal !' },
+    step3Desc: { en: 'Press the button to become visible on the radar and meet people around you.', fr: 'Appuie sur le bouton pour devenir visible sur le radar et rencontrer des gens autour de toi.' },
+    tapToActivate: { en: 'TAP TO GO', fr: 'APPUIE' },
+    signalActivated: { en: 'Signal activated! 🎉', fr: 'Signal activé ! 🎉' },
+    redirecting: { en: 'Redirecting to the radar...', fr: 'Redirection vers le radar...' },
+  },
+
   // Profile
   profile: {
     title: { en: 'Profile', fr: 'Profil' },
