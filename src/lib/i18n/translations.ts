@@ -78,6 +78,7 @@ export const translations = {
     firstNameRequired: { en: 'First name required', fr: 'Prénom requis' },
     firstNameTooLong: { en: 'First name too long (max 50 characters)', fr: 'Prénom trop long (max 50 caractères)' },
     strength: { en: 'Strength', fr: 'Force' },
+    loginRequired: { en: 'Log in to access this page', fr: 'Connecte-toi pour accéder à cette page' },
   },
 
   // Onboarding
