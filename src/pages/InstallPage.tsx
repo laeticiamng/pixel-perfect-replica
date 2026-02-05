@@ -307,9 +307,13 @@ export default function InstallPage() {
                 alt="EASY Logo"
                 className="w-16 h-16 object-contain"
                 onError={(e) => {
+                  // Hide the broken image
                   e.currentTarget.style.display = "none";
-                  e.currentTarget.parentElement!.innerHTML =
-                    '<span class="text-5xl font-bold text-white">E</span>';
+                  // Create fallback text safely using DOM APIs (XSS-safe)
+                  const fallbackSpan = document.createElement("span");
+                  fallbackSpan.className = "text-5xl font-bold text-white";
+                  fallbackSpan.textContent = "E";
+                  e.currentTarget.parentElement?.appendChild(fallbackSpan);
                 }}
               />
             </div>
