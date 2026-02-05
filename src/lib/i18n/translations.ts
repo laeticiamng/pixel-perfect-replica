@@ -179,6 +179,9 @@ export const translations = {
     meetInPerson: { en: 'Meet the person, then chat', fr: 'Rencontre la personne, ensuite discute' },
     safetyFirst: { en: 'Your safety is our priority', fr: 'Ta sécurité est notre priorité' },
     safetyDesc: { en: 'Ghost mode, blocking, GPS fuzzing, panic button', fr: 'Mode fantôme, blocage, floutage GPS, bouton d\'urgence' },
+    appPreviewTitle: { en: 'See the radar in action', fr: 'Découvre le radar en action' },
+    appPreviewDesc: { en: 'Real-time signals around you', fr: 'Les signaux en temps réel autour de toi' },
+    liveDemo: { en: 'Live demo', fr: 'Démo live' },
   },
 
   // Profile

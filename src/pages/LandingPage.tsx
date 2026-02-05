@@ -326,21 +326,80 @@ export default function LandingPage() {
         </motion.div>
       </motion.section>
 
+      {/* App Preview Section - Radar Demo */}
+      <section className="py-16 px-6 relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <RevealText>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4">{t('landing.appPreviewTitle')}</h2>
+              <p className="text-muted-foreground">{t('landing.appPreviewDesc')}</p>
+            </div>
+          </RevealText>
+          
+          <RevealText delay={0.2}>
+            <div className="relative mx-auto max-w-sm">
+              {/* Phone mockup */}
+              <div className="relative bg-card rounded-[3rem] p-3 border-4 border-muted shadow-2xl">
+                {/* Phone notch */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-muted rounded-b-2xl z-20" />
+                
+                {/* Screen */}
+                <div className="relative bg-background rounded-[2.5rem] overflow-hidden aspect-[9/16] flex flex-col items-center justify-center">
+                  {/* Status bar mock */}
+                  <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-background/50 to-transparent z-10" />
+                  
+                  {/* Radar content */}
+                  <div className="flex-1 flex items-center justify-center">
+                    <SignalDemo />
+                  </div>
+                  
+                  {/* Bottom nav mock */}
+                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-card/80 backdrop-blur border-t border-muted flex items-center justify-around px-4">
+                    <div className="w-10 h-10 rounded-full bg-coral/20 flex items-center justify-center">
+                      <span className="text-coral text-lg">📍</span>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground text-lg">📅</span>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground text-lg">👥</span>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-muted-foreground text-lg">👤</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Floating label */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.5 }}
+                className="absolute -right-4 top-1/3 bg-coral text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-lg"
+              >
+                {t('landing.liveDemo')}
+              </motion.div>
+            </div>
+          </RevealText>
+        </div>
+      </section>
+
       {/* Problem Section */}
-      <section className="py-24 px-6 relative z-10">
+      <section className="py-12 px-6 relative z-10">
         <div className="max-w-4xl mx-auto">
           <RevealText>
             <p className="text-2xl md:text-3xl lg:text-4xl font-medium text-center leading-relaxed">
-              <span className="text-muted-foreground">{t('landing.youWantToMeet')}</span>
+              <span className="text-foreground/70">{t('landing.youWantToMeet')}</span>
               <br />
-              <span className="text-muted-foreground">{t('landing.butYouNeverKnow')}</span>
+              <span className="text-foreground/70">{t('landing.butYouNeverKnow')}</span>
               <br />
               <span className="text-foreground font-bold">{t('landing.wantsToBeApproached')}</span>
             </p>
           </RevealText>
           
           <RevealText delay={0.2}>
-            <div className="mt-12 text-center">
+            <div className="mt-8 text-center">
               <p className="text-lg text-coral font-semibold">{t('landing.untilNow')}</p>
             </div>
           </RevealText>
@@ -348,28 +407,24 @@ export default function LandingPage() {
       </section>
 
       {/* Signal Demo Section */}
-      <section className="py-24 px-6 relative z-10">
+      <section className="py-12 px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <RevealText>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
               {t('landing.greenSignalChanges')}
               <br />{t('landing.changesEverything')}
             </h2>
           </RevealText>
           
           <RevealText delay={0.2}>
-            <p className="text-lg text-muted-foreground mb-12 max-w-lg mx-auto">
+            <p className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto">
               {t('landing.whenSomeoneActivates')}
               <br /><span className="text-foreground font-semibold">{t('landing.iAmOpenToInteract')}</span>
             </p>
           </RevealText>
           
           <RevealText delay={0.4}>
-            <SignalDemo />
-          </RevealText>
-          
-          <RevealText delay={0.6}>
-            <p className="mt-12 text-sm text-muted-foreground">
+            <p className="mt-8 text-sm text-muted-foreground">
               {t('landing.noMoreAwkward')}
               <br />{t('landing.firstStepDone')}
             </p>
@@ -378,7 +433,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 px-6 relative z-10">
+      <section className="py-12 px-6 relative z-10">
         <div className="max-w-5xl mx-auto">
           <RevealText>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
@@ -410,7 +465,7 @@ export default function LandingPage() {
       </section>
 
       {/* Comparison Section */}
-      <section className="py-24 px-6 relative z-10">
+      <section className="py-12 px-6 relative z-10">
         <div className="max-w-2xl mx-auto">
           <RevealText>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
@@ -426,7 +481,7 @@ export default function LandingPage() {
       </section>
 
       {/* Use Cases */}
-      <section className="py-24 px-6 relative z-10 overflow-hidden">
+      <section className="py-12 px-6 relative z-10 overflow-hidden">
         <div className="max-w-5xl mx-auto">
           <RevealText>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
@@ -454,7 +509,7 @@ export default function LandingPage() {
       </section>
 
       {/* 100% Real Guarantee Section */}
-      <section className="py-24 px-6 relative z-10 bg-gradient-to-b from-transparent to-coral/5">
+      <section className="py-16 px-6 relative z-10 bg-gradient-to-b from-transparent to-coral/5">
         <div className="max-w-4xl mx-auto">
           <RevealText>
             <div className="text-center mb-12">
@@ -498,7 +553,7 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-32 px-6 relative z-10">
+      <section className="py-20 px-6 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
           <RevealText>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
