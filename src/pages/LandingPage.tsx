@@ -577,9 +577,9 @@ export default function LandingPage() {
           
           <div className="text-center text-xs text-muted-foreground">
             <Link to="/changelog" className="font-medium hover:text-coral transition-colors">
-              EASY v1.3.0 • PWA
+              EASY v1.6.5 • PWA
             </Link>
-            <p>{t('landing.madeWith')}</p>
+            <p className="mt-1">{t('landing.madeWith')}</p>
           </div>
         </div>
       </footer>

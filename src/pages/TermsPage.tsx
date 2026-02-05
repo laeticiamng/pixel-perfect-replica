@@ -98,7 +98,7 @@ export default function TermsPage() {
         </div>
 
         <p className="text-center text-xs text-muted-foreground">
-          © 2026 EASY. Tous droits réservés.
+          © 2026 EASY - EmotionsCare SASU. Tous droits réservés.
         </p>
       </div>
     </PageLayout>

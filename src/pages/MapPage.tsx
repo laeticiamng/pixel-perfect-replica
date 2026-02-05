@@ -221,29 +221,54 @@ export default function MapPage() {
 
         {/* Interactive Map */}
         <div className="flex-1 min-h-0 px-4 sm:px-6">
-          <InteractiveMap
-            nearbyUsers={filteredNearbyUsers.map(u => ({
-              id: u.id,
-              user_id: u.id,
-              firstName: u.firstName,
-              signal: u.signal,
-              activity: u.activity,
-              latitude: u.position?.latitude || 0,
-              longitude: u.position?.longitude || 0,
-              distance: u.distance,
-              avatar_url: undefined,
-              rating: u.rating,
-              activeSince: u.activeSince,
-            }))}
-            isActive={isActive}
-            myActivity={myActivity}
-            onUserClick={handleUserClick}
-            visibilityDistance={settings.visibility_distance}
-            className="w-full h-full"
-            userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
-            activityFilters={activityFilters}
-            onActivityFilterToggle={toggleActivityFilter}
-          />
+          {filteredNearbyUsers.length === 0 && !isActive ? (
+            <div className="h-full flex flex-col items-center justify-center text-center px-6">
+              <div className="relative mb-6">
+                <div className="absolute inset-0 rounded-full bg-coral/20 blur-xl animate-breathing" />
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-coral/20 to-coral/10 flex items-center justify-center relative">
+                  <Radio className="h-12 w-12 text-coral" />
+                </div>
+              </div>
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Personne autour de toi pour le moment
+              </h3>
+              <p className="text-muted-foreground text-sm mb-6 max-w-xs">
+                Active ton signal et invite tes amis à rejoindre EASY !
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleSignalToggle}
+                  className="px-6 py-3 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 glow-coral"
+                >
+                  Activer mon signal
+                </button>
+              </div>
+            </div>
+          ) : (
+            <InteractiveMap
+              nearbyUsers={filteredNearbyUsers.map(u => ({
+                id: u.id,
+                user_id: u.id,
+                firstName: u.firstName,
+                signal: u.signal,
+                activity: u.activity,
+                latitude: u.position?.latitude || 0,
+                longitude: u.position?.longitude || 0,
+                distance: u.distance,
+                avatar_url: undefined,
+                rating: u.rating,
+                activeSince: u.activeSince,
+              }))}
+              isActive={isActive}
+              myActivity={myActivity}
+              onUserClick={handleUserClick}
+              visibilityDistance={settings.visibility_distance}
+              className="w-full h-full"
+              userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
+              activityFilters={activityFilters}
+              onActivityFilterToggle={toggleActivityFilter}
+            />
+          )}
         </div>
 
         {/* Signal Button */}
