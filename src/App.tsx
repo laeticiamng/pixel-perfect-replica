@@ -41,6 +41,7 @@ import {
   DataExportPage,
   // Events
   EventsPage,
+  FavoriteEventsPage,
   EventDetailPage,
   EventCheckinPage,
   // Binome
@@ -201,6 +202,11 @@ function AnimatedRoutes() {
           <Route path="/events" element={
             <ProtectedRoute>
               <EventsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/events/favorites" element={
+            <ProtectedRoute>
+              <FavoriteEventsPage />
             </ProtectedRoute>
           } />
           <Route path="/events/:eventId" element={
