@@ -1,35 +1,58 @@
 
+# Audit Final + Corrections Pre-Publication
 
-# Audit Final v1.7.0 -- Confirmation de publication
+## Problemes identifies
 
-## Resultat : AUCUNE CORRECTION NECESSAIRE
+### 1. BUG: ClusterMarker -- Warning React forwardRef (console)
+Le composant `ClusterMarker` est passe comme enfant a un `Marker` de react-map-gl qui tente de lui passer un `ref`, mais le composant n'utilise pas `React.forwardRef()`. Cela genere un warning visible dans la console a chaque chargement de `/map`.
 
-Cet audit multi-role a deja ete realise 4 fois (iterations 23-26), incluant un test beta en navigateur reel (mobile 390px). Tous les bugs identifies (BUG-41 a BUG-45) ont ete corriges et verifies.
+**Correction** : Convertir `ClusterMarker` en composant avec `forwardRef`.
 
-## Resume des 7 roles
+### 2. UX: Formulation "dating app" dans la section Probleme
+La phrase `landing.youWantToMeet` = "Tu veux rencontrer quelqu'un" est interpretee comme une appli de rencontre amoureuse. Les beta testeurs ont confirme cette confusion. Le badge "NOT a dating app" est present mais la section Problem en dessous re-cree la confusion.
 
-| Role | Statut | Justification |
-|------|--------|---------------|
-| CEO | PASS | Proposition de valeur claire, KPIs via analytics_events, monetisation Stripe (Free/Pay-per-use/Easy+), quotas de sessions operationnels |
-| CISO | PASS | RLS sur 25+ tables, admin via has_role() SECURITY DEFINER, rate limiting (reports 5/h, reveals 10/h+50/d), shadow-ban auto a 3 signalements/24h, tous les secrets configures |
-| DPO | PASS | Export GDPR en settings, nettoyage automatise (signaux 2h, rate limits 24h, localisations 30d, analytics 90d), floutage localisation 100m, cookie consent |
-| CDO | PASS | Pipeline analytics fonctionnel, events par categorie, dashboard admin avec graphique DAU |
-| COO | PASS | Cron jobs surveilles, rate limits edge functions, shadow-ban/cleanup automatises, rappels de sessions |
-| Head of Design | PASS | Mobile responsive 375px+, dark/light theme, composants shadcn/ui coherents, bottom nav mobile, sidebar desktop |
-| Beta Testeur | PASS | Tous les flux fonctionnels (landing -> inscription -> map -> signal), i18n 100% (EN/FR), zero erreurs console, test navigateur reel confirme |
+**Correction** : Reformuler pour parler d'activites et non de "rencontrer quelqu'un".
+- FR: "Tu veux faire du sport, reviser, manger... mais pas seul."
+- EN: "You want to work out, study, eat... but not alone."
+- Reformuler aussi `butYouNeverKnow` et `wantsToBeApproached` pour rester sur le theme activites.
 
-## Verifications techniques
+### 3. UX: Section Signal -- "ouvert a l'interaction" reste vague
+La phrase "Je suis ouvert a l'interaction" ne dit pas concretement ce que fait l'app.
 
-- **Console errors** : 0 (verifie a l'instant)
-- **Network errors** : 0 (verifie a l'instant)
-- **Hardcoded strings** : 0 (verifie par recherche codebase)
-- **RLS coverage** : 25+ tables avec politiques actives
-- **Secrets** : Tous configures (Stripe, Mapbox, Resend, ElevenLabs, Firecrawl, Perplexity)
-- **forwardRef fix** : Applique sur LocationDescriptionInput.tsx
+**Correction** : Reformuler pour etre concret :
+- FR: "Je suis dispo pour une activite"
+- EN: "I'm available for an activity"
 
-## Conclusion
+### 4. CLEANUP: Traduction `motivationGroups` inutilisee
+La cle `motivationGroups` contient "amour..." mais n'est utilisee nulle part dans le code. A supprimer pour eviter toute confusion future.
 
-**Zero corrections necessaires.** La plateforme est production-ready a la version v1.7.0. Vous pouvez publier immediatement en cliquant sur le bouton "Publish" en haut a droite de l'editeur.
+### 5. UX: Le titre principal "Vois qui est ouvert a l'interaction" reste abstrait
+Pour un utilisateur qui scanne en 3 secondes, "ouvert a l'interaction" ne communique pas assez clairement.
 
-Aucun changement de code n'est requis.
+**Correction** : Reformuler en :
+- FR: "Vois qui est dispo" / "pres de toi, maintenant."
+- EN: "See who's available" / "near you, right now."
 
+---
+
+## Details techniques
+
+### Fichiers modifies
+
+1. **`src/components/map/ClusterMarker.tsx`**
+   - Wrapper avec `React.forwardRef` pour eliminer le warning console
+
+2. **`src/lib/i18n/translations.ts`**
+   - `landing.seeWhoIsOpen` : "See who's" / "Vois qui est"
+   - `landing.openToInteract` : "available near you." / "dispo pres de toi."
+   - `landing.youWantToMeet` : "You want to work out, study, eat..." / "Tu veux faire du sport, reviser, manger..."
+   - `landing.butYouNeverKnow` : "But you never know who's up for it around you." / "Mais tu ne sais jamais qui est partant autour de toi."
+   - `landing.wantsToBeApproached` : "EASY shows you who is." / "EASY te le montre."
+   - `landing.iAmOpenToInteract` : "I'm available for an activity" / "Je suis dispo pour une activite"
+   - Supprimer `landing.motivationGroups` (inutilise)
+
+3. **`src/test/LandingPage.test.tsx`**
+   - Mettre a jour les assertions pour correspondre aux nouveaux textes FR
+
+### Aucun changement backend
+Tous les correctifs sont frontend uniquement (wording + forwardRef).
