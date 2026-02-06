@@ -1,10 +1,11 @@
-import { X, MessageCircle, Star, Clock, MapPin, User } from 'lucide-react';
+import { X, Star, Clock, MapPin, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ACTIVITIES, ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, enUS } from 'date-fns/locale';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface UserPopupCardProps {
   user: {
@@ -29,13 +30,15 @@ export function UserPopupCard({
   onContact,
   className,
 }: UserPopupCardProps) {
+  const { t, locale } = useTranslation();
+  const dateLocale = locale === 'fr' ? fr : enUS;
   const activity = ACTIVITIES.find(a => a.id === user.activity);
   
   const getSignalLabel = (signal: string) => {
     switch (signal) {
-      case 'green': return 'Ouvert';
-      case 'yellow': return 'Conditionnel';
-      default: return 'Occupé';
+      case 'green': return t('userPopup.open');
+      case 'yellow': return t('userPopup.conditional');
+      default: return t('userPopup.busy');
     }
   };
   
@@ -48,8 +51,8 @@ export function UserPopupCard({
   };
 
   const formatDistance = (meters?: number) => {
-    if (!meters) return 'Distance inconnue';
-    if (meters < 100) return `${Math.round(meters)}m - Très proche !`;
+    if (!meters) return t('userPopup.unknownDistance');
+    if (meters < 100) return t('userPopup.veryClose', { meters: Math.round(meters) });
     if (meters < 500) return `${Math.round(meters)}m`;
     return `${(meters / 1000).toFixed(1)}km`;
   };
@@ -101,7 +104,7 @@ export function UserPopupCard({
         <button
           onClick={onClose}
           className="p-1.5 rounded-lg hover:bg-muted transition-colors"
-          aria-label="Fermer"
+          aria-label={t('close')}
         >
           <X className="h-4 w-4 text-muted-foreground" />
         </button>
@@ -112,7 +115,7 @@ export function UserPopupCard({
         {/* Activity */}
         <div className="flex items-center gap-2 text-sm">
           <span className="text-lg">{activity?.emoji || '✨'}</span>
-          <span className="text-foreground font-medium">{activity?.label || 'Autre'}</span>
+          <span className="text-foreground font-medium">{activity?.label || t('activities.other')}</span>
         </div>
 
         {/* Distance */}
@@ -133,7 +136,7 @@ export function UserPopupCard({
         {user.activeSince && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Clock className="h-4 w-4" />
-            <span>Actif {formatDistanceToNow(user.activeSince, { addSuffix: true, locale: fr })}</span>
+            <span>{formatDistanceToNow(user.activeSince, { addSuffix: true, locale: dateLocale })}</span>
           </div>
         )}
       </div>
@@ -145,9 +148,8 @@ export function UserPopupCard({
         size="lg"
       >
         <User className="h-4 w-4 mr-2" />
-        Voir le profil
+        {t('userPopup.viewProfile')}
       </Button>
-
     </div>
   );
 }
