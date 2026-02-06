@@ -76,7 +76,7 @@ export default function PremiumPage() {
     const sessionPurchased = searchParams.get('session_purchased');
 
     if (success === 'true') {
-      toast.success('🎉 ' + t('premium.welcomeEasyPlus'));
+      toast.success(t('premium.welcomeEasyPlus'));
       checkSubscription();
       navigate('/premium', { replace: true });
     } else if (sessionPurchased) {
