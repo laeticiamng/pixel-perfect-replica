@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export type EventCategory = 
   | 'social'
@@ -15,18 +16,20 @@ interface EventCategoryBadgeProps {
   className?: string;
 }
 
-const categoryConfig: Record<EventCategory, { label: string; emoji: string; color: string }> = {
-  social: { label: 'Social', emoji: '🤝', color: 'bg-signal-green/20 text-signal-green border-signal-green/30' },
-  academic: { label: 'Académique', emoji: '📚', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
-  sport: { label: 'Sport', emoji: '🏃', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
-  culture: { label: 'Culture', emoji: '🎭', color: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
-  party: { label: 'Soirée', emoji: '🎉', color: 'bg-coral/20 text-coral border-coral/30' },
-  professional: { label: 'Pro', emoji: '💼', color: 'bg-slate-500/20 text-slate-400 border-slate-500/30' },
-  other: { label: 'Autre', emoji: '✨', color: 'bg-muted text-muted-foreground border-border' },
+const categoryConfig: Record<EventCategory, { emoji: string; color: string }> = {
+  social: { emoji: '🤝', color: 'bg-signal-green/20 text-signal-green border-signal-green/30' },
+  academic: { emoji: '📚', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+  sport: { emoji: '🏃', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+  culture: { emoji: '🎭', color: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
+  party: { emoji: '🎉', color: 'bg-coral/20 text-coral border-coral/30' },
+  professional: { emoji: '💼', color: 'bg-slate-500/20 text-slate-400 border-slate-500/30' },
+  other: { emoji: '✨', color: 'bg-muted text-muted-foreground border-border' },
 };
 
 export function EventCategoryBadge({ category, size = 'md', className }: EventCategoryBadgeProps) {
+  const { t } = useTranslation();
   const config = categoryConfig[category] || categoryConfig.other;
+  const label = t(`eventCategories.${category}` as any);
   
   return (
     <span
@@ -38,7 +41,7 @@ export function EventCategoryBadge({ category, size = 'md', className }: EventCa
       )}
     >
       <span>{config.emoji}</span>
-      <span>{config.label}</span>
+      <span>{label}</span>
     </span>
   );
 }
@@ -50,12 +53,14 @@ export function EventCategorySelector({
   value: EventCategory | null;
   onChange: (category: EventCategory) => void;
 }) {
+  const { t } = useTranslation();
   const categories: EventCategory[] = ['social', 'academic', 'sport', 'culture', 'party', 'professional', 'other'];
   
   return (
     <div className="flex flex-wrap gap-2">
       {categories.map((cat) => {
         const config = categoryConfig[cat];
+        const label = t(`eventCategories.${cat}` as any);
         const isSelected = value === cat;
         
         return (
@@ -71,7 +76,7 @@ export function EventCategorySelector({
             )}
           >
             <span>{config.emoji}</span>
-            <span className="text-sm font-medium">{config.label}</span>
+            <span className="text-sm font-medium">{label}</span>
           </button>
         );
       })}

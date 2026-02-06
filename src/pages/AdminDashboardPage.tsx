@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSystemStats } from '@/hooks/useSystemStats';
 import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -54,6 +55,7 @@ const CHART_COLORS = [
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -113,17 +115,17 @@ export default function AdminDashboardPage() {
   const handleCleanup = async () => {
     const success = await triggerCleanup();
     if (success) {
-      toast.success('Nettoyage des signaux expirés effectué');
+      toast.success(t('admin.cleanupSuccess'));
       refetchStats();
     } else {
-      toast.error('Erreur lors du nettoyage');
+      toast.error(t('admin.cleanupError'));
     }
   };
 
   const handleRefresh = () => {
     refetchStats();
     loadAnalytics();
-    toast.success('Données rafraîchies');
+    toast.success(t('admin.dataRefreshed'));
   };
 
   // Load analytics data
@@ -281,9 +283,9 @@ export default function AdminDashboardPage() {
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-foreground mb-2">Accès restreint</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-2">{t('admin.restrictedAccess')}</h2>
             <p className="text-muted-foreground">
-              Vous devez être administrateur pour accéder à cette page.
+              {t('admin.restrictedDesc')}
             </p>
           </div>
         </div>
@@ -305,8 +307,8 @@ export default function AdminDashboardPage() {
               <ArrowLeft className="h-6 w-6 text-foreground" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Dashboard Admin</h1>
-              <p className="text-sm text-muted-foreground">Analytics & Engagement</p>
+              <h1 className="text-xl font-bold text-foreground">{t('admin.dashboard')}</h1>
+              <p className="text-sm text-muted-foreground">{t('admin.analyticsEngagement')}</p>
             </div>
           </div>
           <Button 
@@ -339,10 +341,10 @@ export default function AdminDashboardPage() {
             )}
             <div className="flex-1">
               <p className="font-medium capitalize">
-                Système {errorRate.health_status === 'healthy' ? 'Opérationnel' : errorRate.health_status === 'warning' ? 'Attention' : 'Critique'}
+                {errorRate.health_status === 'healthy' ? t('admin.systemHealthy') : errorRate.health_status === 'warning' ? t('admin.systemWarning') : t('admin.systemCritical')}
               </p>
               <p className="text-xs opacity-80">
-                Taux d'erreur: {errorRate.error_rate_percent.toFixed(2)}% ({errorRate.error_count}/{errorRate.total_events} dernières 24h)
+                {t('admin.errorRate').replace('{rate}', errorRate.error_rate_percent.toFixed(2)).replace('{errors}', String(errorRate.error_count)).replace('{total}', String(errorRate.total_events))}
               </p>
             </div>
             <Button 
@@ -351,7 +353,7 @@ export default function AdminDashboardPage() {
               onClick={handleCleanup}
               className="text-xs"
             >
-              Nettoyer
+              {t('admin.cleanup')}
             </Button>
           </div>
         )}
@@ -366,7 +368,7 @@ export default function AdminDashboardPage() {
                 <div className="p-1.5 rounded-lg bg-coral/20">
                   <Users className="h-4 w-4 text-coral" />
                 </div>
-                <span className="text-sm text-muted-foreground">Utilisateurs</span>
+                <span className="text-sm text-muted-foreground">{t('admin.users')}</span>
               </div>
               <p className="text-3xl font-bold text-foreground">{totalUsers}</p>
             </CardContent>
@@ -378,7 +380,7 @@ export default function AdminDashboardPage() {
                 <div className="p-1.5 rounded-lg bg-signal-green/20">
                   <Activity className="h-4 w-4 text-signal-green" />
                 </div>
-                <span className="text-sm text-muted-foreground">Signaux actifs</span>
+                <span className="text-sm text-muted-foreground">{t('admin.activeSignals')}</span>
               </div>
               <p className="text-3xl font-bold text-foreground">{totalSignals}</p>
             </CardContent>
@@ -390,7 +392,7 @@ export default function AdminDashboardPage() {
                 <div className="p-1.5 rounded-lg bg-signal-yellow/20">
                   <MousePointer className="h-4 w-4 text-signal-yellow" />
                 </div>
-                <span className="text-sm text-muted-foreground">Événements</span>
+                <span className="text-sm text-muted-foreground">{t('admin.analyticsEvents')}</span>
               </div>
               <p className="text-3xl font-bold text-foreground">{totalEvents}</p>
             </CardContent>
@@ -402,7 +404,7 @@ export default function AdminDashboardPage() {
                 <div className="p-1.5 rounded-lg bg-purple-accent/20">
                   <TrendingUp className="h-4 w-4 text-purple-accent" />
                 </div>
-                <span className="text-sm text-muted-foreground">Interactions</span>
+                <span className="text-sm text-muted-foreground">{t('admin.interactions')}</span>
               </div>
               <p className="text-3xl font-bold text-foreground">{totalInteractions}</p>
             </CardContent>
@@ -412,7 +414,7 @@ export default function AdminDashboardPage() {
         {/* Tabs for different analytics views */}
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-6 bg-muted/30">
-            <TabsTrigger value="overview">Vue</TabsTrigger>
+            <TabsTrigger value="overview">{t('admin.overview')}</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="pages">Pages</TabsTrigger>
             <TabsTrigger value="scraper" className="flex items-center gap-1">
@@ -425,7 +427,7 @@ export default function AdminDashboardPage() {
             </TabsTrigger>
             <TabsTrigger value="alerts" className="flex items-center gap-1">
               <Bell className="h-3 w-3" />
-              Alertes
+              {t('admin.alerts')}
             </TabsTrigger>
           </TabsList>
 
@@ -435,7 +437,7 @@ export default function AdminDashboardPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-coral" />
-                  Utilisateurs actifs (14 jours)
+                  {t('admin.activeUsers14d')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -473,7 +475,7 @@ export default function AdminDashboardPage() {
                     </ResponsiveContainer>
                   </div>
                 ) : (
-                  <p className="text-center text-muted-foreground py-8">Aucune donnée disponible</p>
+                  <p className="text-center text-muted-foreground py-8">{t('admin.noData')}</p>
                 )}
               </CardContent>
             </Card>
@@ -483,7 +485,7 @@ export default function AdminDashboardPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <BarChart3 className="h-5 w-5 text-signal-green" />
-                  Répartition par catégorie
+                  {t('admin.categoryDistribution')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -523,7 +525,7 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-center text-muted-foreground py-8">Aucune donnée disponible</p>
+                  <p className="text-center text-muted-foreground py-8">{t('admin.noData')}</p>
                 )}
               </CardContent>
             </Card>
@@ -533,7 +535,7 @@ export default function AdminDashboardPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Clock className="h-5 w-5 text-signal-yellow" />
-                  Activité par heure
+                  {t('admin.hourlyActivity')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -559,7 +561,7 @@ export default function AdminDashboardPage() {
                     </ResponsiveContainer>
                   </div>
                 ) : (
-                  <p className="text-center text-muted-foreground py-8">Aucune donnée disponible</p>
+                  <p className="text-center text-muted-foreground py-8">{t('admin.noData')}</p>
                 )}
               </CardContent>
             </Card>
@@ -569,8 +571,8 @@ export default function AdminDashboardPage() {
             {/* Top Events */}
             <Card className="glass border-0">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg">Top 10 Événements</CardTitle>
-                <CardDescription>Les événements les plus fréquents</CardDescription>
+                <CardTitle className="text-lg">{t('admin.topEvents')}</CardTitle>
+                <CardDescription>{t('admin.mostFrequent')}</CardDescription>
               </CardHeader>
               <CardContent>
                 {eventCounts.length > 0 ? (
@@ -596,7 +598,7 @@ export default function AdminDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-center text-muted-foreground py-8">Aucun événement enregistré</p>
+                  <p className="text-center text-muted-foreground py-8">{t('admin.noEventsRecorded')}</p>
                 )}
               </CardContent>
             </Card>
@@ -608,7 +610,7 @@ export default function AdminDashboardPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Eye className="h-5 w-5 text-coral" />
-                  Pages les plus visitées
+                  {t('admin.mostVisitedPages')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -639,7 +641,7 @@ export default function AdminDashboardPage() {
                     </ResponsiveContainer>
                   </div>
                 ) : (
-                  <p className="text-center text-muted-foreground py-8">Aucune page vue enregistrée</p>
+                  <p className="text-center text-muted-foreground py-8">{t('admin.noPageViews')}</p>
                 )}
               </CardContent>
             </Card>

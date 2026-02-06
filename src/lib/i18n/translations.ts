@@ -1478,6 +1478,67 @@ export const translations = {
     months: { en: 'months', fr: 'mois' },
     eventsCreated: { en: '{count} events will be created (max 12)', fr: '{count} événements seront créés (max 12)' },
   },
+  // Event Categories
+  eventCategories: {
+    social: { en: 'Social', fr: 'Social' },
+    academic: { en: 'Academic', fr: 'Académique' },
+    sport: { en: 'Sport', fr: 'Sport' },
+    culture: { en: 'Culture', fr: 'Culture' },
+    party: { en: 'Party', fr: 'Soirée' },
+    professional: { en: 'Pro', fr: 'Pro' },
+    other: { en: 'Other', fr: 'Autre' },
+  },
+
+  // Event Reminder
+  eventReminder: {
+    startsInMin: { en: 'Starts in {min} min!', fr: 'Commence dans {min} min !' },
+    startsInMinCalm: { en: 'Starts in {min} min', fr: 'Commence dans {min} min' },
+    startsInHours: { en: 'Starts in {hours}h', fr: 'Commence dans {hours}h' },
+    soon: { en: 'Soon!', fr: 'Bientôt !' },
+    reminders: { en: 'Reminders', fr: 'Rappels' },
+  },
+
+  // Binome Session Toasts
+  binomeToasts: {
+    mustBeLoggedIn: { en: 'You must be logged in', fr: 'Vous devez être connecté' },
+    sessionCreated: { en: 'Slot created successfully!', fr: 'Créneau créé avec succès !' },
+    joinedSession: { en: 'You joined the session!', fr: 'Vous avez rejoint la session !' },
+    leftSession: { en: 'You left the session', fr: 'Vous avez quitté la session' },
+    sessionCancelled: { en: 'Session cancelled', fr: 'Session annulée' },
+    cancelError: { en: 'Error cancelling', fr: "Erreur lors de l'annulation" },
+    sendError: { en: 'Error sending message', fr: "Erreur lors de l'envoi du message" },
+  },
+
+  // Admin Dashboard
+  admin: {
+    restrictedAccess: { en: 'Restricted access', fr: 'Accès restreint' },
+    restrictedDesc: { en: 'You must be an admin to access this page.', fr: 'Vous devez être administrateur pour accéder à cette page.' },
+    dashboard: { en: 'Admin Dashboard', fr: 'Dashboard Admin' },
+    analyticsEngagement: { en: 'Analytics & Engagement', fr: 'Analytics & Engagement' },
+    systemHealthy: { en: 'System Operational', fr: 'Système Opérationnel' },
+    systemWarning: { en: 'Warning', fr: 'Attention' },
+    systemCritical: { en: 'Critical', fr: 'Critique' },
+    errorRate: { en: 'Error rate: {rate}% ({errors}/{total} last 24h)', fr: "Taux d'erreur: {rate}% ({errors}/{total} dernières 24h)" },
+    cleanup: { en: 'Cleanup', fr: 'Nettoyer' },
+    users: { en: 'Users', fr: 'Utilisateurs' },
+    activeSignals: { en: 'Active signals', fr: 'Signaux actifs' },
+    analyticsEvents: { en: 'Events', fr: 'Événements' },
+    interactions: { en: 'Interactions', fr: 'Interactions' },
+    activeUsers14d: { en: 'Active users (14 days)', fr: 'Utilisateurs actifs (14 jours)' },
+    categoryDistribution: { en: 'Category distribution', fr: 'Répartition par catégorie' },
+    hourlyActivity: { en: 'Hourly activity', fr: 'Activité par heure' },
+    topEvents: { en: 'Top 10 Events', fr: 'Top 10 Événements' },
+    mostFrequent: { en: 'Most frequent events', fr: 'Les événements les plus fréquents' },
+    mostVisitedPages: { en: 'Most visited pages', fr: 'Pages les plus visitées' },
+    noData: { en: 'No data available', fr: 'Aucune donnée disponible' },
+    noEventsRecorded: { en: 'No events recorded', fr: 'Aucun événement enregistré' },
+    noPageViews: { en: 'No page views recorded', fr: 'Aucune page vue enregistrée' },
+    cleanupSuccess: { en: 'Expired signals cleanup completed', fr: 'Nettoyage des signaux expirés effectué' },
+    cleanupError: { en: 'Cleanup error', fr: 'Erreur lors du nettoyage' },
+    dataRefreshed: { en: 'Data refreshed', fr: 'Données rafraîchies' },
+    overview: { en: 'Overview', fr: 'Vue' },
+    alerts: { en: 'Alerts', fr: 'Alertes' },
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
+import { translations, getCurrentLocale } from '@/lib/i18n/translations';
 
 export type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
 export type SessionStatus = 'open' | 'full' | 'cancelled' | 'completed';
@@ -50,8 +51,18 @@ export interface SessionFilters {
 
 export function useBinomeSessions() {
   const { user } = useAuth();
-  const locale = typeof window !== 'undefined' ? (document.documentElement.lang || 'en') : 'en';
+  
+  const t = (key: string) => {
+    const locale = getCurrentLocale();
+    const keys = key.split('.');
+    let obj: any = translations;
+    for (const k of keys) {
+      obj = obj?.[k];
+    }
+    return obj?.[locale] || obj?.en || key;
+  };
   const [sessions, setSessions] = useState<ScheduledSession[]>([]);
+
   const [mySessions, setMySessions] = useState<ScheduledSession[]>([]);
   const [myParticipations, setMyParticipations] = useState<ScheduledSession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -156,7 +167,7 @@ export function useBinomeSessions() {
   // Create a new session
   const createSession = async (input: CreateSessionInput): Promise<boolean> => {
     if (!user) {
-      toast.error(locale === 'fr' ? 'Vous devez être connecté' : 'You must be logged in');
+      toast.error(t('binomeToasts.mustBeLoggedIn'));
       return false;
     }
 
@@ -182,7 +193,7 @@ export function useBinomeSessions() {
       // Update user reliability via secure RPC (increments instead of replacing)
       await supabase.rpc('increment_reliability_sessions_created', { p_user_id: user.id });
 
-      toast.success(locale === 'fr' ? 'Créneau créé avec succès !' : 'Slot created successfully!');
+      toast.success(t('binomeToasts.sessionCreated'));
       await fetchMySessions();
       return true;
     } catch (err) {
@@ -196,7 +207,7 @@ export function useBinomeSessions() {
   // Join a session
   const joinSession = async (sessionId: string): Promise<boolean> => {
     if (!user) {
-      toast.error(locale === 'fr' ? 'Vous devez être connecté' : 'You must be logged in');
+      toast.error(t('binomeToasts.mustBeLoggedIn'));
       return false;
     }
 
@@ -207,7 +218,7 @@ export function useBinomeSessions() {
 
       if (rpcError) throw rpcError;
 
-      toast.success(locale === 'fr' ? 'Vous avez rejoint la session !' : 'You joined the session!');
+      toast.success(t('binomeToasts.joinedSession'));
       await fetchMyParticipations();
       return true;
     } catch (err) {
@@ -229,7 +240,7 @@ export function useBinomeSessions() {
 
       if (rpcError) throw rpcError;
 
-      toast.success(locale === 'fr' ? 'Vous avez quitté la session' : 'You left the session');
+      toast.success(t('binomeToasts.leftSession'));
       await fetchMyParticipations();
       return true;
     } catch (err) {
@@ -252,11 +263,11 @@ export function useBinomeSessions() {
 
       if (updateError) throw updateError;
 
-      toast.success(locale === 'fr' ? 'Session annulée' : 'Session cancelled');
+      toast.success(t('binomeToasts.sessionCancelled'));
       await fetchMySessions();
       return true;
     } catch (err) {
-      toast.error(locale === 'fr' ? 'Erreur lors de l\'annulation' : 'Error cancelling');
+      toast.error(t('binomeToasts.cancelError'));
       return false;
     }
   };
