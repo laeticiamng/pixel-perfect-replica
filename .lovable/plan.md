@@ -1,165 +1,131 @@
 
-# Audit Technique Senior Dev - EASY v1.7.x (Iteration 3)
 
-## Resume des problemes identifies
+# Audit Technique Senior Dev - EASY v1.7.x (Iteration 4)
 
-Apres analyse exhaustive de tous les hooks, pages et flux restants, voici les problemes non couverts par les audits precedents.
+## Resume
+
+Apres analyse exhaustive des fichiers restants non couverts par les 3 audits precedents, voici les problemes identifies sur les pages et composants encore non corriges.
 
 ---
 
 ## Problemes de Securite
 
-### SEC-01 : QR Check-in contourne les RLS (CRITIQUE)
+### SEC-04 : EventDetailPage check-in contourne la RPC (CRITIQUE)
 
-**Fichier** : `src/hooks/useEvents.ts` (lignes 157-170)
+**Fichier** : `src/pages/EventDetailPage.tsx` (lignes 123-134)
 
-La methode `checkInToEvent` lit `qr_code_secret` directement depuis la table `events` :
+La fonction `handleScanCheckIn` fait un `UPDATE` direct sur `event_participants` sans valider le QR secret cote serveur. Le secret scanne est completement ignore -- n'importe quel participant peut marquer son check-in sans QR code valide.
+
 ```
-const { data: event } = await supabase
-  .from('events')
-  .select('qr_code_secret')
-  .eq('id', eventId)
-  .single();
+const { error } = await supabase
+  .from('event_participants')
+  .update({ checked_in: true, checked_in_at: new Date().toISOString() })
+  .eq('event_id', eventId)
+  .eq('user_id', user.id);
 ```
 
-Or les policies RLS de la table `events` ne permettent `SELECT` que pour l'organisateur (`auth.uid() = organizer_id`). Un participant non-organisateur ne peut PAS lire `qr_code_secret`, donc le check-in echouera SILENCIEUSEMENT.
+La RPC `check_in_event_by_qr` existe deja mais n'est pas utilisee ici.
 
-**Correction** : Creer une fonction RPC `check_in_event_by_qr(p_event_id, p_qr_secret)` en SECURITY DEFINER qui valide le secret et met a jour le check-in cote serveur, sans jamais exposer le secret au client.
+**Correction** : Utiliser `checkInToEvent(eventId, scannedSecret)` du hook `useEvents` qui appelle la RPC securisee.
 
----
+### SEC-05 : EventCheckinPage meme probleme (CRITIQUE)
 
-### SEC-02 : user_reliability upsert incorrect (MOYEN)
+**Fichier** : `src/pages/EventCheckinPage.tsx` (lignes 61-68)
 
-**Fichier** : `src/hooks/useBinomeSessions.ts` (lignes 182-189)
+Meme pattern : `UPDATE` direct sur `event_participants` sans validation du secret. Le commentaire en ligne 58 dit "The backend RLS will validate this" mais la RLS `event_participants` UPDATE ne verifie que `organizer_id`, pas le secret QR.
 
-Lors de la creation d'une session, le code fait un upsert sur `user_reliability` avec `sessions_created: 1` et `onConflict: 'user_id'`. Probleme : le upsert REMPLACE le champ `sessions_created` par 1 au lieu de l'incrementer. Si l'utilisateur a deja cree 10 sessions, son compteur revient a 1.
+**Correction** : Remplacer par `checkInToEvent(eventId, extractedSecret)`.
 
-**Correction** : Utiliser un appel RPC ou un `UPDATE ... SET sessions_created = sessions_created + 1` via une fonction SECURITY DEFINER. En fait, la table `user_reliability` bloque les UPDATE directs (`USING (false)`), donc ce upsert echoue silencieusement apres le premier insert.
+### SEC-06 : FavoriteEventsPage accede directement a la table events (MOYEN)
 
----
+**Fichier** : `src/pages/FavoriteEventsPage.tsx` (lignes 44-48)
 
-### SEC-03 : SessionDetailPage lit user_reliability d'autres utilisateurs (MOYEN)
+La requete `supabase.from('events').select(...)` echouera silencieusement car la RLS de `events` ne permet le SELECT que pour `organizer_id = auth.uid()`. Les favoris d'evenements d'autres organisateurs seront vides.
 
-**Fichier** : `src/pages/SessionDetailPage.tsx` (lignes 143-148)
-
-Le code fait un `SELECT` sur `user_reliability` pour chaque participant. Or la policy RLS ne permet que `auth.uid() = user_id`. Cela echoue silencieusement pour les participants tiers.
-
-**Correction** : Utiliser la RPC existante `get_user_reliability_public`.
+**Correction** : Utiliser la RPC `get_events_public` puis filtrer par IDs favoris, ou creer une RPC `get_events_by_ids`.
 
 ---
 
 ## Problemes d'Internationalisation (i18n)
 
-### I18N-01 : Pages non internationalisees (HAUTE)
+### I18N-02 : 7 composants et pages non internationalises (HAUTE)
 
-Les pages suivantes ont TOUS leurs textes hardcodes en francais :
+| Composant/Page | Textes hardcodes |
+|----------------|-----------------|
+| `EventDetailPage.tsx` | "En cours", "Organisateur", "Inscrit", "Rejoindre", "Partager", "Participants", "Aucun participant", "Sois le premier", "Presente", "Check-in QR Code", "Scanne pour confirmer", "Copier le lien", "Evenement non trouve", "Retour aux evenements", date `format(..., { locale: fr })` |
+| `EventCheckinPage.tsx` | "Connecte-toi pour faire le check-in", "Se connecter", "Verification...", "Check-in reussi", "Erreur", "Scanner le QR Code", "Reessayer", "Retour a l'evenement", "Ta presence est confirmee" |
+| `SessionCheckin.tsx` | "Session terminee", "Merci d'avoir participe", "Check-in effectue", "Terminer la session", "En cours...", "Pointage", "Confirme ta presence", "Fenetre de check-in ouverte", "Trop loin", "Check-in non disponible", "Reviens plus proche" |
+| `SessionFeedbackForm.tsx` | "Comment s'est passee la session ?", "Participant X sur Y", "Evalue cette personne", "Etait a l'heure", "Agreable a cotoyer", "Je recommande", "Commentaire (optionnel)", "Precedent", "Suivant", "Terminer" |
+| `CreateSessionForm.tsx` | "Activite", "Date", "Choisir", "Heure", "Duree", "45 minutes", "1h30", "3 heures", "Ville", "Lieu precis", "Note", "Annuler", "Creation...", "Creer le creneau", tous les placeholders et messages de validation |
+| `TestimonialForm.tsx` | "Partage ton experience !", "Ton temoignage aidera", "Raconte comment", "Minimum 20 caracteres", "Ecris un temoignage", "Plus tard", "Envoyer", "Envoi...", "Merci pour ton temoignage" |
+| `SessionCard.tsx` | "Reviser", "Bosser", "Manger", "Sport", "Parler", "Autre", "fiabilite", "participants", "Complet", "Quitter", "Rejoindre", "Annuler", "Annule", "Session exportee" |
+| `SessionHistoryPage.tsx` | "Historique des sessions", "Toutes", "Creees", "Rejointes", "Total", "Completees", "Aucune session passee", "Ton historique apparaitra ici", "Createur", "Completee", "Annulee", "Non completee", "Exporter (.ics)", "Erreur lors du chargement" |
+| `FavoriteEventsPage.tsx` | "Mes Favoris", "evenements sauvegardes", "Aucun favori", "Passe", "A venir", "Decouvrir les evenements" |
+| `DiagnosticsPage.tsx` | "Diagnostics", "Statut systeme", "Reseau", "Details systeme", "Latence API", "Tester", "Logs recents", "Aucun log", "Erreurs recentes" (dev only, basse priorite) |
 
-| Page | Textes hardcodes |
-|------|-----------------|
-| `StatisticsPage.tsx` | "Mes statistiques", "Total rencontres", "Heures actives", "Rating moyen", "Cette semaine", noms des jours (Lun/Mar...), "Tes stats t'attendent", "Basé sur tes 100 dernières interactions" |
-| `PeopleMetPage.tsx` | "Personnes rencontrees", "Aujourd'hui", "Hier", "Il y a X jours", "Aucune rencontre", "Activer mon signal", "Aucun résultat" |
-| `NotificationsSettingsPage.tsx` | "Notifications", "Son des notifications", "Vibration de proximité", "Notifications push", "Non supporté", "Autorisé", "Bloqué", "Bientôt disponible" |
-| `PrivacySettingsPage.tsx` | "Confidentialité", "Mode fantôme", "Distance de visibilité", "Exporter mes données", tous les textes de protection |
-| `DataExportPage.tsx` | "Exporter mes données", "Droit à la portabilité", textes RGPD |
-| `BlockedUsersPage.tsx` | "Débloquer", "Bloqué le...", dialogue de confirmation |
-| `SessionDetailPage.tsx` | "Organisateur", "Rejoindre", "Quitter", labels d'activite, duree |
-| `BinomePage.tsx` | "Réserver un Binôme", "Créer", "Explorer", "Mes créneaux", "Rejoints", "Créer un créneau", tous les toasts |
+### I18N-03 : Toasts hardcodes dans useBinomeSessions (MOYENNE)
 
----
+**Fichier** : `src/hooks/useBinomeSessions.ts`
 
-## Problemes de Performance / Stabilite
-
-### PERF-01 : N+1 queries dans useSessionChat (MOYENNE)
-
-**Fichier** : `src/hooks/useSessionChat.ts` (lignes 42-49)
-
-Pour chaque message, un appel RPC individuel `get_public_profile_secure` est effectue. Avec 20 messages de 5 users, cela fait 20 appels au lieu de 5.
-
-**Correction** : Collecter les `user_id` uniques, faire un seul appel `get_public_profiles` avec le tableau d'IDs, puis mapper les resultats.
+8 toasts en francais : "Vous devez etre connecte", "Creneau cree avec succes", "Vous avez rejoint la session", "Vous avez quitte la session", "Session annulee", "Erreur lors de l'annulation".
 
 ---
 
-### PERF-02 : N+1 queries dans SessionDetailPage (MOYENNE)
+## Problemes de Performance / Robustesse
 
-**Fichier** : `src/pages/SessionDetailPage.tsx` (lignes 139-163)
+### PERF-04 : SessionDetailPage utilise `.single()` pour feedback/testimonials (BASSE)
 
-Pour chaque participant, 2 requetes sequentielles : `get_public_profile_secure` et `user_reliability SELECT`. Avec 10 participants, cela fait 20 requetes.
+**Fichier** : `src/pages/SessionDetailPage.tsx` (lignes 121-123)
 
-**Correction** : Batch les appels avec `get_public_profiles` + `get_user_reliability_public`.
+`.single()` lance une erreur si aucun enregistrement n'est trouve. Il faut utiliser `.maybeSingle()` pour eviter les erreurs en console.
 
----
+### PERF-05 : SessionHistoryPage requetes en cascade (MOYENNE)
 
-### PERF-03 : useSessionChat dependencies instables (BASSE)
-
-**Fichier** : `src/hooks/useSessionChat.ts` (ligne 122)
-
-Le `useEffect` inclut `fetchSenderProfile`, `showNotification` et `isSubscribed` dans ses dependencies. Si ces fonctions ne sont pas stables (pas memoized), le canal Realtime se re-souscrit a chaque render.
-
-**Correction** : Retirer les dependencies non necessaires et utiliser des refs pour les callbacks.
-
----
-
-## Problemes UX / Fonctionnels
-
-### UX-01 : GDPR dataRetentionInfo non traduit
-
-**Fichier** : `src/hooks/useGdprExport.ts` (ligne 133)
-
-Le texte `dataRetentionInfo` est hardcode en francais dans les donnees exportees.
-
----
-
-### UX-02 : Dates formatees exclusivement en francais
-
-**Fichier** : `src/pages/BlockedUsersPage.tsx` (ligne 88), `src/pages/PeopleMetPage.tsx` (ligne 82)
-
-`toLocaleDateString('fr-FR')` et noms de jours hardcodes (`Lun`, `Mar`...) dans StatisticsPage ne respectent pas la langue selectionnee.
+Le composant fait 3 requetes sequentielles (created sessions, participations, joined sessions). Pourrait etre optimise avec `Promise.all`.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : Securite (RPC pour QR check-in)
+### Etape 1 : Securite - Check-in events (CRITIQUE)
 
-Creer une migration SQL avec la fonction RPC :
-```sql
-CREATE OR REPLACE FUNCTION public.check_in_event_by_qr(p_event_id uuid, p_qr_secret text)
-RETURNS boolean
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path TO 'public'
-```
+**EventDetailPage.tsx** : Remplacer `handleScanCheckIn` pour utiliser `checkInToEvent` du hook `useEvents`.
 
-Modifier `useEvents.ts` pour utiliser cette RPC au lieu de la lecture directe.
+**EventCheckinPage.tsx** : Remplacer `handleCheckin` pour utiliser `checkInToEvent`.
 
-### Etape 2 : Corriger useBinomeSessions reliability
+### Etape 2 : Securite - FavoriteEventsPage RLS
 
-Supprimer le upsert direct sur `user_reliability` dans `createSession`. Le trigger `increment_session_count` gere deja le comptage.
+Remplacer le `SELECT` direct sur `events` par la RPC `get_events_public` filtree par IDs.
 
-### Etape 3 : Corriger SessionDetailPage RLS
+### Etape 3 : i18n - Ajout de ~200 cles de traduction
 
-Remplacer le SELECT direct sur `user_reliability` par `get_user_reliability_public`. Remplacer les appels N+1 par un batch via `get_public_profiles`.
+Ajouter les blocs suivants dans `translations.ts` :
+- `eventDetail.*` (~30 cles)
+- `eventCheckin.*` (~15 cles)
+- `sessionCheckin.*` (~15 cles)
+- `sessionFeedback.*` (~15 cles)
+- `createSession.*` (~20 cles)
+- `testimonial.*` (~10 cles)
+- `sessionCard.*` (~15 cles)
+- `sessionHistory.*` (~20 cles)
+- `favoriteEvents.*` (~10 cles)
+- `diagnostics.*` (~15 cles, basse priorite)
 
-### Etape 4 : i18n des 8 pages restantes
+### Etape 4 : i18n - Toasts useBinomeSessions
 
-Ajouter environ 120 nouvelles cles de traduction dans `translations.ts` couvrant les blocs :
-- `statistics.*` (~25 cles)
-- `peopleMet.*` (~15 cles)
-- `notifications.*` (~20 cles)
-- `privacySettings.*` (~20 cles)
-- `dataExport.*` (~15 cles)
-- `blockedUsers.*` (~10 cles)
-- `sessionDetail.*` (~15 cles)
+Transformer les toasts pour accepter un parametre `t` ou utiliser `useTranslation()` dans le hook.
 
-Refactoriser chaque page pour utiliser `useTranslation()`.
+### Etape 5 : Refactoriser les 10 composants/pages
 
-### Etape 5 : Optimisation N+1
+Pour chaque fichier :
+1. Importer `useTranslation`
+2. Remplacer chaque texte hardcode par `t('cle')`
+3. Remplacer `{ locale: fr }` par locale dynamique `locale === 'fr' ? fr : enUS`
+4. Remplacer `.single()` par `.maybeSingle()` pour les lookups optionnels
 
-Refactoriser `useSessionChat` et `SessionDetailPage` pour batch les appels profils.
+### Etape 6 : Optimisation SessionHistoryPage
 
-### Etape 6 : Dates localisees
-
-Utiliser `date-fns` avec `locale` dynamique (`fr`/`enUS`) dans toutes les pages qui formatent des dates. Remplacer `toLocaleDateString('fr-FR')` par un appel respectant la preference i18n.
+Paralleliser les requetes avec `Promise.all`.
 
 ---
 
@@ -167,26 +133,25 @@ Utiliser `date-fns` avec `locale` dynamique (`fr`/`enUS`) dans toutes les pages 
 
 | Fichier | Changements |
 |---------|------------|
-| Migration SQL | Nouvelle RPC `check_in_event_by_qr` |
-| `src/hooks/useEvents.ts` | Utiliser RPC pour check-in |
-| `src/hooks/useBinomeSessions.ts` | Supprimer upsert reliability |
-| `src/hooks/useSessionChat.ts` | Batch profils, stabiliser deps |
-| `src/pages/SessionDetailPage.tsx` | RPC reliability + batch + i18n |
-| `src/pages/StatisticsPage.tsx` | i18n complete |
-| `src/pages/PeopleMetPage.tsx` | i18n complete + dates localisees |
-| `src/pages/NotificationsSettingsPage.tsx` | i18n complete |
-| `src/pages/PrivacySettingsPage.tsx` | i18n complete |
-| `src/pages/DataExportPage.tsx` | i18n complete |
-| `src/pages/BlockedUsersPage.tsx` | i18n complete + dates |
-| `src/pages/BinomePage.tsx` | i18n complete |
-| `src/hooks/useGdprExport.ts` | i18n dataRetentionInfo |
-| `src/lib/i18n/translations.ts` | +120 cles |
+| `src/pages/EventDetailPage.tsx` | Securite check-in + i18n complet + dates localisees |
+| `src/pages/EventCheckinPage.tsx` | Securite check-in + i18n complet |
+| `src/pages/FavoriteEventsPage.tsx` | RLS fix + i18n complet + dates localisees |
+| `src/pages/SessionHistoryPage.tsx` | i18n + dates localisees + `Promise.all` |
+| `src/components/binome/SessionCheckin.tsx` | i18n complet |
+| `src/components/binome/SessionFeedbackForm.tsx` | i18n complet |
+| `src/components/binome/CreateSessionForm.tsx` | i18n complet + dates localisees |
+| `src/components/binome/TestimonialForm.tsx` | i18n complet |
+| `src/components/binome/SessionCard.tsx` | i18n complet + dates localisees |
+| `src/hooks/useBinomeSessions.ts` | i18n toasts |
+| `src/pages/SessionDetailPage.tsx` | `.single()` -> `.maybeSingle()` |
+| `src/lib/i18n/translations.ts` | +200 nouvelles cles |
 
 ---
 
 ## Estimation
 
-- Securite (RPC + corrections RLS) : 3 fichiers + 1 migration
-- i18n (8 pages) : ~120 nouvelles cles + 8 refactorisations
-- Performance (N+1) : 2 fichiers
-- Total : ~14 fichiers modifies, ~400 lignes ajoutees/modifiees
+- Securite (check-in + RLS) : 3 fichiers critiques
+- i18n : ~200 nouvelles cles + 10 refactorisations
+- Performance : 2 fichiers
+- Total : ~12 fichiers modifies, ~600 lignes ajoutees/modifiees
+
