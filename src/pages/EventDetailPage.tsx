@@ -10,8 +10,9 @@ import { QRCodeScanner } from '@/components/events';
 import { useEvents } from '@/hooks/useEvents';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/lib/i18n';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, enUS } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -29,78 +30,68 @@ export default function EventDetailPage() {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t, locale } = useTranslation();
   const { events, myEvents, joinEvent, leaveEvent, checkInToEvent, isParticipating, isOrganizer } = useEvents();
   
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isLoadingParticipants, setIsLoadingParticipants] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
-  const [showQrCode, setShowQrCode] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
 
-  // Find the event
   const event = [...events, ...myEvents].find(e => e.id === eventId);
   const amOrganizer = eventId ? isOrganizer(eventId) : false;
   const amParticipating = eventId ? isParticipating(eventId) : false;
+  const dateLocale = locale === 'fr' ? fr : enUS;
 
-  // Fetch participants
-  useEffect(() => {
-    const fetchParticipants = async () => {
-      if (!eventId) return;
-      setIsLoadingParticipants(true);
+  const fetchParticipants = async () => {
+    if (!eventId) return;
+    setIsLoadingParticipants(true);
 
-      const { data: participantsData } = await supabase
-        .from('event_participants')
-        .select('*')
-        .eq('event_id', eventId);
+    const { data: participantsData } = await supabase
+      .from('event_participants')
+      .select('*')
+      .eq('event_id', eventId);
 
-      if (participantsData && participantsData.length > 0) {
-        // Fetch participant profiles
-        const userIds = participantsData.map(p => p.user_id);
-        const { data: profiles } = await supabase.rpc('get_public_profiles', {
-          profile_ids: userIds
-        });
+    if (participantsData && participantsData.length > 0) {
+      const userIds = participantsData.map(p => p.user_id);
+      const { data: profiles } = await supabase.rpc('get_public_profiles', { profile_ids: userIds });
 
-        const enrichedParticipants = participantsData.map(p => {
-          const profile = profiles?.find((prof: any) => prof.id === p.user_id);
-          return {
-            ...p,
-            first_name: profile?.first_name || 'Anonyme',
-            avatar_url: profile?.avatar_url,
-          };
-        });
+      const enrichedParticipants = participantsData.map(p => {
+        const profile = profiles?.find((prof: any) => prof.id === p.user_id);
+        return {
+          ...p,
+          first_name: profile?.first_name || t('eventDetail.anonymous'),
+          avatar_url: profile?.avatar_url,
+        };
+      });
+      setParticipants(enrichedParticipants);
+    } else {
+      setParticipants([]);
+    }
+    setIsLoadingParticipants(false);
+  };
 
-        setParticipants(enrichedParticipants);
-      } else {
-        setParticipants([]);
-      }
-
-      setIsLoadingParticipants(false);
-    };
-
-    fetchParticipants();
-  }, [eventId]);
+  useEffect(() => { fetchParticipants(); }, [eventId]);
 
   const handleJoin = async () => {
     if (!eventId) return;
     setIsJoining(true);
     const { error } = await joinEvent(eventId);
     setIsJoining(false);
-    
     if (error) {
-      toast.error('Erreur lors de l\'inscription');
+      toast.error(t('eventDetail.joinError'));
     } else {
-      toast.success('Tu es inscrit à l\'événement !');
+      toast.success(t('eventDetail.joinSuccess'));
     }
   };
 
   const handleLeave = async () => {
     if (!eventId) return;
     const { error } = await leaveEvent(eventId);
-    
     if (error) {
-      toast.error('Erreur lors de la désinscription');
+      toast.error(t('eventDetail.leaveError'));
     } else {
-      toast.success('Tu as quitté l\'événement');
+      toast.success(t('eventDetail.leaveSuccess'));
       navigate('/events');
     }
   };
@@ -108,72 +99,38 @@ export default function EventDetailPage() {
   const handleCopyQrSecret = () => {
     if (event?.qr_code_secret) {
       navigator.clipboard.writeText(`${window.location.origin}/events/${eventId}/checkin?secret=${event.qr_code_secret}`);
-      toast.success('Lien de check-in copié !');
+      toast.success(t('eventDetail.linkCopied'));
     }
   };
 
+  // SEC-04 FIX: Use secure RPC instead of direct UPDATE
   const handleScanCheckIn = async (data: string) => {
     if (!user || !eventId) return;
 
-    // Extract secret from scanned URL
     const urlMatch = data.match(/secret=([^&]+)/);
     const scannedSecret = urlMatch ? urlMatch[1] : data;
 
-    // Perform check-in
-    const { error } = await supabase
-      .from('event_participants')
-      .update({
-        checked_in: true,
-        checked_in_at: new Date().toISOString(),
-      })
-      .eq('event_id', eventId)
-      .eq('user_id', user.id);
+    const { error } = await checkInToEvent(eventId, scannedSecret);
 
     if (error) {
-      throw new Error('Erreur lors du check-in');
+      throw new Error(t('eventDetail.checkinError'));
     }
 
-    // Refresh participants
-    const { data: participantsData } = await supabase
-      .from('event_participants')
-      .select('*')
-      .eq('event_id', eventId);
-
-    if (participantsData) {
-      const userIds = participantsData.map(p => p.user_id);
-      const { data: profiles } = await supabase.rpc('get_public_profiles', {
-        profile_ids: userIds
-      });
-
-      const enrichedParticipants = participantsData.map(p => {
-        const profile = profiles?.find((prof: any) => prof.id === p.user_id);
-        return {
-          ...p,
-          first_name: profile?.first_name || 'Anonyme',
-          avatar_url: profile?.avatar_url,
-        };
-      });
-
-      setParticipants(enrichedParticipants);
-    }
+    await fetchParticipants();
   };
 
   const handleShare = async () => {
     const shareData = {
-      title: event?.name || 'Événement EASY',
-      text: `Rejoins-moi sur l'événement "${event?.name}" !`,
+      title: event?.name || 'EASY',
+      text: t('eventDetail.shareText').replace('{name}', event?.name || ''),
       url: window.location.href,
     };
 
     if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        // User cancelled
-      }
+      try { await navigator.share(shareData); } catch (err) { /* cancelled */ }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      toast.success('Lien copié !');
+      toast.success(t('eventDetail.shareLinkCopied'));
     }
   };
 
@@ -181,58 +138,38 @@ export default function EventDetailPage() {
     return (
       <PageLayout className="pb-24 safe-bottom">
         <header className="safe-top px-6 py-4">
-          <button
-            onClick={() => navigate('/events')}
-            className="p-2 rounded-lg hover:bg-muted transition-colors"
-            aria-label="Retour aux événements"
-          >
+          <button onClick={() => navigate('/events')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('eventDetail.backToEvents')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
         </header>
         <div className="px-6 py-12 text-center">
           <p className="text-4xl mb-4">🔍</p>
-          <p className="text-muted-foreground">Événement non trouvé</p>
-          <Button
-            onClick={() => navigate('/events')}
-            className="mt-4 bg-coral hover:bg-coral-dark"
-          >
-            Retour aux événements
-          </Button>
+          <p className="text-muted-foreground">{t('eventDetail.eventNotFound')}</p>
+          <Button onClick={() => navigate('/events')} className="mt-4 bg-coral hover:bg-coral-dark">{t('eventDetail.backToEvents')}</Button>
         </div>
       </PageLayout>
     );
   }
 
   const eventDate = new Date(event.starts_at);
-  const isUpcoming = eventDate > new Date();
   const isActive = new Date(event.starts_at) <= new Date() && new Date(event.ends_at) > new Date();
 
   return (
     <PageLayout className="pb-24 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center justify-between mb-2">
-          <button
-            onClick={() => navigate('/events')}
-            className="p-2 rounded-lg hover:bg-muted transition-colors"
-            aria-label="Retour aux événements"
-          >
+          <button onClick={() => navigate('/events')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('eventDetail.backToEvents')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleShare}
-            className="gap-2"
-          >
+          <Button variant="ghost" size="sm" onClick={handleShare} className="gap-2">
             <Share2 className="h-4 w-4" />
-            Partager
+            {t('eventDetail.share')}
           </Button>
         </div>
         <Breadcrumbs className="px-2" />
       </header>
 
       <div className="px-6 space-y-6">
-        {/* Event Header */}
         <Card className="glass border-0 overflow-hidden">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -240,18 +177,14 @@ export default function EventDetailPage() {
                 <div className="flex items-center gap-2 mb-2">
                   {isActive && (
                     <span className="text-xs bg-signal-green/20 text-signal-green px-2 py-1 rounded-full animate-pulse">
-                      🔴 En cours
+                      🔴 {t('eventDetail.ongoing')}
                     </span>
                   )}
                   {amOrganizer && (
-                    <span className="text-xs bg-coral/20 text-coral px-2 py-1 rounded-full">
-                      Organisateur
-                    </span>
+                    <span className="text-xs bg-coral/20 text-coral px-2 py-1 rounded-full">{t('eventDetail.organizer')}</span>
                   )}
                   {amParticipating && !amOrganizer && (
-                    <span className="text-xs bg-signal-green/20 text-signal-green px-2 py-1 rounded-full">
-                      Inscrit ✓
-                    </span>
+                    <span className="text-xs bg-signal-green/20 text-signal-green px-2 py-1 rounded-full">{t('eventDetail.registered')}</span>
                   )}
                 </div>
                 <CardTitle className="text-2xl">{event.name}</CardTitle>
@@ -263,160 +196,87 @@ export default function EventDetailPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            {event.description && (
-              <p className="text-muted-foreground">{event.description}</p>
-            )}
-            
+            {event.description && <p className="text-muted-foreground">{event.description}</p>}
             <div className="flex flex-wrap gap-4 text-sm">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar className="h-4 w-4" />
-                <span>{format(new Date(event.starts_at), 'PPP à HH:mm', { locale: fr })}</span>
+                <span>{format(new Date(event.starts_at), locale === 'fr' ? 'PPP à HH:mm' : 'PPP \'at\' HH:mm', { locale: dateLocale })}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Users className="h-4 w-4" />
-                <span>{participants.length} / {event.max_participants} participants</span>
+                <span>{participants.length} / {event.max_participants} {t('eventDetail.participants').toLowerCase()}</span>
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-3 pt-2">
               {!amParticipating && !amOrganizer && (
-                <Button
-                  onClick={handleJoin}
-                  disabled={isJoining}
-                  className="flex-1 bg-coral hover:bg-coral-dark gap-2"
-                >
-                  {isJoining ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <>
-                      <UserPlus className="h-4 w-4" />
-                      Rejoindre
-                    </>
-                  )}
+                <Button onClick={handleJoin} disabled={isJoining} className="flex-1 bg-coral hover:bg-coral-dark gap-2">
+                  {isJoining ? <Loader2 className="h-4 w-4 animate-spin" /> : <><UserPlus className="h-4 w-4" />{t('eventDetail.join')}</>}
                 </Button>
               )}
-              
               {amParticipating && !amOrganizer && (
                 <>
-                  <Button
-                    onClick={() => setShowScanner(true)}
-                    className="flex-1 bg-coral hover:bg-coral-dark gap-2"
-                  >
-                    <Camera className="h-4 w-4" />
-                    Check-in
+                  <Button onClick={() => setShowScanner(true)} className="flex-1 bg-coral hover:bg-coral-dark gap-2">
+                    <Camera className="h-4 w-4" />{t('eventDetail.checkin')}
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleLeave}
-                    className="text-destructive"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </Button>
+                  <Button variant="outline" onClick={handleLeave} className="text-destructive"><LogOut className="h-4 w-4" /></Button>
                 </>
               )}
             </div>
           </CardContent>
         </Card>
 
-        {/* QR Code Section (Organizer only) */}
         {amOrganizer && (
           <Card className="glass border-0">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
-                <QrCode className="h-5 w-5 text-coral" />
-                Check-in QR Code
+                <QrCode className="h-5 w-5 text-coral" />{t('eventDetail.qrCodeTitle')}
               </CardTitle>
-              <CardDescription>
-                Partage ce code pour que les participants puissent confirmer leur présence
-              </CardDescription>
+              <CardDescription>{t('eventDetail.qrCodeDesc')}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="bg-white p-6 rounded-xl text-center mb-4 border border-border">
-                <QRCodeSVG
-                  value={`${window.location.origin}/events/${eventId}/checkin?secret=${event.qr_code_secret}`}
-                  size={192}
-                  level="H"
-                  includeMargin={true}
-                  className="mx-auto"
-                  bgColor="#ffffff"
-                  fgColor="#0f0f1a"
-                />
-                <p className="text-xs text-muted-foreground mt-3">
-                  Scanne pour confirmer ta présence
-                </p>
+                <QRCodeSVG value={`${window.location.origin}/events/${eventId}/checkin?secret=${event.qr_code_secret}`} size={192} level="H" includeMargin={true} className="mx-auto" bgColor="#ffffff" fgColor="#0f0f1a" />
+                <p className="text-xs text-muted-foreground mt-3">{t('eventDetail.scanToConfirm')}</p>
               </div>
-              
-              <Button
-                variant="outline"
-                onClick={handleCopyQrSecret}
-                className="w-full gap-2"
-              >
-                <Copy className="h-4 w-4" />
-                Copier le lien de check-in
+              <Button variant="outline" onClick={handleCopyQrSecret} className="w-full gap-2">
+                <Copy className="h-4 w-4" />{t('eventDetail.copyCheckinLink')}
               </Button>
             </CardContent>
           </Card>
         )}
 
-        {/* Participants List */}
         <Card className="glass border-0">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Users className="h-5 w-5 text-coral" />
-              Participants ({participants.length})
+              <Users className="h-5 w-5 text-coral" />{t('eventDetail.participants')} ({participants.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             {isLoadingParticipants ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              </div>
+              <div className="flex items-center justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
             ) : participants.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-4xl mb-2">👥</p>
-                <p className="text-muted-foreground">Aucun participant pour le moment</p>
-                <p className="text-sm text-muted-foreground mt-1">Sois le premier à rejoindre !</p>
+                <p className="text-muted-foreground">{t('eventDetail.noParticipants')}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t('eventDetail.beFirst')}</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {participants.map(participant => (
-                  <div
-                    key={participant.id}
-                    className={cn(
-                      "flex items-center gap-3 p-3 rounded-xl",
-                      participant.checked_in ? "bg-signal-green/10" : "bg-muted/50"
-                    )}
-                  >
-                    {/* Avatar */}
-                    <div className={cn(
-                      "w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground font-bold",
-                      participant.avatar_url ? "" : "bg-gradient-to-br from-coral to-coral-dark"
-                    )}>
+                  <div key={participant.id} className={cn("flex items-center gap-3 p-3 rounded-xl", participant.checked_in ? "bg-signal-green/10" : "bg-muted/50")}>
+                    <div className={cn("w-10 h-10 rounded-full flex items-center justify-center text-primary-foreground font-bold", participant.avatar_url ? "" : "bg-gradient-to-br from-coral to-coral-dark")}>
                       {participant.avatar_url ? (
-                        <img
-                          src={participant.avatar_url}
-                          alt={participant.first_name}
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                      ) : (
-                        participant.first_name?.charAt(0).toUpperCase() || '?'
-                      )}
+                        <img src={participant.avatar_url} alt={participant.first_name} className="w-full h-full rounded-full object-cover" />
+                      ) : (participant.first_name?.charAt(0).toUpperCase() || '?')}
                     </div>
-                    
-                    {/* Info */}
                     <div className="flex-1">
                       <p className="font-medium text-foreground">{participant.first_name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Inscrit {format(new Date(participant.joined_at), 'dd MMM', { locale: fr })}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t('eventDetail.joined')} {format(new Date(participant.joined_at), 'dd MMM', { locale: dateLocale })}</p>
                     </div>
-                    
-                    {/* Check-in status */}
                     {participant.checked_in && (
                       <div className="flex items-center gap-1 text-signal-green text-sm">
-                        <Check className="h-4 w-4" />
-                        <span>Présent</span>
+                        <Check className="h-4 w-4" /><span>{t('eventDetail.present')}</span>
                       </div>
                     )}
                   </div>
@@ -427,12 +287,7 @@ export default function EventDetailPage() {
         </Card>
       </div>
 
-      {/* QR Scanner Modal for participants */}
-      <QRCodeScanner
-        isOpen={showScanner}
-        onClose={() => setShowScanner(false)}
-        onScan={handleScanCheckIn}
-      />
+      <QRCodeScanner isOpen={showScanner} onClose={() => setShowScanner(false)} onScan={handleScanCheckIn} />
     </PageLayout>
   );
 }
