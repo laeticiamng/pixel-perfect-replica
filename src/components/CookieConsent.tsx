@@ -1,6 +1,7 @@
 import { useState, useEffect, forwardRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { Shield, X } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 
 const CONSENT_KEY = 'easy-cookie-consent';
@@ -43,7 +44,7 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
       <div className="glass-strong rounded-2xl p-4 shadow-xl border border-border bg-card">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xl">🍪</span>
+            <Shield className="h-5 w-5 text-coral" />
             <h3 className="font-semibold text-foreground text-sm">{t('cookies.title')}</h3>
           </div>
           <button 
@@ -76,12 +77,12 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
           </Button>
         </div>
         
-        <a 
-          href="/privacy" 
+        <Link 
+          to="/privacy" 
           className="block text-center text-[10px] text-muted-foreground hover:text-coral mt-2"
         >
           {t('cookies.learnMore')}
-        </a>
+        </Link>
       </div>
     </div>
   );
