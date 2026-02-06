@@ -220,9 +220,9 @@ export default function ChangelogPage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-xl font-bold">Changelog</h1>
+            <h1 className="text-xl font-bold">{t('changelog.title')}</h1>
             <p className="text-sm text-muted-foreground">
-              {locale === 'fr' ? 'Historique des mises à jour' : 'Update history'}
+              {t('changelog.updateHistory')}
             </p>
           </div>
         </div>
@@ -261,14 +261,14 @@ export default function ChangelogPage() {
                     <div key={section.type} className="space-y-2">
                       <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${config.color}`}>
                         <Icon className="h-4 w-4" />
-                        {locale === 'fr' ? config.label : config.labelEn}
+                        {locale === 'fr' ? config.label : (config.labelEn || config.label)}
                       </div>
+                      {locale !== 'fr' && (
+                        <p className="text-xs text-muted-foreground italic mb-1">{t('changelog.frenchOnly')}</p>
+                      )}
                       <ul className="space-y-1.5 pl-4">
                         {section.items.map((item, i) => (
-                          <li
-                            key={i}
-                            className="text-sm text-muted-foreground flex items-start gap-2"
-                          >
+                          <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                             <span className="text-coral mt-1.5">•</span>
                             <span>{item}</span>
                           </li>
@@ -284,8 +284,8 @@ export default function ChangelogPage() {
 
         {/* Footer */}
         <div className="text-center text-sm text-muted-foreground pt-4">
-          <p>🟢 EASY — {locale === 'fr' ? 'Le premier réseau social 100% réel' : 'The first 100% real social network'}</p>
-          <p className="mt-1">Made with ❤️ in France par EmotionsCare Sasu</p>
+          <p>🟢 {t('changelog.tagline')}</p>
+          <p className="mt-1">{t('changelog.madeWith')}</p>
         </div>
       </main>
 

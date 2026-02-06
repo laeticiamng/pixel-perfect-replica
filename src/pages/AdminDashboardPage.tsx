@@ -13,7 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSystemStats } from '@/hooks/useSystemStats';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

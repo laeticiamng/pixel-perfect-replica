@@ -62,11 +62,11 @@ export default function OnboardingPage() {
     try {
       const result = await lovable.auth.signInWithOAuth('apple');
       if (result.error) {
-        toast.error(t('auth.appleError') || 'Erreur de connexion Apple');
+        toast.error(t('auth.appleError'));
         console.error('Apple OAuth error:', result.error);
       }
     } catch (err) {
-      toast.error(t('auth.appleError') || 'Erreur de connexion Apple');
+      toast.error(t('auth.appleError'));
       console.error(err);
     } finally {
       setIsAppleLoading(false);
