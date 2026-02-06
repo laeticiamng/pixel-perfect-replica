@@ -41,7 +41,7 @@ export function useSessionChat(sessionId: string) {
 
       const messagesWithProfiles: Message[] = (data || []).map(msg => ({
         ...msg,
-        sender_name: profileMap.get(msg.user_id)?.first_name || 'Utilisateur',
+        sender_name: profileMap.get(msg.user_id)?.first_name || 'User',
         sender_avatar: profileMap.get(msg.user_id)?.avatar_url || null
       }));
 
@@ -98,7 +98,7 @@ export function useSessionChat(sessionId: string) {
           
           const msgWithProfile = {
             ...newMsg,
-            sender_name: profile?.first_name || 'Utilisateur',
+            sender_name: profile?.first_name || 'User',
             sender_avatar: profile?.avatar_url || null
           };
 
