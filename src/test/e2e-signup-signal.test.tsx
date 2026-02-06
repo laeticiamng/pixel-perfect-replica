@@ -73,7 +73,7 @@ describe('E2E Complete Signup Flow', () => {
     it('should return weak score for short passwords', () => {
       const result = getPasswordStrength('abc');
       expect(result.score).toBeLessThanOrEqual(2);
-      expect(result.label).toBe('Faible');
+      expect(result.label).toBe('weak');
       expect(result.color).toBe('bg-signal-red');
     });
 
@@ -86,7 +86,7 @@ describe('E2E Complete Signup Flow', () => {
     it('should return strong score for complex passwords', () => {
       const result = getPasswordStrength('MyP@ssw0rd!Strong');
       expect(result.score).toBeGreaterThan(4);
-      expect(result.label).toBe('Fort');
+      expect(result.label).toBe('strong');
       expect(result.color).toBe('bg-signal-green');
     });
 

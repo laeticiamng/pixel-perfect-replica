@@ -3,6 +3,7 @@ import { MapPin, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface LocationDescriptionInputProps {
   value: string;
@@ -19,9 +20,11 @@ export function LocationDescriptionInput({
   onSave,
   maxLength = 100,
   className,
-  placeholder = "Ex: BU 2ème étage, Café du coin..."
+  placeholder: customPlaceholder
 }: LocationDescriptionInputProps) {
   const [isFocused, setIsFocused] = useState(false);
+  const { t } = useTranslation();
+  const placeholder = customPlaceholder || t('locationInput.placeholder');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -64,7 +67,7 @@ export function LocationDescriptionInput({
       
       <div className="flex justify-between mt-1.5 px-1">
         <span className="text-xs text-muted-foreground">
-          Optionnel - aide les autres à te trouver
+          {t('locationInput.hint')}
         </span>
         <span className={cn(
           "text-xs font-medium transition-colors",

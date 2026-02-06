@@ -82,31 +82,15 @@ export function useVerificationBadges(userId?: string) {
     return badges.some(b => b.badge_type === badgeType);
   };
 
-  // Get badge info
+  // Get badge info (i18n keys + emoji)
   const getBadgeInfo = (badgeType: BadgeType) => {
-    const badgeLabels: Record<BadgeType, { label: string; emoji: string; description: string }> = {
-      email_edu: { 
-        label: 'Étudiant vérifié', 
-        emoji: '🎓', 
-        description: 'Email universitaire vérifié' 
-      },
-      linkedin: { 
-        label: 'LinkedIn', 
-        emoji: '💼', 
-        description: 'Compte LinkedIn connecté' 
-      },
-      instagram: { 
-        label: 'Instagram', 
-        emoji: '📸', 
-        description: 'Compte Instagram connecté' 
-      },
-      photo_liveness: { 
-        label: 'Photo vérifiée', 
-        emoji: '✅', 
-        description: 'Selfie de vérification validé' 
-      },
+    const badgeData: Record<BadgeType, { labelKey: string; emoji: string; descriptionKey: string }> = {
+      email_edu: { labelKey: 'badges.emailEdu.label', emoji: '🎓', descriptionKey: 'badges.emailEdu.description' },
+      linkedin: { labelKey: 'badges.linkedin.label', emoji: '💼', descriptionKey: 'badges.linkedin.description' },
+      instagram: { labelKey: 'badges.instagram.label', emoji: '📸', descriptionKey: 'badges.instagram.description' },
+      photo_liveness: { labelKey: 'badges.photoLiveness.label', emoji: '✅', descriptionKey: 'badges.photoLiveness.description' },
     };
-    return badgeLabels[badgeType];
+    return badgeData[badgeType];
   };
 
   return {

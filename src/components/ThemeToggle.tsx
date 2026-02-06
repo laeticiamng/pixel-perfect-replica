@@ -2,6 +2,7 @@ import { Moon, Sun, Monitor } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface ThemeToggleProps {
   className?: string;
@@ -11,11 +12,12 @@ interface ThemeToggleProps {
 
 export function ThemeToggle({ className, showLabels = true, compact = false }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
 
   const options = [
-    { value: 'light' as const, icon: Sun, label: 'Clair' },
-    { value: 'dark' as const, icon: Moon, label: 'Sombre' },
-    { value: 'system' as const, icon: Monitor, label: 'Système' },
+    { value: 'light' as const, icon: Sun, label: t('theme.light') },
+    { value: 'dark' as const, icon: Moon, label: t('theme.dark') },
+    { value: 'system' as const, icon: Monitor, label: t('theme.system') },
   ];
 
   // Compact mode: only show icons with current selection highlighted

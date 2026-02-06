@@ -132,12 +132,12 @@ describe('Validation schemas', () => {
     const { getPasswordStrength } = await import('@/lib/validation');
     
     const weak = getPasswordStrength('abc');
-    expect(weak.label).toBe('Faible');
+    expect(weak.label).toBe('weak');
     
     const medium = getPasswordStrength('Password');
-    expect(medium.label).toBe('Moyen');
+    expect(medium.label).toBe('medium');
     
     const strong = getPasswordStrength('Password123!');
-    expect(strong.label).toBe('Fort');
+    expect(strong.label).toBe('strong');
   });
 });

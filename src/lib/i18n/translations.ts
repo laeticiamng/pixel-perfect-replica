@@ -1782,6 +1782,39 @@ export const translations = {
     exploreRadar: { en: 'Explore the radar to discover them!', fr: 'Explore le radar pour les découvrir !' },
   },
 
+  // Theme
+  theme: {
+    light: { en: 'Light', fr: 'Clair' },
+    dark: { en: 'Dark', fr: 'Sombre' },
+    system: { en: 'System', fr: 'Système' },
+  },
+
+  // Verification Badges
+  badges: {
+    emailEdu: {
+      label: { en: 'Verified student', fr: 'Étudiant vérifié' },
+      description: { en: 'Verified university email', fr: 'Email universitaire vérifié' },
+    },
+    linkedin: {
+      label: { en: 'LinkedIn', fr: 'LinkedIn' },
+      description: { en: 'LinkedIn account connected', fr: 'Compte LinkedIn connecté' },
+    },
+    instagram: {
+      label: { en: 'Instagram', fr: 'Instagram' },
+      description: { en: 'Instagram account connected', fr: 'Compte Instagram connecté' },
+    },
+    photoLiveness: {
+      label: { en: 'Verified photo', fr: 'Photo vérifiée' },
+      description: { en: 'Verification selfie validated', fr: 'Selfie de vérification validé' },
+    },
+  },
+
+  // Location Input
+  locationInput: {
+    placeholder: { en: 'E.g.: Library 2nd floor, Corner café...', fr: 'Ex: BU 2ème étage, Café du coin...' },
+    hint: { en: 'Optional - helps others find you', fr: 'Optionnel - aide les autres à te trouver' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
