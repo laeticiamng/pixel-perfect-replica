@@ -1,109 +1,71 @@
 
-# Audit Multi-Roles - EASY v1.7.x (Iteration 23)
 
-## Audit Summary
+# Iteration 24 -- Fix last 3 hardcoded 'Anonyme' in hooks
 
-After a page-by-page review of all 30+ pages and their components, the platform is in excellent shape. Two remaining bugs were identified:
+## Audit Summary (All Roles)
 
----
+After a complete page-by-page review and codebase-wide search, the platform is in excellent shape. BUG-41 and BUG-42 from Iteration 23 are confirmed fixed. **Three remaining hardcoded French strings** were found in hooks:
 
 ## Issues Found
 
-### BUG-41: Hardcoded French date format in EventsPage (LOW)
+### BUG-43: Hardcoded 'Anonyme' in useActiveSignal.ts (LOW)
 
-**File**: `src/pages/EventsPage.tsx`, line 194
+**File**: `src/hooks/useActiveSignal.ts`, lines 200 and 274
 
-The date formatting uses `'PPP a HH:mm'` which always shows the French "a" separator, regardless of locale. The EventDetailPage (line 203) already has the correct locale-aware implementation.
+Two occurrences of `'Anonyme'` used as fallback for nearby user names on the radar map.
 
-**Current**:
-```
-format(new Date(event.starts_at), 'PPP à HH:mm', { locale: dateLocale })
-```
+**Fix**: Import `useTranslation` and replace both with `t('eventsExtra.anonymous')`.
 
-**Fix**:
-```
-format(new Date(event.starts_at), locale === 'fr' ? 'PPP à HH:mm' : "PPP 'at' HH:mm", { locale: dateLocale })
-```
+### BUG-44: Hardcoded 'Anonyme' in useInteractions.ts (LOW)
 
-### BUG-42: Hardcoded French fallback name in PeopleMetPage (LOW)
+**File**: `src/hooks/useInteractions.ts`, line 133
 
-**File**: `src/pages/PeopleMetPage.tsx`, line 37
+Fallback profile name for interactions where the target user profile is unavailable.
 
-The fallback name for unknown users is hardcoded as `'Anonyme'` (French). A translation key already exists: `eventsExtra.anonymous`.
-
-**Current**:
-```
-firstName: interaction.target_profile?.first_name || 'Anonyme',
-```
-
-**Fix**:
-```
-firstName: interaction.target_profile?.first_name || t('eventsExtra.anonymous'),
-```
+**Fix**: Import `useTranslation` and replace with `t('eventsExtra.anonymous')`.
 
 ---
 
-## Pages Audited (All Clear)
+## All Other Audits: PASS
 
-| Page | Status | Notes |
+| Role | Status | Notes |
 |------|--------|-------|
-| LandingPage | OK | Fully i18n, responsive |
-| OnboardingPage | OK | Login/Signup with OAuth, rate limiting |
-| PostSignupOnboardingPage | OK | 3-step onboarding flow |
-| MapPage | OK | Radar, signals, filters, emergency |
-| ProfilePage | OK | Stats, QR code, menu sections |
-| EditProfilePage | OK | Avatar upload, bio, validation |
-| SettingsPage | OK | Theme, language, admin access |
-| EventsPage | BUG-41 | Date format hardcoded |
-| EventDetailPage | OK | Locale-aware date format |
-| BinomePage | OK | Tabs, quota, community stats |
-| SessionDetailPage | OK | Chat, check-in, feedback |
-| PremiumPage | OK | Stripe integration, pricing |
-| StatisticsPage | OK | Charts, breakdowns |
-| PeopleMetPage | BUG-42 | Hardcoded 'Anonyme' |
-| HelpPage | OK | Searchable FAQ |
-| FeedbackPage | OK | Star rating, rate limited |
-| ReportPage | OK | 4 types, sanitization |
-| ChangelogPage | OK | French content accepted |
-| AdminDashboardPage | OK | Role-checked, charts |
-| All other pages | OK | i18n compliant |
+| CEO | OK | Core value proposition clear, KPIs tracked, premium monetization active |
+| CISO | OK | RLS on all 25+ tables, has_role() checks, rate limiting, shadow-ban automation |
+| DPO | OK | Automated cleanup (2h/24h/30d/90d), GDPR export, location fuzzing, cookie consent |
+| CDO | OK | Analytics pipeline functional, events tracked, admin dashboard with charts |
+| COO | OK | Cron jobs monitored, edge functions rate-limited, automated moderation |
+| Head of Design | OK | Responsive on mobile 375px+, dark/light theme, consistent component library |
+| Beta Tester | OK | All flows functional, i18n switching works, no console errors |
 
----
+## Pages Audited (30+): All Clear
 
-## Security Audit (CISO)
-
-- All tables have RLS policies enforced
-- Admin access verified via `has_role()` RPC (SECURITY DEFINER)
-- Rate limiting on reveals, reports, feedback, edge functions
-- Shadow-ban auto-applied after 3 reports in 24h
-- Secrets properly managed (Stripe, Mapbox, Resend, etc.)
-- No client-side admin checks
-
-## GDPR Audit (DPO)
-
-- Automated cleanup: signals (2h), rate limits (24h), locations (30d), analytics (90d)
-- GDPR export available in settings
-- Account deletion with cascade
-- Location fuzzing (100m precision)
-- Cookie consent banner present
+No other issues found. Changelog and icebreaker French content are intentional (bilingual content, not UI labels).
 
 ---
 
 ## Plan
 
-### Step 1: Fix EventsPage date format (1 line)
-Replace line 194 with locale-aware format string.
+### Step 1: Fix useActiveSignal.ts (2 lines + 1 import)
+- Add `import { useTranslation } from '@/lib/i18n';` 
+- Add `const { t } = useTranslation();` inside the hook
+- Replace `'Anonyme'` on line 200 with `t('eventsExtra.anonymous')`
+- Replace `'Anonyme'` on line 274 with `t('eventsExtra.anonymous')`
 
-### Step 2: Fix PeopleMetPage fallback name (1 line)
-Replace `'Anonyme'` with `t('eventsExtra.anonymous')` on line 37.
+### Step 2: Fix useInteractions.ts (1 line + 1 import)
+- Add `import { useTranslation } from '@/lib/i18n';`
+- Add `const { t } = useTranslation();` inside the hook
+- Replace `'Anonyme'` on line 133 with `t('eventsExtra.anonymous')`
 
 ### Files to modify
 
 | File | Change |
 |------|--------|
-| `src/pages/EventsPage.tsx` | 1 line: locale-aware date format |
-| `src/pages/PeopleMetPage.tsx` | 1 line: use translation key for fallback name |
+| `src/hooks/useActiveSignal.ts` | 2 lines: replace hardcoded 'Anonyme' + add i18n import |
+| `src/hooks/useInteractions.ts` | 1 line: replace hardcoded 'Anonyme' + add i18n import |
 
 ### Estimation
-- 2 files, 2 lines modified
+- 2 files, 3 lines modified + 2 imports added
 - Minimal risk, mechanical fix
+- After this: 0 hardcoded French strings remain in source code
+
