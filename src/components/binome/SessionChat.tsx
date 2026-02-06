@@ -4,7 +4,8 @@ import { useSessionChat } from '@/hooks/useSessionChat';
 import { ChatMessageBubble } from './ChatMessageBubble';
 import { ChatInput } from './ChatInput';
 import { ChatEmptyState } from './ChatEmptyState';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
+import { useTranslation } from '@/lib/i18n';
 
 interface SessionChatProps {
   sessionId: string;
@@ -12,9 +13,9 @@ interface SessionChatProps {
 
 export function SessionChat({ sessionId }: SessionChatProps) {
   const { messages, isLoading, isSending, sendMessage, currentUserId } = useSessionChat(sessionId);
+  const { t, locale } = useTranslation();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -22,7 +23,7 @@ export function SessionChat({ sessionId }: SessionChatProps) {
   const handleSend = async (content: string) => {
     const result = await sendMessage(content);
     if (!result.success && result.error) {
-      toast.error('Erreur lors de l\'envoi du message');
+      toast.error(t('sessionChat.sendError'));
     }
     return result;
   };
@@ -37,7 +38,6 @@ export function SessionChat({ sessionId }: SessionChatProps) {
 
   return (
     <div className="flex flex-col glass rounded-xl overflow-hidden">
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[300px] max-h-[400px]">
         {messages.length === 0 ? (
           <ChatEmptyState />
@@ -50,13 +50,12 @@ export function SessionChat({ sessionId }: SessionChatProps) {
               senderName={message.sender_name}
               senderAvatar={message.sender_avatar}
               isOwn={message.user_id === currentUserId}
+              locale={locale}
             />
           ))
         )}
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Input */}
       <ChatInput onSend={handleSend} isSending={isSending} />
     </div>
   );

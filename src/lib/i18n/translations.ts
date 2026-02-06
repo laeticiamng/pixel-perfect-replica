@@ -1428,6 +1428,56 @@ export const translations = {
     generatingVoice: { en: 'Generating...', fr: 'Génération...' },
     listenIcebreaker: { en: 'Listen to icebreaker', fr: 'Écouter l\'icebreaker' },
   },
+
+  // Session Chat
+  sessionChat: {
+    placeholder: { en: 'Write a message...', fr: 'Écris un message...' },
+    sendMessage: { en: 'Send message', fr: 'Envoyer le message' },
+    noMessages: { en: 'No messages yet', fr: 'Aucun message pour l\'instant' },
+    beFirst: { en: 'Be the first to write!', fr: 'Sois le premier à écrire !' },
+    sendError: { en: 'Error sending message', fr: 'Erreur lors de l\'envoi du message' },
+  },
+
+  // Session Filters
+  sessionFilters: {
+    searchCity: { en: 'Search a city...', fr: 'Rechercher une ville...' },
+    searching: { en: 'Searching...', fr: 'Recherche...' },
+    search: { en: 'Search', fr: 'Chercher' },
+    filters: { en: 'Filters', fr: 'Filtres' },
+    clear: { en: 'Clear', fr: 'Effacer' },
+    date: { en: 'Date', fr: 'Date' },
+    activity: { en: 'Activity', fr: 'Activité' },
+    allActivities: { en: 'All', fr: 'Toutes' },
+    duration: { en: 'Duration', fr: 'Durée' },
+    allDurations: { en: 'All', fr: 'Toutes' },
+  },
+
+  // Profile QR Code
+  profileQR: {
+    myQRCode: { en: 'My QR Code', fr: 'Mon QR Code' },
+    title: { en: 'My Profile QR Code', fr: 'Mon QR Code de profil' },
+    description: { en: 'Scan this QR code to access my EASY profile', fr: 'Scanne ce QR code pour accéder à mon profil EASY' },
+    linkCopied: { en: 'Link copied!', fr: 'Lien copié !' },
+    copyError: { en: 'Copy failed', fr: 'Erreur lors de la copie' },
+    shareTitle: { en: '{name}\'s Profile', fr: 'Profil de {name}' },
+    shareText: { en: 'Check out my profile on EASY!', fr: 'Découvre mon profil sur EASY !' },
+    downloaded: { en: 'QR Code downloaded!', fr: 'QR Code téléchargé !' },
+    copied: { en: 'Copied!', fr: 'Copié !' },
+    copyLink: { en: 'Copy link', fr: 'Copier le lien' },
+    share: { en: 'Share', fr: 'Partager' },
+  },
+
+  // Recurrence Selector
+  recurrence: {
+    label: { en: 'Recurrence', fr: 'Récurrence' },
+    oneTime: { en: 'One-time', fr: 'Unique' },
+    weekly: { en: 'Weekly', fr: 'Hebdomadaire' },
+    monthly: { en: 'Monthly', fr: 'Mensuel' },
+    occurrencesLabel: { en: 'Number of occurrences', fr: 'Nombre d\'occurrences' },
+    weeks: { en: 'weeks', fr: 'semaines' },
+    months: { en: 'months', fr: 'mois' },
+    eventsCreated: { en: '{count} events will be created (max 12)', fr: '{count} événements seront créés (max 12)' },
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;
