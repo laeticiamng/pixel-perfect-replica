@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePushNotifications } from './usePushNotifications';
+import { useTranslation } from '@/lib/i18n';
 
 interface Message {
   id: string;
@@ -16,6 +17,7 @@ interface Message {
 export function useSessionChat(sessionId: string) {
   const { user } = useAuth();
   const { showNotification, isSubscribed } = usePushNotifications();
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
@@ -41,7 +43,7 @@ export function useSessionChat(sessionId: string) {
 
       const messagesWithProfiles: Message[] = (data || []).map(msg => ({
         ...msg,
-        sender_name: profileMap.get(msg.user_id)?.first_name || 'User',
+        sender_name: profileMap.get(msg.user_id)?.first_name || t('eventsExtra.anonymous'),
         sender_avatar: profileMap.get(msg.user_id)?.avatar_url || null
       }));
 
@@ -98,7 +100,7 @@ export function useSessionChat(sessionId: string) {
           
           const msgWithProfile = {
             ...newMsg,
-            sender_name: profile?.first_name || 'User',
+            sender_name: profile?.first_name || t('eventsExtra.anonymous'),
             sender_avatar: profile?.avatar_url || null
           };
 
