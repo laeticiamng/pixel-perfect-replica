@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface PageHeaderProps {
   title: string;
@@ -23,6 +24,7 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <header className={cn("safe-top px-6 py-4", className)}>
@@ -32,7 +34,7 @@ export function PageHeader({
             <button
               onClick={() => backTo ? navigate(backTo) : navigate(-1)}
               className="p-2 rounded-lg hover:bg-muted transition-colors"
-              aria-label="Retour"
+              aria-label={t('back')}
             >
               <ArrowLeft className="h-6 w-6 text-foreground" />
             </button>
