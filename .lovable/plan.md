@@ -1,80 +1,63 @@
 
-# Audit Multi-Roles - EASY v1.7.x (Iteration 18)
+
+# Audit Multi-Roles - EASY v1.7.x (Iteration 19)
 
 ---
 
 ## Problemes identifies
 
-### BUG-31 : `ThemeToggle.tsx` -- Labels "Clair", "Sombre", "Systeme" hardcodes (HAUTE)
+### BUG-35 : Fallback d'erreur hardcodes en francais dans 6 hooks (MOYENNE)
 
-**Fichier** : `src/components/ThemeToggle.tsx` L16-18
+Les hooks suivants utilisent des messages d'erreur en francais comme fallback dans les blocs catch. Ces messages sont affiches aux utilisateurs via `toast.error()` ou `setError()` et ne respectent pas le systeme i18n.
 
-```tsx
-{ value: 'light', icon: Sun, label: 'Clair' },
-{ value: 'dark', icon: Moon, label: 'Sombre' },
-{ value: 'system', icon: Monitor, label: 'Système' },
-```
+| Fichier | Ligne | Texte hardcode |
+|---------|-------|----------------|
+| `src/hooks/useBinomeSessions.ts` | L109 | `'Erreur lors du chargement'` |
+| `src/hooks/useBinomeSessions.ts` | L200 | `'Erreur lors de la creation'` |
+| `src/hooks/useBinomeSessions.ts` | L225 | `'Erreur'` |
+| `src/hooks/useBinomeSessions.ts` | L247 | `'Erreur'` |
+| `src/hooks/useAIAssistant.ts` | L66 | `'Erreur inconnue'` |
+| `src/hooks/useAIAssistant.ts` | L112 | `'Erreur inconnue'` |
+| `src/hooks/useVoiceIcebreaker.ts` | L40 | `'Erreur inconnue'` |
+| `src/hooks/useVoiceIcebreaker.ts` | L77 | `'Erreur de lecture audio'` |
+| `src/hooks/useLocationRecommendations.ts` | L86 | `'Erreur inconnue'` |
+| `src/hooks/useEventScraper.ts` | L53 | `'Erreur inconnue'` |
+| `src/hooks/useSubscription.ts` | L45 | `'Erreur de verification'` |
 
-Labels visibles dans les tooltips et les boutons. Pas de `useTranslation()` importe.
+**Pourquoi c'est un probleme** : En mode anglais, l'utilisateur voit un message en francais quand une erreur survient. Ces fallbacks sont utilises quand l'objet catch n'est pas une instance de Error.
 
-### BUG-32 : `useVerificationBadges.ts` -- 4 labels et descriptions hardcodes en francais (HAUTE)
-
-**Fichier** : `src/hooks/useVerificationBadges.ts` L87-108
-
-La fonction `getBadgeInfo()` retourne des labels et descriptions en francais brut :
-- `'Etudiant verifie'` / `'Email universitaire verifie'`
-- `'LinkedIn'` / `'Compte LinkedIn connecte'`
-- `'Instagram'` / `'Compte Instagram connecte'`
-- `'Photo verifiee'` / `'Selfie de verification valide'`
-
-Ces textes sont affiches dans `VerificationBadges.tsx` (tooltips + labels visibles).
-
-### BUG-33 : `LocationDescriptionInput.tsx` -- Placeholder + hint hardcodes (MOYENNE)
-
-**Fichier** : `src/components/radar/LocationDescriptionInput.tsx`
-
-- L22 : `placeholder = "Ex: BU 2eme etage, Cafe du coin..."` (francais)
-- L67 : `"Optionnel - aide les autres a te trouver"` (francais)
-
-Pas de `useTranslation()` importe.
-
-### BUG-34 : Tests avec assertions en francais obsoletes (BASSE - non bloquant)
-
-**Fichiers** : `src/test/e2e-signup-signal.test.tsx`, `src/test/validation.test.ts`
-
-Les tests verifient `label === 'Faible'` / `'Fort'` alors que `getPasswordStrength()` retourne maintenant `'weak'` / `'strong'`. Ces tests echoueront. Correction simple : mettre a jour les assertions.
+**Solution** : Remplacer par des messages anglais neutres (puisque les erreurs Supabase arrivent deja en anglais). Utiliser des messages generiques comme `'Unknown error'`, `'Loading error'`, `'Audio playback error'`, etc. Les hooks n'ayant pas acces au contexte React, l'utilisation de `useTranslation()` n'est pas possible sans refactoring plus lourd.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : Ajouter les cles dans `translations.ts` (~10 cles)
+### Etape 1 : Fix `useBinomeSessions.ts` (4 remplacements)
 
-Ajouter :
-- `theme.light`, `theme.dark`, `theme.system`
-- `badges.emailEdu.label`, `badges.emailEdu.description`
-- `badges.linkedin.label`, `badges.linkedin.description`
-- `badges.instagram.label`, `badges.instagram.description`
-- `badges.photoLiveness.label`, `badges.photoLiveness.description`
-- `locationInput.placeholder`, `locationInput.hint`
+- L109 : `'Erreur lors du chargement'` -> `'Loading error'`
+- L200 : `'Erreur lors de la creation'` -> `'Creation error'`
+- L225, L247 : `'Erreur'` -> `'Error'`
 
-### Etape 2 : i18n `ThemeToggle.tsx`
+### Etape 2 : Fix `useAIAssistant.ts` (2 remplacements)
 
-Importer `useTranslation()`. Remplacer les labels hardcodes par `t('theme.light')`, `t('theme.dark')`, `t('theme.system')`.
+- L66, L112 : `'Erreur inconnue'` -> `'Unknown error'`
 
-### Etape 3 : i18n `useVerificationBadges.ts`
+### Etape 3 : Fix `useVoiceIcebreaker.ts` (2 remplacements)
 
-Le hook ne peut pas utiliser `useTranslation()` directement car il faudrait le passer en parametre. Solution : transformer `getBadgeInfo` pour accepter une fonction `t` en parametre, ou deplacer la logique dans le composant `VerificationBadges.tsx` qui a deja acces au contexte React.
+- L40 : `'Erreur inconnue'` -> `'Unknown error'`
+- L77 : `'Erreur de lecture audio'` -> `'Audio playback error'`
 
-Approche retenue : Deplacer le mapping des labels dans `VerificationBadges.tsx` en utilisant `useTranslation()`, et faire retourner uniquement le `badge_type` depuis le hook.
+### Etape 4 : Fix `useLocationRecommendations.ts` (1 remplacement)
 
-### Etape 4 : i18n `LocationDescriptionInput.tsx`
+- L86 : `'Erreur inconnue'` -> `'Unknown error'`
 
-Importer `useTranslation()`. Remplacer le placeholder et le hint par des cles traduites.
+### Etape 5 : Fix `useEventScraper.ts` (1 remplacement)
 
-### Etape 5 : Fix tests obsoletes
+- L53 : `'Erreur inconnue'` -> `'Unknown error'`
 
-Mettre a jour les assertions dans les fichiers de test pour utiliser `'weak'`/`'medium'`/`'strong'` au lieu de `'Faible'`/`'Moyen'`/`'Fort'`.
+### Etape 6 : Fix `useSubscription.ts` (1 remplacement)
+
+- L45 : `'Erreur de verification'` -> `'Verification error'`
 
 ---
 
@@ -82,16 +65,17 @@ Mettre a jour les assertions dans les fichiers de test pour utiliser `'weak'`/`'
 
 | Fichier | Changements |
 |---------|------------|
-| `src/lib/i18n/translations.ts` | +10 cles |
-| `src/components/ThemeToggle.tsx` | import useTranslation + 3 labels |
-| `src/hooks/useVerificationBadges.ts` | retourner cles i18n au lieu de texte |
-| `src/components/social/VerificationBadges.tsx` | utiliser t() pour les labels |
-| `src/components/radar/LocationDescriptionInput.tsx` | import useTranslation + 2 textes |
-| `src/test/validation.test.ts` | fix 3 assertions |
-| `src/test/e2e-signup-signal.test.tsx` | fix 2 assertions |
+| `src/hooks/useBinomeSessions.ts` | 4 remplacements de fallback |
+| `src/hooks/useAIAssistant.ts` | 2 remplacements de fallback |
+| `src/hooks/useVoiceIcebreaker.ts` | 2 remplacements de fallback |
+| `src/hooks/useLocationRecommendations.ts` | 1 remplacement de fallback |
+| `src/hooks/useEventScraper.ts` | 1 remplacement de fallback |
+| `src/hooks/useSubscription.ts` | 1 remplacement de fallback |
 
 ---
 
 ## Estimation
 
-- 7 fichiers, ~10 nouvelles cles, ~25 lignes modifiees
+- 6 fichiers, 0 nouvelles cles, 11 lignes modifiees
+- Correction purement mecanique : remplacement de chaines francaises par des equivalents anglais neutres
+
