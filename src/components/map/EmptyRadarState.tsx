@@ -2,6 +2,7 @@ import { Radio, Share2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface EmptyRadarStateProps {
   onActivateSignal: () => void;
@@ -11,13 +12,13 @@ interface EmptyRadarStateProps {
 
 export function EmptyRadarState({ onActivateSignal, isDemoMode, onEnableDemo }: EmptyRadarStateProps) {
   const { t } = useTranslation();
-  
+  const { profile } = useAuth();
   const handleShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'EASY - Le premier réseau social 100% réel',
-          text: 'Rejoins-moi sur EASY pour des rencontres spontanées en vrai !',
+          title: t('share.title'),
+          text: t('share.text'),
           url: window.location.origin,
         });
       } catch (err) {
@@ -75,7 +76,7 @@ export function EmptyRadarState({ onActivateSignal, isDemoMode, onEnableDemo }: 
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         >
           <div className="w-8 h-8 rounded-full bg-coral flex items-center justify-center shadow-lg glow-coral">
-            <span className="text-white font-bold text-sm">T</span>
+            <span className="text-white font-bold text-sm">{profile?.first_name?.charAt(0).toUpperCase() || '?'}</span>
           </div>
         </motion.div>
         
