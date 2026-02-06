@@ -59,9 +59,9 @@ export function getPasswordStrength(password: string): {
   if (/[0-9]/.test(password)) score++;
   if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-  if (score <= 2) return { score, label: 'Faible', color: 'bg-signal-red' };
-  if (score <= 4) return { score, label: 'Moyen', color: 'bg-signal-yellow' };
-  return { score, label: 'Fort', color: 'bg-signal-green' };
+  if (score <= 2) return { score, label: 'weak', color: 'bg-signal-red' };
+  if (score <= 4) return { score, label: 'medium', color: 'bg-signal-yellow' };
+  return { score, label: 'strong', color: 'bg-signal-green' };
 }
 
 // Alias for signupSchema

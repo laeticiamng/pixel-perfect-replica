@@ -76,10 +76,14 @@ export default function OnboardingPage() {
   // Watch for position changes to update locationStatus
   useEffect(() => {
     if (position && locationStatus === 'loading') {
-      // If position was set alongside an error, it means demo fallback was used
       if (locationError) {
         setLocationStatus('error');
-        toast.error(locationError);
+        // Translate error keys from locationStore
+        const errorMsg = locationError === 'location_denied' ? t('mapToasts.locationDenied')
+          : locationError === 'location_unavailable' ? t('mapToasts.locationUnavailable')
+          : locationError === 'geolocation_not_supported' ? t('mapToasts.geoNotSupported')
+          : locationError;
+        toast.error(errorMsg);
       } else {
         setLocationStatus('success');
         toast.success(t('onboarding.locationObtained') + ' !');
@@ -91,9 +95,13 @@ export default function OnboardingPage() {
   useEffect(() => {
     if (locationError && !position && locationStatus === 'loading') {
       setLocationStatus('error');
-      toast.error(locationError);
+      const errorMsg = locationError === 'location_denied' ? t('mapToasts.locationDenied')
+        : locationError === 'location_unavailable' ? t('mapToasts.locationUnavailable')
+        : locationError === 'geolocation_not_supported' ? t('mapToasts.geoNotSupported')
+        : locationError;
+      toast.error(errorMsg);
     }
-  }, [locationError, position, locationStatus]);
+  }, [locationError, position, locationStatus, t]);
 
   // If already authenticated, go directly to map
   useEffect(() => {
@@ -144,9 +152,9 @@ export default function OnboardingPage() {
       if (!validateStep1()) return;
       
       if (isLogin) {
-        const { allowed, message } = loginRateLimit.checkRateLimit();
+        const { allowed } = loginRateLimit.checkRateLimit();
         if (!allowed) {
-          toast.error(message || t('auth.tooManyAttempts'));
+          toast.error(t('auth.tooManyAttempts'));
           return;
         }
         
@@ -169,9 +177,9 @@ export default function OnboardingPage() {
           setStep(2);
         }
       } else {
-        const { allowed, message } = signupRateLimit.checkRateLimit();
+        const { allowed } = signupRateLimit.checkRateLimit();
         if (!allowed) {
-          toast.error(message || t('auth.tooManyAttempts'));
+          toast.error(t('auth.tooManyAttempts'));
           return;
         }
         

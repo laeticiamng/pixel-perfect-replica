@@ -123,17 +123,17 @@ describe("Smoke Tests - Core Functionality", () => {
   describe("Password Strength", () => {
     it("should rate weak passwords correctly", () => {
       const strength = getPasswordStrength("abc");
-      expect(strength.label).toBe("Faible");
+      expect(strength.label).toBe("weak");
     });
 
     it("should rate medium passwords correctly", () => {
       const strength = getPasswordStrength("Abc123");
-      expect(strength.label).toBe("Moyen");
+      expect(strength.label).toBe("medium");
     });
 
     it("should rate strong passwords correctly", () => {
       const strength = getPasswordStrength("Abc123!@#xyz");
-      expect(strength.label).toBe("Fort");
+      expect(strength.label).toBe("strong");
     });
   });
 

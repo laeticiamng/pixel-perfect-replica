@@ -23,12 +23,11 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
   startWatching: () => {
     if (!navigator.geolocation) {
-      set({ error: 'La géolocalisation n\'est pas supportée par votre navigateur' });
       // Use default position for demo
       set({ 
         position: DEFAULT_POSITION, 
         lastUpdated: new Date(),
-        error: null 
+        error: 'geolocation_not_supported'
       });
       return;
     }
@@ -50,8 +49,8 @@ export const useLocationStore = create<LocationState>((set, get) => ({
       (error) => {
         console.warn('Geolocation error:', error.code, error.message);
         const errorMsg = error.code === 1
-          ? 'Localisation refusée — mode démo activé'
-          : 'Position indisponible — mode démo activé';
+          ? 'location_denied'
+          : 'location_unavailable';
         // Fallback to default position for demo mode, but preserve error for UI
         set({
           position: DEFAULT_POSITION,

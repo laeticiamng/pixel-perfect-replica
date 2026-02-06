@@ -35,9 +35,9 @@ export default function ForgotPasswordPage() {
     }
 
     // Check rate limit
-    const { allowed, message } = passwordResetRateLimit.checkRateLimit();
+    const { allowed } = passwordResetRateLimit.checkRateLimit();
     if (!allowed) {
-      toast.error(message || t('auth.tooManyAttempts'));
+      toast.error(t('auth.tooManyAttempts'));
       return;
     }
 

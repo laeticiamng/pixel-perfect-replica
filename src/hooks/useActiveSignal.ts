@@ -251,40 +251,16 @@ export function useActiveSignal() {
         return;
       }
 
-      // Get profiles for these users using secure function (avoids exposing emails)
+      // Get profiles using secure RPC (avoids RLS issues on user_settings/user_stats)
       const userIds = fallbackSignals.map(s => s.user_id);
       
-      // Get user settings to filter out ghost mode users
-      const { data: settingsData } = await supabase
-        .from('user_settings')
-        .select('user_id, ghost_mode')
-        .in('user_id', userIds);
-      
-      // Filter out users with ghost mode enabled
-      const visibleUserIds = userIds.filter(uid => {
-        const userSettings = settingsData?.find(s => s.user_id === uid);
-        return !userSettings?.ghost_mode;
-      });
-      
-      if (visibleUserIds.length === 0) {
-        setNearbyUsers([]);
-        return;
-      }
-      
       const { data: profiles } = await supabase
-        .rpc('get_public_profiles', { profile_ids: visibleUserIds });
+        .rpc('get_public_profiles', { profile_ids: userIds });
 
-      const { data: statsData } = await supabase
-        .from('user_stats')
-        .select('user_id, rating')
-        .in('user_id', visibleUserIds);
-
-      // Calculate distances and combine data (only for visible users)
+      // Calculate distances and combine data
       const nearbyFiltered: NearbyUser[] = fallbackSignals
-        .filter(signal => visibleUserIds.includes(signal.user_id))
         .map(signal => {
           const profile = profiles?.find(p => p.id === signal.user_id);
-          const stats = statsData?.find(s => s.user_id === signal.user_id);
           
           const distance = calculateDistance(
             position.latitude,
@@ -300,7 +276,7 @@ export function useActiveSignal() {
             activity: signal.activity as ActivityType,
             distance,
             activeSince: new Date(signal.started_at),
-            rating: stats?.rating ? Number(stats.rating) : 5.0,
+            rating: 5.0, // Default - can't read other users' stats due to RLS
             position: {
               latitude: Number(signal.latitude),
               longitude: Number(signal.longitude),
@@ -416,7 +392,8 @@ export function useActiveSignal() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user?.id, position?.latitude, position?.longitude, fetchNearbyUsers]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, fetchNearbyUsers]);
 
   return {
     mySignal,
