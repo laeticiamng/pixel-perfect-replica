@@ -1,154 +1,85 @@
 
-
-# Audit Triple - EASY v1.7.x (Iteration 8)
-## Phase 1 : Technique | Phase 2 : UX | Phase 3 : Beta-testeur
+# Audit Complet Multi-Roles - EASY v1.7.x (Iteration 9)
 
 ---
 
-## PHASE 1 : Audit Technique (Dev Senior)
+## Resultats de l'audit
 
-### TECH-21 : 6 fichiers utilisent encore `sonner` au lieu de `react-hot-toast` (HAUTE)
+### Bugs critiques identifies
 
-L'iteration 5 avait pour objectif d'unifier les toasts sur `react-hot-toast` et de supprimer `sonner`. Pourtant, 6 fichiers importent encore `{ toast } from 'sonner'` :
+#### BUG-1 : `useBinomeSessions.ts` utilise encore `sonner` (CRITIQUE)
 
-| Fichier | Lignes |
-|---------|--------|
-| `src/components/admin/AlertPreferencesCard.tsx` | L10, L74, L76 |
-| `src/components/admin/EventScraperCard.tsx` | L9, L33, L40 |
-| `src/components/admin/CronJobsMonitor.tsx` | L7, L136, L149, L154, L168, L181, L186, L200, L213, L218 |
-| `src/components/binome/SessionFeedbackForm.tsx` | L12, L60, L64 |
-| `src/components/binome/SessionChat.tsx` | L7, L25 |
-| `src/pages/SessionDetailPage.tsx` | L24, L129, L142, L144, L150, L154 |
+**Fichier** : `src/hooks/useBinomeSessions.ts` (ligne 4)
 
-Ces imports provoquent potentiellement des toasts qui s'affichent via `sonner` alors que le `Sonner` Toaster a ete supprime d'`App.tsx` lors de l'iteration 5. Resultat : **les toasts de ces composants sont silencieux** (aucune notification visible a l'utilisateur).
+Ce hook est le moteur de toutes les actions Binome (creer, rejoindre, quitter, annuler une session). Il importe `toast` depuis `sonner`, qui n'a plus de Toaster dans `App.tsx`. **Tous les toasts de confirmation Binome sont silencieux** : creation de session, rejoindre, quitter, annuler.
 
-### TECH-22 : SessionFilters 100% hardcode en francais (MOYENNE)
+De plus, les textes de toast utilisent une detection de langue manuelle `locale === 'fr'` (lignes 159, 185, 199, 210, 232, 255, 259) au lieu de `useTranslation()`. Probleme : c'est un hook, pas un composant React -- il ne peut pas utiliser `useTranslation()` directement. Il faut passer `t()` en parametre ou externaliser les messages.
 
-**Fichier** : `src/components/binome/SessionFilters.tsx`
+#### BUG-2 : `EventScraperCard.tsx` utilise encore `sonner` (manque de la migration Iteration 8)
 
-~12 textes hardcodes :
-- L31-38 : `activityOptions` labels en francais (`'Réviser'`, `'Bosser'`, `'Manger'`...)
-- L76 : `placeholder="Rechercher une ville..."`
-- L88 : `'Recherche...'` / `'Chercher'`
-- L101 : `'Filtres'`
-- L117 : `'Effacer'`
-- L138-140 : `'Date'`
-- L169 : `placeholder="Activité"`
-- L172 : `'Toutes'`
-- L191 : `placeholder="Durée"`
-- L194 : `'Toutes'`
-- L88-95 : `'semaines'` / `'mois'`
+**Fichier** : `src/components/admin/EventScraperCard.tsx` (ligne 9)
 
-### TECH-23 : ChatInput, ChatEmptyState, ChatMessageBubble hardcodes en francais (MOYENNE)
+Ce fichier etait dans le plan de l'iteration 8 mais n'a pas ete migre. Import `{ toast } from 'sonner'` toujours present. Toasts silencieux pour les actions de scraping.
 
-**Fichier** : `src/components/binome/ChatInput.tsx`
-- L38 : `placeholder="Écris un message..."`
-- L47 : `aria-label="Envoyer le message"`
+#### BUG-3 : `EventReminderBanner.tsx` -- locale `fr` hardcodee + textes hardcodes (HAUTE)
 
-**Fichier** : `src/components/binome/ChatEmptyState.tsx`
-- L5 : `"Aucun message pour l'instant"`
-- L6 : `"Sois le premier à écrire !"`
+**Fichier** : `src/components/events/EventReminderBanner.tsx`
 
-**Fichier** : `src/components/binome/ChatMessageBubble.tsx`
-- L4 : `import { fr } from 'date-fns/locale'` -- locale hardcoded a `fr`
-- L51-54 : `formatDistanceToNow` avec `locale: fr` hardcode
+- Ligne 3 : `import { fr } from 'date-fns/locale'` -- locale hardcodee
+- Ligne 29 : `Commence dans ${minutesUntilStart} min !`
+- Ligne 32 : `Commence dans ${minutesUntilStart} min`
+- Ligne 35 : `Commence dans ${hoursUntilStart}h`
+- Ligne 66 : `format(startDate, 'HH:mm', { locale: fr })` -- locale hardcodee
+- Ligne 72 : `Bientôt !`
+- Ligne 113 : `Rappels`
 
-### TECH-24 : SessionChat toast hardcode en francais (BASSE)
+#### BUG-4 : `EventCategoryBadge.tsx` -- labels de categories hardcodes en francais (HAUTE)
 
-**Fichier** : `src/components/binome/SessionChat.tsx`
-- L25 : `toast.error('Erreur lors de l\'envoi du message')` -- utilise `sonner` ET texte hardcode
+**Fichier** : `src/components/events/EventCategoryBadge.tsx`
 
-### TECH-25 : ProfileQRCode n'utilise pas le systeme i18n (MOYENNE)
+Les labels des categories d'evenements sont hardcodes en francais (ligne 18-26) :
+- `'Académique'`, `'Soirée'`, `'Pro'`, `'Autre'`, `'Culture'`, `'Sport'`, `'Social'`
 
-**Fichier** : `src/components/profile/ProfileQRCode.tsx`
+Cela affecte :
+- Les badges de categorie partout dans l'app
+- Le selecteur de categorie dans le formulaire de creation d'evenement
 
-Le composant detecte la langue via `localStorage.getItem('language')` (L35) au lieu d'utiliser `useTranslation()`. De plus, il utilise des ternaires `isFr ?` au lieu de `t()` (~10 textes).
+#### BUG-5 : `AdminDashboardPage.tsx` -- entierement hardcode en francais (~50 textes)
 
-### TECH-26 : RecurrenceSelector n'utilise pas le systeme i18n (BASSE)
+**Fichier** : `src/pages/AdminDashboardPage.tsx`
 
-**Fichier** : `src/components/events/RecurrenceSelector.tsx`
-
-Meme probleme : detecte la langue via `localStorage` (L29) et utilise des ternaires `isFr ?` (~8 textes).
-
-### TECH-27 : Admin components entierement hardcodes (BASSE - admin only)
-
-**Fichiers** : `AlertPreferencesCard.tsx`, `EventScraperCard.tsx`, `CronJobsMonitor.tsx`, `AlertHistoryCard.tsx`
-
-~80 textes hardcodes en francais. Priorite basse car pages admin uniquement. Mais les toasts sont muets car `sonner` n'a plus de Toaster.
-
----
-
-## PHASE 2 : Audit UX (UX Designer Senior)
-
-### UX-21 : Toasts muets dans le module Binome
-
-Apres suppression du Toaster `sonner` dans `App.tsx` (iteration 5), les actions suivantes ne produisent plus de feedback visuel :
-- Rejoindre/quitter une session (SessionDetailPage)
-- Envoyer un feedback de session (SessionFeedbackForm)
-- Envoyer un message dans le chat de session (SessionChat)
-- Actions admin (AlertPreferences, CronJobs, EventScraper)
-
-L'utilisateur clique mais ne recoit aucune confirmation.
-
-### UX-22 : Filtres de session Binome non traduits
-
-Les filtres de recherche de sessions (activite, ville, duree) affichent des labels en francais meme en mode anglais : "Réviser", "Rechercher une ville...", "Filtres", "Effacer".
-
-### UX-23 : Chat de session entierement en francais
-
-Le chat des sessions Binome affiche "Écris un message...", "Aucun message pour l'instant", et les timestamps en francais meme en mode anglais.
-
-### UX-24 : QR Code de profil hors systeme i18n
-
-Le dialogue QR Code utilise `localStorage` au lieu du systeme de traduction, ce qui peut creer des incoherences si la preference est stockee differemment.
-
----
-
-## PHASE 3 : Audit Beta-testeur (Utilisateur Final)
-
-### BETA-14 : "Je rejoins une session mais rien ne se passe visuellement"
-
-Un utilisateur clique "Rejoindre" sur une session Binome. L'action fonctionne en base mais aucun toast ne confirme l'action (sonner supprime, pas de fallback react-hot-toast).
-
-### BETA-15 : "Les filtres de session sont en francais meme si j'ai choisi anglais"
-
-Les labels "Réviser", "Bosser", "Rechercher une ville..." restent en francais.
-
-### BETA-16 : "Le chat de session est en francais"
-
-Le placeholder "Écris un message..." et les timestamps restent en francais.
-
-### BETA-17 : "Le QR Code de profil ne change pas de langue quand je switch"
-
-Le QR Code utilise `localStorage` au lieu du systeme reactif, donc le switch de langue ne met pas a jour immediatement les textes.
+Page admin avec ~50 textes hardcodes. Bien que ce soit admin-only, les toasts de confirmation (lignes 116-127) sont deja en francais et devraient suivre le systeme i18n. Les textes principaux incluent :
+- "Accès restreint", "Dashboard Admin", "Système Opérationnel/Attention/Critique"
+- "Utilisateurs", "Signaux actifs", "Événements", "Interactions"
+- "Utilisateurs actifs (14 jours)", "Répartition par catégorie", "Activité par heure"
+- "Top 10 Événements", "Pages les plus visitées", "Aucune donnée disponible"
+- "Nettoyage des signaux expirés effectué", "Données rafraîchies"
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : Migrer les 6 fichiers de `sonner` vers `react-hot-toast` (CRITIQUE)
+### Etape 1 : Migrer `useBinomeSessions.ts` de `sonner` vers `react-hot-toast` + i18n
 
-Remplacer `import { toast } from 'sonner'` par `import toast from 'react-hot-toast'` dans les 6 fichiers. Adapter la syntaxe si necessaire (`toast.success()` est compatible).
+Remplacer `import { toast } from 'sonner'` par `import toast from 'react-hot-toast'`. Pour l'i18n, puisqu'il s'agit d'un hook et non d'un composant, utiliser la detection de langue existante (`document.documentElement.lang`) avec un helper local pour les cles de traduction, ou importer directement les traductions.
 
-### Etape 2 : i18n -- SessionFilters (~12 cles)
+Refactoriser les 8 messages toast avec un pattern i18n compatible hooks.
 
-Ajouter le bloc `sessionFilters.*` dans `translations.ts`. Refactoriser pour utiliser `t()` et les cles d'activites existantes.
+### Etape 2 : Migrer `EventScraperCard.tsx` de `sonner` vers `react-hot-toast`
 
-### Etape 3 : i18n -- ChatInput + ChatEmptyState + ChatMessageBubble (~6 cles)
+Remplacer l'import (ligne 9). Adapter les 2 appels toast (lignes 33, 40).
 
-Ajouter les cles `sessionChat.*`. Passer le locale dynamiquement pour `date-fns` dans `ChatMessageBubble`.
+### Etape 3 : i18n -- `EventReminderBanner.tsx` (~8 cles)
 
-### Etape 4 : i18n -- SessionChat toast
+Ajouter `eventReminder.*` dans `translations.ts`. Utiliser `useTranslation()` avec locale dynamique pour `date-fns`. Traduire "Commence dans X min", "Bientot !", "Rappels".
 
-Remplacer le texte hardcode par `t()`.
+### Etape 4 : i18n -- `EventCategoryBadge.tsx` (~7 cles)
 
-### Etape 5 : Refactoriser ProfileQRCode vers useTranslation (~10 cles)
+Ajouter `eventCategories.*` dans `translations.ts`. Remplacer les labels hardcodes par `t('eventCategories.social')`, etc. Le composant et le selecteur utiliseront `useTranslation()`.
 
-Remplacer `localStorage.getItem('language')` par `useTranslation()`. Ajouter le bloc `profileQR.*` dans `translations.ts`.
+### Etape 5 : i18n partiel -- `AdminDashboardPage.tsx` (toasts + titres principaux, ~25 cles)
 
-### Etape 6 : Refactoriser RecurrenceSelector vers useTranslation (~8 cles)
-
-Remplacer `localStorage` par `useTranslation()`. Ajouter le bloc `recurrence.*`.
+Ajouter `admin.*` dans `translations.ts`. Traduire les elements visibles principaux : titres de cartes, labels de stats, messages toast, indicateur de sante systeme.
 
 ---
 
@@ -156,26 +87,18 @@ Remplacer `localStorage` par `useTranslation()`. Ajouter le bloc `recurrence.*`.
 
 | Fichier | Changements |
 |---------|------------|
-| `src/lib/i18n/translations.ts` | +40 cles (sessionFilters, sessionChat, profileQR, recurrence) |
-| `src/components/admin/AlertPreferencesCard.tsx` | sonner -> react-hot-toast |
+| `src/lib/i18n/translations.ts` | +45 cles (eventReminder, eventCategories, admin) |
+| `src/hooks/useBinomeSessions.ts` | sonner -> react-hot-toast + i18n messages |
 | `src/components/admin/EventScraperCard.tsx` | sonner -> react-hot-toast |
-| `src/components/admin/CronJobsMonitor.tsx` | sonner -> react-hot-toast |
-| `src/components/binome/SessionFeedbackForm.tsx` | sonner -> react-hot-toast |
-| `src/components/binome/SessionChat.tsx` | sonner -> react-hot-toast + i18n toast |
-| `src/pages/SessionDetailPage.tsx` | sonner -> react-hot-toast |
-| `src/components/binome/SessionFilters.tsx` | i18n complet |
-| `src/components/binome/ChatInput.tsx` | i18n |
-| `src/components/binome/ChatEmptyState.tsx` | i18n |
-| `src/components/binome/ChatMessageBubble.tsx` | i18n + locale dynamique |
-| `src/components/profile/ProfileQRCode.tsx` | Refactoring useTranslation |
-| `src/components/events/RecurrenceSelector.tsx` | Refactoring useTranslation |
+| `src/components/events/EventReminderBanner.tsx` | i18n complet + locale dynamique |
+| `src/components/events/EventCategoryBadge.tsx` | i18n labels categories |
+| `src/pages/AdminDashboardPage.tsx` | i18n titres + toasts + indicateurs |
 
 ---
 
 ## Estimation
 
-- Migration sonner -> react-hot-toast : 6 fichiers, ~15 lignes par fichier
-- i18n composants Binome (SessionFilters, Chat*) : 4 fichiers, ~20 cles
-- Refactoring ProfileQRCode + RecurrenceSelector : 2 fichiers, ~20 cles
-- Total : ~13 fichiers modifies, ~40 nouvelles cles, ~250 lignes ajoutees/modifiees
-
+- Migration sonner -> react-hot-toast : 2 fichiers (useBinomeSessions critique, EventScraperCard)
+- i18n composants Events (EventReminderBanner, EventCategoryBadge) : 2 fichiers, ~15 cles
+- i18n AdminDashboardPage : 1 fichier, ~25 cles
+- Total : ~6 fichiers modifies, ~45 nouvelles cles, ~200 lignes modifiees
