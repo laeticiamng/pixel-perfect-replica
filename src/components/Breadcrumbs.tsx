@@ -1,33 +1,41 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
-interface BreadcrumbItem {
-  label: string;
-  path: string;
-  icon?: React.ReactNode;
+type RouteKey = '/' | '/map' | '/profile' | '/settings' | '/profile/edit' | '/statistics' 
+  | '/people-met' | '/help' | '/feedback' | '/report' | '/notifications-settings' 
+  | '/privacy-settings' | '/change-password' | '/diagnostics' | '/install' | '/terms' | '/privacy';
+
+interface RouteConfig {
+  labelKey: string;
+  parent?: string;
 }
 
-// Route hierarchy mapping
-const ROUTE_CONFIG: Record<string, { label: string; parent?: string }> = {
-  '/': { label: 'Accueil' },
-  '/map': { label: 'Carte' },
-  '/profile': { label: 'Profil' },
-  '/settings': { label: 'Paramètres' },
-  '/profile/edit': { label: 'Modifier le profil', parent: '/profile' },
-  '/statistics': { label: 'Statistiques', parent: '/profile' },
-  '/people-met': { label: 'Personnes rencontrées', parent: '/profile' },
-  '/help': { label: 'Aide & FAQ', parent: '/profile' },
-  '/feedback': { label: 'Feedback', parent: '/profile' },
-  '/report': { label: 'Signalement', parent: '/profile' },
-  '/notifications-settings': { label: 'Notifications', parent: '/profile' },
-  '/privacy-settings': { label: 'Confidentialité', parent: '/profile' },
-  '/change-password': { label: 'Mot de passe', parent: '/settings' },
-  '/diagnostics': { label: 'Diagnostics', parent: '/settings' },
-  '/install': { label: 'Installation', parent: '/settings' },
-  '/terms': { label: 'Conditions', parent: '/' },
-  '/privacy': { label: 'Confidentialité', parent: '/' },
+const ROUTE_CONFIG: Record<string, RouteConfig> = {
+  '/': { labelKey: 'breadcrumbs.home' },
+  '/map': { labelKey: 'breadcrumbs.map' },
+  '/profile': { labelKey: 'breadcrumbs.profile' },
+  '/settings': { labelKey: 'breadcrumbs.settings' },
+  '/profile/edit': { labelKey: 'breadcrumbs.editProfile', parent: '/profile' },
+  '/statistics': { labelKey: 'breadcrumbs.statistics', parent: '/profile' },
+  '/people-met': { labelKey: 'breadcrumbs.peopleMet', parent: '/profile' },
+  '/help': { labelKey: 'breadcrumbs.helpFaq', parent: '/profile' },
+  '/feedback': { labelKey: 'breadcrumbs.feedback', parent: '/profile' },
+  '/report': { labelKey: 'breadcrumbs.report', parent: '/profile' },
+  '/notifications-settings': { labelKey: 'breadcrumbs.notifications', parent: '/profile' },
+  '/privacy-settings': { labelKey: 'breadcrumbs.privacy', parent: '/profile' },
+  '/change-password': { labelKey: 'breadcrumbs.password', parent: '/settings' },
+  '/diagnostics': { labelKey: 'breadcrumbs.diagnostics', parent: '/settings' },
+  '/install': { labelKey: 'breadcrumbs.install', parent: '/settings' },
+  '/terms': { labelKey: 'breadcrumbs.terms', parent: '/' },
+  '/privacy': { labelKey: 'breadcrumbs.privacy', parent: '/' },
 };
+
+interface BreadcrumbItem {
+  labelKey: string;
+  path: string;
+}
 
 function buildBreadcrumbPath(pathname: string): BreadcrumbItem[] {
   const items: BreadcrumbItem[] = [];
@@ -36,22 +44,12 @@ function buildBreadcrumbPath(pathname: string): BreadcrumbItem[] {
   while (currentPath) {
     const config = ROUTE_CONFIG[currentPath];
     if (config) {
-      items.unshift({
-        label: config.label,
-        path: currentPath,
-      });
+      items.unshift({ labelKey: config.labelKey, path: currentPath });
       currentPath = config.parent || '';
     } else {
-      // Handle dynamic routes like /reveal/:userId
       if (currentPath.startsWith('/reveal/')) {
-        items.unshift({
-          label: 'Profil utilisateur',
-          path: currentPath,
-        });
-        items.unshift({
-          label: 'Carte',
-          path: '/map',
-        });
+        items.unshift({ labelKey: 'breadcrumbs.userProfile', path: currentPath });
+        items.unshift({ labelKey: 'breadcrumbs.map', path: '/map' });
       }
       break;
     }
@@ -68,15 +66,15 @@ interface BreadcrumbsProps {
 export function Breadcrumbs({ className, showHome = false }: BreadcrumbsProps) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const items = buildBreadcrumbPath(location.pathname);
   
-  // Don't show breadcrumbs on main pages or if only one item
   if (items.length <= 1) return null;
 
   return (
     <nav 
-      aria-label="Fil d'Ariane" 
+      aria-label={t('breadcrumbs.ariaLabel')} 
       className={cn("flex items-center gap-1 text-sm overflow-x-auto", className)}
     >
       {showHome && (
@@ -84,7 +82,7 @@ export function Breadcrumbs({ className, showHome = false }: BreadcrumbsProps) {
           <button
             onClick={() => navigate('/')}
             className="p-1 rounded-md hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
-            aria-label="Accueil"
+            aria-label={t('breadcrumbs.home')}
           >
             <Home className="h-4 w-4" />
           </button>
@@ -102,14 +100,14 @@ export function Breadcrumbs({ className, showHome = false }: BreadcrumbsProps) {
             )}
             {isLast ? (
               <span className="text-foreground font-medium truncate max-w-[120px]">
-                {item.label}
+                {t(item.labelKey as any)}
               </span>
             ) : (
               <button
                 onClick={() => navigate(item.path)}
                 className="text-muted-foreground hover:text-coral transition-colors truncate max-w-[100px]"
               >
-                {item.label}
+                {t(item.labelKey as any)}
               </button>
             )}
           </div>

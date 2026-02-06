@@ -1242,8 +1242,8 @@ export const translations = {
   deleteAccount: {
     button: { en: 'Delete my account', fr: 'Supprimer mon compte' },
     title: { en: 'Delete your account?', fr: 'Supprimer votre compte ?' },
-    description: { en: 'This action is <strong>irreversible</strong>. All your data will be permanently deleted: profile, statistics, interaction history, feedback.', fr: 'Cette action est <strong>irréversible</strong>. Toutes vos données seront définitivement supprimées : profil, statistiques, historique d\'interactions, feedbacks.' },
-    confirmLabel: { en: 'Type <strong>DELETE</strong> to confirm', fr: 'Tapez <strong>SUPPRIMER</strong> pour confirmer' },
+    description: { en: 'This action is irreversible. All your data will be permanently deleted: profile, statistics, interaction history, feedback.', fr: 'Cette action est irréversible. Toutes vos données seront définitivement supprimées : profil, statistiques, historique d\'interactions, feedbacks.' },
+    confirmLabel: { en: 'Type DELETE to confirm', fr: 'Tapez SUPPRIMER pour confirmer' },
     confirmWord: { en: 'DELETE', fr: 'SUPPRIMER' },
     confirmAction: { en: 'Delete permanently', fr: 'Supprimer définitivement' },
     success: { en: 'Your account has been deleted', fr: 'Votre compte a été supprimé' },
@@ -1671,6 +1671,97 @@ export const translations = {
     pagesAnalyzed: { en: '{pages} pages analyzed', fr: '{pages} pages analysées' },
     eventsFound: { en: '{found} events found', fr: '{found} événements trouvés' },
     imported: { en: 'Imported', fr: 'Importé' },
+  },
+
+  // Command Palette
+  commandPalette: {
+    placeholder: { en: 'Search a page or action...', fr: 'Rechercher une page ou une action...' },
+    noResults: { en: 'No results found.', fr: 'Aucun résultat trouvé.' },
+    navGroup: { en: 'Navigation', fr: 'Navigation' },
+    settingsGroup: { en: 'Settings', fr: 'Paramètres' },
+    actionsGroup: { en: 'Actions', fr: 'Actions' },
+    home: { en: 'Home', fr: 'Accueil' },
+    mapRadar: { en: 'Map / Radar', fr: 'Carte / Radar' },
+    myProfile: { en: 'My Profile', fr: 'Mon Profil' },
+    binome: { en: 'Binôme', fr: 'Binôme' },
+    events: { en: 'Events', fr: 'Événements' },
+    statistics: { en: 'Statistics', fr: 'Statistiques' },
+    peopleMet: { en: 'People met', fr: 'Personnes rencontrées' },
+    settings: { en: 'Settings', fr: 'Paramètres' },
+    notifications: { en: 'Notifications', fr: 'Notifications' },
+    privacy: { en: 'Privacy', fr: 'Confidentialité' },
+    changePassword: { en: 'Change password', fr: 'Changer le mot de passe' },
+    blockedUsers: { en: 'Blocked users', fr: 'Utilisateurs bloqués' },
+    exportData: { en: 'Export my data', fr: 'Exporter mes données' },
+    lightMode: { en: 'Light mode', fr: 'Mode clair' },
+    darkMode: { en: 'Dark mode', fr: 'Mode sombre' },
+    help: { en: 'Help', fr: 'Aide' },
+    feedback: { en: 'Give feedback', fr: 'Donner un avis' },
+    logout: { en: 'Log out', fr: 'Déconnexion' },
+  },
+
+  // Map Header
+  mapHeader: {
+    visible: { en: 'You are visible', fr: 'Tu es visible' },
+    signalOff: { en: 'Signal off', fr: 'Signal désactivé' },
+    refreshMap: { en: 'Refresh map', fr: 'Rafraîchir la carte' },
+    open: { en: 'Open', fr: 'Ouvert' },
+    conditional: { en: 'Conditional', fr: 'Conditionnel' },
+    you: { en: 'You', fr: 'Toi' },
+    showFilters: { en: 'Show activity filters', fr: "Afficher les filtres d'activité" },
+    hideFilters: { en: 'Hide filters', fr: 'Masquer les filtres' },
+    personOpen: { en: 'person open', fr: 'personne ouverte' },
+    peopleOpen: { en: 'people open', fr: 'personnes ouvertes' },
+    demo: { en: 'Demo', fr: 'Démo' },
+    showLegend: { en: 'Show legend', fr: 'Afficher la légende' },
+    hideLegend: { en: 'Hide legend', fr: 'Masquer la légende' },
+    legendTitle: { en: '💚 Everyone here is open to interaction', fr: '💚 Tout le monde ici est ouvert à l\'interaction' },
+    openDesc: { en: '"I want to do this with someone"', fr: '"Je veux faire ça avec quelqu\'un"' },
+    conditionalDesc: { en: '"Depends on context"', fr: '"Dépend du contexte"' },
+    youDesc: { en: 'Your position', fr: 'Ta position' },
+    distance: { en: 'Distance: {d}m • Refresh: 30s', fr: 'Distance: {d}m • Rafraîchissement: 30s' },
+  },
+
+  // Activity Modal
+  activityModal: {
+    title: { en: 'You\'re open to...', fr: 'Tu es ouvert·e à...' },
+    subtitle: { en: 'Signal that you want to do this with someone', fr: 'Signale que tu veux faire ça avec quelqu\'un' },
+    locationPlaceholder: { en: 'Where are you? (optional)', fr: 'Où es-tu ? (optionnel)' },
+    activating: { en: 'Activating...', fr: 'Activation...' },
+  },
+
+  // Breadcrumbs
+  breadcrumbs: {
+    ariaLabel: { en: 'Breadcrumb', fr: "Fil d'Ariane" },
+    home: { en: 'Home', fr: 'Accueil' },
+    map: { en: 'Map', fr: 'Carte' },
+    profile: { en: 'Profile', fr: 'Profil' },
+    settings: { en: 'Settings', fr: 'Paramètres' },
+    editProfile: { en: 'Edit profile', fr: 'Modifier le profil' },
+    statistics: { en: 'Statistics', fr: 'Statistiques' },
+    peopleMet: { en: 'People met', fr: 'Personnes rencontrées' },
+    helpFaq: { en: 'Help & FAQ', fr: 'Aide & FAQ' },
+    feedback: { en: 'Feedback', fr: 'Feedback' },
+    report: { en: 'Report', fr: 'Signalement' },
+    notifications: { en: 'Notifications', fr: 'Notifications' },
+    privacy: { en: 'Privacy', fr: 'Confidentialité' },
+    password: { en: 'Password', fr: 'Mot de passe' },
+    diagnostics: { en: 'Diagnostics', fr: 'Diagnostics' },
+    install: { en: 'Install', fr: 'Installation' },
+    terms: { en: 'Terms', fr: 'Conditions' },
+    userProfile: { en: 'User profile', fr: 'Profil utilisateur' },
+  },
+
+  // Timer
+  timer: {
+    expired: { en: 'Expired', fr: 'Expiré' },
+    extend: { en: 'Extend', fr: 'Prolonger' },
+  },
+
+  // Favorites
+  favorites: {
+    remove: { en: 'Remove from favorites', fr: 'Retirer des favoris' },
+    add: { en: 'Add to favorites', fr: 'Ajouter aux favoris' },
   },
 
 } as const;

@@ -55,7 +55,7 @@ const CHART_COLORS = [
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -141,7 +141,7 @@ export default function AdminDashboardPage() {
       
       if (dauData) {
         const formatted = dauData.map((d: DailyActiveUsers) => ({
-          date: new Date(d.date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }),
+          date: new Date(d.date).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US', { day: '2-digit', month: '2-digit' }),
           active_users: Number(d.active_users),
         })).reverse();
         setDailyActiveUsers(formatted);

@@ -3,6 +3,7 @@ import { RefreshCw, Info, Filter } from 'lucide-react';
 import { ActivityFilter } from '@/components/radar';
 import { ExpirationTimer } from '@/components/radar';
 import { ActivityType, ACTIVITIES } from '@/types/signal';
+import { useTranslation } from '@/lib/i18n';
 
 interface MapHeaderProps {
   isActive: boolean;
@@ -25,24 +26,12 @@ interface MapHeaderProps {
 }
 
 export function MapHeader({
-  isActive,
-  mySignal,
-  myActivity,
-  openUsersCount,
-  isDemoMode,
-  isRefreshing,
-  showLegend,
-  showFilters,
-  activityFilters,
-  onRefresh,
-  onToggleLegend,
-  onToggleFilters,
-  onChangeActivity,
-  onSignalExpired,
-  onExtendSignal,
-  onToggleActivityFilter,
-  onClearFilters,
+  isActive, mySignal, myActivity, openUsersCount, isDemoMode, isRefreshing,
+  showLegend, showFilters, activityFilters, onRefresh, onToggleLegend,
+  onToggleFilters, onChangeActivity, onSignalExpired, onExtendSignal,
+  onToggleActivityFilter, onClearFilters,
 }: MapHeaderProps) {
+  const { t } = useTranslation();
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
 
   return (
@@ -59,7 +48,7 @@ export function MapHeader({
             </div>
             <div className="flex flex-col">
               <span className="font-semibold text-foreground">
-                {isActive ? 'Tu es visible' : 'Signal désactivé'}
+                {isActive ? t('mapHeader.visible') : t('mapHeader.signalOff')}
               </span>
               {isActive && mySignal?.expires_at && (
                 <ExpirationTimer 
@@ -86,7 +75,7 @@ export function MapHeader({
             
             <button
               onClick={onRefresh}
-              aria-label="Rafraîchir la carte"
+              aria-label={t('mapHeader.refreshMap')}
               className={cn(
                 "p-2.5 rounded-xl bg-deep-blue-light/80 text-muted-foreground hover:text-foreground hover:bg-deep-blue-light transition-all",
                 isRefreshing && "animate-spin"
@@ -98,20 +87,19 @@ export function MapHeader({
         </div>
       </div>
       
-      {/* Mini legend + Open signals count */}
       <div className="mt-3 px-1">
         <div className="flex items-center gap-4 mb-2 text-xs">
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-signal-green" />
-            <span className="text-muted-foreground">Ouvert</span>
+            <span className="text-muted-foreground">{t('mapHeader.open')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-signal-yellow" />
-            <span className="text-muted-foreground">Conditionnel</span>
+            <span className="text-muted-foreground">{t('mapHeader.conditional')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-coral" />
-            <span className="text-muted-foreground">Toi</span>
+            <span className="text-muted-foreground">{t('mapHeader.you')}</span>
           </div>
         </div>
         
@@ -119,7 +107,7 @@ export function MapHeader({
           <div className="flex items-center gap-2">
             <button
               onClick={onToggleFilters}
-              aria-label={showFilters ? "Masquer les filtres" : "Afficher les filtres d'activité"}
+              aria-label={showFilters ? t('mapHeader.hideFilters') : t('mapHeader.showFilters')}
               aria-expanded={showFilters}
               className={cn(
                 "p-2 rounded-lg transition-colors",
@@ -132,17 +120,17 @@ export function MapHeader({
             </button>
             <p className="text-muted-foreground text-sm flex items-center gap-2">
               <span className="text-signal-green font-bold">{openUsersCount}</span> 
-              {openUsersCount === 1 ? 'personne ouverte' : 'personnes ouvertes'}
+              {openUsersCount === 1 ? t('mapHeader.personOpen') : t('mapHeader.peopleOpen')}
               {isDemoMode && (
                 <span className="px-2 py-0.5 rounded-full bg-signal-yellow/20 text-signal-yellow text-xs font-medium border border-signal-yellow/30">
-                  Démo
+                  {t('mapHeader.demo')}
                 </span>
               )}
             </p>
           </div>
           <button
             onClick={onToggleLegend}
-            aria-label={showLegend ? "Masquer la légende" : "Afficher la légende"}
+            aria-label={showLegend ? t('mapHeader.hideLegend') : t('mapHeader.showLegend')}
             aria-expanded={showLegend}
             className="text-muted-foreground hover:text-foreground"
           >
@@ -151,7 +139,6 @@ export function MapHeader({
         </div>
       </div>
       
-      {/* Activity Filters */}
       {showFilters && (
         <div className="mt-3 animate-slide-up">
           <ActivityFilter
@@ -162,7 +149,6 @@ export function MapHeader({
         </div>
       )}
       
-      {/* Legend */}
       {showLegend && (
         <MapLegend visibilityDistance={200} />
       )}
@@ -171,30 +157,31 @@ export function MapHeader({
 }
 
 function MapLegend({ visibilityDistance }: { visibilityDistance: number }) {
+  const { t } = useTranslation();
   return (
     <div className="mt-3 glass rounded-xl p-4 animate-slide-up">
       <p className="text-xs font-bold text-coral uppercase tracking-wider mb-3">
-        💚 Tout le monde ici est ouvert à l'interaction
+        {t('mapHeader.legendTitle')}
       </p>
       <div className="space-y-2 text-xs">
         <div className="flex items-center gap-2">
           <div className="w-3.5 h-3.5 rounded-full bg-signal-green shadow-sm" />
-          <span className="text-foreground font-medium">Ouvert</span>
-          <span className="text-muted-foreground">= "Je veux faire ça avec quelqu'un"</span>
+          <span className="text-foreground font-medium">{t('mapHeader.open')}</span>
+          <span className="text-muted-foreground">= {t('mapHeader.openDesc')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3.5 h-3.5 rounded-full bg-signal-yellow shadow-sm" />
-          <span className="text-foreground font-medium">Conditionnel</span>
-          <span className="text-muted-foreground">= "Dépend du contexte"</span>
+          <span className="text-foreground font-medium">{t('mapHeader.conditional')}</span>
+          <span className="text-muted-foreground">= {t('mapHeader.conditionalDesc')}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3.5 h-3.5 rounded-full bg-coral shadow-sm" />
-          <span className="text-foreground font-medium">Toi</span>
-          <span className="text-muted-foreground">= Ta position</span>
+          <span className="text-foreground font-medium">{t('mapHeader.you')}</span>
+          <span className="text-muted-foreground">= {t('mapHeader.youDesc')}</span>
         </div>
       </div>
       <p className="text-xs text-muted-foreground mt-3 font-medium">
-        Distance: {visibilityDistance}m • Rafraîchissement: 30s
+        {t('mapHeader.distance').replace('{d}', String(visibilityDistance))}
       </p>
     </div>
   );

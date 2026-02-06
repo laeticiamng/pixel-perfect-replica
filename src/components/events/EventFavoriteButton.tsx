@@ -1,6 +1,7 @@
 import { Heart, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 interface EventFavoriteButtonProps {
   eventId: string;
@@ -20,6 +21,7 @@ export function EventFavoriteButton({
   className 
 }: EventFavoriteButtonProps) {
   const iconSize = size === 'sm' ? 'h-4 w-4' : 'h-5 w-5';
+  const { t } = useTranslation();
   
   return (
     <Button
@@ -39,7 +41,7 @@ export function EventFavoriteButton({
         size === 'sm' ? 'h-8 w-8' : 'h-10 px-3',
         className
       )}
-      aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+      aria-label={isFavorite ? t('favorites.remove') : t('favorites.add')}
     >
       {disabled ? (
         <Loader2 className={cn(iconSize, 'animate-spin')} />
