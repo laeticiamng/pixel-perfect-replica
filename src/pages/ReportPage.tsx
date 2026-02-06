@@ -23,31 +23,30 @@ export default function ReportPage() {
   const [description, setDescription] = useState('');
 
   const reportTypes = [
-    { id: 'bug' as ReportType, label: 'Bug technique', emoji: '🐛' },
-    { id: 'behavior' as ReportType, label: 'Comportement inapproprié', emoji: '⚠️' },
-    { id: 'content' as ReportType, label: 'Contenu offensant', emoji: '🚫' },
-    { id: 'other' as ReportType, label: 'Autre problème', emoji: '❓' },
+    { id: 'bug' as ReportType, label: t('report.typeBug'), emoji: '🐛' },
+    { id: 'behavior' as ReportType, label: t('report.typeBehavior'), emoji: '⚠️' },
+    { id: 'content' as ReportType, label: t('report.typeContent'), emoji: '🚫' },
+    { id: 'other' as ReportType, label: t('report.typeOther'), emoji: '❓' },
   ];
 
   const handleSubmit = async () => {
     if (!reportType) {
-      toast.error('Choisis un type de signalement');
+      toast.error(t('report.typeRequired'));
       return;
     }
     
     const sanitizedDescription = sanitizeDbText(description, 1000);
     
     if (!sanitizedDescription) {
-      toast.error('Décris le problème s\'il te plaît');
+      toast.error(t('report.descriptionRequired'));
       return;
     }
     
     if (sanitizedDescription.length < 10) {
-      toast.error('Description trop courte (min 10 caractères)');
+      toast.error(t('report.descriptionTooShort'));
       return;
     }
     
-    // Check rate limit
     const { allowed } = reportRateLimit.checkRateLimit();
     if (!allowed) {
       toast.error(t('auth.tooManyAttempts'));
@@ -61,16 +60,16 @@ export default function ReportPage() {
     );
     
     if (error) {
-      toast.error('Erreur lors de l\'envoi');
+      toast.error(t('report.sendError'));
     } else {
-      toast.success('Signalement envoyé ! Merci pour ton aide.');
+      toast.success(t('report.success'));
       navigate('/profile');
     }
   };
 
   return (
     <PageLayout className="pb-8 safe-bottom">
-      <PageHeader title="Signaler un problème" backTo="/profile" />
+      <PageHeader title={t('report.title')} backTo="/profile" />
 
       <div className="px-6 py-8">
         {/* Info Banner */}
@@ -80,7 +79,7 @@ export default function ReportPage() {
               <AlertTriangle className="h-5 w-5 text-signal-yellow" />
             </div>
             <p className="text-sm text-muted-foreground">
-              Ton signalement sera traité avec attention et confidentialité
+              {t('report.confidentialNotice')}
             </p>
           </div>
         </div>
@@ -88,7 +87,7 @@ export default function ReportPage() {
         {/* Report Type Selection */}
         <div className="mb-6">
           <label className="text-sm font-medium text-foreground block mb-3">
-            Type de signalement
+            {t('report.typeLabel')}
           </label>
           <div className="grid grid-cols-2 gap-3">
             {reportTypes.map((type, idx) => (
@@ -113,10 +112,10 @@ export default function ReportPage() {
         {/* Description */}
         <div className="space-y-2 mb-8">
           <label className="text-sm font-medium text-foreground">
-            Décris le problème
+            {t('report.describeLabel')}
           </label>
           <Textarea
-            placeholder="Explique-nous ce qui s'est passé..."
+            placeholder={t('report.describePlaceholder')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="min-h-[150px] bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
@@ -131,8 +130,7 @@ export default function ReportPage() {
         <div className="glass rounded-xl p-4 mb-6 flex items-start gap-3">
           <AlertTriangle className="h-5 w-5 text-signal-yellow shrink-0 mt-0.5" />
           <p className="text-sm text-muted-foreground">
-            Ton signalement sera traité de manière confidentielle. 
-            Si tu signales un utilisateur, il ne sera pas informé.
+            {t('report.privacyNotice')}
           </p>
         </div>
 
@@ -145,7 +143,7 @@ export default function ReportPage() {
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            'Envoyer le signalement'
+            t('report.submit')
           )}
         </Button>
       </div>

@@ -22,49 +22,47 @@ export default function FeedbackPage() {
 
   const handleSubmit = async () => {
     if (rating === 0) {
-      toast.error('Choisis une note d\'abord !');
+      toast.error(t('feedback.ratingRequired'));
       return;
     }
     
-    // Check rate limit
     const { allowed } = feedbackRateLimit.checkRateLimit();
     if (!allowed) {
       toast.error(t('auth.tooManyAttempts'));
       return;
     }
     
-    // Sanitize feedback text
     const sanitizedFeedback = sanitizeDbText(feedback, 500);
     
     feedbackRateLimit.recordAttempt();
     const { error } = await submitFeedback(rating, sanitizedFeedback || undefined);
     
     if (error) {
-      toast.error('Erreur lors de l\'envoi');
+      toast.error(t('feedback.sendError'));
       return;
     }
     
-    toast.success('Merci pour ton feedback ! 🙏');
+    toast.success(t('feedback.success'));
     navigate('/profile');
   };
 
   return (
     <PageLayout className="pb-8 safe-bottom">
-      <PageHeader title="Donner un feedback" backTo="/profile" />
+      <PageHeader title={t('feedback.title')} backTo="/profile" />
 
       <div className="px-6 py-8 animate-slide-up">
         <div className="text-center mb-8">
-          <p className="text-lg text-foreground mb-2 font-semibold">Comment trouves-tu EASY ?</p>
-          <p className="text-sm text-muted-foreground">Ton avis nous aide à améliorer l'app</p>
+          <p className="text-lg text-foreground mb-2 font-semibold">{t('feedback.question')}</p>
+          <p className="text-sm text-muted-foreground">{t('feedback.subtitle')}</p>
         </div>
 
-        {/* Star Rating with enhanced styling */}
+        {/* Star Rating */}
         <div className="flex justify-center gap-3 mb-8">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
               onClick={() => setRating(star)}
-              aria-label={`Note ${star} sur 5 étoiles`}
+              aria-label={t('feedback.starLabel').replace('{star}', String(star))}
               aria-pressed={star <= rating}
               className="p-2 transition-all duration-300 hover:scale-125 active:scale-95"
             >
@@ -83,10 +81,10 @@ export default function FeedbackPage() {
         {/* Feedback Text */}
         <div className="space-y-3 mb-8">
           <label className="text-sm font-semibold text-foreground">
-            Un commentaire ? (optionnel)
+            {t('feedback.commentLabel')}
           </label>
           <Textarea
-            placeholder="Dis-nous ce que tu penses de l'app, ce qui te plaît ou ce qu'on pourrait améliorer..."
+            placeholder={t('feedback.placeholder')}
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
             className="min-h-[120px] bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-2xl resize-none shadow-soft focus:ring-2 focus:ring-coral/30"
@@ -106,7 +104,7 @@ export default function FeedbackPage() {
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            'Envoyer mon feedback'
+            t('feedback.submit')
           )}
         </Button>
       </div>

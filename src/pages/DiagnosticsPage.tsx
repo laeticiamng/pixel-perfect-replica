@@ -269,7 +269,7 @@ export default function DiagnosticsPage() {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Clique sur Tester pour mesurer la latence
+              Cliquez sur Tester pour mesurer la latence
             </p>
           )}
         </div>

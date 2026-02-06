@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Users, QrCode, Plus, Loader2, Filter } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Users, QrCode, Plus, Loader2, Filter, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -110,19 +110,13 @@ export default function EventsPage() {
     if (hasError && successCount === 0) {
       toast.error(t('events.createError'));
     } else if (hasError) {
-      toast.success(locale === 'fr' 
-        ? `${successCount} événements créés (certains ont échoué)`
-        : `${successCount} events created (some failed)`
-      );
+      toast.success(t('eventsExtra.someEventsFailed').replace('{count}', String(successCount)));
       setShowCreate(false);
       resetForm();
-    } else {
       toast.success(
         recurrence === 'none'
           ? t('events.eventCreated')
-          : locale === 'fr'
-            ? `${successCount} événements créés !`
-            : `${successCount} events created!`
+          : t('eventsExtra.multipleEventsCreated').replace('{count}', String(successCount))
       );
       setShowCreate(false);
       resetForm();
@@ -269,6 +263,14 @@ export default function EventsPage() {
             </Button>
           )}
           <Button
+            variant="outline"
+            onClick={() => navigate('/events/favorites')}
+            className="h-14 rounded-xl"
+            aria-label={t('favoriteEvents.myFavorites')}
+          >
+            <Heart className="h-5 w-5 text-coral" />
+          </Button>
+          <Button
             variant={showFilters ? 'default' : 'outline'}
             onClick={() => setShowFilters(!showFilters)}
             className={`h-14 rounded-xl ${showFilters ? 'bg-coral hover:bg-coral-dark' : ''}`}
@@ -281,7 +283,7 @@ export default function EventsPage() {
         {showFilters && (
           <div className="glass rounded-xl p-4 space-y-3 animate-slide-up">
             <p className="text-sm font-medium text-muted-foreground">
-              {locale === 'fr' ? 'Filtrer par catégorie' : 'Filter by category'}
+              {t('eventsExtra.filterByCategory')}
             </p>
             <div className="flex flex-wrap gap-2">
               <button
@@ -290,7 +292,7 @@ export default function EventsPage() {
                   !categoryFilter ? 'bg-coral text-white' : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >
-                {locale === 'fr' ? 'Tous' : 'All'}
+                {t('eventsExtra.allCategories')}
               </button>
               {(['social', 'academic', 'sport', 'culture', 'party', 'professional', 'other'] as EventCategory[]).map((cat) => (
                 <button
@@ -318,7 +320,7 @@ export default function EventsPage() {
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value.slice(0, 100))}
-                  placeholder="Soirée de lancement..."
+                  placeholder={t('eventsExtra.namePlaceholder')}
                   className="bg-muted border-border rounded-xl"
                 />
               </div>
@@ -328,7 +330,7 @@ export default function EventsPage() {
                 <Input
                   value={locationName}
                   onChange={(e) => setLocationName(e.target.value.slice(0, 200))}
-                  placeholder="Café Central, BU..."
+                  placeholder={t('eventsExtra.locationPlaceholder')}
                   className="bg-muted border-border rounded-xl"
                 />
               </div>
@@ -368,7 +370,7 @@ export default function EventsPage() {
 
               {/* Category Selector */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">{locale === 'fr' ? 'Catégorie' : 'Category'}</label>
+                <label className="text-sm font-medium">{t('eventsExtra.category')}</label>
                 <EventCategorySelector value={category} onChange={setCategory} />
               </div>
 
@@ -440,14 +442,14 @@ export default function EventsPage() {
               </div>
               <p className="text-4xl mb-4">📅</p>
               <p className="text-foreground font-medium mb-2">
-                {categoryFilter ? (locale === 'fr' ? 'Aucun événement dans cette catégorie' : 'No events in this category') : (locale === 'fr' ? 'Aucun événement à venir' : 'No upcoming events')}
+                {categoryFilter ? t('eventsExtra.noEventsInCategory') : t('eventsExtra.noUpcomingEvents')}
               </p>
               <p className="text-sm text-muted-foreground mt-1 max-w-xs mx-auto">
-                {locale === 'fr' ? 'Crée le premier événement ou reviens bientôt !' : 'Create the first event or check back soon!'}
+                {t('eventsExtra.createFirstOrComeBack')}
               </p>
               {categoryFilter && (
                 <Button variant="link" onClick={() => setCategoryFilter(null)} className="mt-2 text-coral">
-                  {locale === 'fr' ? 'Voir tous les événements' : 'See all events'}
+                  {t('eventsExtra.seeAllEvents')}
                 </Button>
               )}
             </div>
