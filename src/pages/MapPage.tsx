@@ -135,7 +135,7 @@ export default function MapPage() {
                     className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-deep-blue-light/80 text-sm hover:bg-deep-blue-light transition-colors"
                   >
                     <span>{currentActivityData?.emoji}</span>
-                    <span className="text-muted-foreground">{currentActivityData?.label}</span>
+                    <span className="text-muted-foreground">{t(currentActivityData?.labelKey || 'activities.other')}</span>
                   </button>
                 )}
                 
