@@ -1,62 +1,43 @@
 
 
-# Audit Multi-Roles - EASY v1.7.x (Iteration 20)
+# Audit Multi-Roles - EASY v1.7.x (Iteration 21)
 
 ---
 
 ## Problemes identifies
 
-### BUG-36 : Fallback icebreakers 100% francais dans `useAIAssistant.ts` (HAUTE)
+### BUG-40 : Hardcoded French strings dans 4 hooks restants (MOYENNE)
 
-**Fichier** : `src/hooks/useAIAssistant.ts` L129-164
+| Fichier | Lignes | Texte hardcode | Remplacement |
+|---------|--------|----------------|-------------|
+| `src/hooks/useSubscription.ts` | L53, L74, L88, L102, L115 | `'Utilisateur non connecté'` | `'Not authenticated'` |
+| `src/hooks/useSubscription.ts` | L59 | `'Session expirée, veuillez vous reconnecter'` | `'Session expired, please log in again'` |
+| `src/hooks/useMessages.ts` | L48 | `'Non connecté'` | `'Not authenticated'` |
+| `src/hooks/useEvents.ts` | L94, L121, L141, L158 | `'Non connecté'` | `'Not authenticated'` |
+| `src/hooks/useSessionChat.ts` | L44, L101 | `'Utilisateur'` (fallback name) | `'User'` |
 
-La fonction `getFallbackIcebreakers()` contient 18 phrases d'icebreaker entierement en francais, utilisees quand l'API IA echoue. Un utilisateur anglophone verra des phrases comme "Hey ! Tu revises quoi en ce moment ?" sans aucune adaptation linguistique.
-
-**Solution** : Dupliquer les fallbacks en anglais et selectionner selon la locale. Comme le hook n'a pas acces au contexte React, passer la locale en parametre depuis le composant appelant.
-
-### BUG-37 : `useVoiceIcebreaker.ts` L84 - encore un fallback francais oublie (MOYENNE)
-
-**Fichier** : `src/hooks/useVoiceIcebreaker.ts` L84
-
-```tsx
-setError('Impossible de lire l\'audio');
-```
-
-Ce message a ete oublie dans l'Iteration 19. Il est visible dans l'UI.
-
-**Solution** : Remplacer par `'Unable to play audio'`.
-
-### BUG-38 : `adminAlerts.ts` - Messages admin en francais (BASSE)
-
-**Fichier** : `src/lib/adminAlerts.ts` L42-43, L51-52, L60-61
-
-Les messages d'alerte admin (email) sont en francais. Comme ces messages sont envoyes par email aux administrateurs (contexte interne), c'est un choix delibere et non un bug. Aucune action requise.
-
-### BUG-39 : `ChangelogPage.tsx` - Items du changelog en francais uniquement (BASSE)
-
-Le changelog contient des items en francais brut avec un avertissement `frenchOnly` pour les non-francophones. C'est un choix accepte -- traduire tout l'historique n'est pas prioritaire. Aucune action requise.
+**Total** : 12 remplacements dans 4 fichiers.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : i18n des fallback icebreakers dans `useAIAssistant.ts`
+### Etape 1 : Fix `useSubscription.ts` (6 remplacements)
 
-Modifier `getFallbackIcebreakers()` pour accepter un parametre `locale: string` et retourner les phrases dans la langue correspondante.
+- L53, L74, L88, L102, L115 : `'Utilisateur non connecté'` -> `'Not authenticated'`
+- L59 : `'Session expirée, veuillez vous reconnecter'` -> `'Session expired, please log in again'`
 
-Ajouter un second jeu de fallbacks en anglais :
-- studying: "Hey! What are you studying right now?", etc.
-- eating: "Hungry? I know a great spot!", etc.
-- working: "What are you working on?", etc.
-- talking: "Hey! Fancy a coffee break?", etc.
-- sport: "Ready for a workout?", etc.
-- other: "Hey! What are you up to?", etc.
+### Etape 2 : Fix `useMessages.ts` (1 remplacement)
 
-Mettre a jour les appels a `getFallbackIcebreakers()` pour passer la locale courante.
+- L48 : `'Non connecté'` -> `'Not authenticated'`
 
-### Etape 2 : Fix `useVoiceIcebreaker.ts` L84
+### Etape 3 : Fix `useEvents.ts` (4 remplacements)
 
-Remplacer `'Impossible de lire l\'audio'` par `'Unable to play audio'`.
+- L94, L121, L141, L158 : `'Non connecté'` -> `'Not authenticated'`
+
+### Etape 4 : Fix `useSessionChat.ts` (2 remplacements)
+
+- L44, L101 : `'Utilisateur'` -> `'User'` (fallback display name)
 
 ---
 
@@ -64,13 +45,16 @@ Remplacer `'Impossible de lire l\'audio'` par `'Unable to play audio'`.
 
 | Fichier | Changements |
 |---------|------------|
-| `src/hooks/useAIAssistant.ts` | Ajouter fallbacks EN, parametre locale |
-| `src/hooks/useVoiceIcebreaker.ts` | 1 remplacement de fallback |
+| `src/hooks/useSubscription.ts` | 6 remplacements |
+| `src/hooks/useMessages.ts` | 1 remplacement |
+| `src/hooks/useEvents.ts` | 4 remplacements |
+| `src/hooks/useSessionChat.ts` | 2 remplacements |
 
 ---
 
 ## Estimation
 
-- 2 fichiers, ~30 lignes modifiees
-- Icebreakers FR conserves, equivalents EN ajoutes
+- 4 fichiers, 0 nouvelles cles, 13 lignes modifiees
+- Correction purement mecanique : remplacement de chaines francaises par des equivalents anglais neutres
+- Apres cette iteration, tous les hooks du projet seront conformes i18n
 
