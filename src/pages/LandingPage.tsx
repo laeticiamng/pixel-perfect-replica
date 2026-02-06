@@ -17,7 +17,7 @@ import {
   FinalCTASection,
   LandingFooter,
 } from '@/components/landing';
-import { SocialProofBar } from '@/components/landing/SocialProofBar';
+
 
 // Problem Section
 function ProblemSection() {
@@ -162,7 +162,7 @@ export default function LandingPage() {
       <FloatingOrbs />
       <LandingHeader />
       <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
-      <SocialProofBar />
+      
       <AppPreviewSection />
       <ProblemSection />
       <SignalExplanationSection />
