@@ -26,12 +26,20 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     }
   }, [isLoading, isAuthenticated, t]);
 
+  // Reset toast flag when user becomes authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      hasShownToast.current = false;
+    }
+  }, [isAuthenticated]);
+
   if (isLoading) {
     return <FullPageLoader message={t('loading')} />;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+    // Redirect to onboarding with login state and return path
+    return <Navigate to="/onboarding" state={{ isLogin: true, from: location.pathname }} replace />;
   }
 
   return <>{children}</>;

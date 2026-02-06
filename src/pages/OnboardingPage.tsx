@@ -20,6 +20,7 @@ export default function OnboardingPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.state?.isLogin || false;
+  const returnPath = location.state?.from || '/map';
   const { t } = useTranslation();
   
   const [step, setStep] = useState<Step>(1);
@@ -103,12 +104,12 @@ export default function OnboardingPage() {
     }
   }, [locationError, position, locationStatus, t]);
 
-  // If already authenticated, go directly to map
+  // If already authenticated, go directly to return path or map
   useEffect(() => {
     if (isAuthenticated && position) {
-      navigate('/map');
+      navigate(returnPath, { replace: true });
     }
-  }, [isAuthenticated, position, navigate]);
+  }, [isAuthenticated, position, navigate, returnPath]);
 
   const validateStep1 = () => {
     setErrors({});
@@ -206,7 +207,7 @@ export default function OnboardingPage() {
     } else if (step === 2) {
       setStep(3);
     } else if (step === 3) {
-      navigate('/map');
+      navigate(returnPath, { replace: true });
     }
   };
 

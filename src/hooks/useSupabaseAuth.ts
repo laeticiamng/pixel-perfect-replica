@@ -163,18 +163,31 @@ export function useSupabaseAuth() {
     logger.auth.signupSuccess(data.user?.id || 'unknown');
 
     // Update profile with additional data after signup
+    // Retry with delay to handle race condition with handle_new_user trigger
     if (data.user) {
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ 
-          first_name: firstName, 
-          university: university || null 
-        })
-        .eq('id', data.user.id);
+      const updateProfileWithRetry = async (userId: string, retries = 3) => {
+        for (let i = 0; i < retries; i++) {
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({ 
+              first_name: firstName, 
+              university: university || null 
+            })
+            .eq('id', userId);
 
-      if (updateError) {
-        console.error('Profile update error:', updateError);
-      }
+          if (!updateError) return;
+          
+          console.warn(`Profile update attempt ${i + 1} failed:`, updateError.message);
+          if (i < retries - 1) {
+            await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
+          }
+        }
+      };
+      
+      // Don't block signup on profile update - fire and forget with retries
+      updateProfileWithRetry(data.user.id).catch(err => {
+        console.error('All profile update retries failed:', err);
+      });
     }
 
     return { data, error: null };
