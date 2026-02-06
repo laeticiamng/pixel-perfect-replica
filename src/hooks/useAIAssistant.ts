@@ -63,7 +63,7 @@ export function useAIAssistant() {
 
       throw new Error('Invalid response format');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur inconnue';
+      const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
       console.error('Icebreaker generation failed:', err);
       
@@ -109,7 +109,7 @@ export function useAIAssistant() {
       const data = await response.json();
       return data;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur inconnue';
+      const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
       console.error('Session recommendations failed:', err);
       return null;

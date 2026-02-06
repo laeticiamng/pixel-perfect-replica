@@ -42,7 +42,7 @@ export function useSubscription() {
       await refreshProfile();
     } catch (err) {
       console.error('[useSubscription] Error:', err);
-      setError(err instanceof Error ? err.message : 'Erreur de vérification');
+      setError(err instanceof Error ? err.message : 'Verification error');
     } finally {
       setIsLoading(false);
     }

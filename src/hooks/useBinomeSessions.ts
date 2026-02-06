@@ -106,7 +106,7 @@ export function useBinomeSessions() {
 
       setSessions(formatted);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors du chargement';
+      const message = err instanceof Error ? err.message : 'Loading error';
       setError(message);
       console.error('[useBinomeSessions] fetchSessions error:', err);
     } finally {
@@ -197,7 +197,7 @@ export function useBinomeSessions() {
       await fetchMySessions();
       return true;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la création';
+      const message = err instanceof Error ? err.message : 'Creation error';
       toast.error(message);
       console.error('[useBinomeSessions] createSession error:', err);
       return false;
@@ -222,7 +222,7 @@ export function useBinomeSessions() {
       await fetchMyParticipations();
       return true;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur';
+      const message = err instanceof Error ? err.message : 'Error';
       toast.error(message);
       console.error('[useBinomeSessions] joinSession error:', err);
       return false;
@@ -244,7 +244,7 @@ export function useBinomeSessions() {
       await fetchMyParticipations();
       return true;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur';
+      const message = err instanceof Error ? err.message : 'Error';
       toast.error(message);
       return false;
     }
