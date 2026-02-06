@@ -1,37 +1,84 @@
 
 
-# Audit Multi-Roles - EASY v1.7.x (Iteration 14 - Final)
+# Audit Multi-Roles - EASY v1.7.x (Iteration 15)
 
 ---
 
-## Constat global
+## Problemes identifies
 
-Apres 13 iterations, la couverture i18n est a 99.9%. Un seul composant utilisateur reste avec des textes hardcodes en anglais.
+### BUG-21 : `SearchingIndicator.tsx` -- 100% hardcode en francais (~4 textes) (CRITIQUE)
 
-## BUG-20 : `InteractiveMap.tsx` -- 2 textes hardcodes en anglais (MOYENNE)
+**Fichier** : `src/components/radar/SearchingIndicator.tsx`
 
-**Fichier** : `src/components/map/InteractiveMap.tsx`
+Composant visible sur la carte quand le signal est actif. **Aucun `useTranslation()`**. Tous les textes sont en francais brut :
+- L47 : `"Recherche en cours"`
+- L55 : `"Tu seras notifié dès qu'une personne arrive"`
+- L61 : `"{nearbyCount} personne{nearbyCount > 1 ? 's' : ''} à proximité"`
+- L64 : `"Explore le radar pour les découvrir !"`
 
-- L134 : `setError('Map unavailable')` -- message d'erreur affiche a l'utilisateur
-- L266 : `'Loading map...'` -- texte de chargement affiche a l'utilisateur
-- L277 : `error || 'Map unavailable'` -- fallback affiche a l'utilisateur
+### BUG-22 : `MapStyleSelector.tsx` -- Labels francais hardcodes (~4 textes) (HAUTE)
 
-Ces textes sont visibles par tous les utilisateurs sur la page carte (route principale `/map`).
+**Fichier** : `src/components/map/MapStyleSelector.tsx`
+
+Les noms des styles de carte (`'Rues'`, `'Satellite'`, `'Navigation'`, `'Plein air'`) sont hardcodes en francais. Le composant a un champ `nameEn` mais ne l'utilise jamais -- il affiche toujours `style.name` (francais).
+- L26 : `'Rues'`
+- L34 : `'Satellite'`
+- L42 : `'Navigation'`
+- L50 : `'Plein air'`
+- L84, L98 : affiche `style.name` au lieu de la version locale
+
+### BUG-23 : `SmartLocationRecommender.tsx` L98 -- `"Source {i + 1}"` hardcode (BASSE)
+
+**Fichier** : `src/components/social/SmartLocationRecommender.tsx` L98
+
+Le label `Source {i + 1}` n'est pas traduit.
+
+### BUG-24 : `OnboardingPage.tsx` L394 -- Fallback francais hardcode (BASSE)
+
+**Fichier** : `src/pages/OnboardingPage.tsx` L394
+
+```tsx
+{t('auth.continueWithApple') || 'Continuer avec Apple'}
+```
+
+Le fallback `'Continuer avec Apple'` est en francais. La cle existe dans les traductions, donc le fallback ne devrait jamais s'afficher, mais c'est une mauvaise pratique.
+
+### BUG-25 : `UserPopupCard.tsx` L118 -- Utilise `activity?.label` au lieu de la traduction (MOYENNE)
+
+**Fichier** : `src/components/map/UserPopupCard.tsx` L118
+
+```tsx
+<span className="text-foreground font-medium">{activity?.label || t('activities.other')}</span>
+```
+
+`activity?.label` retourne toujours le label francais hardcode de `ACTIVITIES[]` (`'Réviser'`, `'Manger'`, etc.). Devrait utiliser `t(activity?.labelKey)`.
+
+### BUG-26 : `SignalHistoryPanel.tsx` L119 -- Meme probleme `activity?.label` (MOYENNE)
+
+**Fichier** : `src/components/map/SignalHistoryPanel.tsx` L70, L119
+
+La fonction `getActivityLabel()` retourne `activity?.label` (francais hardcode) au lieu de la traduction.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : Ajouter 2 cles dans translations.ts
+### Etape 1 : i18n `SearchingIndicator.tsx` (~4 cles)
 
-```
-map.loading: { fr: 'Chargement de la carte...', en: 'Loading map...' }
-map.unavailable: { fr: 'Carte indisponible', en: 'Map unavailable' }
-```
+Ajouter `searchIndicator.*` dans `translations.ts`. Implementer `useTranslation()`. Gerer le pluriel `personne/personnes` via une interpolation.
 
-### Etape 2 : Implementer i18n dans `InteractiveMap.tsx`
+### Etape 2 : i18n `MapStyleSelector.tsx`
 
-Importer `useTranslation()`. Remplacer les 3 occurrences hardcodees par `t('map.loading')` et `t('map.unavailable')`.
+Importer `useTranslation()`. Utiliser `locale === 'fr' ? style.name : style.nameEn` pour afficher le bon label.
+
+### Etape 3 : Fix `UserPopupCard.tsx` et `SignalHistoryPanel.tsx`
+
+Remplacer `activity?.label` par `t(activity?.labelKey || 'activities.other')` dans les deux composants.
+
+### Etape 4 : Corrections mineures
+
+- `SmartLocationRecommender.tsx` : traduire `"Source"` (1 cle)
+- `OnboardingPage.tsx` : supprimer le fallback francais hardcode
 
 ---
 
@@ -39,14 +86,17 @@ Importer `useTranslation()`. Remplacer les 3 occurrences hardcodees par `t('map.
 
 | Fichier | Changements |
 |---------|------------|
-| `src/lib/i18n/translations.ts` | +2 cles (`map.loading`, `map.unavailable`) |
-| `src/components/map/InteractiveMap.tsx` | import useTranslation + 3 remplacements |
+| `src/lib/i18n/translations.ts` | +5 cles (searchIndicator.*, locationRecommender.source) |
+| `src/components/radar/SearchingIndicator.tsx` | i18n complet (import + 4 remplacements) |
+| `src/components/map/MapStyleSelector.tsx` | i18n labels dynamiques |
+| `src/components/map/UserPopupCard.tsx` | fix activity label (1 ligne) |
+| `src/components/map/SignalHistoryPanel.tsx` | fix activity label (1 ligne) |
+| `src/components/social/SmartLocationRecommender.tsx` | i18n "Source" (1 ligne) |
+| `src/pages/OnboardingPage.tsx` | supprimer fallback hardcode (1 ligne) |
 
 ---
 
-## Bilan final
+## Estimation
 
-Avec cette derniere correction, la plateforme EASY v1.7.x atteint une couverture i18n FR/EN de **100%** sur tous les composants visibles par les utilisateurs. La page DiagnosticsPage conserve des labels techniques en anglais (dev-only), ce qui est acceptable.
-
-Total iterations 8-14 : ~20 fichiers modifies, ~185 cles, ~520 lignes.
+- 7 fichiers, ~6 nouvelles cles, ~30 lignes modifiees
 
