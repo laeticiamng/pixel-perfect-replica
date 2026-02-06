@@ -67,14 +67,14 @@ describe('LandingPage', () => {
 
   it('should render the main title', async () => {
     const { default: LandingPage } = await import('@/pages/LandingPage');
-    const { getByText, getAllByText } = render(
+    const { getByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
 
     expect(getByText(/Vois qui est/)).toBeInTheDocument();
-    expect(getAllByText(/ouvert/).length).toBeGreaterThan(0);
+    expect(getByText(/dispo/)).toBeInTheDocument();
   });
 
   it('should render the badge', async () => {
@@ -96,7 +96,7 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
 
-    expect(getByText(/veut être approchée/)).toBeInTheDocument();
+    expect(getByText(/EASY te le montre/)).toBeInTheDocument();
   });
 
   it('should render the signal section', async () => {
