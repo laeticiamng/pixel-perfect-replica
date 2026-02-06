@@ -1,60 +1,33 @@
 
 
-# Audit Multi-Roles - EASY v1.7.x (Iteration 21)
+# Iteration 22 -- Fix database trigger `handle_new_user()`
 
----
+## Probleme identifie
 
-## Problemes identifies
+La fonction SQL `handle_new_user()` utilise `'Utilisateur'` comme valeur par defaut pour `first_name` lors de la creation d'un nouveau profil (ligne 71 de la migration initiale). C'est la derniere chaine francaise hardcodee dans tout le projet.
 
-### BUG-40 : Hardcoded French strings dans 4 hooks restants (MOYENNE)
+```sql
+-- Actuel
+COALESCE(NEW.raw_user_meta_data->>'first_name', 'Utilisateur')
 
-| Fichier | Lignes | Texte hardcode | Remplacement |
-|---------|--------|----------------|-------------|
-| `src/hooks/useSubscription.ts` | L53, L74, L88, L102, L115 | `'Utilisateur non connecté'` | `'Not authenticated'` |
-| `src/hooks/useSubscription.ts` | L59 | `'Session expirée, veuillez vous reconnecter'` | `'Session expired, please log in again'` |
-| `src/hooks/useMessages.ts` | L48 | `'Non connecté'` | `'Not authenticated'` |
-| `src/hooks/useEvents.ts` | L94, L121, L141, L158 | `'Non connecté'` | `'Not authenticated'` |
-| `src/hooks/useSessionChat.ts` | L44, L101 | `'Utilisateur'` (fallback name) | `'User'` |
+-- Corrige
+COALESCE(NEW.raw_user_meta_data->>'first_name', 'User')
+```
 
-**Total** : 12 remplacements dans 4 fichiers.
+## Plan
 
----
+### Etape unique : Migration SQL
 
-## Plan de Corrections
+Creer une migration qui remplace la fonction `handle_new_user()` avec le fallback `'User'` au lieu de `'Utilisateur'`.
 
-### Etape 1 : Fix `useSubscription.ts` (6 remplacements)
+La fonction conserve la meme logique (SECURITY DEFINER, insertion dans profiles/user_stats/user_settings), seul le default change.
 
-- L53, L74, L88, L102, L115 : `'Utilisateur non connecté'` -> `'Not authenticated'`
-- L59 : `'Session expirée, veuillez vous reconnecter'` -> `'Session expired, please log in again'`
+## Impact
 
-### Etape 2 : Fix `useMessages.ts` (1 remplacement)
+- 1 migration SQL
+- 0 fichiers frontend modifies
+- Les utilisateurs existants ne sont pas affectes (leur `first_name` est deja enregistre)
+- Les nouveaux inscrits qui ne fournissent pas de prenom verront "User" au lieu de "Utilisateur"
 
-- L48 : `'Non connecté'` -> `'Not authenticated'`
-
-### Etape 3 : Fix `useEvents.ts` (4 remplacements)
-
-- L94, L121, L141, L158 : `'Non connecté'` -> `'Not authenticated'`
-
-### Etape 4 : Fix `useSessionChat.ts` (2 remplacements)
-
-- L44, L101 : `'Utilisateur'` -> `'User'` (fallback display name)
-
----
-
-## Fichiers a modifier
-
-| Fichier | Changements |
-|---------|------------|
-| `src/hooks/useSubscription.ts` | 6 remplacements |
-| `src/hooks/useMessages.ts` | 1 remplacement |
-| `src/hooks/useEvents.ts` | 4 remplacements |
-| `src/hooks/useSessionChat.ts` | 2 remplacements |
-
----
-
-## Estimation
-
-- 4 fichiers, 0 nouvelles cles, 13 lignes modifiees
-- Correction purement mecanique : remplacement de chaines francaises par des equivalents anglais neutres
-- Apres cette iteration, tous les hooks du projet seront conformes i18n
+Apres cette correction, le projet est 100% conforme i18n sur toutes les couches (frontend + backend).
 
