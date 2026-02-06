@@ -1,6 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from '@/lib/i18n';
-
+import { APP_VERSION } from '@/lib/constants';
 export function LandingFooter() {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -52,7 +52,7 @@ export function LandingFooter() {
         
         <div className="text-center text-xs text-muted-foreground">
           <Link to="/changelog" className="font-medium hover:text-coral transition-colors">
-            EASY v1.6.5 • PWA
+            EASY v{APP_VERSION} • PWA
           </Link>
           <p className="mt-1">{t('landing.madeWith')}</p>
         </div>
