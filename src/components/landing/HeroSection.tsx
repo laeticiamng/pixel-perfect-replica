@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, AlertTriangle } from 'lucide-react';
 import { motion, MotionValue } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/lib/i18n';
@@ -52,7 +52,8 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         className="mb-10"
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive/10 border border-destructive/30">
-          <span className="text-sm font-bold text-destructive">⚠️ {t('landing.notADatingApp')}</span>
+          <AlertTriangle className="h-4 w-4 text-destructive" />
+          <span className="text-sm font-bold text-destructive">{t('landing.notADatingApp')}</span>
         </div>
       </motion.div>
       
