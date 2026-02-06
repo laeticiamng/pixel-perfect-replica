@@ -1,84 +1,60 @@
 
 
-# Audit Multi-Roles - EASY v1.7.x (Iteration 15)
+# Audit Multi-Roles - EASY v1.7.x (Iteration 16)
 
 ---
 
 ## Problemes identifies
 
-### BUG-21 : `SearchingIndicator.tsx` -- 100% hardcode en francais (~4 textes) (CRITIQUE)
+### BUG-27 : `ActivityFilterBar.tsx` -- "Tous" + aria-label hardcodes en francais (HAUTE)
 
-**Fichier** : `src/components/radar/SearchingIndicator.tsx`
+**Fichier** : `src/components/map/ActivityFilterBar.tsx`
 
-Composant visible sur la carte quand le signal est actif. **Aucun `useTranslation()`**. Tous les textes sont en francais brut :
-- L47 : `"Recherche en cours"`
-- L55 : `"Tu seras notifié dès qu'une personne arrive"`
-- L61 : `"{nearbyCount} personne{nearbyCount > 1 ? 's' : ''} à proximité"`
-- L64 : `"Explore le radar pour les découvrir !"`
+- L35 : `Tous` -- texte visible hardcode en francais
+- L48 : `aria-label={`Filtrer par ${activity.label}`}` -- aria-label en francais + utilise `activity.label` (francais)
 
-### BUG-22 : `MapStyleSelector.tsx` -- Labels francais hardcodes (~4 textes) (HAUTE)
+Le composant n'importe pas `useTranslation()`.
 
-**Fichier** : `src/components/map/MapStyleSelector.tsx`
+### BUG-28 : `SmartLocationRecommender.tsx` L39 -- `activityConfig.label` francais dans le bouton (MOYENNE)
 
-Les noms des styles de carte (`'Rues'`, `'Satellite'`, `'Navigation'`, `'Plein air'`) sont hardcodes en francais. Le composant a un champ `nameEn` mais ne l'utilise jamais -- il affiche toujours `style.name` (francais).
-- L26 : `'Rues'`
-- L34 : `'Satellite'`
-- L42 : `'Navigation'`
-- L50 : `'Plein air'`
-- L84, L98 : affiche `style.name` au lieu de la version locale
+**Fichier** : `src/components/social/SmartLocationRecommender.tsx` L39
 
-### BUG-23 : `SmartLocationRecommender.tsx` L98 -- `"Source {i + 1}"` hardcode (BASSE)
+```tsx
+{t('locationRecommender.suggestButton').replace('{activity}', activityConfig.label)}
+```
+
+`activityConfig.label` provient de `ACTIVITY_CONFIG` qui contient des labels francais hardcodes (`'Reviser'`, `'Manger'`). Devrait utiliser le label traduit via `t()`.
+
+### BUG-29 : `SmartLocationRecommender.tsx` L98 -- fallback `'Source'` inutile (BASSE)
 
 **Fichier** : `src/components/social/SmartLocationRecommender.tsx` L98
 
-Le label `Source {i + 1}` n'est pas traduit.
-
-### BUG-24 : `OnboardingPage.tsx` L394 -- Fallback francais hardcode (BASSE)
-
-**Fichier** : `src/pages/OnboardingPage.tsx` L394
-
 ```tsx
-{t('auth.continueWithApple') || 'Continuer avec Apple'}
+{t('locationRecommender.source') || 'Source'}
 ```
 
-Le fallback `'Continuer avec Apple'` est en francais. La cle existe dans les traductions, donc le fallback ne devrait jamais s'afficher, mais c'est une mauvaise pratique.
-
-### BUG-25 : `UserPopupCard.tsx` L118 -- Utilise `activity?.label` au lieu de la traduction (MOYENNE)
-
-**Fichier** : `src/components/map/UserPopupCard.tsx` L118
-
-```tsx
-<span className="text-foreground font-medium">{activity?.label || t('activities.other')}</span>
-```
-
-`activity?.label` retourne toujours le label francais hardcode de `ACTIVITIES[]` (`'Réviser'`, `'Manger'`, etc.). Devrait utiliser `t(activity?.labelKey)`.
-
-### BUG-26 : `SignalHistoryPanel.tsx` L119 -- Meme probleme `activity?.label` (MOYENNE)
-
-**Fichier** : `src/components/map/SignalHistoryPanel.tsx` L70, L119
-
-La fonction `getActivityLabel()` retourne `activity?.label` (francais hardcode) au lieu de la traduction.
+Le fallback `'Source'` est inutile car la cle existe. Simple nettoyage.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : i18n `SearchingIndicator.tsx` (~4 cles)
+### Etape 1 : Ajouter des cles dans translations.ts
 
-Ajouter `searchIndicator.*` dans `translations.ts`. Implementer `useTranslation()`. Gerer le pluriel `personne/personnes` via une interpolation.
+Ajouter :
+- `activityFilter.all` : `{ fr: 'Tous', en: 'All' }`
+- `activityFilter.filterBy` : `{ fr: 'Filtrer par {activity}', en: 'Filter by {activity}' }`
 
-### Etape 2 : i18n `MapStyleSelector.tsx`
+### Etape 2 : i18n `ActivityFilterBar.tsx`
 
-Importer `useTranslation()`. Utiliser `locale === 'fr' ? style.name : style.nameEn` pour afficher le bon label.
+Importer `useTranslation()`. Remplacer :
+- L35 : `Tous` par `{t('activityFilter.all')}`
+- L48 : aria-label par `t('activityFilter.filterBy').replace('{activity}', t(activity.labelKey))`
 
-### Etape 3 : Fix `UserPopupCard.tsx` et `SignalHistoryPanel.tsx`
+### Etape 3 : Fix `SmartLocationRecommender.tsx`
 
-Remplacer `activity?.label` par `t(activity?.labelKey || 'activities.other')` dans les deux composants.
-
-### Etape 4 : Corrections mineures
-
-- `SmartLocationRecommender.tsx` : traduire `"Source"` (1 cle)
-- `OnboardingPage.tsx` : supprimer le fallback francais hardcode
+- L39 : Remplacer `activityConfig.label` par le label traduit via les `ACTIVITIES` et `t(activityLabelKey)`
+- L98 : Supprimer le fallback `|| 'Source'`
 
 ---
 
@@ -86,17 +62,13 @@ Remplacer `activity?.label` par `t(activity?.labelKey || 'activities.other')` da
 
 | Fichier | Changements |
 |---------|------------|
-| `src/lib/i18n/translations.ts` | +5 cles (searchIndicator.*, locationRecommender.source) |
-| `src/components/radar/SearchingIndicator.tsx` | i18n complet (import + 4 remplacements) |
-| `src/components/map/MapStyleSelector.tsx` | i18n labels dynamiques |
-| `src/components/map/UserPopupCard.tsx` | fix activity label (1 ligne) |
-| `src/components/map/SignalHistoryPanel.tsx` | fix activity label (1 ligne) |
-| `src/components/social/SmartLocationRecommender.tsx` | i18n "Source" (1 ligne) |
-| `src/pages/OnboardingPage.tsx` | supprimer fallback hardcode (1 ligne) |
+| `src/lib/i18n/translations.ts` | +2 cles (`activityFilter.all`, `activityFilter.filterBy`) |
+| `src/components/map/ActivityFilterBar.tsx` | import useTranslation + 2 remplacements |
+| `src/components/social/SmartLocationRecommender.tsx` | fix activity label traduit + cleanup fallback |
 
 ---
 
 ## Estimation
 
-- 7 fichiers, ~6 nouvelles cles, ~30 lignes modifiees
+- 3 fichiers, 2 nouvelles cles, ~10 lignes modifiees
 
