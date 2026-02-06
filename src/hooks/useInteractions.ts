@@ -72,34 +72,22 @@ export function useInteractions() {
       .select()
       .single();
 
-    // Update target user's rating if feedback is positive or negative
     if (!error && data) {
       logger.action.feedbackGiven(user.id, interactionId, feedback === 'positive');
       
-      const newRating = feedback === 'positive' ? 5.0 : 3.0;
-      
-      // Get current stats
-      const { data: statsData } = await supabase
-        .from('user_stats')
-        .select('rating, total_ratings')
-        .eq('user_id', data.target_user_id)
-        .single();
+      // Use submit_rating RPC (SECURITY DEFINER) instead of direct user_stats access
+      // This avoids RLS violations since user_stats UPDATE is blocked and SELECT is own-only
+      const ratingValue = feedback === 'positive' ? 5 : 3;
+      const { error: ratingError } = await supabase.rpc('submit_rating', {
+        p_target_user_id: data.target_user_id,
+        p_rating: ratingValue,
+      });
 
-      if (statsData) {
-        const totalRatings = statsData.total_ratings + 1;
-        const avgRating = 
-          (Number(statsData.rating) * statsData.total_ratings + newRating) / totalRatings;
-
-        await supabase
-          .from('user_stats')
-          .update({
-            rating: Math.round(avgRating * 100) / 100,
-            total_ratings: totalRatings,
-          })
-          .eq('user_id', data.target_user_id);
+      if (ratingError) {
+        console.error('Error submitting rating via RPC:', ratingError);
       }
 
-      // Increment interaction counts using RPC to avoid race conditions
+      // Increment interaction counts using RPC
       await supabase.rpc('increment_interactions', { p_user_id: user.id });
       await supabase.rpc('increment_interactions', { p_user_id: data.target_user_id });
     }
@@ -111,20 +99,41 @@ export function useInteractions() {
   const getMyInteractions = useCallback(async (limit: number = 50) => {
     if (!user) return { data: null, error: new Error('Not authenticated') };
 
-    const { data, error } = await supabase
+    // Fetch interactions without FK join (profiles RLS blocks access to other users)
+    const { data: rawInteractions, error } = await supabase
       .from('interactions')
-      .select(`
-        *,
-        target_profile:profiles!interactions_target_user_id_fkey(
-          first_name,
-          avatar_url
-        )
-      `)
+      .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(limit);
 
-    return { data: data as Interaction[] | null, error };
+    if (error || !rawInteractions) return { data: null, error };
+
+    // Fetch target profiles via secure RPC
+    const targetIds = [...new Set(rawInteractions.map(i => i.target_user_id))];
+    
+    let profileMap: Record<string, { first_name: string; avatar_url: string | null }> = {};
+    
+    if (targetIds.length > 0) {
+      const { data: profiles } = await supabase
+        .rpc('get_public_profiles', { profile_ids: targetIds });
+      
+      if (profiles) {
+        for (const p of profiles) {
+          profileMap[p.id] = { first_name: p.first_name, avatar_url: p.avatar_url };
+        }
+      }
+    }
+
+    // Combine data
+    const interactions: Interaction[] = rawInteractions.map(i => ({
+      ...i,
+      activity: i.activity as ActivityType,
+      feedback: i.feedback as FeedbackType | null,
+      target_profile: profileMap[i.target_user_id] || { first_name: 'Anonyme', avatar_url: null },
+    }));
+
+    return { data: interactions, error: null };
   }, [user]);
 
   return {

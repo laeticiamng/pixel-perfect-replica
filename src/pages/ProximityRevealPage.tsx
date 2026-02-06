@@ -7,7 +7,8 @@ import { IcebreakerCard, VerificationBadges, MiniChat, VoiceIcebreakerButton } f
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useRevealRateLimit } from '@/hooks/useRevealRateLimit';
-import { ACTIVITIES, ICEBREAKERS, getIcebreaker as getIcebreakerFn } from '@/types/signal';
+import { useTranslation } from '@/lib/i18n';
+import { ACTIVITIES, getIcebreaker as getIcebreakerFn } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
@@ -21,6 +22,7 @@ interface UserProfile {
 
 export default function ProximityRevealPage() {
   const navigate = useNavigate();
+  const { t, locale } = useTranslation();
   const { userId } = useParams();
   const { nearbyUsers } = useActiveSignal();
   const { createInteraction, addFeedback } = useInteractions();
@@ -37,7 +39,6 @@ export default function ProximityRevealPage() {
 
   const user = nearbyUsers.find(u => u.id === userId);
 
-  // Check rate limit and fetch profile on mount
   useEffect(() => {
     const initReveal = async () => {
       if (!userId) {
@@ -45,7 +46,6 @@ export default function ProximityRevealPage() {
         return;
       }
 
-      // Check and log reveal (rate limit)
       const { allowed } = await checkAndLogReveal(userId);
       if (!allowed) {
         setRevealBlocked(true);
@@ -53,13 +53,12 @@ export default function ProximityRevealPage() {
         return;
       }
 
-      // Fetch extended profile data
       const { data } = await supabase
         .rpc('get_safe_public_profile', { profile_id: userId });
       if (data && data[0]) {
         setUserProfile({
           avatar_url: data[0].avatar_url,
-          bio: null, // Bio is private, we only show public fields
+          bio: null,
           university: data[0].university,
         });
       }
@@ -70,16 +69,14 @@ export default function ProximityRevealPage() {
 
   const generateIcebreaker = useCallback(() => {
     if (user) {
-      const icebreaker = getIcebreakerFn(user.activity as any, 'en');
-      setIcebreaker(icebreaker);
+      const ib = getIcebreakerFn(user.activity as any, locale);
+      setIcebreaker(ib);
     }
-  }, [user]);
+  }, [user, locale]);
 
   useEffect(() => {
     if (user && !revealBlocked) {
       generateIcebreaker();
-      
-      // Vibrate on reveal
       if ('vibrate' in navigator) {
         navigator.vibrate([100, 50, 100]);
         setIsVibrating(true);
@@ -93,7 +90,7 @@ export default function ProximityRevealPage() {
       <PageLayout className="flex items-center justify-center px-6">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-coral" />
-          <p className="text-muted-foreground">Chargement du profil...</p>
+          <p className="text-muted-foreground">{t('reveal.loadingProfile')}</p>
         </div>
       </PageLayout>
     );
@@ -104,22 +101,19 @@ export default function ProximityRevealPage() {
       <PageLayout className="flex items-center justify-center px-6">
         <div className="text-center">
           <div className="text-6xl mb-4">👻</div>
-          <p className="text-foreground font-medium mb-2">Utilisateur non trouvé</p>
-          <p className="text-muted-foreground text-sm mb-6">
-            Cette personne a peut-être désactivé son signal
-          </p>
+          <p className="text-foreground font-medium mb-2">{t('reveal.userNotFound')}</p>
+          <p className="text-muted-foreground text-sm mb-6">{t('reveal.userNotFoundDesc')}</p>
           <Button
             onClick={() => navigate('/map')}
             className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
           >
-            Retour à la carte
+            {t('reveal.backToMap')}
           </Button>
         </div>
       </PageLayout>
     );
   }
 
-  // Rate limit exceeded - show warning
   if (revealBlocked) {
     return (
       <PageLayout className="flex items-center justify-center px-6">
@@ -127,17 +121,14 @@ export default function ProximityRevealPage() {
           <div className="text-6xl mb-4">⏱️</div>
           <div className="flex items-center justify-center gap-2 mb-2">
             <AlertTriangle className="h-5 w-5 text-signal-yellow" />
-            <p className="text-foreground font-medium">Limite atteinte</p>
+            <p className="text-foreground font-medium">{t('reveal.rateLimitTitle')}</p>
           </div>
-          <p className="text-muted-foreground text-sm mb-6">
-            Tu as consulté trop de profils récemment. 
-            <br />Réessaie dans 1 heure pour éviter le spam.
-          </p>
+          <p className="text-muted-foreground text-sm mb-6">{t('reveal.rateLimitDesc')}</p>
           <Button 
             onClick={() => navigate('/map')}
             className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
           >
-            Retour à la carte
+            {t('reveal.backToMap')}
           </Button>
         </div>
       </PageLayout>
@@ -148,25 +139,20 @@ export default function ProximityRevealPage() {
 
   const handleRefreshIcebreaker = () => {
     generateIcebreaker();
-    toast.success('Nouvel icebreaker !');
+    toast.success(t('reveal.newIcebreaker'));
   };
 
   const handleTalked = async () => {
-    // Create interaction in database
-    const { data, error } = await createInteraction(
-      user.id,
-      user.activity,
-      icebreaker
-    );
+    const { data, error } = await createInteraction(user.id, user.activity, icebreaker);
     
     if (error) {
-      toast.error('Erreur lors de l\'enregistrement');
+      toast.error(t('reveal.interactionError'));
       return;
     }
     
     if (data) {
       setInteractionId(data.id);
-      setShowChat(true); // Show mini chat after interaction created
+      setShowChat(true);
     }
     setShowFeedback(true);
   };
@@ -176,7 +162,7 @@ export default function ProximityRevealPage() {
       await addFeedback(interactionId, positive ? 'positive' : 'negative');
     }
     
-    toast.success(positive ? 'Super ! Continue comme ça 🎉' : 'Pas de souci, ça arrive !');
+    toast.success(positive ? t('reveal.feedbackPositive') : t('reveal.feedbackNegative'));
     navigate('/map');
   };
 
@@ -187,9 +173,7 @@ export default function ProximityRevealPage() {
   if (showFeedback) {
     return (
       <PageLayout className="flex flex-col items-center justify-center px-6 animate-fade-in">
-        <h2 className="text-2xl font-bold text-foreground mb-8">
-          Comment c'était ?
-        </h2>
+        <h2 className="text-2xl font-bold text-foreground mb-8">{t('reveal.howWasIt')}</h2>
         
         <div className="flex gap-6 mb-8">
           <button
@@ -206,52 +190,32 @@ export default function ProximityRevealPage() {
           </button>
         </div>
         
-        <Button
-          variant="ghost"
-          onClick={handleSkip}
-          className="text-muted-foreground"
-        >
-          Passer
+        <Button variant="ghost" onClick={handleSkip} className="text-muted-foreground">
+          {t('skip')}
         </Button>
       </PageLayout>
     );
   }
 
   return (
-    <PageLayout className={cn(
-      "flex flex-col animate-slide-up",
-      isVibrating && "animate-pulse"
-    )}>
-      {/* Header */}
+    <PageLayout className={cn("flex flex-col animate-slide-up", isVibrating && "animate-pulse")}>
       <header className="safe-top px-6 py-4">
-        <button
-          onClick={() => navigate('/map')}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
-        >
+        <button onClick={() => navigate('/map')} className="p-2 rounded-lg hover:bg-muted transition-colors">
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
       </header>
 
-      {/* Profile Card */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="w-full max-w-sm">
-          {/* Avatar */}
           <div className="flex justify-center mb-6">
             <div className="relative">
               <div className="w-28 h-28 rounded-full bg-coral flex items-center justify-center glow-coral animate-pulse-signal overflow-hidden">
                 {userProfile?.avatar_url ? (
-                  <img 
-                    src={userProfile.avatar_url} 
-                    alt={`Avatar de ${user.firstName}`}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={userProfile.avatar_url} alt={`Avatar ${user.firstName}`} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-4xl font-bold text-primary-foreground">
-                    {user.firstName.charAt(0).toUpperCase()}
-                  </span>
+                  <span className="text-4xl font-bold text-primary-foreground">{user.firstName.charAt(0).toUpperCase()}</span>
                 )}
               </div>
-              {/* Signal indicator */}
               <div className={cn(
                 'absolute -bottom-1 -right-1 w-8 h-8 rounded-full border-4 border-background',
                 user.signal === 'green' && 'bg-signal-green glow-green',
@@ -261,12 +225,8 @@ export default function ProximityRevealPage() {
             </div>
           </div>
 
-          {/* Name */}
-          <h1 className="text-3xl font-bold text-foreground text-center mb-2">
-            {user.firstName}
-          </h1>
+          <h1 className="text-3xl font-bold text-foreground text-center mb-2">{user.firstName}</h1>
           
-          {/* University badge */}
           {userProfile?.university && (
             <div className="flex items-center justify-center gap-1 mb-4 text-muted-foreground">
               <GraduationCap className="h-4 w-4" />
@@ -274,12 +234,8 @@ export default function ProximityRevealPage() {
             </div>
           )}
 
-          {/* Verification Badges */}
-          {userId && (
-            <VerificationBadges userId={userId} className="justify-center mb-4" />
-          )}
+          {userId && <VerificationBadges userId={userId} className="justify-center mb-4" />}
 
-          {/* Activity & Time */}
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
               <span>{activityData?.emoji}</span>
@@ -291,78 +247,61 @@ export default function ProximityRevealPage() {
             </div>
           </div>
 
-          {/* Rating */}
           <div className="flex items-center justify-center gap-1 mb-8">
             <Star className="h-5 w-5 text-signal-yellow fill-signal-yellow" />
             <span className="font-semibold text-foreground">{user.rating.toFixed(1)}</span>
           </div>
 
-          {/* Icebreaker */}
-          <IcebreakerCard
-            icebreaker={icebreaker}
-            onRefresh={handleRefreshIcebreaker}
-          />
+          <IcebreakerCard icebreaker={icebreaker} onRefresh={handleRefreshIcebreaker} />
           
-          {/* Voice Icebreaker Button */}
           <div className="flex justify-center mt-4">
             <VoiceIcebreakerButton text={icebreaker} />
           </div>
 
-          {/* Distance */}
           <p className="text-center text-muted-foreground mt-4">
-            📍 {user.distance ? formatDistance(user.distance) : 'Tout près'}
+            📍 {user.distance ? formatDistance(user.distance) : t('reveal.nearby')}
           </p>
         </div>
       </div>
 
-      {/* Mini Chat - shows after interaction */}
       {showChat && interactionId && (
         <div className="px-6 pb-4">
-          <MiniChat 
-            interactionId={interactionId} 
-            otherUserName={user.firstName}
-            className="glass rounded-2xl"
-          />
+          <MiniChat interactionId={interactionId} otherUserName={user.firstName} className="glass rounded-2xl" />
         </div>
       )}
 
-      {/* Actions */}
       <div className="px-6 pb-8 space-y-3">
         {!showChat ? (
           <>
             <Button
               onClick={handleTalked}
               className="w-full h-14 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl text-lg font-semibold glow-coral"
-              aria-label="Confirmer que j'ai parlé à cette personne"
+              aria-label={t('reveal.talkConfirm')}
             >
-              J'ai parlé ✓
+              {t('reveal.iTalked')}
             </Button>
             <div className="flex gap-3">
               <Button
                 variant="outline"
                 onClick={() => navigate('/map')}
                 className="flex-1 h-14 rounded-xl text-muted-foreground"
-                aria-label="Retourner à la carte"
+                aria-label={t('reveal.backToMap')}
               >
-                Pas maintenant
+                {t('reveal.notNow')}
               </Button>
               <Button
                 variant="outline"
                 onClick={() => navigate('/report', { state: { reportedUserId: userId } })}
                 className="h-14 px-4 rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10"
-                aria-label="Signaler cet utilisateur"
+                aria-label={t('reveal.reportUser')}
               >
                 <Flag className="h-5 w-5" />
               </Button>
             </div>
           </>
         ) : (
-          <Button
-            variant="outline"
-            onClick={() => navigate('/map')}
-            className="w-full h-14 rounded-xl"
-          >
-            Retour à la carte
+          <Button variant="outline" onClick={() => navigate('/map')} className="w-full h-14 rounded-xl">
+            {t('reveal.backToMap')}
           </Button>
         )}
       </div>
