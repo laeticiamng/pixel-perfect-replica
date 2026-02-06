@@ -1,60 +1,50 @@
 
-
-# Audit Multi-Roles - EASY v1.7.x (Iteration 16)
+# Audit Multi-Roles - EASY v1.7.x (Iteration 17)
 
 ---
 
 ## Problemes identifies
 
-### BUG-27 : `ActivityFilterBar.tsx` -- "Tous" + aria-label hardcodes en francais (HAUTE)
+### BUG-30 : `activityData?.label` utilise dans 4 fichiers au lieu de la traduction (HAUTE)
 
-**Fichier** : `src/components/map/ActivityFilterBar.tsx`
+Les fichiers suivants utilisent `activityData?.label` ou `currentActivityData?.label` qui retournent le label francais hardcode des constantes `ACTIVITIES[]`, au lieu d'utiliser `t(activityData?.labelKey)`.
 
-- L35 : `Tous` -- texte visible hardcode en francais
-- L48 : `aria-label={`Filtrer par ${activity.label}`}` -- aria-label en francais + utilise `activity.label` (francais)
+| Fichier | Ligne | Code actuel |
+|---------|-------|-------------|
+| `src/pages/MapPage.tsx` | L138 | `currentActivityData?.label` |
+| `src/components/map/MapHeader.tsx` | L72 | `currentActivityData?.label` |
+| `src/pages/ProximityRevealPage.tsx` | L242 | `activityData?.label` |
+| `src/components/binome/AIRecommendationsWidget.tsx` | L143 | `activityData?.label` |
 
-Le composant n'importe pas `useTranslation()`.
-
-### BUG-28 : `SmartLocationRecommender.tsx` L39 -- `activityConfig.label` francais dans le bouton (MOYENNE)
-
-**Fichier** : `src/components/social/SmartLocationRecommender.tsx` L39
-
-```tsx
-{t('locationRecommender.suggestButton').replace('{activity}', activityConfig.label)}
-```
-
-`activityConfig.label` provient de `ACTIVITY_CONFIG` qui contient des labels francais hardcodes (`'Reviser'`, `'Manger'`). Devrait utiliser le label traduit via `t()`.
-
-### BUG-29 : `SmartLocationRecommender.tsx` L98 -- fallback `'Source'` inutile (BASSE)
-
-**Fichier** : `src/components/social/SmartLocationRecommender.tsx` L98
-
-```tsx
-{t('locationRecommender.source') || 'Source'}
-```
-
-Le fallback `'Source'` est inutile car la cle existe. Simple nettoyage.
+Tous ces textes sont visibles par l'utilisateur final sur la carte, le header, la page de revelation et les recommandations IA.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : Ajouter des cles dans translations.ts
+### Etape 1 : Fix `MapPage.tsx` (1 ligne)
 
-Ajouter :
-- `activityFilter.all` : `{ fr: 'Tous', en: 'All' }`
-- `activityFilter.filterBy` : `{ fr: 'Filtrer par {activity}', en: 'Filter by {activity}' }`
+Remplacer `currentActivityData?.label` par `t(currentActivityData?.labelKey || 'activities.other')` a la ligne 138.
 
-### Etape 2 : i18n `ActivityFilterBar.tsx`
+Le composant importe deja `useTranslation`.
 
-Importer `useTranslation()`. Remplacer :
-- L35 : `Tous` par `{t('activityFilter.all')}`
-- L48 : aria-label par `t('activityFilter.filterBy').replace('{activity}', t(activity.labelKey))`
+### Etape 2 : Fix `MapHeader.tsx` (1 ligne)
 
-### Etape 3 : Fix `SmartLocationRecommender.tsx`
+Remplacer `currentActivityData?.label` par `t(currentActivityData?.labelKey || 'activities.other')` a la ligne 72.
 
-- L39 : Remplacer `activityConfig.label` par le label traduit via les `ACTIVITIES` et `t(activityLabelKey)`
-- L98 : Supprimer le fallback `|| 'Source'`
+Le composant importe deja `useTranslation`.
+
+### Etape 3 : Fix `ProximityRevealPage.tsx` (1 ligne)
+
+Remplacer `activityData?.label` par `t(activityData?.labelKey || 'activities.other')` a la ligne 242.
+
+Verifier que `useTranslation` est deja importe (sinon l'ajouter).
+
+### Etape 4 : Fix `AIRecommendationsWidget.tsx` (1 ligne)
+
+Remplacer `activityData?.label || rec.activity` par `t(activityData?.labelKey || 'activities.other')` a la ligne 143.
+
+Le composant importe deja `useTranslation`.
 
 ---
 
@@ -62,13 +52,14 @@ Importer `useTranslation()`. Remplacer :
 
 | Fichier | Changements |
 |---------|------------|
-| `src/lib/i18n/translations.ts` | +2 cles (`activityFilter.all`, `activityFilter.filterBy`) |
-| `src/components/map/ActivityFilterBar.tsx` | import useTranslation + 2 remplacements |
-| `src/components/social/SmartLocationRecommender.tsx` | fix activity label traduit + cleanup fallback |
+| `src/pages/MapPage.tsx` | 1 remplacement `.label` -> `t(.labelKey)` |
+| `src/components/map/MapHeader.tsx` | 1 remplacement `.label` -> `t(.labelKey)` |
+| `src/pages/ProximityRevealPage.tsx` | 1 remplacement `.label` -> `t(.labelKey)` + verif import |
+| `src/components/binome/AIRecommendationsWidget.tsx` | 1 remplacement `.label` -> `t(.labelKey)` |
 
 ---
 
 ## Estimation
 
-- 3 fichiers, 2 nouvelles cles, ~10 lignes modifiees
-
+- 4 fichiers, 0 nouvelles cles, ~4 lignes modifiees
+- Correction purement mecanique : remplacer `.label` par `t(.labelKey)`
