@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { getPasswordStrength } from '@/lib/validation';
 import { useTranslation } from '@/lib/i18n';
+import { AlertCircle } from 'lucide-react';
 
 interface PasswordStrengthIndicatorProps {
   password: string;
@@ -33,6 +34,11 @@ export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicato
       )}>
         {t('auth.strength')} : {strength.label}
       </p>
+      {/* Server validation note */}
+      <div className="flex items-start gap-1.5 text-xs text-muted-foreground/80">
+        <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+        <span>{t('auth.serverMayReject')}</span>
+      </div>
     </div>
   );
 }

@@ -6,11 +6,13 @@ import { Input } from '@/components/ui/input';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
 import { PageLayout } from '@/components/PageLayout';
 import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -42,12 +44,12 @@ export default function ResetPasswordPage() {
     setError('');
 
     if (password.length < 6) {
-      setError('Mot de passe trop court (min 6 caractères)');
+      setError(t('auth.passwordTooShort'));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError(t('auth.passwordsDontMatch'));
       return;
     }
 
@@ -60,13 +62,19 @@ export default function ResetPasswordPage() {
     setIsLoading(false);
 
     if (updateError) {
-      toast.error('Erreur lors de la mise à jour');
-      setError(updateError.message);
+      // Handle weak/pwned password error
+      if (updateError.message.includes('weak_password') || updateError.message.includes('pwned')) {
+        toast.error(t('auth.weakPassword'));
+        setError(t('auth.weakPassword'));
+      } else {
+        toast.error(t('auth.updateError'));
+        setError(updateError.message);
+      }
       return;
     }
 
     setIsSuccess(true);
-    toast.success('Mot de passe mis à jour !');
+    toast.success(t('auth.passwordUpdated'));
     
     // Redirect after delay
     setTimeout(() => {
@@ -79,16 +87,16 @@ export default function ResetPasswordPage() {
       <PageLayout showSidebar={false} className="flex flex-col items-center justify-center px-6">
         <div className="text-6xl mb-6">🔒</div>
         <h1 className="text-2xl font-bold text-foreground mb-4 text-center">
-          Lien expiré
+          {t('auth.linkExpired')}
         </h1>
         <p className="text-muted-foreground text-center mb-8 max-w-xs">
-          Ce lien de réinitialisation n'est plus valide. Demande un nouveau lien.
+          {t('auth.linkExpiredDesc')}
         </p>
         <Button
           onClick={() => navigate('/forgot-password')}
           className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
         >
-          Nouveau lien
+          {t('auth.newLink')}
         </Button>
       </PageLayout>
     );
@@ -101,10 +109,10 @@ export default function ResetPasswordPage() {
           <Check className="h-10 w-10 text-signal-green" />
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-4 text-center">
-          Mot de passe mis à jour !
+          {t('auth.passwordUpdated')}
         </h1>
         <p className="text-muted-foreground text-center">
-          Redirection en cours...
+          {t('auth.redirecting')}
         </p>
       </PageLayout>
     );
@@ -119,10 +127,10 @@ export default function ResetPasswordPage() {
         </div>
 
         <h2 className="text-2xl font-bold text-foreground text-center mb-2">
-          Nouveau mot de passe
+          {t('auth.newPassword')}
         </h2>
         <p className="text-muted-foreground text-center mb-8">
-          Choisis un mot de passe sécurisé.
+          {t('auth.chooseSecurePassword')}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -130,7 +138,7 @@ export default function ResetPasswordPage() {
             <div className="relative">
               <Input
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Nouveau mot de passe"
+                placeholder={t('auth.newPasswordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={cn(
@@ -153,7 +161,7 @@ export default function ResetPasswordPage() {
           <div className="space-y-2">
             <Input
               type={showPassword ? 'text' : 'password'}
-              placeholder="Confirmer le mot de passe"
+              placeholder={t('auth.confirmPasswordPlaceholder')}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className={cn(
@@ -162,6 +170,18 @@ export default function ResetPasswordPage() {
               )}
               autoComplete="new-password"
             />
+            {confirmPassword && password && (
+              <div className="flex items-center gap-2 text-sm">
+                {confirmPassword === password ? (
+                  <>
+                    <Check className="h-4 w-4 text-signal-green" />
+                    <span className="text-signal-green">{t('auth.passwordsMatch')}</span>
+                  </>
+                ) : (
+                  <span className="text-signal-red">{t('auth.passwordsDontMatch')}</span>
+                )}
+              </div>
+            )}
             {error && (
               <p className="text-sm text-destructive">{error}</p>
             )}
@@ -175,7 +195,7 @@ export default function ResetPasswordPage() {
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
-              'Mettre à jour'
+              t('auth.update')
             )}
           </Button>
         </form>
