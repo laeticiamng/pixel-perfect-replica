@@ -230,6 +230,9 @@ export const translations = {
     appPreviewTitle: { en: 'See the radar in action', fr: 'Découvre le radar en action' },
     appPreviewDesc: { en: 'Real-time signals around you', fr: 'Les signaux en temps réel autour de toi' },
     liveDemo: { en: 'Live demo', fr: 'Démo live' },
+    socialProofUsers: { en: 'active users', fr: 'utilisateurs actifs' },
+    socialProofSessions: { en: 'sessions created', fr: 'sessions créées' },
+    socialProofCities: { en: 'cities', fr: 'villes' },
   },
 
   // Map page

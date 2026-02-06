@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useRef } from 'react';
 import { useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
+import { Users, Sparkles, MapPin } from 'lucide-react';
 import {
   FloatingOrbs,
   LandingHeader,
@@ -16,6 +17,7 @@ import {
   FinalCTASection,
   LandingFooter,
 } from '@/components/landing';
+import { SocialProofBar } from '@/components/landing/SocialProofBar';
 
 // Problem Section
 function ProblemSection() {
@@ -49,7 +51,7 @@ function SignalExplanationSection() {
   const { t } = useTranslation();
   
   return (
-    <section className="py-12 px-6 relative z-10">
+    <section className="py-12 px-6 relative z-10 bg-card/30">
       <div className="max-w-4xl mx-auto text-center">
         <RevealText>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
@@ -91,19 +93,19 @@ function FeaturesSection() {
         
         <div className="grid md:grid-cols-3 gap-6">
           <FeatureCard
-            icon="🤝"
+            icon={Users}
             title={t('landing.fightLoneliness')}
             description={t('landing.fightLonelinessDesc')}
             delay={0}
           />
           <FeatureCard
-            icon="✨"
+            icon={Sparkles}
             title={t('landing.noAwkwardApproach')}
             description={t('landing.noAwkwardApproachDesc')}
             delay={0.1}
           />
           <FeatureCard
-            icon="📍"
+            icon={MapPin}
             title={t('landing.anchoredInReal')}
             description={t('landing.anchoredInRealDesc')}
             delay={0.2}
@@ -119,7 +121,7 @@ function ComparisonWrapper() {
   const { t } = useTranslation();
   
   return (
-    <section className="py-12 px-6 relative z-10">
+    <section className="py-12 px-6 relative z-10 bg-card/30">
       <div className="max-w-2xl mx-auto">
         <RevealText>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
@@ -160,6 +162,7 @@ export default function LandingPage() {
       <FloatingOrbs />
       <LandingHeader />
       <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
+      <SocialProofBar />
       <AppPreviewSection />
       <ProblemSection />
       <SignalExplanationSection />

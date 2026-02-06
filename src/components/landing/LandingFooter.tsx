@@ -10,7 +10,7 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
   return (
     <footer ref={ref} className="py-8 px-6 border-t border-muted/20 relative z-10">
       <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
+        <div className="flex flex-col items-center justify-between w-full gap-4 sm:flex-row">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center">
               <span className="text-white font-bold text-sm">E</span>
@@ -18,9 +18,9 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
             <span className="font-bold text-foreground">EASY</span>
           </div>
           
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-muted-foreground">
+          <div className="flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:gap-6 text-sm text-muted-foreground">
             <button onClick={() => navigate('/install')} className="hover:text-coral transition-colors font-medium">
-              📲 {t('landing.install')}
+              {t('landing.install')}
             </button>
             <button onClick={() => navigate('/about')} className="hover:text-foreground transition-colors">
               {t('about.title')}

@@ -9,7 +9,7 @@ export function FinalCTASection() {
   const { t } = useTranslation();
 
   return (
-    <section className="py-20 px-6 relative z-10">
+    <section className="py-20 px-6 relative z-10 bg-gradient-to-b from-coral/5 to-coral/15 border-t border-coral/10">
       <div className="max-w-3xl mx-auto text-center">
         <RevealText>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
