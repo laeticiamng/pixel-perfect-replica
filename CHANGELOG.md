@@ -4,6 +4,40 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 
 ---
 
+## [2.0.0] - 2026-02-06
+
+### 🎉 Publication Officielle
+
+#### Branding Premium
+- **100% icônes vectorielles** : Zéro emoji restant dans toute l'application (Landing, CookieConsent, SignalDemo, AppPreview)
+- **Header glassmorphism** : Navigation transparente avec backdrop-blur premium
+- **SocialProofBar** : Conteneur glass avec séparateurs verticaux entre les statistiques
+- **CTA optimisés** : Suppression des animations pulsantes, gradients subtils
+
+#### Corrections Finales
+- **CookieConsent** : Emoji 🍪 remplacé par icône Lucide `Shield`
+- **CookieConsent** : Lien `<a>` remplacé par React Router `<Link>` (préservation SPA)
+- **SocialProofBar** : Structure JSX simplifiée (séparateurs entre items, pas à l'intérieur)
+- **SEO** : Meta tags `description`, `og:title`, `og:description`, `og:image` vérifiés et optimisés
+
+#### Sécurité & Conformité
+- Zéro issue au linter DB
+- RLS active sur toutes les tables
+- JWT validé dans toutes les edge functions
+- Cookie consent RGPD avec accept/decline
+- Export de données GDPR disponible
+- Politique de confidentialité avec contact DPO
+
+---
+
+## [1.7.0] - 2026-02-05
+
+### 🔧 Améliorations
+- Audit visuel v2 : remplacement des emojis résiduels dans AppPreviewSection, SignalDemo, HeroSection
+- SocialProofBar : ajout fond glass et séparateurs visuels
+
+---
+
 ## [1.3.0] - 2026-01-30
 
 ### 🎉 Nouvelles Fonctionnalités
@@ -32,17 +66,12 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 - **OfflineBanner** : Correction du forwardRef pour compatibilité React
 - **BottomNav** : Affichage sur toutes les pages protégées
 - **Traductions** : Couverture FR/EN complète
-- **Footer** : Affichage "EASY v1.3.0 • Made with ❤️ in France par EmotionsCare Sasu"
+- **Footer** : Affichage "EASY v2.0.0 • Made with ❤️ in France par EmotionsCare Sasu"
 
 #### Backend & Infrastructure
 - **Cron job `hourly-cleanup-shadow-bans`** : Nettoyage automatique des shadow-bans expirés (toutes les heures)
 - **Cron job `send-session-reminders`** : Rappels automatiques 1h et 15min avant les sessions
 - **Synchronisation profils/stats** : Création automatique des entrées `user_settings` et `user_stats`
-
-#### Documentation
-- **README.md** : Mise à jour complète avec architecture cron jobs
-- **SECURITY_ARCHITECTURE.md** : Documentation des politiques RLS
-- **PLATFORM_AUDIT_FINAL.md** : Rapport d'audit complet
 
 ### 🐛 Corrections
 
@@ -59,14 +88,6 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 | Security Tests | ✅ 17/17 |
 | RLS Permissions | ✅ 31/31 |
 | Edge Functions | ✅ JWT + Admin validation |
-
-### 📊 Métriques
-
-- **Tests** : 164 tests (100% passent)
-- **Tables** : 25+ avec RLS activé
-- **Fonctions SQL** : 40+
-- **Edge Functions** : 8 déployées
-- **Cron Jobs** : 3 actifs
 
 ---
 
@@ -93,12 +114,6 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 - Intégration Stripe Checkout
 - Sessions supplémentaires achetables
 
-### 🔧 Améliorations
-
-- Rappels automatiques de session
-- Notifications push améliorées
-- Performance des requêtes optimisée
-
 ---
 
 ## [1.1.0] - 2026-01-20
@@ -111,13 +126,6 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 - **Révélation progressive** : Profil complet à moins de 50m
 - **Ghost Mode** : Invisibilité sur le radar
 - **Bouton d'urgence** : Contacts d'urgence préenregistrés
-
-### 🔒 Sécurité
-
-- GPS Fuzzing (~100m de précision)
-- Rate limiting reveals (10/heure)
-- Rate limiting reports (5/heure)
-- Shadow-ban automatique
 
 ---
 
