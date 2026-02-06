@@ -1,50 +1,80 @@
 
-# Audit Multi-Roles - EASY v1.7.x (Iteration 17)
+# Audit Multi-Roles - EASY v1.7.x (Iteration 18)
 
 ---
 
 ## Problemes identifies
 
-### BUG-30 : `activityData?.label` utilise dans 4 fichiers au lieu de la traduction (HAUTE)
+### BUG-31 : `ThemeToggle.tsx` -- Labels "Clair", "Sombre", "Systeme" hardcodes (HAUTE)
 
-Les fichiers suivants utilisent `activityData?.label` ou `currentActivityData?.label` qui retournent le label francais hardcode des constantes `ACTIVITIES[]`, au lieu d'utiliser `t(activityData?.labelKey)`.
+**Fichier** : `src/components/ThemeToggle.tsx` L16-18
 
-| Fichier | Ligne | Code actuel |
-|---------|-------|-------------|
-| `src/pages/MapPage.tsx` | L138 | `currentActivityData?.label` |
-| `src/components/map/MapHeader.tsx` | L72 | `currentActivityData?.label` |
-| `src/pages/ProximityRevealPage.tsx` | L242 | `activityData?.label` |
-| `src/components/binome/AIRecommendationsWidget.tsx` | L143 | `activityData?.label` |
+```tsx
+{ value: 'light', icon: Sun, label: 'Clair' },
+{ value: 'dark', icon: Moon, label: 'Sombre' },
+{ value: 'system', icon: Monitor, label: 'Système' },
+```
 
-Tous ces textes sont visibles par l'utilisateur final sur la carte, le header, la page de revelation et les recommandations IA.
+Labels visibles dans les tooltips et les boutons. Pas de `useTranslation()` importe.
+
+### BUG-32 : `useVerificationBadges.ts` -- 4 labels et descriptions hardcodes en francais (HAUTE)
+
+**Fichier** : `src/hooks/useVerificationBadges.ts` L87-108
+
+La fonction `getBadgeInfo()` retourne des labels et descriptions en francais brut :
+- `'Etudiant verifie'` / `'Email universitaire verifie'`
+- `'LinkedIn'` / `'Compte LinkedIn connecte'`
+- `'Instagram'` / `'Compte Instagram connecte'`
+- `'Photo verifiee'` / `'Selfie de verification valide'`
+
+Ces textes sont affiches dans `VerificationBadges.tsx` (tooltips + labels visibles).
+
+### BUG-33 : `LocationDescriptionInput.tsx` -- Placeholder + hint hardcodes (MOYENNE)
+
+**Fichier** : `src/components/radar/LocationDescriptionInput.tsx`
+
+- L22 : `placeholder = "Ex: BU 2eme etage, Cafe du coin..."` (francais)
+- L67 : `"Optionnel - aide les autres a te trouver"` (francais)
+
+Pas de `useTranslation()` importe.
+
+### BUG-34 : Tests avec assertions en francais obsoletes (BASSE - non bloquant)
+
+**Fichiers** : `src/test/e2e-signup-signal.test.tsx`, `src/test/validation.test.ts`
+
+Les tests verifient `label === 'Faible'` / `'Fort'` alors que `getPasswordStrength()` retourne maintenant `'weak'` / `'strong'`. Ces tests echoueront. Correction simple : mettre a jour les assertions.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : Fix `MapPage.tsx` (1 ligne)
+### Etape 1 : Ajouter les cles dans `translations.ts` (~10 cles)
 
-Remplacer `currentActivityData?.label` par `t(currentActivityData?.labelKey || 'activities.other')` a la ligne 138.
+Ajouter :
+- `theme.light`, `theme.dark`, `theme.system`
+- `badges.emailEdu.label`, `badges.emailEdu.description`
+- `badges.linkedin.label`, `badges.linkedin.description`
+- `badges.instagram.label`, `badges.instagram.description`
+- `badges.photoLiveness.label`, `badges.photoLiveness.description`
+- `locationInput.placeholder`, `locationInput.hint`
 
-Le composant importe deja `useTranslation`.
+### Etape 2 : i18n `ThemeToggle.tsx`
 
-### Etape 2 : Fix `MapHeader.tsx` (1 ligne)
+Importer `useTranslation()`. Remplacer les labels hardcodes par `t('theme.light')`, `t('theme.dark')`, `t('theme.system')`.
 
-Remplacer `currentActivityData?.label` par `t(currentActivityData?.labelKey || 'activities.other')` a la ligne 72.
+### Etape 3 : i18n `useVerificationBadges.ts`
 
-Le composant importe deja `useTranslation`.
+Le hook ne peut pas utiliser `useTranslation()` directement car il faudrait le passer en parametre. Solution : transformer `getBadgeInfo` pour accepter une fonction `t` en parametre, ou deplacer la logique dans le composant `VerificationBadges.tsx` qui a deja acces au contexte React.
 
-### Etape 3 : Fix `ProximityRevealPage.tsx` (1 ligne)
+Approche retenue : Deplacer le mapping des labels dans `VerificationBadges.tsx` en utilisant `useTranslation()`, et faire retourner uniquement le `badge_type` depuis le hook.
 
-Remplacer `activityData?.label` par `t(activityData?.labelKey || 'activities.other')` a la ligne 242.
+### Etape 4 : i18n `LocationDescriptionInput.tsx`
 
-Verifier que `useTranslation` est deja importe (sinon l'ajouter).
+Importer `useTranslation()`. Remplacer le placeholder et le hint par des cles traduites.
 
-### Etape 4 : Fix `AIRecommendationsWidget.tsx` (1 ligne)
+### Etape 5 : Fix tests obsoletes
 
-Remplacer `activityData?.label || rec.activity` par `t(activityData?.labelKey || 'activities.other')` a la ligne 143.
-
-Le composant importe deja `useTranslation`.
+Mettre a jour les assertions dans les fichiers de test pour utiliser `'weak'`/`'medium'`/`'strong'` au lieu de `'Faible'`/`'Moyen'`/`'Fort'`.
 
 ---
 
@@ -52,14 +82,16 @@ Le composant importe deja `useTranslation`.
 
 | Fichier | Changements |
 |---------|------------|
-| `src/pages/MapPage.tsx` | 1 remplacement `.label` -> `t(.labelKey)` |
-| `src/components/map/MapHeader.tsx` | 1 remplacement `.label` -> `t(.labelKey)` |
-| `src/pages/ProximityRevealPage.tsx` | 1 remplacement `.label` -> `t(.labelKey)` + verif import |
-| `src/components/binome/AIRecommendationsWidget.tsx` | 1 remplacement `.label` -> `t(.labelKey)` |
+| `src/lib/i18n/translations.ts` | +10 cles |
+| `src/components/ThemeToggle.tsx` | import useTranslation + 3 labels |
+| `src/hooks/useVerificationBadges.ts` | retourner cles i18n au lieu de texte |
+| `src/components/social/VerificationBadges.tsx` | utiliser t() pour les labels |
+| `src/components/radar/LocationDescriptionInput.tsx` | import useTranslation + 2 textes |
+| `src/test/validation.test.ts` | fix 3 assertions |
+| `src/test/e2e-signup-signal.test.tsx` | fix 2 assertions |
 
 ---
 
 ## Estimation
 
-- 4 fichiers, 0 nouvelles cles, ~4 lignes modifiees
-- Correction purement mecanique : remplacer `.label` par `t(.labelKey)`
+- 7 fichiers, ~10 nouvelles cles, ~25 lignes modifiees
