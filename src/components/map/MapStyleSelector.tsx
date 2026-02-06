@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { Map, Satellite, Navigation, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,7 +66,9 @@ export function MapStyleSelector({
   onStyleChange,
   className,
 }: MapStyleSelectorProps) {
+  const { locale } = useTranslation();
   const currentStyleData = MAP_STYLES.find(s => s.id === currentStyle) || MAP_STYLES[0];
+  const getLabel = (style: MapStyle) => locale === 'fr' ? style.name : style.nameEn;
 
   return (
     <DropdownMenu>
@@ -81,7 +83,7 @@ export function MapStyleSelector({
           )}
         >
           {currentStyleData.icon}
-          <span className="hidden sm:inline">{currentStyleData.name}</span>
+          <span className="hidden sm:inline">{getLabel(currentStyleData)}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[140px]">
@@ -95,7 +97,7 @@ export function MapStyleSelector({
             )}
           >
             {style.icon}
-            <span>{style.name}</span>
+            <span>{getLabel(style)}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

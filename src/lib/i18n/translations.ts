@@ -1312,6 +1312,7 @@ export const translations = {
     analyzing: { en: 'Analyzing...', fr: 'Analyse en cours...' },
     retry: { en: 'Retry', fr: 'Réessayer' },
     sources: { en: 'Sources:', fr: 'Sources :' },
+    source: { en: 'Source', fr: 'Source' },
     hide: { en: 'Hide', fr: 'Masquer' },
   },
 
@@ -1764,6 +1765,15 @@ export const translations = {
   favorites: {
     remove: { en: 'Remove from favorites', fr: 'Retirer des favoris' },
     add: { en: 'Add to favorites', fr: 'Ajouter aux favoris' },
+  },
+
+  // Searching Indicator
+  searchIndicator: {
+    searching: { en: 'Searching', fr: 'Recherche en cours' },
+    willNotify: { en: "You'll be notified when someone arrives", fr: "Tu seras notifié dès qu'une personne arrive" },
+    nearbyOne: { en: '1 person nearby', fr: '1 personne à proximité' },
+    nearbyMany: { en: '{count} people nearby', fr: '{count} personnes à proximité' },
+    exploreRadar: { en: 'Explore the radar to discover them!', fr: 'Explore le radar pour les découvrir !' },
   },
 
 } as const;

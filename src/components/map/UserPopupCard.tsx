@@ -115,7 +115,7 @@ export function UserPopupCard({
         {/* Activity */}
         <div className="flex items-center gap-2 text-sm">
           <span className="text-lg">{activity?.emoji || '✨'}</span>
-          <span className="text-foreground font-medium">{activity?.label || t('activities.other')}</span>
+          <span className="text-foreground font-medium">{t(activity?.labelKey || 'activities.other')}</span>
         </div>
 
         {/* Distance */}
