@@ -413,7 +413,7 @@ export default function EventsPage() {
         {myEvents.length > 0 && (
           <div className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="text-coral">📍</span> {t('events.myEvents')}
+              <MapPin className="h-5 w-5 text-coral" /> {t('events.myEvents')}
             </h2>
             {myEvents.map(event => (
               <EventCard 

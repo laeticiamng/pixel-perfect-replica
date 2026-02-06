@@ -544,7 +544,7 @@ export const translations = {
     bioPlaceholder: { en: 'Describe yourself in a few words...', fr: 'Décris-toi en quelques mots...' },
     birthYear: { en: 'Birth year', fr: 'Année de naissance' },
     birthYearPlaceholder: { en: 'e.g. 2000', fr: 'Ex: 2000' },
-    birthYearPrivacy: { en: '🔒 Never shown — only used to suggest age-similar people', fr: '🔒 Jamais affiché — utilisé uniquement pour te proposer des personnes d\'âge proche' },
+    birthYearPrivacy: { en: 'Never shown — only used to suggest age-similar people', fr: 'Jamais affiché — utilisé uniquement pour te proposer des personnes d\'âge proche' },
     emailLabel: { en: 'Email', fr: 'Email' },
     emailReadonly: { en: 'Email cannot be changed', fr: 'L\'email ne peut pas être modifié' },
     photoUpdated: { en: 'Photo updated!', fr: 'Photo mise à jour !' },

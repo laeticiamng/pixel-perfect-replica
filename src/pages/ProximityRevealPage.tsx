@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
 import { IcebreakerCard, VerificationBadges, MiniChat, VoiceIcebreakerButton } from '@/components/social';
@@ -259,7 +259,7 @@ export default function ProximityRevealPage() {
           </div>
 
           <p className="text-center text-muted-foreground mt-4">
-            📍 {user.distance ? formatDistance(user.distance) : t('reveal.nearby')}
+            <MapPin className="h-4 w-4 inline mr-1" /> {user.distance ? formatDistance(user.distance) : t('reveal.nearby')}
           </p>
         </div>
       </div>
