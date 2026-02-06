@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 
 interface Participant { id: string; name: string; }
