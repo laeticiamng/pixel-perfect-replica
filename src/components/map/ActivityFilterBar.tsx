@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { ACTIVITIES, ActivityType } from '@/types/signal';
+import { useTranslation } from '@/lib/i18n';
 
 interface ActivityFilterBarProps {
   selectedActivities: ActivityType[];
@@ -12,6 +13,7 @@ export function ActivityFilterBar({
   onToggle,
   className,
 }: ActivityFilterBarProps) {
+  const { t } = useTranslation();
   const isAllSelected = selectedActivities.length === 0;
 
   return (
@@ -32,7 +34,7 @@ export function ActivityFilterBar({
             : "text-muted-foreground hover:bg-muted"
         )}
       >
-        Tous
+        {t('activityFilter.all')}
       </button>
 
       <div className="w-px h-5 bg-border" />
@@ -45,7 +47,7 @@ export function ActivityFilterBar({
           <button
             key={activity.id}
             onClick={() => onToggle(activity.id)}
-            aria-label={`Filtrer par ${activity.label}`}
+            aria-label={t('activityFilter.filterBy', { activity: t(activity.labelKey) })}
             aria-pressed={isSelected}
             className={cn(
               "w-8 h-8 rounded-lg flex items-center justify-center text-base transition-all",

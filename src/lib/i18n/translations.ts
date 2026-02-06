@@ -158,6 +158,12 @@ export const translations = {
     other: { en: 'Other', fr: 'Autre' },
   },
 
+  // Activity filter
+  activityFilter: {
+    all: { en: 'All', fr: 'Tous' },
+    filterBy: { en: 'Filter by {activity}', fr: 'Filtrer par {activity}' },
+  },
+
   // Landing page
   landing: {
     meetingsReinvented: { en: 'Meetings reinvented', fr: 'La rencontre réinventée' },

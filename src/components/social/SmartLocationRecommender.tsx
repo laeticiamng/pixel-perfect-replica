@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useLocationRecommendations } from '@/hooks/useLocationRecommendations';
-import { ActivityType, ACTIVITY_CONFIG } from '@/types/signal';
+import { ActivityType, ACTIVITY_CONFIG, ACTIVITIES } from '@/types/signal';
 import { useTranslation } from '@/lib/i18n';
 
 interface SmartLocationRecommenderProps {
@@ -21,6 +21,8 @@ export function SmartLocationRecommender({ activity, city = 'Paris', onSelectLoc
   const [showRecommendations, setShowRecommendations] = useState(false);
 
   const activityConfig = ACTIVITY_CONFIG[activity] || ACTIVITY_CONFIG.other;
+  const activityOption = ACTIVITIES.find(a => a.id === activity);
+  const activityLabel = activityOption ? t(activityOption.labelKey) : t('activities.other');
 
   const handleGetRecommendations = async () => {
     setShowRecommendations(true);
@@ -36,7 +38,7 @@ export function SmartLocationRecommender({ activity, city = 'Paris', onSelectLoc
       {!showRecommendations ? (
         <Button onClick={handleGetRecommendations} disabled={isLoading} variant="outline" className="w-full gap-2 h-12 border-dashed border-coral/50 hover:border-coral hover:bg-coral/5">
           {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-coral" />}
-          <span>{t('locationRecommender.suggestButton').replace('{activity}', activityConfig.label)}</span>
+          <span>{t('locationRecommender.suggestButton', { activity: activityLabel })}</span>
         </Button>
       ) : (
         <Card className="overflow-hidden border-coral/20">
@@ -95,7 +97,7 @@ export function SmartLocationRecommender({ activity, city = 'Paris', onSelectLoc
                       <div className="flex flex-wrap gap-1">
                         {citations.slice(0, 3).map((citation, i) => (
                           <a key={i} href={citation} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-coral hover:underline">
-                            <ExternalLink className="h-3 w-3" />{t('locationRecommender.source') || 'Source'} {i + 1}
+                            <ExternalLink className="h-3 w-3" />{t('locationRecommender.source')} {i + 1}
                           </a>
                         ))}
                       </div>
