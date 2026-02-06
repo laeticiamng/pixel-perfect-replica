@@ -50,7 +50,7 @@ export function useEventScraper() {
       setResult(data);
       return data;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur inconnue';
+      const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
       console.error('[useEventScraper] Error:', err);
       return null;

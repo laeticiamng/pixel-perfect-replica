@@ -37,7 +37,7 @@ export function useVoiceIcebreaker() {
 
       return data.audio_base64;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur inconnue';
+      const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
       console.error('[useVoiceIcebreaker] Error:', err);
       return null;
@@ -74,7 +74,7 @@ export function useVoiceIcebreaker() {
       };
       audio.onerror = () => {
         setIsPlaying(false);
-        setError('Erreur de lecture audio');
+        setError('Audio playback error');
         URL.revokeObjectURL(audioUrl);
       };
 

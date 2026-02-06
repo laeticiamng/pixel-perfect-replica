@@ -83,7 +83,7 @@ export function useLocationRecommendations() {
       setCitations(data.citations || []);
       return data.recommendations;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur inconnue';
+      const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
       console.error('[useLocationRecommendations] Error:', err);
       return [];
