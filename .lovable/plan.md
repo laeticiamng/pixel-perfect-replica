@@ -1,85 +1,91 @@
 
-# Audit Complet Multi-Roles - EASY v1.7.x (Iteration 9)
+
+# Audit Multi-Roles - EASY v1.7.x (Iteration 10)
 
 ---
 
-## Resultats de l'audit
+## Problemes identifies
 
-### Bugs critiques identifies
+### TECH-28 : `UserPopupCard.tsx` -- 100% hardcode en francais + locale `fr` (HAUTE)
 
-#### BUG-1 : `useBinomeSessions.ts` utilise encore `sonner` (CRITIQUE)
+**Fichier** : `src/components/map/UserPopupCard.tsx`
 
-**Fichier** : `src/hooks/useBinomeSessions.ts` (ligne 4)
+Composant visible par **tous les utilisateurs** quand ils cliquent sur un signal sur la carte. Textes hardcodes :
+- L36-38 : `'Ouvert'`, `'Conditionnel'`, `'Occupé'` (labels de signal)
+- L51-53 : `'Distance inconnue'`, `'Très proche !'` (formatage distance)
+- L104 : `aria-label="Fermer"`
+- L115 : `activity?.label || 'Autre'`
+- L136 : `locale: fr` hardcode pour `formatDistanceToNow`
+- L148 : `Voir le profil`
 
-Ce hook est le moteur de toutes les actions Binome (creer, rejoindre, quitter, annuler une session). Il importe `toast` depuis `sonner`, qui n'a plus de Toaster dans `App.tsx`. **Tous les toasts de confirmation Binome sont silencieux** : creation de session, rejoindre, quitter, annuler.
+### TECH-29 : `SignalHistoryPanel.tsx` -- 100% hardcode en francais + locale `fr` (HAUTE)
 
-De plus, les textes de toast utilisent une detection de langue manuelle `locale === 'fr'` (lignes 159, 185, 199, 210, 232, 255, 259) au lieu de `useTranslation()`. Probleme : c'est un hook, pas un composant React -- il ne peut pas utiliser `useTranslation()` directement. Il faut passer `t()` en parametre ou externaliser les messages.
+**Fichier** : `src/components/map/SignalHistoryPanel.tsx`
 
-#### BUG-2 : `EventScraperCard.tsx` utilise encore `sonner` (manque de la migration Iteration 8)
+~10 textes hardcodes :
+- L21-28 : `activityLabels` map hardcode en francais (`'Réviser'`, `'Manger'`, `'Bosser'`...)
+- L93 : `Historique`
+- L100 : `Historique des signaux`
+- L110-111 : `"Aucun historique"`, `"Tes signaux passés apparaîtront ici"`
+- L128, L135 : `locale: fr` hardcode
+- L157 : `Affichage des 20 derniers signaux`
 
-**Fichier** : `src/components/admin/EventScraperCard.tsx` (ligne 9)
+### TECH-30 : `QRCodeScanner.tsx` -- 100% hardcode en francais (HAUTE)
 
-Ce fichier etait dans le plan de l'iteration 8 mais n'a pas ete migre. Import `{ toast } from 'sonner'` toujours present. Toasts silencieux pour les actions de scraping.
+**Fichier** : `src/components/events/QRCodeScanner.tsx`
 
-#### BUG-3 : `EventReminderBanner.tsx` -- locale `fr` hardcodee + textes hardcodes (HAUTE)
+~12 textes hardcodes :
+- L28 : `"Impossible d'accéder à la caméra..."`
+- L45 : `'Check-in réussi !'`
+- L53 : `'Erreur lors du scan'`
+- L54 : `'Erreur lors du check-in'`
+- L62 : `'Erreur de la caméra'`
+- L75 : `aria-label="Fermer"`
+- L81 : `Scanner le QR Code`
+- L84 : `Scanne le code de l'organisateur...`
+- L124 : `Vérification...`
+- L132 : `Check-in réussi !`
+- L140 : `Erreur`
+- L152 : `Caméra non disponible`
+- L181 : `Annuler`
+- L191 : `Réessayer`
 
-**Fichier** : `src/components/events/EventReminderBanner.tsx`
+### TECH-31 : `CronJobsMonitor.tsx` -- locale `fr` hardcode + textes admin (BASSE)
 
-- Ligne 3 : `import { fr } from 'date-fns/locale'` -- locale hardcodee
-- Ligne 29 : `Commence dans ${minutesUntilStart} min !`
-- Ligne 32 : `Commence dans ${minutesUntilStart} min`
-- Ligne 35 : `Commence dans ${hoursUntilStart}h`
-- Ligne 66 : `format(startDate, 'HH:mm', { locale: fr })` -- locale hardcodee
-- Ligne 72 : `Bientôt !`
-- Ligne 113 : `Rappels`
+**Fichier** : `src/components/admin/CronJobsMonitor.tsx`
 
-#### BUG-4 : `EventCategoryBadge.tsx` -- labels de categories hardcodes en francais (HAUTE)
+- L9, L314, L389 : `locale: fr` hardcode
+- ~30 textes admin hardcodes (toasts, descriptions de jobs, historique)
 
-**Fichier** : `src/components/events/EventCategoryBadge.tsx`
+### TECH-32 : `InteractiveMap.tsx` -- messages d'erreur hardcodes (MOYENNE)
 
-Les labels des categories d'evenements sont hardcodes en francais (ligne 18-26) :
-- `'Académique'`, `'Soirée'`, `'Pro'`, `'Autre'`, `'Culture'`, `'Sport'`, `'Social'`
+**Fichier** : `src/components/map/InteractiveMap.tsx`
 
-Cela affecte :
-- Les badges de categorie partout dans l'app
-- Le selecteur de categorie dans le formulaire de creation d'evenement
-
-#### BUG-5 : `AdminDashboardPage.tsx` -- entierement hardcode en francais (~50 textes)
-
-**Fichier** : `src/pages/AdminDashboardPage.tsx`
-
-Page admin avec ~50 textes hardcodes. Bien que ce soit admin-only, les toasts de confirmation (lignes 116-127) sont deja en francais et devraient suivre le systeme i18n. Les textes principaux incluent :
-- "Accès restreint", "Dashboard Admin", "Système Opérationnel/Attention/Critique"
-- "Utilisateurs", "Signaux actifs", "Événements", "Interactions"
-- "Utilisateurs actifs (14 jours)", "Répartition par catégorie", "Activité par heure"
-- "Top 10 Événements", "Pages les plus visitées", "Aucune donnée disponible"
-- "Nettoyage des signaux expirés effectué", "Données rafraîchies"
+- L109, L120 : `'Session expirée, veuillez vous reconnecter'`
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : Migrer `useBinomeSessions.ts` de `sonner` vers `react-hot-toast` + i18n
+### Etape 1 : i18n -- `UserPopupCard.tsx` (~10 cles)
 
-Remplacer `import { toast } from 'sonner'` par `import toast from 'react-hot-toast'`. Pour l'i18n, puisqu'il s'agit d'un hook et non d'un composant, utiliser la detection de langue existante (`document.documentElement.lang`) avec un helper local pour les cles de traduction, ou importer directement les traductions.
+Ajouter `userPopup.*` dans `translations.ts`. Implementer `useTranslation()`. Ajouter locale dynamique pour `date-fns`.
 
-Refactoriser les 8 messages toast avec un pattern i18n compatible hooks.
+### Etape 2 : i18n -- `SignalHistoryPanel.tsx` (~10 cles)
 
-### Etape 2 : Migrer `EventScraperCard.tsx` de `sonner` vers `react-hot-toast`
+Ajouter `signalHistory.*` dans `translations.ts`. Supprimer le map `activityLabels` hardcode, utiliser les cles `activities.*` existantes. Ajouter locale dynamique.
 
-Remplacer l'import (ligne 9). Adapter les 2 appels toast (lignes 33, 40).
+### Etape 3 : i18n -- `QRCodeScanner.tsx` (~12 cles)
 
-### Etape 3 : i18n -- `EventReminderBanner.tsx` (~8 cles)
+Ajouter `qrScanner.*` dans `translations.ts`. Implementer `useTranslation()`.
 
-Ajouter `eventReminder.*` dans `translations.ts`. Utiliser `useTranslation()` avec locale dynamique pour `date-fns`. Traduire "Commence dans X min", "Bientot !", "Rappels".
+### Etape 4 : i18n -- `CronJobsMonitor.tsx` (locale dynamique + toasts, ~15 cles)
 
-### Etape 4 : i18n -- `EventCategoryBadge.tsx` (~7 cles)
+Ajouter `cronJobs.*` dans `translations.ts`. Remplacer `locale: fr` par locale dynamique. Traduire les toasts et les descriptions de jobs.
 
-Ajouter `eventCategories.*` dans `translations.ts`. Remplacer les labels hardcodes par `t('eventCategories.social')`, etc. Le composant et le selecteur utiliseront `useTranslation()`.
+### Etape 5 : i18n -- `InteractiveMap.tsx` (messages d'erreur, ~2 cles)
 
-### Etape 5 : i18n partiel -- `AdminDashboardPage.tsx` (toasts + titres principaux, ~25 cles)
-
-Ajouter `admin.*` dans `translations.ts`. Traduire les elements visibles principaux : titres de cartes, labels de stats, messages toast, indicateur de sante systeme.
+Ajouter `map.sessionExpired` dans `translations.ts`. Remplacer les messages hardcodes.
 
 ---
 
@@ -87,18 +93,18 @@ Ajouter `admin.*` dans `translations.ts`. Traduire les elements visibles princip
 
 | Fichier | Changements |
 |---------|------------|
-| `src/lib/i18n/translations.ts` | +45 cles (eventReminder, eventCategories, admin) |
-| `src/hooks/useBinomeSessions.ts` | sonner -> react-hot-toast + i18n messages |
-| `src/components/admin/EventScraperCard.tsx` | sonner -> react-hot-toast |
-| `src/components/events/EventReminderBanner.tsx` | i18n complet + locale dynamique |
-| `src/components/events/EventCategoryBadge.tsx` | i18n labels categories |
-| `src/pages/AdminDashboardPage.tsx` | i18n titres + toasts + indicateurs |
+| `src/lib/i18n/translations.ts` | +50 cles (userPopup, signalHistory, qrScanner, cronJobs, map) |
+| `src/components/map/UserPopupCard.tsx` | i18n complet + locale dynamique |
+| `src/components/map/SignalHistoryPanel.tsx` | i18n complet + locale dynamique |
+| `src/components/events/QRCodeScanner.tsx` | i18n complet |
+| `src/components/admin/CronJobsMonitor.tsx` | i18n + locale dynamique |
+| `src/components/map/InteractiveMap.tsx` | i18n messages d'erreur |
 
 ---
 
 ## Estimation
 
-- Migration sonner -> react-hot-toast : 2 fichiers (useBinomeSessions critique, EventScraperCard)
-- i18n composants Events (EventReminderBanner, EventCategoryBadge) : 2 fichiers, ~15 cles
-- i18n AdminDashboardPage : 1 fichier, ~25 cles
-- Total : ~6 fichiers modifies, ~45 nouvelles cles, ~200 lignes modifiees
+- i18n composants Map (UserPopupCard, SignalHistoryPanel, InteractiveMap) : 3 fichiers, ~22 cles
+- i18n QRCodeScanner : 1 fichier, ~12 cles
+- i18n CronJobsMonitor : 1 fichier, ~15 cles
+- Total : ~6 fichiers modifies, ~50 nouvelles cles, ~200 lignes modifiees
