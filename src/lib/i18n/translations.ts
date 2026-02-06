@@ -1235,6 +1235,79 @@ export const translations = {
     noRecentLogs: { en: 'No recent logs', fr: 'Aucun log récent' },
     recentErrors: { en: 'Recent errors', fr: 'Erreurs récentes' },
   },
+
+  // Delete Account
+  deleteAccount: {
+    button: { en: 'Delete my account', fr: 'Supprimer mon compte' },
+    title: { en: 'Delete your account?', fr: 'Supprimer votre compte ?' },
+    description: { en: 'This action is <strong>irreversible</strong>. All your data will be permanently deleted: profile, statistics, interaction history, feedback.', fr: 'Cette action est <strong>irréversible</strong>. Toutes vos données seront définitivement supprimées : profil, statistiques, historique d\'interactions, feedbacks.' },
+    confirmLabel: { en: 'Type <strong>DELETE</strong> to confirm', fr: 'Tapez <strong>SUPPRIMER</strong> pour confirmer' },
+    confirmWord: { en: 'DELETE', fr: 'SUPPRIMER' },
+    confirmAction: { en: 'Delete permanently', fr: 'Supprimer définitivement' },
+    success: { en: 'Your account has been deleted', fr: 'Votre compte a été supprimé' },
+    error: { en: 'Error during deletion. Please contact support.', fr: 'Erreur lors de la suppression. Contactez le support.' },
+  },
+
+  // Emergency Contacts
+  emergency: {
+    title: { en: 'Emergency contacts', fr: 'Contacts d\'urgence' },
+    subtitle: { en: 'These contacts will be alerted in case of emergency (max 3)', fr: 'Ces contacts seront alertés en cas d\'urgence (max 3)' },
+    addButton: { en: 'Add an emergency contact', fr: 'Ajouter un contact d\'urgence' },
+    namePlaceholder: { en: 'Contact name', fr: 'Nom du contact' },
+    phonePlaceholder: { en: 'Phone number', fr: 'Numéro de téléphone' },
+    add: { en: 'Add', fr: 'Ajouter' },
+    fillAllFields: { en: 'Please fill in all fields', fr: 'Veuillez remplir tous les champs' },
+    maxContacts: { en: 'Maximum 3 emergency contacts', fr: 'Maximum 3 contacts d\'urgence' },
+    invalidPhone: { en: 'Invalid phone number', fr: 'Numéro de téléphone invalide' },
+    addError: { en: 'Error adding contact', fr: 'Erreur lors de l\'ajout' },
+    addSuccess: { en: 'Contact added!', fr: 'Contact ajouté !' },
+    deleteError: { en: 'Error deleting contact', fr: 'Erreur lors de la suppression' },
+    deleteSuccess: { en: 'Contact deleted', fr: 'Contact supprimé' },
+    info: { en: 'In an emergency, hold the 🛡️ button on the radar to alert your contacts', fr: 'En cas d\'urgence, maintenez le bouton 🛡️ sur le radar pour alerter vos contacts' },
+  },
+
+  // Mini Chat
+  miniChat: {
+    chatWith: { en: 'Chat with {name}', fr: 'Chat avec {name}' },
+    remaining: { en: '{remaining}/{max} remaining', fr: '{remaining}/{max} restants' },
+    emptyPrompt: { en: 'Send a message to continue the conversation!', fr: 'Envoyez un message pour continuer la conversation !' },
+    maxMessages: { en: '({max} messages max)', fr: '({max} messages max)' },
+    placeholder: { en: 'Write your message...', fr: 'Écrivez votre message...' },
+    sendLabel: { en: 'Send message', fr: 'Envoyer le message' },
+    limitReached: { en: 'Message limit reached 💬', fr: 'Limite de messages atteinte 💬' },
+    continueIrl: { en: 'Continue the conversation in person!', fr: 'Continuez la conversation en personne !' },
+  },
+
+  // Public Profile Preview
+  publicProfile: {
+    previewButton: { en: 'Preview public profile', fr: 'Prévisualiser le profil public' },
+    title: { en: 'Public profile preview', fr: 'Aperçu du profil public' },
+    whatOthersSee: { en: 'This is what other users see of your profile', fr: 'Voici ce que les autres utilisateurs voient de votre profil' },
+    defaultUser: { en: 'User', fr: 'Utilisateur' },
+    verifiedStudent: { en: '✓ Verified student', fr: '✓ Étudiant vérifié' },
+    rating: { en: 'Rating', fr: 'Note' },
+    meetings: { en: 'Meetings', fr: 'Rencontres' },
+    active: { en: 'Active', fr: 'Actif' },
+    favoriteActivities: { en: 'Favorite activities', fr: 'Activités favorites' },
+    privacyNote: { en: '💡 Others never see your email or exact location', fr: '💡 Les autres ne voient jamais votre email ni votre position exacte' },
+  },
+
+  // Location Recommender
+  locationRecommender: {
+    suggestButton: { en: 'AI location suggestions for {activity}', fr: 'Suggestions IA de lieux pour {activity}' },
+    title: { en: 'AI Recommendations - {city}', fr: 'Recommandations IA - {city}' },
+    refresh: { en: 'Refresh recommendations', fr: 'Actualiser les recommandations' },
+    analyzing: { en: 'Analyzing...', fr: 'Analyse en cours...' },
+    retry: { en: 'Retry', fr: 'Réessayer' },
+    sources: { en: 'Sources:', fr: 'Sources :' },
+    hide: { en: 'Hide', fr: 'Masquer' },
+  },
+
+  // Share
+  share: {
+    title: { en: 'EASY - The first 100% real social network', fr: 'EASY - Le premier réseau social 100% réel' },
+    text: { en: 'Join me on EASY for spontaneous real-life meetups!', fr: 'Rejoignez-moi sur EASY pour des rencontres spontanées en vrai !' },
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

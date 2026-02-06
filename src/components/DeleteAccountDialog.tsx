@@ -17,20 +17,23 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '@/lib/i18n';
 
 export function DeleteAccountDialog() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
+  const confirmWord = t('deleteAccount.confirmWord');
+
   const handleDelete = async () => {
-    if (!user || confirmText !== 'SUPPRIMER') return;
+    if (!user || confirmText !== confirmWord) return;
 
     setIsLoading(true);
     try {
-      // Delete all user data from tables (RLS will ensure only user's data is deleted)
       await Promise.all([
         supabase.from('active_signals').delete().eq('user_id', user.id),
         supabase.from('interactions').delete().eq('user_id', user.id),
@@ -41,17 +44,14 @@ export function DeleteAccountDialog() {
         supabase.from('user_roles').delete().eq('user_id', user.id),
       ]);
 
-      // Delete profile
       await supabase.from('profiles').delete().eq('id', user.id);
-
-      // Sign out
       await signOut();
       
-      toast.success('Ton compte a été supprimé');
+      toast.success(t('deleteAccount.success'));
       navigate('/');
     } catch (error) {
       console.error('Delete account error:', error);
-      toast.error('Erreur lors de la suppression. Contacte le support.');
+      toast.error(t('deleteAccount.error'));
     } finally {
       setIsLoading(false);
       setIsOpen(false);
@@ -61,11 +61,8 @@ export function DeleteAccountDialog() {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button
-          variant="destructive"
-          className="w-full h-12 rounded-xl"
-        >
-          Supprimer mon compte
+        <Button variant="destructive" className="w-full h-12 rounded-xl">
+          {t('deleteAccount.button')}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="bg-background border-border max-w-sm mx-4">
@@ -76,23 +73,19 @@ export function DeleteAccountDialog() {
             </div>
           </div>
           <AlertDialogTitle className="text-center">
-            Supprimer ton compte ?
+            {t('deleteAccount.title')}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-center">
-            Cette action est <strong className="text-foreground">irréversible</strong>. 
-            Toutes tes données seront définitivement supprimées : profil, statistiques, 
-            historique d'interactions, feedbacks.
+          <AlertDialogDescription className="text-center" asChild>
+            <div dangerouslySetInnerHTML={{ __html: t('deleteAccount.description') }} />
           </AlertDialogDescription>
         </AlertDialogHeader>
         
         <div className="py-4">
-          <label className="text-sm text-muted-foreground block mb-2">
-            Tape <span className="font-mono font-bold text-foreground">SUPPRIMER</span> pour confirmer
-          </label>
+          <label className="text-sm text-muted-foreground block mb-2" dangerouslySetInnerHTML={{ __html: t('deleteAccount.confirmLabel') }} />
           <Input
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value.toUpperCase())}
-            placeholder="SUPPRIMER"
+            placeholder={confirmWord}
             className="bg-muted border-border text-foreground"
           />
         </div>
@@ -100,17 +93,17 @@ export function DeleteAccountDialog() {
         <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
           <AlertDialogAction
             onClick={handleDelete}
-            disabled={isLoading || confirmText !== 'SUPPRIMER'}
+            disabled={isLoading || confirmText !== confirmWord}
             className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              'Supprimer définitivement'
+              t('deleteAccount.confirmAction')
             )}
           </AlertDialogAction>
           <AlertDialogCancel className="w-full">
-            Annuler
+            {t('cancel')}
           </AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
