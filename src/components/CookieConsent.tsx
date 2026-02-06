@@ -40,7 +40,7 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
   if (!showBanner) return null;
 
   return (
-    <div ref={ref} className="fixed bottom-24 left-4 right-4 z-40 animate-slide-up sm:left-auto sm:right-6 sm:max-w-sm">
+    <div ref={ref} className="fixed bottom-20 left-4 right-4 z-50 animate-slide-up sm:left-auto sm:right-6 sm:max-w-sm">
       <div className="glass-strong rounded-2xl p-4 shadow-xl border border-border bg-card">
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
