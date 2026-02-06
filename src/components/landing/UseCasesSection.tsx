@@ -1,14 +1,16 @@
+import { BookOpen, Dumbbell, Coffee, Laptop } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
+import { type LucideIcon } from 'lucide-react';
 
 export function UseCasesSection() {
   const { t } = useTranslation();
 
-  const useCases = [
-    { emoji: '📚', place: t('landing.library'), action: t('landing.studyTogether') },
-    { emoji: '🏋️', place: t('landing.gym'), action: t('landing.trainTogether') },
-    { emoji: '☕', place: t('landing.cafe'), action: t('landing.chat') },
-    { emoji: '💻', place: t('landing.coworking'), action: t('landing.brainstorm') },
+  const useCases: { icon: LucideIcon; place: string; action: string }[] = [
+    { icon: BookOpen, place: t('landing.library'), action: t('landing.studyTogether') },
+    { icon: Dumbbell, place: t('landing.gym'), action: t('landing.trainTogether') },
+    { icon: Coffee, place: t('landing.cafe'), action: t('landing.chat') },
+    { icon: Laptop, place: t('landing.coworking'), action: t('landing.brainstorm') },
   ];
 
   return (
@@ -24,7 +26,9 @@ export function UseCasesSection() {
           {useCases.map((item, i) => (
             <RevealText key={i} delay={i * 0.1}>
               <div className="p-6 rounded-2xl glass text-center hover:border-coral/30 border border-transparent transition-all duration-300">
-                <span className="text-4xl mb-3 block">{item.emoji}</span>
+                <div className="w-12 h-12 rounded-xl bg-coral/10 flex items-center justify-center mx-auto mb-3">
+                  <item.icon className="h-6 w-6 text-coral" />
+                </div>
                 <p className="font-bold text-foreground">{item.place}</p>
                 <p className="text-sm text-muted-foreground">{item.action}</p>
               </div>

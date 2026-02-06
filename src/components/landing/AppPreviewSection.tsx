@@ -19,7 +19,7 @@ export function AppPreviewSection() {
         <RevealText delay={0.2}>
           <div className="relative mx-auto max-w-sm">
             {/* Phone mockup */}
-            <div className="relative bg-card rounded-[3rem] p-3 border-4 border-muted shadow-2xl">
+            <div className="relative bg-card rounded-[3rem] p-3 border-4 border-muted shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)]">
               {/* Phone notch */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-muted rounded-b-2xl z-20" />
               

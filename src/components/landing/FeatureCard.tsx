@@ -1,14 +1,15 @@
 import { motion } from 'framer-motion';
 import { RevealText } from './RevealText';
+import { type LucideIcon } from 'lucide-react';
 
 interface FeatureCardProps {
-  icon: string;
+  icon: LucideIcon;
   title: string;
   description: string;
   delay?: number;
 }
 
-export function FeatureCard({ icon, title, description, delay = 0 }: FeatureCardProps) {
+export function FeatureCard({ icon: Icon, title, description, delay = 0 }: FeatureCardProps) {
   return (
     <RevealText delay={delay}>
       <motion.div 
@@ -18,7 +19,9 @@ export function FeatureCard({ icon, title, description, delay = 0 }: FeatureCard
       >
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-coral/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="relative z-10">
-          <span className="text-4xl mb-4 block">{icon}</span>
+          <div className="w-12 h-12 rounded-xl bg-coral/10 flex items-center justify-center mb-4">
+            <Icon className="h-6 w-6 text-coral" />
+          </div>
           <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
         </div>
