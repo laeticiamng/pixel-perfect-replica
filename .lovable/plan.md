@@ -1,58 +1,32 @@
 
-# Audit Final + Corrections Pre-Publication
+# Audit Beta Testeur -- Resultats et Corrections
 
-## Problemes identifies
+## Methode
+Test reel de la plateforme en mode mobile (390x844) via navigateur : landing page, hero, scroll complet, CTA, changement de langue, et navigation vers /onboarding.
 
-### 1. BUG: ClusterMarker -- Warning React forwardRef (console)
-Le composant `ClusterMarker` est passe comme enfant a un `Marker` de react-map-gl qui tente de lui passer un `ref`, mais le composant n'utilise pas `React.forwardRef()`. Cela genere un warning visible dans la console a chaque chargement de `/map`.
+## Resultats de l'audit (7 points testes)
 
-**Correction** : Convertir `ClusterMarker` en composant avec `forwardRef`.
+### Ce qui fonctionne (pas de correction necessaire)
+1. **Hero "3 secondes"** : Le titre "Vois qui est dispo / pres de toi, maintenant" est immediatement comprehensible. Le badge "NOT a dating app" est visible sans scroller.
+2. **CTA principal** : Le bouton "Creer mon compte" est proéminent (h-16, font-black, gradient coral, animate-pulse-subtle). Un clic navigue correctement vers /onboarding.
+3. **Section Probleme reformulee** : "Tu veux faire du sport, reviser, manger... mais pas seul" -- centree sur les activites, zero ambiguite "dating".
+4. **Section Signal concrete** : "Je suis dispo pour une activite" remplace l'ancien "ouvert a l'interaction".
+5. **Cas d'usage** : Bibliotheque, salle de sport, cafe, coworking -- clairs avec emojis.
+6. **Toggle langue FR/EN** : Fonctionne, les deux versions sont coherentes.
+7. **Footer et liens legaux** : Visibles et fonctionnels.
 
-### 2. UX: Formulation "dating app" dans la section Probleme
-La phrase `landing.youWantToMeet` = "Tu veux rencontrer quelqu'un" est interpretee comme une appli de rencontre amoureuse. Les beta testeurs ont confirme cette confusion. Le badge "NOT a dating app" est present mais la section Problem en dessous re-cree la confusion.
+### Problemes identifies
 
-**Correction** : Reformuler pour parler d'activites et non de "rencontrer quelqu'un".
-- FR: "Tu veux faire du sport, reviser, manger... mais pas seul."
-- EN: "You want to work out, study, eat... but not alone."
-- Reformuler aussi `butYouNeverKnow` et `wantsToBeApproached` pour rester sur le theme activites.
+| # | Severite | Description | Correction |
+|---|----------|-------------|------------|
+| 1 | Faible | Le cookie banner apparait apres 2s et peut temporairement masquer le scroll indicator en bas du hero sur mobile. Pas de blocage du CTA. | Aucune correction necessaire -- le CTA est au centre de l'ecran, pas en bas. |
 
-### 3. UX: Section Signal -- "ouvert a l'interaction" reste vague
-La phrase "Je suis ouvert a l'interaction" ne dit pas concretement ce que fait l'app.
+## Conclusion
 
-**Correction** : Reformuler pour etre concret :
-- FR: "Je suis dispo pour une activite"
-- EN: "I'm available for an activity"
+**Zero correction supplementaire necessaire.** La plateforme a deja integre toutes les ameliorations du plan precedent :
+- ClusterMarker forwardRef (bug console resolu)
+- Wording "activite" au lieu de "dating" (5 cles i18n mises a jour)
+- Suppression `motivationGroups` (cleanup)
+- Tests mis a jour
 
-### 4. CLEANUP: Traduction `motivationGroups` inutilisee
-La cle `motivationGroups` contient "amour..." mais n'est utilisee nulle part dans le code. A supprimer pour eviter toute confusion future.
-
-### 5. UX: Le titre principal "Vois qui est ouvert a l'interaction" reste abstrait
-Pour un utilisateur qui scanne en 3 secondes, "ouvert a l'interaction" ne communique pas assez clairement.
-
-**Correction** : Reformuler en :
-- FR: "Vois qui est dispo" / "pres de toi, maintenant."
-- EN: "See who's available" / "near you, right now."
-
----
-
-## Details techniques
-
-### Fichiers modifies
-
-1. **`src/components/map/ClusterMarker.tsx`**
-   - Wrapper avec `React.forwardRef` pour eliminer le warning console
-
-2. **`src/lib/i18n/translations.ts`**
-   - `landing.seeWhoIsOpen` : "See who's" / "Vois qui est"
-   - `landing.openToInteract` : "available near you." / "dispo pres de toi."
-   - `landing.youWantToMeet` : "You want to work out, study, eat..." / "Tu veux faire du sport, reviser, manger..."
-   - `landing.butYouNeverKnow` : "But you never know who's up for it around you." / "Mais tu ne sais jamais qui est partant autour de toi."
-   - `landing.wantsToBeApproached` : "EASY shows you who is." / "EASY te le montre."
-   - `landing.iAmOpenToInteract` : "I'm available for an activity" / "Je suis dispo pour une activite"
-   - Supprimer `landing.motivationGroups` (inutilise)
-
-3. **`src/test/LandingPage.test.tsx`**
-   - Mettre a jour les assertions pour correspondre aux nouveaux textes FR
-
-### Aucun changement backend
-Tous les correctifs sont frontend uniquement (wording + forwardRef).
+La plateforme est **prete a publier** en l'etat.
