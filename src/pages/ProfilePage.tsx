@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
+import { APP_VERSION } from '@/lib/constants';
 import toast from 'react-hot-toast';
 
 interface MenuItem {
@@ -197,7 +198,7 @@ export default function ProfilePage() {
           to="/changelog" 
           className="block text-center text-xs text-muted-foreground py-4 font-medium hover:text-coral transition-colors"
         >
-          EASY v1.7.0 — Changelog
+          EASY v{APP_VERSION} — Changelog
         </Link>
       </div>
 

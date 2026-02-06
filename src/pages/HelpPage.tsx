@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
+import { APP_VERSION } from '@/lib/constants';
 
 export default function HelpPage() {
   const navigate = useNavigate();
@@ -223,7 +224,7 @@ export default function HelpPage() {
           }}
         >
           <Link to="/changelog" className="text-xs text-muted-foreground hover:text-coral transition-colors font-medium">
-            EASY v1.6.5
+            EASY v{APP_VERSION}
           </Link>
           <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>
