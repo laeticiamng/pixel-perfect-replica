@@ -65,6 +65,7 @@ export const translations = {
     enterCredentials: { en: 'Enter your credentials', fr: 'Entre tes identifiants' },
     fillInfo: { en: 'Fill in this info to get started', fr: 'Remplis ces infos pour commencer' },
     continueWithGoogle: { en: 'Continue with Google', fr: 'Continuer avec Google' },
+    continueWithApple: { en: 'Continue with Apple', fr: 'Continuer avec Apple' },
     welcome: { en: 'Welcome!', fr: 'Bienvenue !' },
     accountCreated: { en: 'Account created successfully!', fr: 'Compte créé avec succès !' },
     invalidCredentials: { en: 'Invalid email or password', fr: 'Email ou mot de passe incorrect' },
@@ -422,6 +423,15 @@ export const translations = {
     suggestedIcebreaker: { en: 'Suggested icebreaker', fr: 'Icebreaker suggéré' },
     premium: { en: 'Premium', fr: 'Premium' },
     version: { en: 'Version', fr: 'Version' },
+  },
+
+  // Cookies consent
+  cookies: {
+    title: { en: 'Cookies & data', fr: 'Cookies & données' },
+    description: { en: 'EASY uses cookies to improve your experience and analyze app usage. Your location is never stored without your consent.', fr: 'EASY utilise des cookies pour améliorer ton expérience et analyser l\'utilisation de l\'app. Ta position n\'est jamais stockée sans ton consentement.' },
+    accept: { en: 'Accept', fr: 'Accepter' },
+    decline: { en: 'Decline', fr: 'Refuser' },
+    learnMore: { en: 'Learn more about our privacy policy', fr: 'En savoir plus sur notre politique de confidentialité' },
   },
 } as const;
 

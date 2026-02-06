@@ -18,6 +18,49 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.7.0',
+    date: '2026-02-06',
+    sections: [
+      {
+        type: 'new',
+        items: [
+          'Connexion Apple Sign-In',
+          'Refactorisation complète du code (composants modulaires)',
+          'Audit UX et corrections de bugs',
+        ],
+      },
+      {
+        type: 'improved',
+        items: [
+          'Landing page refactorisée en 12 composants',
+          'SessionChat optimisé avec hook dédié',
+          'Traductions FR/EN complètes (bannière cookies, Apple)',
+        ],
+      },
+      {
+        type: 'fixed',
+        items: [
+          'Bouton Apple affichait une clé de traduction',
+          'Incohérence de numéro de version',
+          'Bannière cookies non traduite',
+        ],
+      },
+    ],
+  },
+  {
+    version: '1.6.5',
+    date: '2026-02-04',
+    sections: [
+      {
+        type: 'improved',
+        items: [
+          'Optimisations de performance',
+          'Amélioration de la stabilité',
+        ],
+      },
+    ],
+  },
+  {
     version: '1.3.0',
     date: '2026-01-30',
     sections: [
