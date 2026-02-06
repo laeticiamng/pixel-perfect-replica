@@ -50,6 +50,7 @@ export interface SessionFilters {
 
 export function useBinomeSessions() {
   const { user } = useAuth();
+  const locale = typeof window !== 'undefined' ? (document.documentElement.lang || 'en') : 'en';
   const [sessions, setSessions] = useState<ScheduledSession[]>([]);
   const [mySessions, setMySessions] = useState<ScheduledSession[]>([]);
   const [myParticipations, setMyParticipations] = useState<ScheduledSession[]>([]);
@@ -155,7 +156,7 @@ export function useBinomeSessions() {
   // Create a new session
   const createSession = async (input: CreateSessionInput): Promise<boolean> => {
     if (!user) {
-      toast.error('Vous devez être connecté');
+      toast.error(locale === 'fr' ? 'Vous devez être connecté' : 'You must be logged in');
       return false;
     }
 
@@ -181,7 +182,7 @@ export function useBinomeSessions() {
       // Update user reliability via secure RPC (increments instead of replacing)
       await supabase.rpc('increment_reliability_sessions_created', { p_user_id: user.id });
 
-      toast.success('Créneau créé avec succès !');
+      toast.success(locale === 'fr' ? 'Créneau créé avec succès !' : 'Slot created successfully!');
       await fetchMySessions();
       return true;
     } catch (err) {
@@ -195,7 +196,7 @@ export function useBinomeSessions() {
   // Join a session
   const joinSession = async (sessionId: string): Promise<boolean> => {
     if (!user) {
-      toast.error('Vous devez être connecté');
+      toast.error(locale === 'fr' ? 'Vous devez être connecté' : 'You must be logged in');
       return false;
     }
 
@@ -206,7 +207,7 @@ export function useBinomeSessions() {
 
       if (rpcError) throw rpcError;
 
-      toast.success('Vous avez rejoint la session !');
+      toast.success(locale === 'fr' ? 'Vous avez rejoint la session !' : 'You joined the session!');
       await fetchMyParticipations();
       return true;
     } catch (err) {
@@ -228,7 +229,7 @@ export function useBinomeSessions() {
 
       if (rpcError) throw rpcError;
 
-      toast.success('Vous avez quitté la session');
+      toast.success(locale === 'fr' ? 'Vous avez quitté la session' : 'You left the session');
       await fetchMyParticipations();
       return true;
     } catch (err) {
@@ -251,11 +252,11 @@ export function useBinomeSessions() {
 
       if (updateError) throw updateError;
 
-      toast.success('Session annulée');
+      toast.success(locale === 'fr' ? 'Session annulée' : 'Session cancelled');
       await fetchMySessions();
       return true;
     } catch (err) {
-      toast.error('Erreur lors de l\'annulation');
+      toast.error(locale === 'fr' ? 'Erreur lors de l\'annulation' : 'Error cancelling');
       return false;
     }
   };

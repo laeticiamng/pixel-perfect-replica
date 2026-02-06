@@ -7,7 +7,7 @@ import { PageLayout } from '@/components/PageLayout';
 import { QRCodeScanner } from '@/components/events';
 import { useEvents } from '@/hooks/useEvents';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
 
 export default function EventCheckinPage() {
@@ -15,6 +15,7 @@ export default function EventCheckinPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { checkInToEvent, isParticipating } = useEvents();
   
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -23,13 +24,13 @@ export default function EventCheckinPage() {
   
   const secret = searchParams.get('secret');
 
-  // Auto check-in if we have the secret in URL
   useEffect(() => {
     if (eventId && secret && user && status === 'idle') {
       handleCheckin(secret);
     }
   }, [eventId, secret, user, status]);
 
+  // SEC-05 FIX: Use secure RPC instead of direct UPDATE
   const handleCheckin = async (qrSecret: string) => {
     if (!eventId || !user) return;
     
@@ -37,56 +38,34 @@ export default function EventCheckinPage() {
     setErrorMessage(null);
 
     try {
-      // Verify the secret matches the event
-      const { data: event, error: eventError } = await supabase
-        .rpc('get_event_for_user', { p_event_id: eventId });
-
-      if (eventError || !event || event.length === 0) {
-        throw new Error('Événement non trouvé');
-      }
-
-      // Check if user is a participant
       if (!isParticipating(eventId)) {
-        throw new Error('Tu dois d\'abord rejoindre l\'événement');
+        throw new Error(t('eventCheckin.mustJoinFirst'));
       }
 
-      // Verify the QR code secret (extract from URL if it's a full URL)
       const urlMatch = qrSecret.match(/secret=([^&]+)/);
       const extractedSecret = urlMatch ? urlMatch[1] : qrSecret;
 
-      // We can't check the secret directly since it's hidden from non-organizers
-      // The backend RLS will validate this
+      const { error } = await checkInToEvent(eventId, extractedSecret);
 
-      // Update the participant's check-in status
-      const { error: checkinError } = await supabase
-        .from('event_participants')
-        .update({
-          checked_in: true,
-          checked_in_at: new Date().toISOString(),
-        })
-        .eq('event_id', eventId)
-        .eq('user_id', user.id);
-
-      if (checkinError) {
-        throw new Error('Erreur lors du check-in');
+      if (error) {
+        throw error;
       }
 
       setStatus('success');
-      toast.success('Check-in réussi !');
+      toast.success(t('eventCheckin.success'));
       
-      // Redirect to event page after success
       setTimeout(() => {
         navigate(`/events/${eventId}`);
       }, 2000);
     } catch (err) {
       setStatus('error');
-      setErrorMessage(err instanceof Error ? err.message : 'Erreur inconnue');
-      toast.error(err instanceof Error ? err.message : 'Erreur lors du check-in');
+      const msg = err instanceof Error ? err.message : t('eventCheckin.checkinError');
+      setErrorMessage(msg);
+      toast.error(msg);
     }
   };
 
   const handleScanResult = async (data: string) => {
-    // Extract event ID and secret from scanned URL
     const urlMatch = data.match(/events\/([^/]+)\/checkin\?secret=([^&]+)/);
     
     if (urlMatch) {
@@ -94,12 +73,12 @@ export default function EventCheckinPage() {
       const scannedSecret = urlMatch[2];
       
       if (scannedEventId !== eventId) {
-        throw new Error('Ce QR code n\'est pas pour cet événement');
+        throw new Error(t('eventCheckin.wrongEvent'));
       }
       
       await handleCheckin(scannedSecret);
     } else {
-      throw new Error('QR code invalide');
+      throw new Error(t('eventCheckin.invalidQr'));
     }
   };
 
@@ -109,10 +88,8 @@ export default function EventCheckinPage() {
         <div className="flex items-center justify-center min-h-screen">
           <Card className="glass border-0 m-4">
             <CardContent className="text-center py-8">
-              <p className="text-muted-foreground mb-4">Connecte-toi pour faire le check-in</p>
-              <Button onClick={() => navigate('/')} className="bg-coral hover:bg-coral-dark">
-                Se connecter
-              </Button>
+              <p className="text-muted-foreground mb-4">{t('eventCheckin.loginRequired')}</p>
+              <Button onClick={() => navigate('/')} className="bg-coral hover:bg-coral-dark">{t('eventCheckin.login')}</Button>
             </CardContent>
           </Card>
         </div>
@@ -124,14 +101,10 @@ export default function EventCheckinPage() {
     <PageLayout className="pb-24 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => navigate('/events')}
-            className="p-2 rounded-lg hover:bg-muted transition-colors"
-            aria-label="Retour"
-          >
+          <button onClick={() => navigate('/events')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
-          <h1 className="text-xl font-bold text-foreground">Check-in</h1>
+          <h1 className="text-xl font-bold text-foreground">{t('eventCheckin.title')}</h1>
         </div>
       </header>
 
@@ -139,19 +112,18 @@ export default function EventCheckinPage() {
         <Card className="glass border-0 w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle>
-              {status === 'loading' && 'Vérification...'}
-              {status === 'success' && 'Check-in réussi !'}
-              {status === 'error' && 'Erreur'}
-              {status === 'idle' && 'Check-in événement'}
+              {status === 'loading' && t('eventCheckin.verifying')}
+              {status === 'success' && t('eventCheckin.success')}
+              {status === 'error' && t('eventCheckin.error')}
+              {status === 'idle' && t('eventCheckin.eventCheckin')}
             </CardTitle>
             <CardDescription>
-              {status === 'idle' && !secret && 'Scanne le QR code de l\'organisateur'}
-              {status === 'idle' && secret && 'Vérification en cours...'}
+              {status === 'idle' && !secret && t('eventCheckin.scanQrCode')}
+              {status === 'idle' && secret && t('eventCheckin.verifyingInProgress')}
             </CardDescription>
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {/* Status Display */}
             <div className="flex justify-center">
               {status === 'loading' && (
                 <div className="w-24 h-24 rounded-full bg-coral/20 flex items-center justify-center">
@@ -175,56 +147,31 @@ export default function EventCheckinPage() {
               )}
             </div>
 
-            {/* Error Message */}
             {status === 'error' && errorMessage && (
               <p className="text-center text-destructive">{errorMessage}</p>
             )}
 
-            {/* Success Message */}
             {status === 'success' && (
-              <p className="text-center text-signal-green font-semibold">
-                Ta présence est confirmée ! 🎉
-              </p>
+              <p className="text-center text-signal-green font-semibold">{t('eventCheckin.presenceConfirmed')}</p>
             )}
 
-            {/* Actions */}
             {status === 'idle' && !secret && (
-              <Button
-                onClick={() => setShowScanner(true)}
-                className="w-full h-14 bg-coral hover:bg-coral-dark gap-2 rounded-xl"
-              >
-                <Camera className="h-5 w-5" />
-                Scanner le QR Code
+              <Button onClick={() => setShowScanner(true)} className="w-full h-14 bg-coral hover:bg-coral-dark gap-2 rounded-xl">
+                <Camera className="h-5 w-5" />{t('eventCheckin.scanButton')}
               </Button>
             )}
 
             {status === 'error' && (
               <div className="space-y-3">
-                <Button
-                  onClick={() => setShowScanner(true)}
-                  className="w-full bg-coral hover:bg-coral-dark"
-                >
-                  Réessayer avec scanner
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate(`/events/${eventId}`)}
-                  className="w-full"
-                >
-                  Retour à l'événement
-                </Button>
+                <Button onClick={() => setShowScanner(true)} className="w-full bg-coral hover:bg-coral-dark">{t('eventCheckin.retryWithScanner')}</Button>
+                <Button variant="outline" onClick={() => navigate(`/events/${eventId}`)} className="w-full">{t('eventCheckin.backToEvent')}</Button>
               </div>
             )}
           </CardContent>
         </Card>
       </div>
 
-      {/* QR Scanner Modal */}
-      <QRCodeScanner
-        isOpen={showScanner}
-        onClose={() => setShowScanner(false)}
-        onScan={handleScanResult}
-      />
+      <QRCodeScanner isOpen={showScanner} onClose={() => setShowScanner(false)} onScan={handleScanResult} />
     </PageLayout>
   );
 }
