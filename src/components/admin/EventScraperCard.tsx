@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { useEventScraper } from '@/hooks/useEventScraper';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 
 interface ScrapedEvent {
   id: string;

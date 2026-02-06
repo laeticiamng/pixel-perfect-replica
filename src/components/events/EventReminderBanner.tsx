@@ -1,8 +1,9 @@
 import { Bell, Clock } from 'lucide-react';
 import { format, differenceInMinutes, differenceInHours } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, enUS } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Event } from '@/hooks/useEvents';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface EventReminderBannerProps {
   event: Event;
@@ -10,29 +11,29 @@ interface EventReminderBannerProps {
 }
 
 export function EventReminderBanner({ event, className }: EventReminderBannerProps) {
+  const { t, locale } = useTranslation();
+  const dateFnsLocale = locale === 'fr' ? fr : enUS;
   const now = new Date();
   const startDate = new Date(event.starts_at);
   const minutesUntilStart = differenceInMinutes(startDate, now);
   const hoursUntilStart = differenceInHours(startDate, now);
   
-  // Don't show if event has started or is more than 24h away
   if (minutesUntilStart < 0 || hoursUntilStart > 24) {
     return null;
   }
   
-  // Determine urgency level
   let urgency: 'low' | 'medium' | 'high' = 'low';
   let message = '';
   
   if (minutesUntilStart <= 15) {
     urgency = 'high';
-    message = `Commence dans ${minutesUntilStart} min !`;
+    message = t('eventReminder.startsInMin').replace('{min}', String(minutesUntilStart));
   } else if (minutesUntilStart <= 60) {
     urgency = 'medium';
-    message = `Commence dans ${minutesUntilStart} min`;
+    message = t('eventReminder.startsInMinCalm').replace('{min}', String(minutesUntilStart));
   } else {
     urgency = 'low';
-    message = `Commence dans ${hoursUntilStart}h`;
+    message = t('eventReminder.startsInHours').replace('{hours}', String(hoursUntilStart));
   }
   
   const urgencyStyles = {
@@ -63,13 +64,13 @@ export function EventReminderBanner({ event, className }: EventReminderBannerPro
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold truncate">{event.name}</p>
         <p className="text-xs opacity-80">
-          {message} • {format(startDate, 'HH:mm', { locale: fr })}
+          {message} • {format(startDate, 'HH:mm', { locale: dateFnsLocale })}
         </p>
       </div>
       
       {urgency === 'high' && (
         <span className="text-xs font-bold uppercase tracking-wider">
-          Bientôt !
+          {t('eventReminder.soon')}
         </span>
       )}
     </div>
@@ -87,9 +88,9 @@ export function UpcomingEventsReminder({
   participatingEventIds, 
   className 
 }: UpcomingEventsReminderProps) {
+  const { t } = useTranslation();
   const now = new Date();
   
-  // Filter to events user is participating in and starting within 24h
   const upcomingEvents = events
     .filter(event => {
       const startDate = new Date(event.starts_at);
@@ -110,7 +111,7 @@ export function UpcomingEventsReminder({
     <div className={cn('space-y-2', className)}>
       <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
         <Bell className="h-3 w-3" />
-        Rappels
+        {t('eventReminder.reminders')}
       </h3>
       {upcomingEvents.map(event => (
         <EventReminderBanner key={event.id} event={event} />
