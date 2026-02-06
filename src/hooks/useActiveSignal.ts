@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { logger } from '@/lib/logger';
 import { generateMockUsers } from '@/utils/mockData';
+import { useTranslation } from '@/lib/i18n';
 
 type SignalType = 'green' | 'yellow' | 'red';
 type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
@@ -32,6 +33,7 @@ interface NearbyUser {
 
 export function useActiveSignal() {
   const { user, isAuthenticated } = useAuth();
+  const { t } = useTranslation();
   const { position } = useLocationStore();
   const [mySignal, setMySignal] = useState<ActiveSignal | null>(null);
   const [nearbyUsers, setNearbyUsers] = useState<NearbyUser[]>([]);
@@ -197,7 +199,7 @@ export function useActiveSignal() {
 
           return {
             id: signal.user_id,
-            firstName: signal.first_name || 'Anonyme',
+            firstName: signal.first_name || t('eventsExtra.anonymous'),
             signal: signal.signal_type as SignalType,
             activity: signal.activity as ActivityType,
             distance,
@@ -271,7 +273,7 @@ export function useActiveSignal() {
 
           return {
             id: signal.user_id,
-            firstName: profile?.first_name || 'Anonyme',
+            firstName: profile?.first_name || t('eventsExtra.anonymous'),
             signal: signal.signal_type as SignalType,
             activity: signal.activity as ActivityType,
             distance,
