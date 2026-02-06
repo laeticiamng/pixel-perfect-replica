@@ -224,7 +224,7 @@ export default function OnboardingPage() {
     switch (step) {
       case 1:
         return (
-          <div className="space-y-6 animate-slide-up" onKeyPress={handleKeyPress}>
+          <form className="space-y-6 animate-slide-up" onSubmit={(e) => { e.preventDefault(); handleContinue(); }}>
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-foreground mb-3">
                 {isLogin ? t('auth.welcomeBack') : t('auth.createAccount')}
@@ -386,7 +386,7 @@ export default function OnboardingPage() {
                 )}
               </Button>
             </div>
-          </div>
+          </form>
         );
         
       case 2:
