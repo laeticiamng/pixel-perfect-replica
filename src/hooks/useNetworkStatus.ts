@@ -1,10 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
+import { translations, getCurrentLocale } from '@/lib/i18n/translations';
 
 interface NetworkStatus {
   isOnline: boolean;
   wasOffline: boolean;
 }
+
+const t = (key: keyof typeof translations.hooks) => {
+  const locale = getCurrentLocale();
+  return translations.hooks[key][locale];
+};
 
 export function useNetworkStatus() {
   const [status, setStatus] = useState<NetworkStatus>({
@@ -15,7 +21,7 @@ export function useNetworkStatus() {
   const handleOnline = useCallback(() => {
     setStatus(prev => {
       if (prev.wasOffline) {
-        toast.success('Connexion rétablie !');
+        toast.success(t('connectionRestored'));
       }
       return { isOnline: true, wasOffline: false };
     });
@@ -23,7 +29,7 @@ export function useNetworkStatus() {
 
   const handleOffline = useCallback(() => {
     setStatus({ isOnline: false, wasOffline: true });
-    toast.error('Pas de connexion internet', {
+    toast.error(t('noInternetConnection'), {
       duration: 5000,
       icon: '📡',
     });
