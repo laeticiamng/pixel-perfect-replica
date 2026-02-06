@@ -1,155 +1,167 @@
 
-# Audit Triple - EASY v1.7.x (Iteration 5)
+
+# Audit Triple - EASY v1.7.x (Iteration 6)
 ## Phase 1 : Technique | Phase 2 : UX | Phase 3 : Beta-testeur
 
 ---
 
 ## PHASE 1 : Audit Technique (Dev Senior)
 
-### TECH-01 : Pages 100% hardcodees en francais (CRITIQUE)
+### TECH-06 : DeleteAccountDialog 100% hardcode en francais (CRITIQUE)
 
-Les 4 audits precedents ont corrige ~20 pages mais les suivantes restent entierement hardcodees :
+**Fichier** : `src/components/DeleteAccountDialog.tsx`
 
-| Page | Textes hardcodes (echantillon) |
-|------|-------------------------------|
-| **FeedbackPage.tsx** | "Choisis une note d'abord !", "Erreur lors de l'envoi", "Merci pour ton feedback !", "Donner un feedback", "Comment trouves-tu EASY ?", "Ton avis nous aide", "Un commentaire ? (optionnel)", "Envoyer mon feedback" |
-| **ReportPage.tsx** | "Bug technique", "Comportement inapproprie", "Contenu offensant", "Autre probleme", "Choisis un type de signalement", "Decris le probleme", "Envoyer le signalement", "Signalement envoye !", "Ton signalement sera traite..." |
-| **InstallPage.tsx** | "Installer EASY", "Application Web Progressive", "Retour a l'application", "Installation reussie !", "Installer EASY maintenant", toutes les instructions iOS/Android/Desktop (~40 textes) |
-| **DiagnosticsPage.tsx** | "Diagnostics", "Statut systeme", "Details systeme", "Latence API", "Aucun log recent", "Erreurs recentes", "Authentification" (dev-only, basse priorite) |
-| **TermsPage.tsx** | Entierement en francais (~500 mots, pas de i18n) |
-| **PrivacyPage.tsx** | Entierement en francais (~800 mots, pas de i18n) |
-| **ChangelogPage.tsx** | Items du changelog hardcodes en francais uniquement |
-| **AdminDashboardPage.tsx** | ~50 textes hardcodes (admin-only, basse priorite) |
+Tous les textes sont en francais sans i18n :
+- Ligne 50 : `'Ton compte a été supprimé'`
+- Ligne 54 : `'Erreur lors de la suppression. Contacte le support.'`
+- Ligne 69 : `'Supprimer mon compte'`
+- Ligne 79 : `'Supprimer ton compte ?'`
+- Ligne 82-84 : Toute la description du dialogue
+- Ligne 90 : `'Tape SUPPRIMER pour confirmer'`
+- Ligne 109 : `'Supprimer définitivement'`
+- Ligne 113 : `'Annuler'`
 
-### TECH-02 : EventsPage textes inline non-i18n (MOYENNE)
+De plus, le texte de confirmation "SUPPRIMER" est hardcode. Un utilisateur anglophone ne sait pas quoi taper. Il faut utiliser "DELETE" en anglais et "SUPPRIMER" en francais.
 
-Dans `EventsPage.tsx`, ~10 textes utilisent `locale === 'fr' ? '...' : '...'` au lieu du systeme `t()` :
-- Ligne 284 : `locale === 'fr' ? 'Filtrer par categorie' : 'Filter by category'`
-- Ligne 293 : `locale === 'fr' ? 'Tous' : 'All'`
-- Ligne 371 : `locale === 'fr' ? 'Categorie' : 'Category'`
-- Ligne 443 : `locale === 'fr' ? 'Aucun evenement...' : 'No upcoming events'`
-- Lignes 113-125 : toasts avec ternaires locaux
+De plus, le composant utilise le **tutoiement** : "Ton compte", "Supprimer ton compte" (devrait etre vouvoiement).
 
-### TECH-03 : Tutoiement vs Vouvoiement inconsistant (QUALITE)
+### TECH-07 : EmergencyContactsManager 100% hardcode en francais (MOYENNE)
 
-La memoire du projet specifie : "L'application utilise exclusivement le vouvoiement". Pourtant :
-- **FeedbackPage** : "Comment trouves-tu EASY ?", "Ton avis", "Dis-nous"
-- **ReportPage** : "Choisis un type", "Decris le probleme s'il te plait"
-- **InstallPage** : "Clique sur Tester" (DiagnosticsPage)
-- **ChangelogPage** : "Tes stats t'attendent" (StatisticsPage dans changelog items)
+**Fichier** : `src/components/safety/EmergencyContactsManager.tsx`
 
-### TECH-04 : OnboardingPage fallback Apple hardcode (BASSE)
+~15 textes hardcodes :
+- `'Remplis tous les champs'`, `'Maximum 3 contacts d'urgence'`, `'Numéro de téléphone invalide'`
+- `'Erreur lors de l'ajout'`, `'Contact ajouté !'`, `'Erreur lors de la suppression'`
+- `'Contact supprimé'`, `'Contacts d'urgence'`, `'Ces contacts seront alertés en cas d'urgence'`
+- `'Nom du contact'`, `'Numéro de téléphone'`, `'Annuler'`, `'Ajouter'`
+- `'Ajouter un contact d'urgence'`, `'En cas d'urgence, maintiens le bouton...'`
 
-Ligne 65-69 : `t('auth.appleError') || 'Erreur de connexion Apple'` - le fallback est en francais.
+### TECH-08 : MiniChat 100% hardcode en francais (MOYENNE)
 
-### TECH-05 : Trois systemes de toast concurrents (TECHNIQUE)
+**Fichier** : `src/components/social/MiniChat.tsx`
 
-L'application importe simultanement :
-- `react-hot-toast` (utilise dans la majorite des pages)
-- `sonner` (utilise dans AdminDashboardPage)
-- `@radix-ui/react-toast` (composant Toaster importe dans App.tsx)
+- Ligne 69 : `'Chat avec {name}'`
+- Ligne 79 : `'{remaining}/{max} restants'`
+- Ligne 88-89 : `'Envoie un message...'`, `'messages max'`
+- Ligne 115-118 : `formatDistanceToNow` avec `locale: fr` hardcode
+- Ligne 136 : `placeholder="Écris ton message..."`
+- Ligne 144 : `aria-label="Envoyer le message"`
+- Ligne 156 : `'Limite de messages atteinte'`
+- Ligne 159 : `'Continuez la conversation en personne !'`
 
-Les 3 Toasters sont montes en parallele dans `App.tsx` (lignes 262-274). Cela peut creer des conflits de z-index et des doubles notifications.
+### TECH-09 : PublicProfilePreview 100% hardcode en francais (MOYENNE)
+
+**Fichier** : `src/components/profile/PublicProfilePreview.tsx`
+
+- Ligne 16-22 : `activityLabels` hardcodes en francais (`'Réviser'`, `'Manger'`, `'Bosser'`...)
+- Ligne 72 : `'Prévisualiser le profil public'`
+- Ligne 79 : `'Aperçu du profil public'`
+- Ligne 85 : `'Voici ce que les autres utilisateurs voient de ton profil'`
+- Ligne 100 : `'Utilisateur'`
+- Ligne 111 : `'Étudiant vérifié'`
+- Ligne 130-145 : `'Note'`, `'Rencontres'`, `'Actif'`
+- Ligne 152 : `'Activités favorites'`
+- Ligne 164 : `'Les autres ne voient jamais ton email...'`
+
+### TECH-10 : SmartLocationRecommender hardcode en francais (BASSE)
+
+**Fichier** : `src/components/social/SmartLocationRecommender.tsx`
+
+- Ligne 61 : `'Suggestions IA de lieux pour...'`
+- Ligne 69 : `'Recommandations IA - {city}'`
+- Ligne 84 : `'Actualiser les recommandations'`
+- Ligne 94 : `'Analyse en cours...'`
+- Ligne 105 : `'Réessayer'`
+- Ligne 163 : `'Sources :'`
+- Ligne 190 : `'Masquer'`
+
+### TECH-11 : EmptyRadarState textes de partage hardcodes (BASSE)
+
+**Fichier** : `src/components/map/EmptyRadarState.tsx` (lignes 19-20)
+
+Les textes `navigator.share` sont hardcodes en francais :
+- `title: 'EASY - Le premier réseau social 100% réel'`
+- `text: 'Rejoins-moi sur EASY pour des rencontres spontanées en vrai !'`
+
+Le lettre "T" dans le radar (ligne 79) est hardcode au lieu d'utiliser l'initiale de l'utilisateur.
+
+### TECH-12 : AdminDashboardPage entierement hardcode (BASSE, admin-only)
+
+**Fichier** : `src/pages/AdminDashboardPage.tsx`
+
+~50 textes hardcodes en francais. Priorite basse car page admin uniquement.
 
 ---
 
 ## PHASE 2 : Audit UX (UX Designer Senior)
 
-### UX-03 : Absence de lien vers les Favoris depuis la page Events
+### UX-11 : Dialogue de suppression de compte inaccessible aux anglophones
 
-La page `/events/favorites` existe mais n'est accessible depuis aucun element de navigation visible sur `EventsPage.tsx`. Un utilisateur ne peut pas decouvrir cette fonctionnalite.
+Un utilisateur anglophone doit taper "SUPPRIMER" pour supprimer son compte -- un mot francais qu'il ne connait pas. Le dialogue entier est en francais. C'est un blocage fonctionnel pour tout utilisateur non-francophone.
 
-**Correction** : Ajouter un bouton/lien "Mes favoris" dans le header ou les filtres de la page Events.
+### UX-12 : Mini-chat non traduit casse l'experience de conversation
 
-### UX-04 : Changelog non traduit = experience cassee en anglais
+Apres avoir rencontre quelqu'un via le radar, le mini-chat affiche des textes en francais (`'Écris ton message...'`, `'restants'`). Les timestamps (`formatDistanceToNow`) sont exclusivement en francais.
 
-Un utilisateur en mode anglais voit tous les items du changelog en francais. Les labels "Nouveautes/Ameliorations/Corrections/Securite" basculent mais pas les items eux-memes.
+### UX-13 : Preview de profil public non traduit
 
-**Correction** : Ajouter les traductions anglaises des items du changelog, ou au minimum un message indiquant que le changelog est en francais uniquement.
+La preview montrant "ce que les autres voient" de votre profil est integralement en francais, avec des labels d'activites hardcodes (`'Réviser'`, `'Bosser'`). Cela ne reflete pas l'experience reelle si l'utilisateur est en mode anglais.
 
-### UX-05 : Pages legales non traduisibles
+### UX-14 : Contacts d'urgence non traduits
 
-`TermsPage.tsx` et `PrivacyPage.tsx` sont entierement en francais sans i18n. Un utilisateur anglophone n'a pas acces aux conditions dans sa langue.
+La fonctionnalite de securite critique (contacts d'urgence) est entierement en francais. Un utilisateur anglophone ne peut pas comprendre comment ajouter un contact d'urgence.
 
-### UX-06 : Formulaire de feedback tutoie l'utilisateur
+### UX-15 : Partage du radar envoie un texte francais
 
-L'ensemble de la page Feedback utilise le tutoiement ("Comment trouves-tu EASY ?", "Ton avis"), en contradiction avec le standard de vouvoiement de l'application.
-
-### UX-07 : Formulaire de rapport tutoie l'utilisateur
-
-Idem pour ReportPage : "Choisis", "Decris le probleme s'il te plait", "Ton signalement".
-
-### UX-08 : Page Installation non traduite
-
-`InstallPage.tsx` contient ~40 textes en francais non-traduisibles, incluant les instructions specifiques iOS/Android/Desktop. Un utilisateur anglophone ne peut pas comprendre les etapes d'installation.
-
-### UX-09 : Placeholders de formulaire en francais dans EventsPage
-
-Les inputs `placeholder="Soiree de lancement..."` et `placeholder="Cafe Central, BU..."` restent en francais meme en mode anglais.
-
-### UX-10 : Navigation incertaine depuis EventDetailPage
-
-Le bouton retour navigue toujours vers `/events`, meme si l'utilisateur est arrive depuis les favoris ou un lien direct. Utiliser `navigate(-1)` serait plus naturel.
+Quand un utilisateur anglophone clique "Invite friends" sur le radar vide, le texte partage est en francais : "Rejoins-moi sur EASY pour des rencontres spontanées en vrai !"
 
 ---
 
 ## PHASE 3 : Audit Beta-testeur (Utilisateur Final)
 
-### BETA-01 : "J'ai change la langue en anglais mais certaines pages restent en francais"
+### BETA-06 : "J'ai voulu supprimer mon compte mais je ne comprends pas ce qu'il faut taper"
 
-Les pages Feedback, Report, Install, Changelog, Terms, Privacy sont integralement en francais, cassant l'experience multilingue.
+Un utilisateur anglophone voit le dialogue de suppression entierement en francais avec "Tape SUPPRIMER pour confirmer". Il ne sait pas quoi ecrire.
 
-### BETA-02 : "L'app me tutoie puis me vouvoie -- c'est bizarre"
+### BETA-07 : "Apres avoir rencontre quelqu'un, le chat est en francais meme si j'ai choisi anglais"
 
-La page d'installation, les parametres et les pages legales utilisent le vouvoiement, mais Feedback et Report utilisent le tutoiement. L'experience est incoherente.
+Le mini-chat affiche des timestamps, placeholders et messages systeme en francais.
 
-### BETA-03 : "Comment je retrouve mes evenements favoris ?"
+### BETA-08 : "Mon profil public montre des activites en francais alors que je suis en anglais"
 
-Pas de lien visible vers la page des favoris depuis la page Events.
+Les badges d'activite dans la preview ("Réviser", "Bosser") restent en francais.
 
-### BETA-04 : "Le changelog est en francais meme si j'ai choisi anglais"
+### BETA-09 : "Je ne comprends pas comment ajouter un contact d'urgence -- tout est en francais"
 
-Les titres des sections changent mais pas les items.
-
-### BETA-05 : "J'ai 3 notifications en meme temps pour la meme action"
-
-Les 3 systemes de toast peuvent declencher des notifications superflues.
+Les instructions et formulaires des contacts d'urgence sont integralement en francais.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : i18n -- FeedbackPage + ReportPage (priorite haute)
+### Etape 1 : i18n -- DeleteAccountDialog (priorite haute)
 
-Ajouter ~50 cles dans translations.ts (blocs `feedback.*` et `report.*`). Corriger le tutoiement vers le vouvoiement. Refactoriser les 2 pages pour utiliser `t()`.
+Ajouter ~15 cles dans `translations.ts` (bloc `deleteAccount.*`). Refactoriser le composant pour utiliser `t()`. Le mot de confirmation doit etre dynamique : `DELETE` en EN, `SUPPRIMER` en FR. Passer au vouvoiement.
 
-### Etape 2 : i18n -- InstallPage (priorite haute)
+### Etape 2 : i18n -- EmergencyContactsManager (priorite haute)
 
-Ajouter ~45 cles dans translations.ts (bloc `install.*`). Refactoriser la page pour utiliser `t()`. Passer au vouvoiement.
+Ajouter ~15 cles dans `translations.ts` (bloc `emergency.*`). Refactoriser le composant pour utiliser `t()`.
 
-### Etape 3 : i18n -- EventsPage inline ternaries
+### Etape 3 : i18n -- MiniChat (priorite haute)
 
-Remplacer les ~10 ternaires `locale === 'fr' ?` par des appels `t()` avec les cles correspondantes dans `events.*`.
+Ajouter ~10 cles dans `translations.ts` (bloc `miniChat.*`). Refactoriser le composant avec locale dynamique pour `date-fns`.
 
-### Etape 4 : i18n -- TermsPage + PrivacyPage
+### Etape 4 : i18n -- PublicProfilePreview (priorite moyenne)
 
-Ajouter les blocs `terms.*` et `privacy.*` (FR + EN) dans translations.ts. Refactoriser les 2 pages.
+Ajouter ~10 cles dans `translations.ts` (bloc `publicProfile.*`). Remplacer `activityLabels` hardcodes par les cles de traduction existantes `activities.*`. Passer au vouvoiement.
 
-### Etape 5 : i18n -- ChangelogPage items
+### Etape 5 : i18n -- SmartLocationRecommender (priorite basse)
 
-Ajouter un champ `itemsEn` aux entries du changelog pour afficher les items dans la langue de l'utilisateur.
+Ajouter ~8 cles dans `translations.ts` (bloc `locationRecommender.*`).
 
-### Etape 6 : UX -- Lien Favoris depuis EventsPage
+### Etape 6 : EmptyRadarState -- Texte de partage i18n
 
-Ajouter un bouton "Mes favoris" (icone coeur) a cote du bouton Filtres dans le header de la page Events.
-
-### Etape 7 : Nettoyage -- Unifier les toasts
-
-Supprimer les imports `sonner` dans AdminDashboardPage et le `Toaster`/`Sonner` de App.tsx, ne garder que `react-hot-toast` partout.
-
-### Etape 8 : Correction tutoiement residuel
-
-Passer au vouvoiement dans FeedbackPage, ReportPage, InstallPage et DiagnosticsPage.
+Remplacer les textes `navigator.share` par des appels `t()`.
 
 ---
 
@@ -157,24 +169,19 @@ Passer au vouvoiement dans FeedbackPage, ReportPage, InstallPage et DiagnosticsP
 
 | Fichier | Changements |
 |---------|------------|
-| `src/lib/i18n/translations.ts` | +250 cles (feedback, report, install, terms, privacy, changelog, events extras) |
-| `src/pages/FeedbackPage.tsx` | i18n complet + vouvoiement |
-| `src/pages/ReportPage.tsx` | i18n complet + vouvoiement |
-| `src/pages/InstallPage.tsx` | i18n complet + vouvoiement |
-| `src/pages/EventsPage.tsx` | Remplacement ternaires par t() + lien favoris |
-| `src/pages/TermsPage.tsx` | i18n complet |
-| `src/pages/PrivacyPage.tsx` | i18n complet |
-| `src/pages/ChangelogPage.tsx` | Items bilingues |
-| `src/pages/DiagnosticsPage.tsx` | i18n basique + vouvoiement |
-| `src/pages/AdminDashboardPage.tsx` | Remplacement toast sonner par react-hot-toast |
-| `src/App.tsx` | Suppression Toaster et Sonner redondants |
-| `src/pages/OnboardingPage.tsx` | Suppression fallback Apple hardcode |
+| `src/lib/i18n/translations.ts` | +60 cles (deleteAccount, emergency, miniChat, publicProfile, locationRecommender, share) |
+| `src/components/DeleteAccountDialog.tsx` | i18n complet + vouvoiement + confirmation mot dynamique |
+| `src/components/safety/EmergencyContactsManager.tsx` | i18n complet |
+| `src/components/social/MiniChat.tsx` | i18n complet + locale dynamique date-fns |
+| `src/components/profile/PublicProfilePreview.tsx` | i18n complet + vouvoiement + utiliser `t('activities.*')` |
+| `src/components/social/SmartLocationRecommender.tsx` | i18n complet |
+| `src/components/map/EmptyRadarState.tsx` | i18n texte de partage |
 
 ---
 
 ## Estimation
 
-- i18n (8 pages + 250 cles) : volume principal
-- UX (lien favoris + nettoyage toasts) : 2 fichiers
-- Qualite (vouvoiement) : inclus dans les refactorisations i18n
-- Total : ~12 fichiers modifies, ~800 lignes ajoutees/modifiees
+- i18n composants critiques (DeleteAccountDialog, EmergencyContacts, MiniChat) : 3 fichiers prioritaires
+- i18n composants secondaires (PublicProfilePreview, SmartLocationRecommender, EmptyRadarState) : 3 fichiers
+- Total : ~60 nouvelles cles, ~7 fichiers modifies, ~300 lignes ajoutees/modifiees
+
