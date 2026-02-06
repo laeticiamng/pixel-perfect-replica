@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { MapPin, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,14 +14,14 @@ interface LocationDescriptionInputProps {
   placeholder?: string;
 }
 
-export function LocationDescriptionInput({
+export const LocationDescriptionInput = forwardRef<HTMLDivElement, LocationDescriptionInputProps>(({
   value,
   onChange,
   onSave,
   maxLength = 100,
   className,
   placeholder: customPlaceholder
-}: LocationDescriptionInputProps) {
+}, ref) => {
   const [isFocused, setIsFocused] = useState(false);
   const { t } = useTranslation();
   const placeholder = customPlaceholder || t('locationInput.placeholder');
@@ -37,7 +37,7 @@ export function LocationDescriptionInput({
   const isNearLimit = charsRemaining <= 20;
 
   return (
-    <div className={cn("relative", className)}>
+    <div ref={ref} className={cn("relative", className)}>
       <div className="relative">
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -79,4 +79,6 @@ export function LocationDescriptionInput({
       </div>
     </div>
   );
-}
+});
+
+LocationDescriptionInput.displayName = 'LocationDescriptionInput';
