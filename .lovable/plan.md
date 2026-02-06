@@ -1,131 +1,155 @@
 
-
-# Audit Technique Senior Dev - EASY v1.7.x (Iteration 4)
-
-## Resume
-
-Apres analyse exhaustive des fichiers restants non couverts par les 3 audits precedents, voici les problemes identifies sur les pages et composants encore non corriges.
+# Audit Triple - EASY v1.7.x (Iteration 5)
+## Phase 1 : Technique | Phase 2 : UX | Phase 3 : Beta-testeur
 
 ---
 
-## Problemes de Securite
+## PHASE 1 : Audit Technique (Dev Senior)
 
-### SEC-04 : EventDetailPage check-in contourne la RPC (CRITIQUE)
+### TECH-01 : Pages 100% hardcodees en francais (CRITIQUE)
 
-**Fichier** : `src/pages/EventDetailPage.tsx` (lignes 123-134)
+Les 4 audits precedents ont corrige ~20 pages mais les suivantes restent entierement hardcodees :
 
-La fonction `handleScanCheckIn` fait un `UPDATE` direct sur `event_participants` sans valider le QR secret cote serveur. Le secret scanne est completement ignore -- n'importe quel participant peut marquer son check-in sans QR code valide.
+| Page | Textes hardcodes (echantillon) |
+|------|-------------------------------|
+| **FeedbackPage.tsx** | "Choisis une note d'abord !", "Erreur lors de l'envoi", "Merci pour ton feedback !", "Donner un feedback", "Comment trouves-tu EASY ?", "Ton avis nous aide", "Un commentaire ? (optionnel)", "Envoyer mon feedback" |
+| **ReportPage.tsx** | "Bug technique", "Comportement inapproprie", "Contenu offensant", "Autre probleme", "Choisis un type de signalement", "Decris le probleme", "Envoyer le signalement", "Signalement envoye !", "Ton signalement sera traite..." |
+| **InstallPage.tsx** | "Installer EASY", "Application Web Progressive", "Retour a l'application", "Installation reussie !", "Installer EASY maintenant", toutes les instructions iOS/Android/Desktop (~40 textes) |
+| **DiagnosticsPage.tsx** | "Diagnostics", "Statut systeme", "Details systeme", "Latence API", "Aucun log recent", "Erreurs recentes", "Authentification" (dev-only, basse priorite) |
+| **TermsPage.tsx** | Entierement en francais (~500 mots, pas de i18n) |
+| **PrivacyPage.tsx** | Entierement en francais (~800 mots, pas de i18n) |
+| **ChangelogPage.tsx** | Items du changelog hardcodes en francais uniquement |
+| **AdminDashboardPage.tsx** | ~50 textes hardcodes (admin-only, basse priorite) |
 
-```
-const { error } = await supabase
-  .from('event_participants')
-  .update({ checked_in: true, checked_in_at: new Date().toISOString() })
-  .eq('event_id', eventId)
-  .eq('user_id', user.id);
-```
+### TECH-02 : EventsPage textes inline non-i18n (MOYENNE)
 
-La RPC `check_in_event_by_qr` existe deja mais n'est pas utilisee ici.
+Dans `EventsPage.tsx`, ~10 textes utilisent `locale === 'fr' ? '...' : '...'` au lieu du systeme `t()` :
+- Ligne 284 : `locale === 'fr' ? 'Filtrer par categorie' : 'Filter by category'`
+- Ligne 293 : `locale === 'fr' ? 'Tous' : 'All'`
+- Ligne 371 : `locale === 'fr' ? 'Categorie' : 'Category'`
+- Ligne 443 : `locale === 'fr' ? 'Aucun evenement...' : 'No upcoming events'`
+- Lignes 113-125 : toasts avec ternaires locaux
 
-**Correction** : Utiliser `checkInToEvent(eventId, scannedSecret)` du hook `useEvents` qui appelle la RPC securisee.
+### TECH-03 : Tutoiement vs Vouvoiement inconsistant (QUALITE)
 
-### SEC-05 : EventCheckinPage meme probleme (CRITIQUE)
+La memoire du projet specifie : "L'application utilise exclusivement le vouvoiement". Pourtant :
+- **FeedbackPage** : "Comment trouves-tu EASY ?", "Ton avis", "Dis-nous"
+- **ReportPage** : "Choisis un type", "Decris le probleme s'il te plait"
+- **InstallPage** : "Clique sur Tester" (DiagnosticsPage)
+- **ChangelogPage** : "Tes stats t'attendent" (StatisticsPage dans changelog items)
 
-**Fichier** : `src/pages/EventCheckinPage.tsx` (lignes 61-68)
+### TECH-04 : OnboardingPage fallback Apple hardcode (BASSE)
 
-Meme pattern : `UPDATE` direct sur `event_participants` sans validation du secret. Le commentaire en ligne 58 dit "The backend RLS will validate this" mais la RLS `event_participants` UPDATE ne verifie que `organizer_id`, pas le secret QR.
+Ligne 65-69 : `t('auth.appleError') || 'Erreur de connexion Apple'` - le fallback est en francais.
 
-**Correction** : Remplacer par `checkInToEvent(eventId, extractedSecret)`.
+### TECH-05 : Trois systemes de toast concurrents (TECHNIQUE)
 
-### SEC-06 : FavoriteEventsPage accede directement a la table events (MOYEN)
+L'application importe simultanement :
+- `react-hot-toast` (utilise dans la majorite des pages)
+- `sonner` (utilise dans AdminDashboardPage)
+- `@radix-ui/react-toast` (composant Toaster importe dans App.tsx)
 
-**Fichier** : `src/pages/FavoriteEventsPage.tsx` (lignes 44-48)
-
-La requete `supabase.from('events').select(...)` echouera silencieusement car la RLS de `events` ne permet le SELECT que pour `organizer_id = auth.uid()`. Les favoris d'evenements d'autres organisateurs seront vides.
-
-**Correction** : Utiliser la RPC `get_events_public` puis filtrer par IDs favoris, ou creer une RPC `get_events_by_ids`.
-
----
-
-## Problemes d'Internationalisation (i18n)
-
-### I18N-02 : 7 composants et pages non internationalises (HAUTE)
-
-| Composant/Page | Textes hardcodes |
-|----------------|-----------------|
-| `EventDetailPage.tsx` | "En cours", "Organisateur", "Inscrit", "Rejoindre", "Partager", "Participants", "Aucun participant", "Sois le premier", "Presente", "Check-in QR Code", "Scanne pour confirmer", "Copier le lien", "Evenement non trouve", "Retour aux evenements", date `format(..., { locale: fr })` |
-| `EventCheckinPage.tsx` | "Connecte-toi pour faire le check-in", "Se connecter", "Verification...", "Check-in reussi", "Erreur", "Scanner le QR Code", "Reessayer", "Retour a l'evenement", "Ta presence est confirmee" |
-| `SessionCheckin.tsx` | "Session terminee", "Merci d'avoir participe", "Check-in effectue", "Terminer la session", "En cours...", "Pointage", "Confirme ta presence", "Fenetre de check-in ouverte", "Trop loin", "Check-in non disponible", "Reviens plus proche" |
-| `SessionFeedbackForm.tsx` | "Comment s'est passee la session ?", "Participant X sur Y", "Evalue cette personne", "Etait a l'heure", "Agreable a cotoyer", "Je recommande", "Commentaire (optionnel)", "Precedent", "Suivant", "Terminer" |
-| `CreateSessionForm.tsx` | "Activite", "Date", "Choisir", "Heure", "Duree", "45 minutes", "1h30", "3 heures", "Ville", "Lieu precis", "Note", "Annuler", "Creation...", "Creer le creneau", tous les placeholders et messages de validation |
-| `TestimonialForm.tsx` | "Partage ton experience !", "Ton temoignage aidera", "Raconte comment", "Minimum 20 caracteres", "Ecris un temoignage", "Plus tard", "Envoyer", "Envoi...", "Merci pour ton temoignage" |
-| `SessionCard.tsx` | "Reviser", "Bosser", "Manger", "Sport", "Parler", "Autre", "fiabilite", "participants", "Complet", "Quitter", "Rejoindre", "Annuler", "Annule", "Session exportee" |
-| `SessionHistoryPage.tsx` | "Historique des sessions", "Toutes", "Creees", "Rejointes", "Total", "Completees", "Aucune session passee", "Ton historique apparaitra ici", "Createur", "Completee", "Annulee", "Non completee", "Exporter (.ics)", "Erreur lors du chargement" |
-| `FavoriteEventsPage.tsx` | "Mes Favoris", "evenements sauvegardes", "Aucun favori", "Passe", "A venir", "Decouvrir les evenements" |
-| `DiagnosticsPage.tsx` | "Diagnostics", "Statut systeme", "Reseau", "Details systeme", "Latence API", "Tester", "Logs recents", "Aucun log", "Erreurs recentes" (dev only, basse priorite) |
-
-### I18N-03 : Toasts hardcodes dans useBinomeSessions (MOYENNE)
-
-**Fichier** : `src/hooks/useBinomeSessions.ts`
-
-8 toasts en francais : "Vous devez etre connecte", "Creneau cree avec succes", "Vous avez rejoint la session", "Vous avez quitte la session", "Session annulee", "Erreur lors de l'annulation".
+Les 3 Toasters sont montes en parallele dans `App.tsx` (lignes 262-274). Cela peut creer des conflits de z-index et des doubles notifications.
 
 ---
 
-## Problemes de Performance / Robustesse
+## PHASE 2 : Audit UX (UX Designer Senior)
 
-### PERF-04 : SessionDetailPage utilise `.single()` pour feedback/testimonials (BASSE)
+### UX-03 : Absence de lien vers les Favoris depuis la page Events
 
-**Fichier** : `src/pages/SessionDetailPage.tsx` (lignes 121-123)
+La page `/events/favorites` existe mais n'est accessible depuis aucun element de navigation visible sur `EventsPage.tsx`. Un utilisateur ne peut pas decouvrir cette fonctionnalite.
 
-`.single()` lance une erreur si aucun enregistrement n'est trouve. Il faut utiliser `.maybeSingle()` pour eviter les erreurs en console.
+**Correction** : Ajouter un bouton/lien "Mes favoris" dans le header ou les filtres de la page Events.
 
-### PERF-05 : SessionHistoryPage requetes en cascade (MOYENNE)
+### UX-04 : Changelog non traduit = experience cassee en anglais
 
-Le composant fait 3 requetes sequentielles (created sessions, participations, joined sessions). Pourrait etre optimise avec `Promise.all`.
+Un utilisateur en mode anglais voit tous les items du changelog en francais. Les labels "Nouveautes/Ameliorations/Corrections/Securite" basculent mais pas les items eux-memes.
+
+**Correction** : Ajouter les traductions anglaises des items du changelog, ou au minimum un message indiquant que le changelog est en francais uniquement.
+
+### UX-05 : Pages legales non traduisibles
+
+`TermsPage.tsx` et `PrivacyPage.tsx` sont entierement en francais sans i18n. Un utilisateur anglophone n'a pas acces aux conditions dans sa langue.
+
+### UX-06 : Formulaire de feedback tutoie l'utilisateur
+
+L'ensemble de la page Feedback utilise le tutoiement ("Comment trouves-tu EASY ?", "Ton avis"), en contradiction avec le standard de vouvoiement de l'application.
+
+### UX-07 : Formulaire de rapport tutoie l'utilisateur
+
+Idem pour ReportPage : "Choisis", "Decris le probleme s'il te plait", "Ton signalement".
+
+### UX-08 : Page Installation non traduite
+
+`InstallPage.tsx` contient ~40 textes en francais non-traduisibles, incluant les instructions specifiques iOS/Android/Desktop. Un utilisateur anglophone ne peut pas comprendre les etapes d'installation.
+
+### UX-09 : Placeholders de formulaire en francais dans EventsPage
+
+Les inputs `placeholder="Soiree de lancement..."` et `placeholder="Cafe Central, BU..."` restent en francais meme en mode anglais.
+
+### UX-10 : Navigation incertaine depuis EventDetailPage
+
+Le bouton retour navigue toujours vers `/events`, meme si l'utilisateur est arrive depuis les favoris ou un lien direct. Utiliser `navigate(-1)` serait plus naturel.
+
+---
+
+## PHASE 3 : Audit Beta-testeur (Utilisateur Final)
+
+### BETA-01 : "J'ai change la langue en anglais mais certaines pages restent en francais"
+
+Les pages Feedback, Report, Install, Changelog, Terms, Privacy sont integralement en francais, cassant l'experience multilingue.
+
+### BETA-02 : "L'app me tutoie puis me vouvoie -- c'est bizarre"
+
+La page d'installation, les parametres et les pages legales utilisent le vouvoiement, mais Feedback et Report utilisent le tutoiement. L'experience est incoherente.
+
+### BETA-03 : "Comment je retrouve mes evenements favoris ?"
+
+Pas de lien visible vers la page des favoris depuis la page Events.
+
+### BETA-04 : "Le changelog est en francais meme si j'ai choisi anglais"
+
+Les titres des sections changent mais pas les items.
+
+### BETA-05 : "J'ai 3 notifications en meme temps pour la meme action"
+
+Les 3 systemes de toast peuvent declencher des notifications superflues.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : Securite - Check-in events (CRITIQUE)
+### Etape 1 : i18n -- FeedbackPage + ReportPage (priorite haute)
 
-**EventDetailPage.tsx** : Remplacer `handleScanCheckIn` pour utiliser `checkInToEvent` du hook `useEvents`.
+Ajouter ~50 cles dans translations.ts (blocs `feedback.*` et `report.*`). Corriger le tutoiement vers le vouvoiement. Refactoriser les 2 pages pour utiliser `t()`.
 
-**EventCheckinPage.tsx** : Remplacer `handleCheckin` pour utiliser `checkInToEvent`.
+### Etape 2 : i18n -- InstallPage (priorite haute)
 
-### Etape 2 : Securite - FavoriteEventsPage RLS
+Ajouter ~45 cles dans translations.ts (bloc `install.*`). Refactoriser la page pour utiliser `t()`. Passer au vouvoiement.
 
-Remplacer le `SELECT` direct sur `events` par la RPC `get_events_public` filtree par IDs.
+### Etape 3 : i18n -- EventsPage inline ternaries
 
-### Etape 3 : i18n - Ajout de ~200 cles de traduction
+Remplacer les ~10 ternaires `locale === 'fr' ?` par des appels `t()` avec les cles correspondantes dans `events.*`.
 
-Ajouter les blocs suivants dans `translations.ts` :
-- `eventDetail.*` (~30 cles)
-- `eventCheckin.*` (~15 cles)
-- `sessionCheckin.*` (~15 cles)
-- `sessionFeedback.*` (~15 cles)
-- `createSession.*` (~20 cles)
-- `testimonial.*` (~10 cles)
-- `sessionCard.*` (~15 cles)
-- `sessionHistory.*` (~20 cles)
-- `favoriteEvents.*` (~10 cles)
-- `diagnostics.*` (~15 cles, basse priorite)
+### Etape 4 : i18n -- TermsPage + PrivacyPage
 
-### Etape 4 : i18n - Toasts useBinomeSessions
+Ajouter les blocs `terms.*` et `privacy.*` (FR + EN) dans translations.ts. Refactoriser les 2 pages.
 
-Transformer les toasts pour accepter un parametre `t` ou utiliser `useTranslation()` dans le hook.
+### Etape 5 : i18n -- ChangelogPage items
 
-### Etape 5 : Refactoriser les 10 composants/pages
+Ajouter un champ `itemsEn` aux entries du changelog pour afficher les items dans la langue de l'utilisateur.
 
-Pour chaque fichier :
-1. Importer `useTranslation`
-2. Remplacer chaque texte hardcode par `t('cle')`
-3. Remplacer `{ locale: fr }` par locale dynamique `locale === 'fr' ? fr : enUS`
-4. Remplacer `.single()` par `.maybeSingle()` pour les lookups optionnels
+### Etape 6 : UX -- Lien Favoris depuis EventsPage
 
-### Etape 6 : Optimisation SessionHistoryPage
+Ajouter un bouton "Mes favoris" (icone coeur) a cote du bouton Filtres dans le header de la page Events.
 
-Paralleliser les requetes avec `Promise.all`.
+### Etape 7 : Nettoyage -- Unifier les toasts
+
+Supprimer les imports `sonner` dans AdminDashboardPage et le `Toaster`/`Sonner` de App.tsx, ne garder que `react-hot-toast` partout.
+
+### Etape 8 : Correction tutoiement residuel
+
+Passer au vouvoiement dans FeedbackPage, ReportPage, InstallPage et DiagnosticsPage.
 
 ---
 
@@ -133,25 +157,24 @@ Paralleliser les requetes avec `Promise.all`.
 
 | Fichier | Changements |
 |---------|------------|
-| `src/pages/EventDetailPage.tsx` | Securite check-in + i18n complet + dates localisees |
-| `src/pages/EventCheckinPage.tsx` | Securite check-in + i18n complet |
-| `src/pages/FavoriteEventsPage.tsx` | RLS fix + i18n complet + dates localisees |
-| `src/pages/SessionHistoryPage.tsx` | i18n + dates localisees + `Promise.all` |
-| `src/components/binome/SessionCheckin.tsx` | i18n complet |
-| `src/components/binome/SessionFeedbackForm.tsx` | i18n complet |
-| `src/components/binome/CreateSessionForm.tsx` | i18n complet + dates localisees |
-| `src/components/binome/TestimonialForm.tsx` | i18n complet |
-| `src/components/binome/SessionCard.tsx` | i18n complet + dates localisees |
-| `src/hooks/useBinomeSessions.ts` | i18n toasts |
-| `src/pages/SessionDetailPage.tsx` | `.single()` -> `.maybeSingle()` |
-| `src/lib/i18n/translations.ts` | +200 nouvelles cles |
+| `src/lib/i18n/translations.ts` | +250 cles (feedback, report, install, terms, privacy, changelog, events extras) |
+| `src/pages/FeedbackPage.tsx` | i18n complet + vouvoiement |
+| `src/pages/ReportPage.tsx` | i18n complet + vouvoiement |
+| `src/pages/InstallPage.tsx` | i18n complet + vouvoiement |
+| `src/pages/EventsPage.tsx` | Remplacement ternaires par t() + lien favoris |
+| `src/pages/TermsPage.tsx` | i18n complet |
+| `src/pages/PrivacyPage.tsx` | i18n complet |
+| `src/pages/ChangelogPage.tsx` | Items bilingues |
+| `src/pages/DiagnosticsPage.tsx` | i18n basique + vouvoiement |
+| `src/pages/AdminDashboardPage.tsx` | Remplacement toast sonner par react-hot-toast |
+| `src/App.tsx` | Suppression Toaster et Sonner redondants |
+| `src/pages/OnboardingPage.tsx` | Suppression fallback Apple hardcode |
 
 ---
 
 ## Estimation
 
-- Securite (check-in + RLS) : 3 fichiers critiques
-- i18n : ~200 nouvelles cles + 10 refactorisations
-- Performance : 2 fichiers
-- Total : ~12 fichiers modifies, ~600 lignes ajoutees/modifiees
-
+- i18n (8 pages + 250 cles) : volume principal
+- UX (lien favoris + nettoyage toasts) : 2 fichiers
+- Qualite (vouvoiement) : inclus dans les refactorisations i18n
+- Total : ~12 fichiers modifies, ~800 lignes ajoutees/modifiees
