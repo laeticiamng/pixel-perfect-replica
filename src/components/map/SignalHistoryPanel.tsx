@@ -67,7 +67,7 @@ export function SignalHistoryPanel() {
 
   const getActivityLabel = (activityId: string) => {
     const activity = ACTIVITIES.find(a => a.id === activityId);
-    return activity?.label || activityId;
+    return activity ? t(activity.labelKey) : activityId;
   };
 
   const getActivityEmoji = (activityId: string) => {

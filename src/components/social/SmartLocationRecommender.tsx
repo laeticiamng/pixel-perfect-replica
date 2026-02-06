@@ -95,7 +95,7 @@ export function SmartLocationRecommender({ activity, city = 'Paris', onSelectLoc
                       <div className="flex flex-wrap gap-1">
                         {citations.slice(0, 3).map((citation, i) => (
                           <a key={i} href={citation} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-coral hover:underline">
-                            <ExternalLink className="h-3 w-3" />Source {i + 1}
+                            <ExternalLink className="h-3 w-3" />{t('locationRecommender.source') || 'Source'} {i + 1}
                           </a>
                         ))}
                       </div>

@@ -1,5 +1,6 @@
 import { Users, Wifi } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface SearchingIndicatorProps {
   isSearching: boolean;
@@ -12,6 +13,8 @@ interface SearchingIndicatorProps {
  * the user is active and waiting for others to appear.
  */
 export function SearchingIndicator({ isSearching, nearbyCount, className }: SearchingIndicatorProps) {
+  const { t } = useTranslation();
+
   if (!isSearching) return null;
 
   return (
@@ -44,7 +47,7 @@ export function SearchingIndicator({ isSearching, nearbyCount, className }: Sear
           {nearbyCount === 0 ? (
             <>
               <p className="font-semibold text-foreground flex items-center gap-2">
-                Recherche en cours
+                {t('searchIndicator.searching')}
                 <span className="flex gap-0.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-coral animate-bounce" style={{ animationDelay: '0ms' }} />
                   <span className="w-1.5 h-1.5 rounded-full bg-coral animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -52,16 +55,18 @@ export function SearchingIndicator({ isSearching, nearbyCount, className }: Sear
                 </span>
               </p>
               <p className="text-sm text-muted-foreground">
-                Tu seras notifié dès qu'une personne arrive
+                {t('searchIndicator.willNotify')}
               </p>
             </>
           ) : (
             <>
               <p className="font-semibold text-foreground">
-                {nearbyCount} personne{nearbyCount > 1 ? 's' : ''} à proximité
+                {nearbyCount === 1
+                  ? t('searchIndicator.nearbyOne')
+                  : t('searchIndicator.nearbyMany').replace('{count}', String(nearbyCount))}
               </p>
               <p className="text-sm text-muted-foreground">
-                Explore le radar pour les découvrir !
+                {t('searchIndicator.exploreRadar')}
               </p>
             </>
           )}
