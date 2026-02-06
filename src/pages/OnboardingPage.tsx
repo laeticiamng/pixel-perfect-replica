@@ -181,7 +181,9 @@ export default function OnboardingPage() {
         setIsLoading(false);
         
         if (error) {
-          if (error.message.includes('User already registered')) {
+          if (error.message.includes('weak_password') || error.message.includes('pwned')) {
+            toast.error(t('auth.weakPassword'));
+          } else if (error.message.includes('User already registered')) {
             toast.error(t('auth.accountExists'));
           } else {
             toast.error(error.message || t('errors.generic'));

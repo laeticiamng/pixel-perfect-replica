@@ -8,10 +8,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { passwordSchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
 import { PageHeader } from '@/components/shared';
+import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
 
 export default function ChangePasswordPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -31,12 +33,12 @@ export default function ChangePasswordPage() {
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error('Les mots de passe ne correspondent pas');
+      toast.error(t('auth.passwordsDontMatch'));
       return;
     }
 
     if (currentPassword === newPassword) {
-      toast.error('Le nouveau mot de passe doit être différent');
+      toast.error(t('auth.passwordMustBeDifferent'));
       return;
     }
 
@@ -48,7 +50,7 @@ export default function ChangePasswordPage() {
       const email = userData?.user?.email;
       
       if (!email) {
-        toast.error('Session expirée, veuillez vous reconnecter');
+        toast.error(t('auth.sessionExpired'));
         navigate('/');
         return;
       }
@@ -60,7 +62,7 @@ export default function ChangePasswordPage() {
       });
 
       if (signInError) {
-        toast.error('Mot de passe actuel incorrect');
+        toast.error(t('auth.currentPasswordIncorrect'));
         return;
       }
 
@@ -70,19 +72,22 @@ export default function ChangePasswordPage() {
       });
 
       if (error) {
-        if (error.message.includes('same')) {
-          toast.error('Le nouveau mot de passe doit être différent de l\'ancien');
+        // Handle weak/pwned password error
+        if (error.message.includes('weak_password') || error.message.includes('pwned')) {
+          toast.error(t('auth.weakPassword'));
+        } else if (error.message.includes('same')) {
+          toast.error(t('auth.passwordMustBeDifferent'));
         } else {
-          toast.error('Erreur lors du changement de mot de passe');
+          toast.error(t('auth.updateError'));
         }
         return;
       }
 
-      toast.success('Mot de passe modifié avec succès !');
+      toast.success(t('auth.passwordChanged'));
       navigate('/settings');
     } catch (error) {
       console.error('Change password error:', error);
-      toast.error('Une erreur est survenue');
+      toast.error(t('errors.generic'));
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +100,7 @@ export default function ChangePasswordPage() {
 
   return (
     <PageLayout className="pb-8 safe-bottom">
-      <PageHeader title="Changer le mot de passe" backTo="/settings" />
+      <PageHeader title={t('auth.changePassword')} backTo="/settings" />
 
       <form onSubmit={handleSubmit} className="px-6 py-8 space-y-6 animate-slide-up">
         {/* Security Info */}
@@ -105,7 +110,7 @@ export default function ChangePasswordPage() {
               <Lock className="h-5 w-5 text-signal-green" />
             </div>
             <p className="text-sm text-muted-foreground">
-              Utilise un mot de passe fort avec majuscules, minuscules et chiffres
+              {t('auth.useStrongPassword')}
             </p>
           </div>
         </div>
@@ -114,14 +119,14 @@ export default function ChangePasswordPage() {
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground flex items-center gap-2">
             <Lock className="h-4 w-4 text-muted-foreground" />
-            Mot de passe actuel
+            {t('auth.currentPassword')}
           </label>
           <div className="relative">
             <Input
               type={showCurrent ? 'text' : 'password'}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              placeholder="Ton mot de passe actuel"
+              placeholder={t('auth.currentPasswordPlaceholder')}
               className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12"
             />
             <button
@@ -136,13 +141,13 @@ export default function ChangePasswordPage() {
 
         {/* New Password */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Nouveau mot de passe</label>
+          <label className="text-sm font-medium text-foreground">{t('auth.newPassword')}</label>
           <div className="relative">
             <Input
               type={showNew ? 'text' : 'password'}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Ton nouveau mot de passe"
+              placeholder={t('auth.newPasswordPlaceholder')}
               className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12"
             />
             <button
@@ -158,13 +163,13 @@ export default function ChangePasswordPage() {
 
         {/* Confirm Password */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-foreground">Confirmer le nouveau mot de passe</label>
+          <label className="text-sm font-medium text-foreground">{t('auth.confirmPassword')}</label>
           <div className="relative">
             <Input
               type={showConfirm ? 'text' : 'password'}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirme ton nouveau mot de passe"
+              placeholder={t('auth.confirmPasswordPlaceholder')}
               className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12"
             />
             <button
@@ -180,10 +185,10 @@ export default function ChangePasswordPage() {
               {confirmPassword === newPassword ? (
                 <>
                   <Check className="h-4 w-4 text-signal-green" />
-                  <span className="text-signal-green">Les mots de passe correspondent</span>
+                  <span className="text-signal-green">{t('auth.passwordsMatch')}</span>
                 </>
               ) : (
-                <span className="text-signal-red">Les mots de passe ne correspondent pas</span>
+                <span className="text-signal-red">{t('auth.passwordsDontMatch')}</span>
               )}
             </div>
           )}
@@ -191,19 +196,19 @@ export default function ChangePasswordPage() {
 
         {/* Password Requirements */}
         <div className="glass rounded-xl p-4">
-          <p className="text-sm font-medium text-foreground mb-2">Exigences du mot de passe :</p>
+          <p className="text-sm font-medium text-foreground mb-2">{t('auth.passwordRequirements')}</p>
           <ul className="text-xs text-muted-foreground space-y-1">
             <li className={newPassword.length >= 6 ? 'text-signal-green' : ''}>
-              • Minimum 6 caractères
+              • {t('auth.passwordRequirementMin')}
             </li>
             <li className={/[a-z]/.test(newPassword) ? 'text-signal-green' : ''}>
-              • Au moins une minuscule
+              • {t('auth.passwordRequirementLower')}
             </li>
             <li className={/[A-Z]/.test(newPassword) ? 'text-signal-green' : ''}>
-              • Au moins une majuscule
+              • {t('auth.passwordRequirementUpper')}
             </li>
             <li className={/[0-9]/.test(newPassword) ? 'text-signal-green' : ''}>
-              • Au moins un chiffre
+              • {t('auth.passwordRequirementNumber')}
             </li>
           </ul>
         </div>
@@ -217,7 +222,7 @@ export default function ChangePasswordPage() {
           {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            'Changer le mot de passe'
+            t('auth.changePassword')
           )}
         </Button>
       </form>

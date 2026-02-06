@@ -9,46 +9,14 @@ import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
+import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-
-const EASY_PLUS_FEATURES = [
-  {
-    icon: <Infinity className="h-5 w-5" />,
-    title: "Sessions illimitées",
-    description: "Crée autant de sessions Binôme que tu veux"
-  },
-  {
-    icon: <Radio className="h-5 w-5" />,
-    title: "Live Mode",
-    description: "Vois qui est disponible en temps réel"
-  },
-  {
-    icon: <Shield className="h-5 w-5" />,
-    title: "Mode Fantôme",
-    description: "Vois les signaux sans être visible"
-  },
-  {
-    icon: <Zap className="h-5 w-5" />,
-    title: "Priorité support",
-    description: "Réponse sous 4h en semaine"
-  },
-  {
-    icon: <Crown className="h-5 w-5" />,
-    title: "Badge Premium",
-    description: "Affiche ton statut sur ton profil"
-  },
-];
-
-const FREE_FEATURES = [
-  "2 sessions Binôme / mois",
-  "Live Mode inclus",
-  "Accès communauté",
-];
+import { fr, enUS } from 'date-fns/locale';
 
 export default function PremiumPage() {
   const navigate = useNavigate();
+  const { t, locale } = useTranslation();
   const [searchParams] = useSearchParams();
   const { user, profile } = useAuth();
   const { 
@@ -65,6 +33,41 @@ export default function PremiumPage() {
   const [sessionQuantity, setSessionQuantity] = useState(1);
 
   const isPremium = profile?.is_premium || status?.subscribed;
+  const dateLocale = locale === 'fr' ? fr : enUS;
+
+  const EASY_PLUS_FEATURES = [
+    {
+      icon: <Infinity className="h-5 w-5" />,
+      title: t('premium.unlimitedSessions'),
+      description: t('premium.unlimitedSessionsDesc')
+    },
+    {
+      icon: <Radio className="h-5 w-5" />,
+      title: t('premium.liveMode'),
+      description: t('premium.liveModeDesc')
+    },
+    {
+      icon: <Shield className="h-5 w-5" />,
+      title: t('premium.ghostMode'),
+      description: t('premium.ghostModeDesc')
+    },
+    {
+      icon: <Zap className="h-5 w-5" />,
+      title: t('premium.prioritySupport'),
+      description: t('premium.prioritySupportDesc')
+    },
+    {
+      icon: <Crown className="h-5 w-5" />,
+      title: t('premium.premiumBadge'),
+      description: t('premium.premiumBadgeDesc')
+    },
+  ];
+
+  const FREE_FEATURES = [
+    t('premium.freeSessions'),
+    t('premium.freeLiveMode'),
+    t('premium.freeCommunity'),
+  ];
 
   // Handle success/cancel URL params
   useEffect(() => {
@@ -73,7 +76,7 @@ export default function PremiumPage() {
     const sessionPurchased = searchParams.get('session_purchased');
 
     if (success === 'true') {
-      toast.success('🎉 Bienvenue dans Easy+ !');
+      toast.success('🎉 ' + t('premium.welcomeEasyPlus'));
       checkSubscription();
       navigate('/premium', { replace: true });
     } else if (sessionPurchased) {
@@ -82,24 +85,27 @@ export default function PremiumPage() {
         // Confirm the session purchase
         confirmSessionPurchase(count)
           .then(() => {
-            toast.success(`🎫 ${count} session${count > 1 ? 's' : ''} ajoutée${count > 1 ? 's' : ''} !`);
+            const message = count > 1 
+              ? t('premium.sessionsAddedPlural', { count }) 
+              : t('premium.sessionsAdded', { count });
+            toast.success(`🎫 ${message}`);
             refetchQuota();
           })
           .catch((err) => {
             console.error('Error confirming session purchase:', err);
-            toast.error('Erreur lors de la confirmation');
+            toast.error(t('premium.confirmError'));
           });
       }
       navigate('/premium', { replace: true });
     } else if (canceled === 'true') {
-      toast('Paiement annulé', { icon: '🔙' });
+      toast(t('premium.paymentCanceled'), { icon: '🔙' });
       navigate('/premium', { replace: true });
     }
-  }, [searchParams, navigate, checkSubscription, confirmSessionPurchase, refetchQuota]);
+  }, [searchParams, navigate, checkSubscription, confirmSessionPurchase, refetchQuota, t]);
 
   const handleEasyPlusSubscribe = async () => {
     if (!user) {
-      toast.error('Connecte-toi d\'abord');
+      toast.error(t('premium.loginFirst'));
       navigate('/onboarding');
       return;
     }
@@ -113,7 +119,7 @@ export default function PremiumPage() {
       }
     } catch (error) {
       console.error('[PremiumPage] Subscribe error:', error);
-      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue');
+      toast.error(error instanceof Error ? error.message : t('errors.generic'));
     } finally {
       setIsLoading(null);
     }
@@ -121,7 +127,7 @@ export default function PremiumPage() {
 
   const handleBuySession = async () => {
     if (!user) {
-      toast.error('Connecte-toi d\'abord');
+      toast.error(t('premium.loginFirst'));
       navigate('/onboarding');
       return;
     }
@@ -135,7 +141,7 @@ export default function PremiumPage() {
       }
     } catch (error) {
       console.error('[PremiumPage] Purchase session error:', error);
-      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue');
+      toast.error(error instanceof Error ? error.message : t('errors.generic'));
     } finally {
       setIsLoading(null);
     }
@@ -150,7 +156,7 @@ export default function PremiumPage() {
       }
     } catch (error) {
       console.error('[PremiumPage] Portal error:', error);
-      toast.error(error instanceof Error ? error.message : 'Une erreur est survenue');
+      toast.error(error instanceof Error ? error.message : t('errors.generic'));
     } finally {
       setIsLoading(null);
     }
@@ -167,7 +173,7 @@ export default function PremiumPage() {
           >
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
-          <h1 className="text-xl font-bold text-foreground">Easy+</h1>
+          <h1 className="text-xl font-bold text-foreground">{t('premium.easyPlusTitle')}</h1>
         </header>
 
         <div className="px-6 py-12 text-center">
@@ -175,15 +181,15 @@ export default function PremiumPage() {
             <Crown className="h-10 w-10 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            Tu es Easy+ ! 🎉
+            {t('premium.welcomeEasyPlus')}
           </h2>
           <p className="text-muted-foreground mb-2">
-            Merci pour ton soutien. Profite de tous les avantages !
+            {t('premium.thanksForSupport')}
           </p>
           
           {status?.subscriptionEnd && (
             <p className="text-sm text-muted-foreground mb-8">
-              Renouvellement le {format(new Date(status.subscriptionEnd), 'd MMMM yyyy', { locale: fr })}
+              {t('premium.renewsOn')} {format(new Date(status.subscriptionEnd), 'd MMMM yyyy', { locale: dateLocale })}
             </p>
           )}
 
@@ -215,7 +221,7 @@ export default function PremiumPage() {
             ) : (
               <>
                 <ExternalLink className="h-4 w-4 mr-2" />
-                Gérer mon abonnement
+                {t('premium.manageSubscription')}
               </>
             )}
           </Button>
@@ -233,7 +239,7 @@ export default function PremiumPage() {
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
-        <h1 className="text-xl font-bold text-foreground">Offres</h1>
+        <h1 className="text-xl font-bold text-foreground">{t('premium.title')}</h1>
       </header>
 
       <motion.div 
@@ -248,7 +254,7 @@ export default function PremiumPage() {
             <CardContent className="py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Tes sessions ce mois</p>
+                  <p className="text-sm text-muted-foreground">{t('premium.yourSessions')}</p>
                   <p className="text-lg font-bold text-foreground">
                     {usage.sessionsCreated} / {usage.sessionsLimit === -1 ? '∞' : usage.sessionsLimit}
                   </p>
@@ -256,7 +262,7 @@ export default function PremiumPage() {
                 {purchasedSessions > 0 && (
                   <Badge variant="secondary" className="bg-signal-yellow/20 text-signal-yellow">
                     <Ticket className="h-3 w-3 mr-1" />
-                    {purchasedSessions} achetée{purchasedSessions > 1 ? 's' : ''}
+                    {purchasedSessions} {purchasedSessions > 1 ? t('premium.purchasedPlural') : t('premium.purchased')}
                   </Badge>
                 )}
               </div>
@@ -272,12 +278,12 @@ export default function PremiumPage() {
                 <Sparkles className="h-5 w-5 text-muted-foreground" />
               </div>
               <div>
-                <h3 className="font-bold text-foreground">Free</h3>
+                <h3 className="font-bold text-foreground">{t('premium.freeTitle')}</h3>
                 <p className="text-2xl font-bold text-foreground">0€</p>
               </div>
               {!isPremium && (
                 <Badge className="ml-auto bg-signal-green/20 text-signal-green border-signal-green/30">
-                  Ton plan
+                  {t('premium.yourPlan')}
                 </Badge>
               )}
             </div>
@@ -300,14 +306,14 @@ export default function PremiumPage() {
                 <Ticket className="h-5 w-5 text-signal-yellow" />
               </div>
               <div>
-                <h3 className="font-bold text-foreground">Session à l'unité</h3>
+                <h3 className="font-bold text-foreground">{t('premium.sessionUnit')}</h3>
                 <p className="text-2xl font-bold text-foreground">
-                  0,99€ <span className="text-sm font-normal text-muted-foreground">/ session</span>
+                  0,99€ <span className="text-sm font-normal text-muted-foreground">{t('premium.perSession')}</span>
                 </p>
               </div>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              Besoin d'une session en plus ? Achète-en une à l'unité, elle ne périme jamais.
+              {t('premium.buyMore')}
             </p>
             
             <div className="flex items-center gap-3 mb-4">
@@ -346,7 +352,9 @@ export default function PremiumPage() {
               ) : (
                 <>
                   <Ticket className="h-4 w-4 mr-2" />
-                  Acheter {sessionQuantity} session{sessionQuantity > 1 ? 's' : ''}
+                  {sessionQuantity > 1 
+                    ? t('premium.buySessionsPlural', { count: sessionQuantity })
+                    : t('premium.buySessions', { count: sessionQuantity })}
                 </>
               )}
             </Button>
@@ -356,7 +364,7 @@ export default function PremiumPage() {
         {/* Easy+ */}
         <Card className="glass border-coral/30 bg-coral/5 relative overflow-hidden">
           <div className="absolute top-0 right-0 bg-gradient-to-l from-coral to-coral-light text-white text-xs font-bold px-4 py-1 rounded-bl-xl">
-            RECOMMANDÉ
+            {t('premium.recommended')}
           </div>
           <CardContent className="py-6 pt-8">
             <div className="flex items-center gap-3 mb-4">
@@ -364,9 +372,9 @@ export default function PremiumPage() {
                 <Crown className="h-5 w-5 text-coral" />
               </div>
               <div>
-                <h3 className="font-bold text-foreground">Easy+</h3>
+                <h3 className="font-bold text-foreground">{t('premium.easyPlusTitle')}</h3>
                 <p className="text-2xl font-bold text-foreground">
-                  9,90€ <span className="text-sm font-normal text-muted-foreground">/ mois</span>
+                  9,90€ <span className="text-sm font-normal text-muted-foreground">{t('premium.perMonth')}</span>
                 </p>
               </div>
             </div>
@@ -402,7 +410,7 @@ export default function PremiumPage() {
               ) : (
                 <>
                   <Crown className="h-5 w-5 mr-2" />
-                  Passer à Easy+
+                  {t('premium.subscribe')}
                 </>
               )}
             </Button>
@@ -411,14 +419,14 @@ export default function PremiumPage() {
 
         {/* Terms */}
         <p className="text-xs text-muted-foreground text-center pb-4">
-          Annulation possible à tout moment. Paiement sécurisé via Stripe.
+          {t('premium.termsNote')}
           <br />
-          En continuant, tu acceptes nos{' '}
+          {t('premium.bySubscribing')}{' '}
           <button 
             onClick={() => navigate('/terms')}
             className="text-coral hover:underline"
           >
-            conditions d'utilisation
+            {t('premium.termsOfUse')}
           </button>.
         </p>
       </motion.div>

@@ -6,11 +6,13 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { PageLayout } from '@/components/PageLayout';
+import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function ForgotPasswordPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -22,20 +24,20 @@ export default function ForgotPasswordPage() {
     setError('');
 
     if (!email.trim()) {
-      setError('Email requis');
+      setError(t('auth.emailRequired'));
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Email invalide');
+      setError(t('auth.invalidEmail'));
       return;
     }
 
     // Check rate limit
     const { allowed, message } = passwordResetRateLimit.checkRateLimit();
     if (!allowed) {
-      toast.error(message || 'Trop de tentatives');
+      toast.error(message || t('auth.tooManyAttempts'));
       return;
     }
 
@@ -49,12 +51,12 @@ export default function ForgotPasswordPage() {
     setIsLoading(false);
 
     if (resetError) {
-      toast.error('Erreur lors de l\'envoi');
+      toast.error(t('auth.updateError'));
       return;
     }
 
     setIsSent(true);
-    toast.success('Email envoyé !');
+    toast.success(t('auth.emailSent'));
   };
 
   if (isSent) {
@@ -67,17 +69,17 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
         <h1 className="text-2xl font-bold text-foreground mb-4 text-center animate-slide-up">
-          Email envoyé !
+          {t('auth.emailSent')}
         </h1>
         <p className="text-muted-foreground text-center mb-8 max-w-xs animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          Consulte ta boîte mail et clique sur le lien pour réinitialiser ton mot de passe.
+          {t('auth.emailSentDesc')}
         </p>
         <Button
           onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
           className="bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-primary-foreground rounded-2xl shadow-medium animate-slide-up"
           style={{ animationDelay: '0.2s' }}
         >
-          Retour à la connexion
+          {t('auth.backToLogin')}
         </Button>
       </PageLayout>
     );
@@ -93,7 +95,7 @@ export default function ForgotPasswordPage() {
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
-        <h1 className="text-xl font-bold text-foreground">Mot de passe oublié</h1>
+        <h1 className="text-xl font-bold text-foreground">{t('auth.forgotPassword')}</h1>
       </header>
 
       {/* Content */}
@@ -103,17 +105,17 @@ export default function ForgotPasswordPage() {
         </div>
 
         <h2 className="text-2xl font-bold text-foreground text-center mb-2">
-          Réinitialise ton mot de passe
+          {t('auth.resetPasswordTitle')}
         </h2>
         <p className="text-muted-foreground text-center mb-8">
-          Entre ton email et on t'envoie un lien de réinitialisation.
+          {t('auth.resetPasswordDesc')}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Input
               type="email"
-              placeholder="ton.email@universite.fr"
+              placeholder={t('auth.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={cn(
@@ -135,7 +137,7 @@ export default function ForgotPasswordPage() {
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
-              'Envoyer le lien'
+              t('auth.sendLink')
             )}
           </Button>
         </form>
@@ -144,7 +146,7 @@ export default function ForgotPasswordPage() {
           onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
           className="mt-6 text-sm text-muted-foreground hover:text-foreground text-center"
         >
-          Retour à la connexion
+          {t('auth.backToLogin')}
         </button>
       </div>
     </PageLayout>

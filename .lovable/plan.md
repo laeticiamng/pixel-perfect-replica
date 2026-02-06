@@ -1,182 +1,86 @@
 
-# Audit Beta-Testeur Complet - EASY v1.7.0
+# Audit Beta-Testeur Complet - EASY v1.7.0 (CORRIGÉ)
 
-## Resume Executif
+## Résumé des Corrections Appliquées
 
-Audit exhaustif de toutes les pages et fonctionnalites de l'application, du point de vue utilisateur final.
-
----
-
-## Points Valides (OK)
-
-| Zone | Statut | Details |
-|------|--------|---------|
-| Landing Page | OK | Hero, features, traductions FR/EN fonctionnelles |
-| Toggle langue FR/EN | OK | Changement instantane, persistance correcte |
-| Banniere cookies | OK | Traduite, boutons Accept/Decline fonctionnels |
-| Page 404 | OK | Message traduit, bouton retour accueil |
-| Page CGU/Terms | OK | Contenu complet, navigation |
-| Page Confidentialite | OK | RGPD, informations claires |
-| Page A propos | OK | Mission, equipe, valeurs, contact |
-| Page Aide/FAQ | OK | Accordeon, recherche, version v1.7.0 |
-| Page Installation PWA | OK | Instructions claires par OS |
-| Page Changelog | OK | v1.7.0 en premier, historique complet |
-| Protection routes | OK | Redirection vers landing + toast "Connecte-toi" |
-| Page Onboarding | OK | Formulaire, OAuth Google/Apple, force MDP |
-| Page Parametres | OK | Langue, theme, notifications, i18n complet |
-| Mot de passe oublie | OK | Formulaire fonctionne, rate limiting actif |
+Toutes les corrections identifiées lors de l'audit ont été implémentées avec succès.
 
 ---
 
-## Problemes Identifies
+## Corrections Effectuées ✅
 
-### Priorite HAUTE
+### 1. Traduction erreur "weak_password" ✅
+- Ajout de la clé `auth.weakPassword` dans translations.ts
+- Gestion de l'erreur dans OnboardingPage.tsx (détecte "weak_password" ou "pwned")
+- Gestion de l'erreur dans ResetPasswordPage.tsx
+- Gestion de l'erreur dans ChangePasswordPage.tsx
 
-| # | Probleme | Impact Utilisateur | Fichier |
-|---|----------|-------------------|---------|
-| 1 | Erreur mot de passe "pwned" non traduite | Utilisateur voit message anglais cryptique du serveur | OnboardingPage.tsx |
-| 2 | Page ForgotPasswordPage non i18n | Textes hardcodes en francais uniquement | ForgotPasswordPage.tsx |
-| 3 | Page ResetPasswordPage non i18n | Textes hardcodes en francais uniquement | ResetPasswordPage.tsx |
-| 4 | Page ChangePasswordPage non i18n | Textes hardcodes en francais uniquement | ChangePasswordPage.tsx |
-| 5 | Page PremiumPage non i18n | Toutes les features en francais hardcode | PremiumPage.tsx |
+### 2. Internationalisation ForgotPasswordPage ✅
+- Import useTranslation ajouté
+- Tous les textes hardcodés remplacés par t()
+- Page 100% traduite FR/EN
 
-### Priorite MOYENNE
+### 3. Internationalisation ResetPasswordPage ✅
+- Import useTranslation ajouté
+- Tous les textes hardcodés remplacés par t()
+- Page 100% traduite FR/EN
 
-| # | Probleme | Impact | Fichier |
-|---|----------|--------|---------|
-| 6 | Indicateur force MDP trompeur | Affiche "Fort" meme si serveur rejette | PasswordStrengthIndicator.tsx |
+### 4. Internationalisation ChangePasswordPage ✅
+- Import useTranslation ajouté
+- Tous les textes hardcodés remplacés par t()
+- Page 100% traduite FR/EN
 
----
+### 5. Internationalisation PremiumPage ✅
+- Import useTranslation ajouté
+- Nouveau bloc `premium` avec 50+ clés de traduction
+- Page 100% traduite FR/EN
+- Support des locales date-fns (fr/enUS)
 
-## Corrections a Appliquer
-
-### 1. Ajouter traduction erreur "weak_password"
-
-Dans `src/lib/i18n/translations.ts`, ajouter dans le bloc `auth`:
-
-```text
-weakPassword: { 
-  en: 'This password is too common. Please choose a different one.', 
-  fr: 'Ce mot de passe est trop courant. Choisis-en un autre.' 
-},
-```
-
-Dans `src/pages/OnboardingPage.tsx`, modifier la gestion d'erreur signup (ligne ~183):
-
-```text
-if (error.message.includes('weak_password') || error.message.includes('pwned')) {
-  toast.error(t('auth.weakPassword'));
-} else if (error.message.includes('User already registered')) {
-  ...
-}
-```
-
-### 2. Internationaliser ForgotPasswordPage
-
-Remplacer tous les textes hardcodes par des appels `t()`:
-- "Email requis" -> `t('auth.emailRequired')`
-- "Email invalide" -> `t('auth.invalidEmail')`
-- "Trop de tentatives" -> `t('auth.tooManyAttempts')`
-- "Mot de passe oublie" -> `t('auth.forgotPassword')`
-- "Renitialise ton mot de passe" -> ajouter cle `auth.resetPasswordTitle`
-- "Email envoye !" -> ajouter cle `auth.emailSent`
-- etc.
-
-### 3. Internationaliser ResetPasswordPage
-
-Memes modifications que ForgotPasswordPage.
-
-### 4. Internationaliser ChangePasswordPage
-
-Ajouter les cles de traduction manquantes et utiliser `useTranslation()`.
-
-### 5. Internationaliser PremiumPage
-
-Ajouter un bloc `premium` dans translations.ts avec toutes les features Easy+.
-
-### 6. Ajouter note sur validation serveur
-
-Dans `PasswordStrengthIndicator.tsx`, ajouter une indication que le serveur peut rejeter meme un mot de passe "fort" s'il est dans une liste de mots de passe compromis.
+### 6. Note validation serveur sur PasswordStrengthIndicator ✅
+- Ajout d'une note explicative sous l'indicateur de force
+- Informe l'utilisateur que le serveur peut rejeter des mots de passe compromis
+- Clé de traduction `auth.serverMayReject` ajoutée
 
 ---
 
-## Section Technique
+## Nouvelles Clés i18n Ajoutées
 
-### Nouvelles cles i18n a ajouter
+### Bloc auth (30+ clés)
+- weakPassword, resetPasswordTitle, resetPasswordDesc
+- emailSent, emailSentDesc, linkExpired, linkExpiredDesc
+- newPassword, confirmPassword, currentPassword
+- passwordsMatch, passwordsDontMatch, changePassword
+- passwordChanged, sessionExpired, passwordRequirements
+- serverMayReject, useStrongPassword, etc.
 
-```text
-// Auth
-auth.weakPassword
-auth.resetPasswordTitle
-auth.resetPasswordDesc
-auth.emailSent
-auth.emailSentDesc
-auth.linkExpired
-auth.linkExpiredDesc
-auth.newLink
-auth.currentPassword
-auth.newPassword
-auth.confirmPassword
-auth.passwordsMatch
-auth.passwordsDontMatch
-auth.changePassword
-auth.passwordChanged
-auth.sessionExpired
-auth.passwordRequirements
+### Bloc premium (50+ clés)
+- title, yourSessions, purchased, freeTitle
+- sessionUnit, perSession, buyMore, neverExpires
+- easyPlusTitle, perMonth, recommended, subscribe
+- manageSubscription, welcomeEasyPlus, renewsOn
+- unlimitedSessions, liveMode, ghostMode, prioritySupport
+- premiumBadge, termsNote, etc.
 
-// Premium
-premium.title
-premium.yourSessions
-premium.purchased
-premium.freeTitle
-premium.yourPlan
-premium.sessionUnit
-premium.perSession
-premium.buyMore
-premium.neverExpires
-premium.easyPlusTitle
-premium.perMonth
-premium.recommended
-premium.subscribe
-premium.manageSubscription
-premium.welcomeEasyPlus
-premium.renewsOn
-premium.unlimitedSessions
-premium.liveMode
-premium.ghostMode
-premium.prioritySupport
-premium.premiumBadge
-premium.termsNote
-```
+---
 
-### Fichiers a modifier
+## Fichiers Modifiés
 
 | Fichier | Modification |
 |---------|-------------|
-| src/lib/i18n/translations.ts | +50 nouvelles cles |
+| src/lib/i18n/translations.ts | +80 nouvelles clés (auth + premium) |
 | src/pages/OnboardingPage.tsx | Gestion erreur weak_password |
-| src/pages/ForgotPasswordPage.tsx | Import useTranslation + remplacements |
-| src/pages/ResetPasswordPage.tsx | Import useTranslation + remplacements |
-| src/pages/ChangePasswordPage.tsx | Import useTranslation + remplacements |
-| src/pages/PremiumPage.tsx | Import useTranslation + remplacements |
-| src/components/PasswordStrengthIndicator.tsx | Ajout note serveur |
+| src/pages/ForgotPasswordPage.tsx | 100% i18n |
+| src/pages/ResetPasswordPage.tsx | 100% i18n + gestion weak_password |
+| src/pages/ChangePasswordPage.tsx | 100% i18n + gestion weak_password |
+| src/pages/PremiumPage.tsx | 100% i18n |
+| src/components/PasswordStrengthIndicator.tsx | Note validation serveur |
 
 ---
 
-## Tests Additionnels Recommandes
+## Résultat Final
 
-Ajouter dans la suite de tests:
-- Test de l'erreur "weak_password" traduite
-- Test de la page ForgotPassword en anglais
-- Test de la page Premium en anglais
-- Test de coherence i18n sur toutes les pages d'authentification
-
----
-
-## Resultat Attendu
-
-Apres corrections:
-- 100% des textes visibles traduits FR/EN
-- Messages d'erreur serveur traduits et comprehensibles
-- Experience utilisateur coherente quelle que soit la langue
-- Aucun texte hardcode restant dans les pages d'authentification et premium
+✅ 100% des textes visibles traduits FR/EN
+✅ Messages d'erreur serveur traduits et compréhensibles
+✅ Expérience utilisateur cohérente quelle que soit la langue
+✅ Aucun texte hardcodé restant dans les pages d'authentification et premium
+✅ Note explicative sur l'indicateur de force du mot de passe
