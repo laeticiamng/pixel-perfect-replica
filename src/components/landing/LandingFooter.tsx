@@ -16,12 +16,18 @@ export function LandingFooter() {
             <span className="font-bold text-foreground">EASY</span>
           </div>
           
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-muted-foreground">
             <button 
               onClick={() => navigate('/install')}
               className="hover:text-coral transition-colors font-medium"
             >
               📲 {t('landing.install')}
+            </button>
+            <button 
+              onClick={() => navigate('/about')}
+              className="hover:text-foreground transition-colors"
+            >
+              {t('about.title')}
             </button>
             <button 
               onClick={() => navigate('/help')}
