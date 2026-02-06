@@ -1,177 +1,182 @@
 
-# Plan : Page "A propos" + Tests E2E Signup/Signal
+# Audit Beta-Testeur Complet - EASY v1.7.0
 
-## Contexte
-Ce plan couvre deux demandes :
-1. Creation d'une page "A propos" presentant l'equipe et la mission EASY
-2. Ajout de tests E2E automatises pour le parcours complet d'inscription et d'activation du signal
+## Resume Executif
+
+Audit exhaustif de toutes les pages et fonctionnalites de l'application, du point de vue utilisateur final.
 
 ---
 
-## Partie 1 : Page "A propos"
+## Points Valides (OK)
 
-### 1.1 Structure de la page
-Creer `src/pages/AboutPage.tsx` avec les sections suivantes :
-- **Hero** : Titre "A propos d'EASY" avec baseline
-- **Mission** : Vision et valeurs de l'application (connexions reelles, consentement mutuel)
-- **Equipe** : Presentation d'EmotionsCare SASU avec membres fondateurs
-- **Valeurs** : 3-4 cartes (Authenticite, Securite, Innovation, Communaute)
-- **Stats** : Chiffres cles (utilisateurs, interactions, villes)
-- **Contact** : Liens vers support et reseaux sociaux
+| Zone | Statut | Details |
+|------|--------|---------|
+| Landing Page | OK | Hero, features, traductions FR/EN fonctionnelles |
+| Toggle langue FR/EN | OK | Changement instantane, persistance correcte |
+| Banniere cookies | OK | Traduite, boutons Accept/Decline fonctionnels |
+| Page 404 | OK | Message traduit, bouton retour accueil |
+| Page CGU/Terms | OK | Contenu complet, navigation |
+| Page Confidentialite | OK | RGPD, informations claires |
+| Page A propos | OK | Mission, equipe, valeurs, contact |
+| Page Aide/FAQ | OK | Accordeon, recherche, version v1.7.0 |
+| Page Installation PWA | OK | Instructions claires par OS |
+| Page Changelog | OK | v1.7.0 en premier, historique complet |
+| Protection routes | OK | Redirection vers landing + toast "Connecte-toi" |
+| Page Onboarding | OK | Formulaire, OAuth Google/Apple, force MDP |
+| Page Parametres | OK | Langue, theme, notifications, i18n complet |
+| Mot de passe oublie | OK | Formulaire fonctionne, rate limiting actif |
 
-### 1.2 Traductions i18n
-Ajouter dans `src/lib/i18n/translations.ts` :
+---
+
+## Problemes Identifies
+
+### Priorite HAUTE
+
+| # | Probleme | Impact Utilisateur | Fichier |
+|---|----------|-------------------|---------|
+| 1 | Erreur mot de passe "pwned" non traduite | Utilisateur voit message anglais cryptique du serveur | OnboardingPage.tsx |
+| 2 | Page ForgotPasswordPage non i18n | Textes hardcodes en francais uniquement | ForgotPasswordPage.tsx |
+| 3 | Page ResetPasswordPage non i18n | Textes hardcodes en francais uniquement | ResetPasswordPage.tsx |
+| 4 | Page ChangePasswordPage non i18n | Textes hardcodes en francais uniquement | ChangePasswordPage.tsx |
+| 5 | Page PremiumPage non i18n | Toutes les features en francais hardcode | PremiumPage.tsx |
+
+### Priorite MOYENNE
+
+| # | Probleme | Impact | Fichier |
+|---|----------|--------|---------|
+| 6 | Indicateur force MDP trompeur | Affiche "Fort" meme si serveur rejette | PasswordStrengthIndicator.tsx |
+
+---
+
+## Corrections a Appliquer
+
+### 1. Ajouter traduction erreur "weak_password"
+
+Dans `src/lib/i18n/translations.ts`, ajouter dans le bloc `auth`:
+
 ```text
-about: {
-  title: { en: 'About EASY', fr: 'A propos d\'EASY' },
-  subtitle: { en: 'The platform that reinvents meetings', fr: 'La plateforme qui reinvente la rencontre' },
-  missionTitle: { en: 'Our Mission', fr: 'Notre Mission' },
-  missionText: { en: 'Connect real intentions...', fr: 'Connecter des intentions reelles...' },
-  teamTitle: { en: 'The Team', fr: 'L\'Equipe' },
-  valuesTitle: { en: 'Our Values', fr: 'Nos Valeurs' },
-  contactTitle: { en: 'Contact Us', fr: 'Nous Contacter' },
-  // valeurs individuelles
-  authenticity: { en: 'Authenticity', fr: 'Authenticite' },
-  security: { en: 'Security', fr: 'Securite' },
-  innovation: { en: 'Innovation', fr: 'Innovation' },
-  community: { en: 'Community', fr: 'Communaute' },
+weakPassword: { 
+  en: 'This password is too common. Please choose a different one.', 
+  fr: 'Ce mot de passe est trop courant. Choisis-en un autre.' 
+},
+```
+
+Dans `src/pages/OnboardingPage.tsx`, modifier la gestion d'erreur signup (ligne ~183):
+
+```text
+if (error.message.includes('weak_password') || error.message.includes('pwned')) {
+  toast.error(t('auth.weakPassword'));
+} else if (error.message.includes('User already registered')) {
+  ...
 }
 ```
 
-### 1.3 Fichiers a modifier
+### 2. Internationaliser ForgotPasswordPage
 
-| Fichier | Action |
-|---------|--------|
-| `src/pages/AboutPage.tsx` | Creation (nouveau) |
-| `src/pages/legal/index.ts` | Export de AboutPage |
-| `src/pages/index.ts` | Pas de changement (herite de legal) |
-| `src/App.tsx` | Ajouter route `/about` |
-| `src/lib/i18n/translations.ts` | Ajouter section `about` |
-| `src/components/landing/LandingFooter.tsx` | Ajouter lien vers /about |
+Remplacer tous les textes hardcodes par des appels `t()`:
+- "Email requis" -> `t('auth.emailRequired')`
+- "Email invalide" -> `t('auth.invalidEmail')`
+- "Trop de tentatives" -> `t('auth.tooManyAttempts')`
+- "Mot de passe oublie" -> `t('auth.forgotPassword')`
+- "Renitialise ton mot de passe" -> ajouter cle `auth.resetPasswordTitle`
+- "Email envoye !" -> ajouter cle `auth.emailSent`
+- etc.
 
-### 1.4 Design
-- Style coherent avec TermsPage et PrivacyPage
-- Utilisation du composant PageLayout
-- Icones Lucide (Users, Heart, Shield, Rocket)
-- Cards glassmorphism pour les valeurs
-- Responsive mobile-first
+### 3. Internationaliser ResetPasswordPage
 
----
+Memes modifications que ForgotPasswordPage.
 
-## Partie 2 : Tests E2E Signup + Signal
+### 4. Internationaliser ChangePasswordPage
 
-### 2.1 Fichier de tests
-Creer `src/test/e2e-signup-signal.test.tsx` avec les suites suivantes :
+Ajouter les cles de traduction manquantes et utiliser `useTranslation()`.
 
-### 2.2 Suite "Signup Flow"
-```text
-describe("E2E Complete Signup Flow")
-  - CP-SIGNUP-001: Validate form rendering
-  - CP-SIGNUP-002: Test email validation (formats valides/invalides)
-  - CP-SIGNUP-003: Test password strength indicator
-  - CP-SIGNUP-004: Test firstName sanitization (XSS prevention)
-  - CP-SIGNUP-005: Test rate limiting simulation
-  - CP-SIGNUP-006: Test successful signup flow (mock Supabase)
-  - CP-SIGNUP-007: Test OAuth buttons presence (Google, Apple)
-  - CP-SIGNUP-008: Test redirection to /welcome after signup
-```
+### 5. Internationaliser PremiumPage
 
-### 2.3 Suite "Post-Signup Onboarding"
-```text
-describe("E2E Post-Signup Onboarding Flow")
-  - CP-ONBOARD-001: Location permission step rendering
-  - CP-ONBOARD-002: Activity selection step
-  - CP-ONBOARD-003: Signal activation step
-  - CP-ONBOARD-004: Skip location option
-  - CP-ONBOARD-005: Redirection to /map after completion
-```
+Ajouter un bloc `premium` dans translations.ts avec toutes les features Easy+.
 
-### 2.4 Suite "Signal Activation"
-```text
-describe("E2E Signal Activation Flow")
-  - CP-SIGNAL-001: Signal store initial state
-  - CP-SIGNAL-002: Activity selection validation
-  - CP-SIGNAL-003: Signal data structure validation
-  - CP-SIGNAL-004: Signal expiration (2h)
-  - CP-SIGNAL-005: Signal deactivation
-  - CP-SIGNAL-006: GPS coordinates validation
-```
+### 6. Ajouter note sur validation serveur
 
-### 2.5 Suite "Map Discovery"
-```text
-describe("E2E Map Discovery Flow")
-  - CP-MAP-001: Empty state when no nearby users
-  - CP-MAP-002: Nearby users filtering by distance
-  - CP-MAP-003: Ghost mode users exclusion
-  - CP-MAP-004: Blocked users exclusion
-  - CP-MAP-005: Demo mode toggle
-```
-
-### 2.6 Fichiers a modifier
-
-| Fichier | Action |
-|---------|--------|
-| `src/test/e2e-signup-signal.test.tsx` | Creation (nouveau) |
-| `src/test/e2e-flows.test.ts` | Pas de modification (tests existants conserves) |
+Dans `PasswordStrengthIndicator.tsx`, ajouter une indication que le serveur peut rejeter meme un mot de passe "fort" s'il est dans une liste de mots de passe compromis.
 
 ---
 
 ## Section Technique
 
-### Architecture des tests
+### Nouvelles cles i18n a ajouter
+
 ```text
-src/test/
-  ├── setup.ts                    # Configuration existante
-  ├── e2e-flows.test.ts           # Tests logiques existants
-  ├── e2e-critical-paths.test.tsx # Tests composants existants
-  └── e2e-signup-signal.test.tsx  # NOUVEAU - Tests E2E complets
+// Auth
+auth.weakPassword
+auth.resetPasswordTitle
+auth.resetPasswordDesc
+auth.emailSent
+auth.emailSentDesc
+auth.linkExpired
+auth.linkExpiredDesc
+auth.newLink
+auth.currentPassword
+auth.newPassword
+auth.confirmPassword
+auth.passwordsMatch
+auth.passwordsDontMatch
+auth.changePassword
+auth.passwordChanged
+auth.sessionExpired
+auth.passwordRequirements
+
+// Premium
+premium.title
+premium.yourSessions
+premium.purchased
+premium.freeTitle
+premium.yourPlan
+premium.sessionUnit
+premium.perSession
+premium.buyMore
+premium.neverExpires
+premium.easyPlusTitle
+premium.perMonth
+premium.recommended
+premium.subscribe
+premium.manageSubscription
+premium.welcomeEasyPlus
+premium.renewsOn
+premium.unlimitedSessions
+premium.liveMode
+premium.ghostMode
+premium.prioritySupport
+premium.premiumBadge
+premium.termsNote
 ```
 
-### Mocks utilises
-- Supabase client (auth.signUp, auth.signInWithPassword)
-- framer-motion (pour eviter les erreurs d'animation)
-- Navigator geolocation API
-- React Router (useNavigate, useLocation)
+### Fichiers a modifier
 
-### Patterns de test
-```text
-// Test de composant avec providers
-const renderWithProviders = (component) => render(
-  <QueryClientProvider>
-    <BrowserRouter>
-      <AuthProvider>
-        {component}
-      </AuthProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
-
-// Test de store Zustand
-const { result } = renderHook(() => useSignalStore());
-act(() => result.current.activateSignal('studying'));
-expect(result.current.mySignal).toBe('green');
-```
+| Fichier | Modification |
+|---------|-------------|
+| src/lib/i18n/translations.ts | +50 nouvelles cles |
+| src/pages/OnboardingPage.tsx | Gestion erreur weak_password |
+| src/pages/ForgotPasswordPage.tsx | Import useTranslation + remplacements |
+| src/pages/ResetPasswordPage.tsx | Import useTranslation + remplacements |
+| src/pages/ChangePasswordPage.tsx | Import useTranslation + remplacements |
+| src/pages/PremiumPage.tsx | Import useTranslation + remplacements |
+| src/components/PasswordStrengthIndicator.tsx | Ajout note serveur |
 
 ---
 
-## Resultat attendu
+## Tests Additionnels Recommandes
 
-### Page About
-- Accessible via `/about`
-- Lien dans le footer de la landing page
-- Traductions FR/EN completes
-- Design coherent avec le reste de l'app
-
-### Tests E2E
-- ~25 nouveaux tests couvrant le parcours complet
-- Validation du signup (email, password, firstName)
-- Validation de l'onboarding (location, activity, signal)
-- Validation de la decouverte sur la map
-- Tous les tests passent avec `vitest run`
+Ajouter dans la suite de tests:
+- Test de l'erreur "weak_password" traduite
+- Test de la page ForgotPassword en anglais
+- Test de la page Premium en anglais
+- Test de coherence i18n sur toutes les pages d'authentification
 
 ---
 
-## Estimation
-- Page About : ~150 lignes de code
-- Tests E2E : ~350 lignes de tests
-- Traductions : ~30 nouvelles cles
+## Resultat Attendu
+
+Apres corrections:
+- 100% des textes visibles traduits FR/EN
+- Messages d'erreur serveur traduits et comprehensibles
+- Experience utilisateur coherente quelle que soit la langue
+- Aucun texte hardcode restant dans les pages d'authentification et premium
