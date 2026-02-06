@@ -81,7 +81,7 @@ export function useVoiceIcebreaker() {
       await audio.play();
     } catch (err) {
       console.error('[useVoiceIcebreaker] Playback error:', err);
-      setError('Impossible de lire l\'audio');
+      setError('Unable to play audio');
     }
   }, [generateVoice]);
 

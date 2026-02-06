@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ActivityType } from '@/types/signal';
+import { useI18nStore } from '@/lib/i18n/useTranslation';
 
 interface IcebreakerContext {
   time_of_day?: string;
@@ -22,6 +23,7 @@ interface RecommendationsResponse {
 }
 
 export function useAIAssistant() {
+  const { locale } = useI18nStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,11 +70,11 @@ export function useAIAssistant() {
       console.error('Icebreaker generation failed:', err);
       
       // Return fallback icebreakers
-      return getFallbackIcebreakers(activity);
+      return getFallbackIcebreakers(activity, locale);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [locale]);
 
   const getSessionRecommendations = useCallback(async (
     userId: string,
@@ -126,39 +128,74 @@ export function useAIAssistant() {
   };
 }
 
-function getFallbackIcebreakers(activity: ActivityType): string[] {
-  const fallbacks: Record<string, string[]> = {
-    studying: [
-      "Hey ! Tu révises quoi en ce moment ? 📚",
-      "Besoin d'un partenaire de révision ?",
-      "On se motive ensemble pour bosser ?",
-    ],
-    eating: [
-      "T'as faim ? Je connais un bon spot ! 🍽️",
-      "On partage un repas ?",
-      "Je cherche quelqu'un pour déjeuner !",
-    ],
-    working: [
-      "Tu bosses sur quoi ? 💻",
-      "Envie de co-worker ?",
-      "On se motive mutuellement ?",
-    ],
-    talking: [
-      "Hey ! Une pause café ça te dit ? ☕",
-      "Je m'ennuie, on papote ?",
-      "T'as 5 minutes pour discuter ?",
-    ],
-    sport: [
-      "Prêt·e pour une session ? 🏃",
-      "On se motive pour bouger !",
-      "Envie de faire du sport ?",
-    ],
-    other: [
-      "Salut ! Qu'est-ce que tu fais ?",
-      "Hey, on fait connaissance ?",
-      "Envie de passer un moment sympa ?",
-    ],
+function getFallbackIcebreakers(activity: ActivityType, locale: string = 'en'): string[] {
+  const fallbacks: Record<string, Record<string, string[]>> = {
+    fr: {
+      studying: [
+        "Hey ! Tu révises quoi en ce moment ? 📚",
+        "Besoin d'un partenaire de révision ?",
+        "On se motive ensemble pour bosser ?",
+      ],
+      eating: [
+        "T'as faim ? Je connais un bon spot ! 🍽️",
+        "On partage un repas ?",
+        "Je cherche quelqu'un pour déjeuner !",
+      ],
+      working: [
+        "Tu bosses sur quoi ? 💻",
+        "Envie de co-worker ?",
+        "On se motive mutuellement ?",
+      ],
+      talking: [
+        "Hey ! Une pause café ça te dit ? ☕",
+        "Je m'ennuie, on papote ?",
+        "T'as 5 minutes pour discuter ?",
+      ],
+      sport: [
+        "Prêt·e pour une session ? 🏃",
+        "On se motive pour bouger !",
+        "Envie de faire du sport ?",
+      ],
+      other: [
+        "Salut ! Qu'est-ce que tu fais ?",
+        "Hey, on fait connaissance ?",
+        "Envie de passer un moment sympa ?",
+      ],
+    },
+    en: {
+      studying: [
+        "Hey! What are you studying right now? 📚",
+        "Need a study buddy?",
+        "Let's motivate each other to study?",
+      ],
+      eating: [
+        "Hungry? I know a great spot! 🍽️",
+        "Want to grab a meal together?",
+        "Looking for someone to have lunch with!",
+      ],
+      working: [
+        "What are you working on? 💻",
+        "Want to co-work?",
+        "Let's motivate each other!",
+      ],
+      talking: [
+        "Hey! Fancy a coffee break? ☕",
+        "Bored, want to chat?",
+        "Got 5 minutes to talk?",
+      ],
+      sport: [
+        "Ready for a workout? 🏃",
+        "Let's get moving!",
+        "Want to do some sport?",
+      ],
+      other: [
+        "Hey! What are you up to?",
+        "Want to get to know each other?",
+        "Want to hang out?",
+      ],
+    },
   };
 
-  return fallbacks[activity] || fallbacks.other;
+  const localeFallbacks = fallbacks[locale] || fallbacks.en;
+  return localeFallbacks[activity] || localeFallbacks.other;
 }
