@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
@@ -466,7 +466,9 @@ export default function OnboardingPage() {
       case 3:
         return (
           <div className="space-y-6 animate-slide-up text-center">
-            <div className="text-6xl mb-6">🎉</div>
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center mx-auto mb-6">
+              <Sparkles className="h-10 w-10 text-white" />
+            </div>
             
             <h2 className="text-2xl font-bold text-foreground mb-2">
               {t('onboarding.youReReady')}

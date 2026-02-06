@@ -1,5 +1,7 @@
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { Handshake, BookOpen, Dumbbell, Drama, PartyPopper, Briefcase, Sparkles, type LucideIcon } from 'lucide-react';
+import { type ComponentType } from 'react';
 
 export type EventCategory = 
   | 'social'
@@ -16,14 +18,14 @@ interface EventCategoryBadgeProps {
   className?: string;
 }
 
-const categoryConfig: Record<EventCategory, { emoji: string; color: string }> = {
-  social: { emoji: '🤝', color: 'bg-signal-green/20 text-signal-green border-signal-green/30' },
-  academic: { emoji: '📚', color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
-  sport: { emoji: '🏃', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
-  culture: { emoji: '🎭', color: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
-  party: { emoji: '🎉', color: 'bg-coral/20 text-coral border-coral/30' },
-  professional: { emoji: '💼', color: 'bg-slate-500/20 text-slate-400 border-slate-500/30' },
-  other: { emoji: '✨', color: 'bg-muted text-muted-foreground border-border' },
+const categoryConfig: Record<EventCategory, { Icon: LucideIcon; color: string }> = {
+  social: { Icon: Handshake, color: 'bg-signal-green/20 text-signal-green border-signal-green/30' },
+  academic: { Icon: BookOpen, color: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+  sport: { Icon: Dumbbell, color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
+  culture: { Icon: Drama, color: 'bg-purple-500/20 text-purple-400 border-purple-500/30' },
+  party: { Icon: PartyPopper, color: 'bg-coral/20 text-coral border-coral/30' },
+  professional: { Icon: Briefcase, color: 'bg-slate-500/20 text-slate-400 border-slate-500/30' },
+  other: { Icon: Sparkles, color: 'bg-muted text-muted-foreground border-border' },
 };
 
 export function EventCategoryBadge({ category, size = 'md', className }: EventCategoryBadgeProps) {
@@ -40,7 +42,7 @@ export function EventCategoryBadge({ category, size = 'md', className }: EventCa
         className
       )}
     >
-      <span>{config.emoji}</span>
+      <config.Icon className={size === 'sm' ? 'h-3 w-3' : 'h-4 w-4'} />
       <span>{label}</span>
     </span>
   );
@@ -75,7 +77,7 @@ export function EventCategorySelector({
                 : 'bg-muted/50 hover:bg-muted text-muted-foreground border-border'
             )}
           >
-            <span>{config.emoji}</span>
+            <config.Icon className="h-4 w-4" />
             <span className="text-sm font-medium">{label}</span>
           </button>
         );

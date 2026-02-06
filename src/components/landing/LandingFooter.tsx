@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from '@/lib/i18n';
 import { APP_VERSION } from '@/lib/constants';
+import { Heart } from 'lucide-react';
 
 export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, ref) {
   const navigate = useNavigate();
@@ -44,7 +45,9 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
           <Link to="/changelog" className="font-medium hover:text-coral transition-colors">
             EASY v{APP_VERSION} • PWA
           </Link>
-          <p className="mt-1">{t('landing.madeWith')}</p>
+          <p className="mt-1 flex items-center justify-center gap-1">
+            Made with <Heart className="h-3.5 w-3.5 text-coral fill-coral" /> in France by EmotionsCare Sasu
+          </p>
         </div>
       </div>
     </footer>
