@@ -75,13 +75,15 @@ export function DeleteAccountDialog() {
           <AlertDialogTitle className="text-center">
             {t('deleteAccount.title')}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-center" asChild>
-            <div dangerouslySetInnerHTML={{ __html: t('deleteAccount.description') }} />
+          <AlertDialogDescription className="text-center">
+            {t('deleteAccount.description')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         
         <div className="py-4">
-          <label className="text-sm text-muted-foreground block mb-2" dangerouslySetInnerHTML={{ __html: t('deleteAccount.confirmLabel') }} />
+          <label className="text-sm text-muted-foreground block mb-2">
+            {t('deleteAccount.confirmLabel')}
+          </label>
           <Input
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value.toUpperCase())}

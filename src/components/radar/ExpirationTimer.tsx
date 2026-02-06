@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Clock, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 interface ExpirationTimerProps {
   expiresAt: string | Date;
@@ -11,20 +12,15 @@ interface ExpirationTimerProps {
 }
 
 export function ExpirationTimer({ 
-  expiresAt, 
-  className, 
-  onExpire, 
-  onExtend,
-  canExtend = false 
+  expiresAt, className, onExpire, onExtend, canExtend = false 
 }: ExpirationTimerProps) {
   const [timeLeft, setTimeLeft] = useState<string>('');
   const [isUrgent, setIsUrgent] = useState(false);
   const [showExtend, setShowExtend] = useState(false);
-  // Prevent multiple onExpire calls
   const hasExpiredRef = useRef(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    // Reset expired flag when expiresAt changes (new signal)
     hasExpiredRef.current = false;
   }, [expiresAt]);
 
@@ -35,8 +31,7 @@ export function ExpirationTimer({
       const diff = expiry - now;
 
       if (diff <= 0) {
-        setTimeLeft('Expiré');
-        // Only call onExpire ONCE
+        setTimeLeft(t('timer.expired'));
         if (!hasExpiredRef.current) {
           hasExpiredRef.current = true;
           onExpire?.();
@@ -48,11 +43,8 @@ export function ExpirationTimer({
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      // Urgent if less than 15 minutes
       const urgent = diff < 15 * 60 * 1000;
       setIsUrgent(urgent);
-      
-      // Show extend button if less than 30 minutes and can extend
       setShowExtend(canExtend && diff < 30 * 60 * 1000);
 
       if (hours > 0) {
@@ -66,9 +58,8 @@ export function ExpirationTimer({
 
     calculateTimeLeft();
     const interval = setInterval(calculateTimeLeft, 1000);
-
     return () => clearInterval(interval);
-  }, [expiresAt, onExpire, canExtend]);
+  }, [expiresAt, onExpire, canExtend, t]);
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
@@ -90,7 +81,7 @@ export function ExpirationTimer({
           className="flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-coral/20 text-coral hover:bg-coral/30 transition-colors"
         >
           <RefreshCw className="h-3 w-3" />
-          <span>Prolonger</span>
+          <span>{t('timer.extend')}</span>
         </button>
       )}
     </div>

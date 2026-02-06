@@ -30,8 +30,9 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/hooks/useTheme';
+import { useTranslation } from '@/lib/i18n';
 
-interface CommandItem {
+interface CommandItemData {
   id: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -45,20 +46,18 @@ export function CommandPalette() {
   const navigate = useNavigate();
   const { signOut, isAuthenticated } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
 
-  // Handle keyboard shortcut
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
       }
-      // Escape to close
       if (e.key === 'Escape' && open) {
         setOpen(false);
       }
     };
-
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
   }, [open]);
@@ -68,165 +67,45 @@ export function CommandPalette() {
     command();
   }, []);
 
-  const navigationItems: CommandItem[] = [
-    {
-      id: 'home',
-      label: 'Accueil',
-      icon: Home,
-      action: () => navigate('/'),
-      keywords: ['landing', 'home', 'accueil'],
-      group: 'navigation',
-    },
-    {
-      id: 'map',
-      label: 'Carte / Radar',
-      icon: Map,
-      action: () => navigate('/map'),
-      keywords: ['map', 'carte', 'radar', 'signal'],
-      group: 'navigation',
-    },
-    {
-      id: 'profile',
-      label: 'Mon Profil',
-      icon: User,
-      action: () => navigate('/profile'),
-      keywords: ['profile', 'profil', 'compte'],
-      group: 'navigation',
-    },
-    {
-      id: 'binome',
-      label: 'Binôme',
-      icon: Users,
-      action: () => navigate('/binome'),
-      keywords: ['binome', 'session', 'groupe'],
-      group: 'navigation',
-    },
-    {
-      id: 'events',
-      label: 'Événements',
-      icon: Calendar,
-      action: () => navigate('/events'),
-      keywords: ['events', 'evenements', 'agenda'],
-      group: 'navigation',
-    },
-    {
-      id: 'statistics',
-      label: 'Statistiques',
-      icon: BarChart3,
-      action: () => navigate('/statistics'),
-      keywords: ['stats', 'statistiques', 'analytics'],
-      group: 'navigation',
-    },
-    {
-      id: 'people-met',
-      label: 'Personnes rencontrées',
-      icon: Users,
-      action: () => navigate('/people-met'),
-      keywords: ['people', 'rencontres', 'contacts'],
-      group: 'navigation',
-    },
+  const navigationItems: CommandItemData[] = [
+    { id: 'home', label: t('commandPalette.home'), icon: Home, action: () => navigate('/'), keywords: ['landing', 'home', 'accueil'], group: 'navigation' },
+    { id: 'map', label: t('commandPalette.mapRadar'), icon: Map, action: () => navigate('/map'), keywords: ['map', 'carte', 'radar', 'signal'], group: 'navigation' },
+    { id: 'profile', label: t('commandPalette.myProfile'), icon: User, action: () => navigate('/profile'), keywords: ['profile', 'profil', 'compte'], group: 'navigation' },
+    { id: 'binome', label: t('commandPalette.binome'), icon: Users, action: () => navigate('/binome'), keywords: ['binome', 'session', 'groupe'], group: 'navigation' },
+    { id: 'events', label: t('commandPalette.events'), icon: Calendar, action: () => navigate('/events'), keywords: ['events', 'evenements', 'agenda'], group: 'navigation' },
+    { id: 'statistics', label: t('commandPalette.statistics'), icon: BarChart3, action: () => navigate('/statistics'), keywords: ['stats', 'statistiques', 'analytics'], group: 'navigation' },
+    { id: 'people-met', label: t('commandPalette.peopleMet'), icon: Users, action: () => navigate('/people-met'), keywords: ['people', 'rencontres', 'contacts'], group: 'navigation' },
   ];
 
-  const settingsItems: CommandItem[] = [
-    {
-      id: 'settings',
-      label: 'Paramètres',
-      icon: Settings,
-      action: () => navigate('/settings'),
-      keywords: ['settings', 'parametres', 'config'],
-      group: 'settings',
-    },
-    {
-      id: 'notifications',
-      label: 'Notifications',
-      icon: Bell,
-      action: () => navigate('/notifications-settings'),
-      keywords: ['notifications', 'alerts', 'alertes'],
-      group: 'settings',
-    },
-    {
-      id: 'privacy',
-      label: 'Confidentialité',
-      icon: Shield,
-      action: () => navigate('/privacy-settings'),
-      keywords: ['privacy', 'confidentialite', 'securite'],
-      group: 'settings',
-    },
-    {
-      id: 'password',
-      label: 'Changer le mot de passe',
-      icon: Lock,
-      action: () => navigate('/change-password'),
-      keywords: ['password', 'mot de passe', 'securite'],
-      group: 'settings',
-    },
-    {
-      id: 'blocked',
-      label: 'Utilisateurs bloqués',
-      icon: UserX,
-      action: () => navigate('/blocked-users'),
-      keywords: ['blocked', 'bloques', 'ban'],
-      group: 'settings',
-    },
-    {
-      id: 'export',
-      label: 'Exporter mes données',
-      icon: Download,
-      action: () => navigate('/data-export'),
-      keywords: ['export', 'gdpr', 'donnees'],
-      group: 'settings',
-    },
+  const settingsItems: CommandItemData[] = [
+    { id: 'settings', label: t('commandPalette.settings'), icon: Settings, action: () => navigate('/settings'), keywords: ['settings', 'parametres', 'config'], group: 'settings' },
+    { id: 'notifications', label: t('commandPalette.notifications'), icon: Bell, action: () => navigate('/notifications-settings'), keywords: ['notifications', 'alerts', 'alertes'], group: 'settings' },
+    { id: 'privacy', label: t('commandPalette.privacy'), icon: Shield, action: () => navigate('/privacy-settings'), keywords: ['privacy', 'confidentialite', 'securite'], group: 'settings' },
+    { id: 'password', label: t('commandPalette.changePassword'), icon: Lock, action: () => navigate('/change-password'), keywords: ['password', 'mot de passe', 'securite'], group: 'settings' },
+    { id: 'blocked', label: t('commandPalette.blockedUsers'), icon: UserX, action: () => navigate('/blocked-users'), keywords: ['blocked', 'bloques', 'ban'], group: 'settings' },
+    { id: 'export', label: t('commandPalette.exportData'), icon: Download, action: () => navigate('/data-export'), keywords: ['export', 'gdpr', 'donnees'], group: 'settings' },
   ];
 
-  const actionItems: CommandItem[] = [
-    {
-      id: 'toggle-theme',
-      label: theme === 'dark' ? 'Mode clair' : 'Mode sombre',
-      icon: theme === 'dark' ? Sun : Moon,
-      action: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
-      keywords: ['theme', 'dark', 'light', 'sombre', 'clair'],
-      group: 'actions',
-    },
-    {
-      id: 'help',
-      label: 'Aide',
-      icon: HelpCircle,
-      action: () => navigate('/help'),
-      keywords: ['help', 'aide', 'support', 'faq'],
-      group: 'actions',
-    },
-    {
-      id: 'feedback',
-      label: 'Donner un avis',
-      icon: MessageSquare,
-      action: () => navigate('/feedback'),
-      keywords: ['feedback', 'avis', 'commentaire'],
-      group: 'actions',
-    },
-    {
-      id: 'logout',
-      label: 'Déconnexion',
-      icon: LogOut,
-      action: () => signOut(),
-      keywords: ['logout', 'deconnexion', 'sortir'],
-      group: 'actions',
-    },
+  const actionItems: CommandItemData[] = [
+    { id: 'toggle-theme', label: theme === 'dark' ? t('commandPalette.lightMode') : t('commandPalette.darkMode'), icon: theme === 'dark' ? Sun : Moon, action: () => setTheme(theme === 'dark' ? 'light' : 'dark'), keywords: ['theme', 'dark', 'light', 'sombre', 'clair'], group: 'actions' },
+    { id: 'help', label: t('commandPalette.help'), icon: HelpCircle, action: () => navigate('/help'), keywords: ['help', 'aide', 'support', 'faq'], group: 'actions' },
+    { id: 'feedback', label: t('commandPalette.feedback'), icon: MessageSquare, action: () => navigate('/feedback'), keywords: ['feedback', 'avis', 'commentaire'], group: 'actions' },
+    { id: 'logout', label: t('commandPalette.logout'), icon: LogOut, action: () => signOut(), keywords: ['logout', 'deconnexion', 'sortir'], group: 'actions' },
   ];
 
-  // Filter items based on auth state
   const allItems = isAuthenticated 
     ? [...navigationItems, ...settingsItems, ...actionItems]
     : [navigationItems[0], actionItems.find(i => i.id === 'toggle-theme')!];
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Rechercher une page ou une action..." />
+      <CommandInput placeholder={t('commandPalette.placeholder')} />
       <CommandList>
-        <CommandEmpty>Aucun résultat trouvé.</CommandEmpty>
+        <CommandEmpty>{t('commandPalette.noResults')}</CommandEmpty>
         
         {isAuthenticated && (
           <>
-            <CommandGroup heading="Navigation">
+            <CommandGroup heading={t('commandPalette.navGroup')}>
               {navigationItems.map((item) => (
                 <CommandItem
                   key={item.id}
@@ -239,10 +118,8 @@ export function CommandPalette() {
                 </CommandItem>
               ))}
             </CommandGroup>
-            
             <CommandSeparator />
-            
-            <CommandGroup heading="Paramètres">
+            <CommandGroup heading={t('commandPalette.settingsGroup')}>
               {settingsItems.map((item) => (
                 <CommandItem
                   key={item.id}
@@ -255,12 +132,11 @@ export function CommandPalette() {
                 </CommandItem>
               ))}
             </CommandGroup>
-            
             <CommandSeparator />
           </>
         )}
         
-        <CommandGroup heading="Actions">
+        <CommandGroup heading={t('commandPalette.actionsGroup')}>
           {actionItems
             .filter(item => isAuthenticated || item.id === 'toggle-theme')
             .map((item) => (
