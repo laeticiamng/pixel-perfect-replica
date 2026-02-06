@@ -18,7 +18,6 @@ import {
   LandingFooter,
 } from '@/components/landing';
 
-
 // Problem Section
 function ProblemSection() {
   const { t } = useTranslation();

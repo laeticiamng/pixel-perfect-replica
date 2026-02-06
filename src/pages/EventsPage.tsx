@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Users, QrCode, Plus, Loader2, Filter, Heart } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Users, QrCode, Plus, Loader2, Filter, Heart, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -428,7 +428,7 @@ export default function EventsPage() {
         {/* All Events */}
         <div className="space-y-3">
           <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <span className="text-signal-green">🎉</span> {t('events.upcomingEvents')}
+            <PartyPopper className="h-5 w-5 text-signal-green" /> {t('events.upcomingEvents')}
           </h2>
           
           {isLoading ? (
