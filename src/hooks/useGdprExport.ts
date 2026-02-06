@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { getCurrentLocale } from '@/lib/i18n/translations';
 
 interface ExportData {
   profile: any;
@@ -130,7 +131,9 @@ export function useGdprExport() {
           verified_at: b.verified_at
         })),
         exportedAt: new Date().toISOString(),
-        dataRetentionInfo: 'Les données de localisation sont automatiquement supprimées après 30 jours. Les signaux actifs expirent après 2 heures.'
+        dataRetentionInfo: getCurrentLocale() === 'fr' 
+          ? 'Les données de localisation sont automatiquement supprimées après 30 jours. Les signaux actifs expirent après 2 heures.'
+          : 'Location data is automatically deleted after 30 days. Active signals expire after 2 hours.'
       };
 
       setIsExporting(false);

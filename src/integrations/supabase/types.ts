@@ -1258,6 +1258,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      check_in_event_by_qr: {
+        Args: { p_event_id: string; p_qr_secret: string }
+        Returns: boolean
+      }
       check_report_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       check_reveal_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       check_reveal_rate_limit_strict: {
@@ -1539,6 +1543,10 @@ export type Database = {
       }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       increment_interactions: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
+      increment_reliability_sessions_created: {
         Args: { p_user_id: string }
         Returns: undefined
       }

@@ -15,99 +15,44 @@ import {
 import { useBinomeSessions, type SessionFilters as Filters, type CreateSessionInput } from '@/hooks/useBinomeSessions';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
 
 export default function BinomePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [showCreateSheet, setShowCreateSheet] = useState(false);
   const [filters, setFilters] = useState<Filters>({ city: '' });
   const [isCreating, setIsCreating] = useState(false);
-  
   const { usage, canCreate, remaining, isPremium, refetch: refetchQuota } = useSessionQuota();
+  const { sessions, mySessions, myParticipations, isLoading, fetchSessions, createSession, joinSession, leaveSession, cancelSession } = useBinomeSessions();
 
-  const {
-    sessions,
-    mySessions,
-    myParticipations,
-    isLoading,
-    fetchSessions,
-    createSession,
-    joinSession,
-    leaveSession,
-    cancelSession
-  } = useBinomeSessions();
+  const isJoinedSession = (sessionId: string) => myParticipations.some(p => p.id === sessionId);
 
-  // Check if user has joined a session
-  const isJoinedSession = (sessionId: string) => {
-    return myParticipations.some(p => p.id === sessionId);
-  };
-
-  // Handle session creation
   const handleCreate = async (data: CreateSessionInput) => {
-    if (!canCreate) {
-      toast.error('Limite de créneaux atteinte ce mois-ci. Passe Premium pour plus !');
-      return false;
-    }
-    
+    if (!canCreate) { toast.error(t('binome.quotaReached')); return false; }
     setIsCreating(true);
     const success = await createSession(data);
     setIsCreating(false);
-    if (success) {
-      setShowCreateSheet(false);
-      refetchQuota(); // Refresh quota after creation
-    }
+    if (success) { setShowCreateSheet(false); refetchQuota(); }
     return success;
   };
   
-  // Handle opening create sheet with quota check
   const handleOpenCreate = () => {
-    if (!canCreate) {
-      toast.error('Tu as atteint ta limite de 4 créneaux ce mois. Passe Premium !');
-      return;
-    }
+    if (!canCreate) { toast.error(t('binome.quotaReachedCreate')); return; }
     setShowCreateSheet(true);
   };
 
-  // Handle join
-  const handleJoin = async (sessionId: string) => {
-    await joinSession(sessionId);
-    // Refresh the list after joining
-    if (filters.city) {
-      fetchSessions(filters);
-    }
-  };
-
-  // Handle leave
-  const handleLeave = async (sessionId: string) => {
-    await leaveSession(sessionId);
-    if (filters.city) {
-      fetchSessions(filters);
-    }
-  };
-
-  // Handle cancel
-  const handleCancel = async (sessionId: string) => {
-    await cancelSession(sessionId);
-  };
-
-  // Handle search
-  const handleSearch = () => {
-    if (filters.city) {
-      fetchSessions(filters);
-    }
-  };
+  const handleJoin = async (sessionId: string) => { await joinSession(sessionId); if (filters.city) fetchSessions(filters); };
+  const handleLeave = async (sessionId: string) => { await leaveSession(sessionId); if (filters.city) fetchSessions(filters); };
+  const handleCancel = async (sessionId: string) => { await cancelSession(sessionId); };
+  const handleSearch = () => { if (filters.city) fetchSessions(filters); };
 
   if (!user) {
     return (
       <PageLayout className="pb-24 safe-bottom">
-        <EmptyState
-          icon={Users}
-          title="Connexion requise"
-          description="Connecte-toi pour réserver un binôme"
-          actionLabel="Se connecter"
-          onAction={() => navigate('/')}
-        />
+        <EmptyState icon={Users} title={t('binome.loginRequired')} description={t('binome.loginRequiredDesc')} actionLabel={t('binome.loginAction')} onAction={() => navigate('/')} />
         <BottomNav />
       </PageLayout>
     );
@@ -115,199 +60,86 @@ export default function BinomePage() {
 
   return (
     <PageLayout className="pb-24 safe-bottom">
-      {/* Onboarding dialog for first-time users */}
       <BinomeOnboarding onComplete={() => {}} />
-
-      {/* Header */}
       <PageHeader
-        title="Réserver un Binôme"
-        subtitle="Planifie tes sessions"
+        title={t('binome.title')}
+        subtitle={t('binome.subtitle')}
         backTo="/map"
         action={
-          <Button 
-            size="sm" 
-            className="bg-coral hover:bg-coral/90 whitespace-nowrap"
-            onClick={handleOpenCreate}
-            disabled={!canCreate}
-          >
+          <Button size="sm" className="bg-coral hover:bg-coral/90 whitespace-nowrap" onClick={handleOpenCreate} disabled={!canCreate}>
             <Plus className="h-4 w-4 sm:mr-1" />
-            <span className="hidden sm:inline">Créer</span>
+            <span className="hidden sm:inline">{t('create')}</span>
             {!isPremium && remaining < 5 && <span className="ml-1">({remaining})</span>}
           </Button>
         }
       />
         
       <div className="px-6 space-y-4">
-        {/* Quota Badge */}
-        {usage && (
-          <SessionQuotaBadge
-            sessionsCreated={usage.sessionsCreated}
-            sessionsLimit={usage.sessionsLimit}
-            isPremium={usage.isPremium}
-            canCreate={usage.canCreate}
-          />
-        )}
-
-        {/* AI Recommendations */}
+        {usage && <SessionQuotaBadge sessionsCreated={usage.sessionsCreated} sessionsLimit={usage.sessionsLimit} isPremium={usage.isPremium} canCreate={usage.canCreate} />}
         <AIRecommendationsWidget />
-
-        {/* Description Card */}
         <BinomeDescriptionCard />
-
-        {/* Community Stats */}
         <CommunityStats />
 
-        {/* History Link */}
-        <button
-          onClick={() => navigate('/binome/history')}
-          className="w-full glass rounded-xl p-3 flex items-center justify-between hover:bg-muted/50 transition-colors"
-        >
+        <button onClick={() => navigate('/binome/history')} className="w-full glass rounded-xl p-3 flex items-center justify-between hover:bg-muted/50 transition-colors">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-coral/20 text-coral">
-              <History className="h-5 w-5" />
-            </div>
-            <span className="font-medium text-foreground">Historique des sessions</span>
+            <div className="p-2 rounded-lg bg-coral/20 text-coral"><History className="h-5 w-5" /></div>
+            <span className="font-medium text-foreground">{t('binome.sessionHistory')}</span>
           </div>
           <span className="text-muted-foreground text-sm">→</span>
         </button>
 
         <Tabs defaultValue="search" className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="search" className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              Explorer
-            </TabsTrigger>
-            <TabsTrigger value="my-sessions" className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              Mes créneaux
-            </TabsTrigger>
-            <TabsTrigger value="joined" className="flex items-center gap-1">
-              <Users className="h-4 w-4" />
-              Rejoints
-            </TabsTrigger>
+            <TabsTrigger value="search" className="flex items-center gap-1"><Calendar className="h-4 w-4" />{t('binome.explore')}</TabsTrigger>
+            <TabsTrigger value="my-sessions" className="flex items-center gap-1"><Clock className="h-4 w-4" />{t('binome.mySlots')}</TabsTrigger>
+            <TabsTrigger value="joined" className="flex items-center gap-1"><Users className="h-4 w-4" />{t('binome.joined')}</TabsTrigger>
           </TabsList>
 
-          {/* Search / Explore Tab */}
           <TabsContent value="search" className="space-y-4">
-            <SessionFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-              onSearch={handleSearch}
-              isLoading={isLoading}
-            />
-
+            <SessionFilters filters={filters} onFiltersChange={setFilters} onSearch={handleSearch} isLoading={isLoading} />
             {sessions.length > 0 ? (
-              <div className="space-y-4">
-                {sessions.map((session) => (
-                  <SessionCard
-                    key={session.id}
-                    session={session}
-                    onJoin={handleJoin}
-                    onLeave={handleLeave}
-                    isJoined={isJoinedSession(session.id)}
-                    isLoading={isLoading}
-                  />
-                ))}
-              </div>
+              <div className="space-y-4">{sessions.map((session) => <SessionCard key={session.id} session={session} onJoin={handleJoin} onLeave={handleLeave} isJoined={isJoinedSession(session.id)} isLoading={isLoading} />)}</div>
             ) : filters.city ? (
               <div className="space-y-6">
-                <EmptyState
-                  icon={Calendar}
-                  title="Aucun créneau trouvé"
-                  description={`Aucune session disponible à ${filters.city} pour le moment`}
-                  actionLabel="Créer un créneau"
-                  onAction={() => setShowCreateSheet(true)}
-                  variant="outline"
-                />
+                <EmptyState icon={Calendar} title={t('binome.noSlotsFound')} description={t('binome.noSlotsForCity').replace('{city}', filters.city)} actionLabel={t('binome.createSlot')} onAction={() => setShowCreateSheet(true)} variant="outline" />
                 <WhyEasyCondensed />
               </div>
             ) : (
               <div className="space-y-6">
-                <EmptyState
-                  icon={Calendar}
-                  title="Recherche une ville"
-                  description="Entre le nom d'une ville pour voir les créneaux disponibles"
-                />
+                <EmptyState icon={Calendar} title={t('binome.searchCity')} description={t('binome.searchCityDesc')} />
                 <WhyEasyCondensed />
               </div>
             )}
           </TabsContent>
 
-          {/* My Sessions Tab */}
           <TabsContent value="my-sessions" className="space-y-4">
             {mySessions.length > 0 ? (
-              <div className="space-y-4">
-                {mySessions.map((session) => (
-                  <SessionCard
-                    key={session.id}
-                    session={session}
-                    onCancel={handleCancel}
-                    isOwner={true}
-                    isLoading={isLoading}
-                  />
-                ))}
-              </div>
+              <div className="space-y-4">{mySessions.map((session) => <SessionCard key={session.id} session={session} onCancel={handleCancel} isOwner={true} isLoading={isLoading} />)}</div>
             ) : (
-              <EmptyState
-                icon={Clock}
-                title="Aucun créneau créé"
-                description="Tu n'as pas encore créé de créneau"
-                actionLabel="Créer mon premier créneau"
-                onAction={() => setShowCreateSheet(true)}
-              />
+              <EmptyState icon={Clock} title={t('binome.noCreatedSlots')} description={t('binome.noCreatedSlotsDesc')} actionLabel={t('binome.createFirst')} onAction={() => setShowCreateSheet(true)} />
             )}
           </TabsContent>
 
-          {/* Joined Sessions Tab */}
           <TabsContent value="joined" className="space-y-4">
             {myParticipations.length > 0 ? (
-              <div className="space-y-4">
-                {myParticipations.map((session) => (
-                  <SessionCard
-                    key={session.id}
-                    session={session}
-                    onLeave={handleLeave}
-                    isJoined={true}
-                    isLoading={isLoading}
-                  />
-                ))}
-              </div>
+              <div className="space-y-4">{myParticipations.map((session) => <SessionCard key={session.id} session={session} onLeave={handleLeave} isJoined={true} isLoading={isLoading} />)}</div>
             ) : (
-              <EmptyState
-                icon={Users}
-                title="Aucune session rejointe"
-                description="Explore les créneaux disponibles et rejoins une session !"
-              />
+              <EmptyState icon={Users} title={t('binome.noJoinedSessions')} description={t('binome.noJoinedSessionsDesc')} />
             )}
           </TabsContent>
         </Tabs>
 
-        {/* Why EASY Section */}
-        {/* Why EASY Section */}
-        <div className="mt-8">
-          <WhyEasySection />
-        </div>
-
-        {/* Testimonials Section */}
-        <div className="mt-6">
-          <TestimonialsSection />
-        </div>
+        <div className="mt-8"><WhyEasySection /></div>
+        <div className="mt-6"><TestimonialsSection /></div>
       </div>
 
-      {/* Create Session Sheet */}
       <Sheet open={showCreateSheet} onOpenChange={setShowCreateSheet}>
         <SheetContent side="bottom" className="h-[90vh] overflow-y-auto">
           <SheetHeader className="mb-6">
-            <SheetTitle>Créer un créneau</SheetTitle>
-            <SheetDescription>
-              Planifie une session avec d'autres personnes dans ta ville
-            </SheetDescription>
+            <SheetTitle>{t('binome.createSlotTitle')}</SheetTitle>
+            <SheetDescription>{t('binome.createSlotDesc')}</SheetDescription>
           </SheetHeader>
-          <CreateSessionForm
-            onSubmit={handleCreate}
-            onCancel={() => setShowCreateSheet(false)}
-            isLoading={isCreating}
-          />
+          <CreateSessionForm onSubmit={handleCreate} onCancel={() => setShowCreateSheet(false)} isLoading={isCreating} />
         </SheetContent>
       </Sheet>
 

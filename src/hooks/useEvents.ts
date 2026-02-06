@@ -153,36 +153,18 @@ export function useEvents() {
     return { error };
   };
 
-  // Check in to event via QR code
+  // Check in to event via QR code (uses secure RPC - never exposes qr_code_secret)
   const checkInToEvent = async (eventId: string, qrSecret: string) => {
     if (!user) return { error: new Error('Non connecté') };
 
-    // Verify QR code secret
-    const { data: event } = await supabase
-      .from('events')
-      .select('qr_code_secret')
-      .eq('id', eventId)
-      .single();
+    const { data: success, error } = await supabase
+      .rpc('check_in_event_by_qr', { p_event_id: eventId, p_qr_secret: qrSecret });
 
-    if (!event || event.qr_code_secret !== qrSecret) {
-      return { error: new Error('QR code invalide') };
-    }
+    if (error) return { error };
+    if (!success) return { error: new Error('QR code invalide') };
 
-    // Update check-in status
-    const { error } = await supabase
-      .from('event_participants')
-      .update({
-        checked_in: true,
-        checked_in_at: new Date().toISOString(),
-      })
-      .eq('event_id', eventId)
-      .eq('user_id', user.id);
-
-    if (!error) {
-      await fetchJoinedEvents();
-    }
-
-    return { error };
+    await fetchJoinedEvents();
+    return { error: null };
   };
 
   // Check if user is participating in an event

@@ -178,15 +178,8 @@ export function useBinomeSessions() {
 
       if (insertError) throw insertError;
 
-      // Update user reliability
-      await supabase
-        .from('user_reliability')
-        .upsert({
-          user_id: user.id,
-          sessions_created: 1
-        }, { 
-          onConflict: 'user_id'
-        });
+      // Update user reliability via secure RPC (increments instead of replacing)
+      await supabase.rpc('increment_reliability_sessions_created', { p_user_id: user.id });
 
       toast.success('Créneau créé avec succès !');
       await fetchMySessions();

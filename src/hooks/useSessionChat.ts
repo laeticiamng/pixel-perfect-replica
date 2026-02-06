@@ -20,14 +20,6 @@ export function useSessionChat(sessionId: string) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
 
-  const fetchSenderProfile = useCallback(async (userId: string) => {
-    const { data } = await supabase
-      .rpc('get_public_profile_secure', { p_user_id: userId });
-    return {
-      name: data?.[0]?.first_name || 'Utilisateur',
-      avatar: data?.[0]?.avatar_url || null
-    };
-  }, []);
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -39,15 +31,19 @@ export function useSessionChat(sessionId: string) {
 
       if (error) throw error;
 
-      const messagesWithProfiles: Message[] = [];
-      for (const msg of data || []) {
-        const profile = await fetchSenderProfile(msg.user_id);
-        messagesWithProfiles.push({
-          ...msg,
-          sender_name: profile.name,
-          sender_avatar: profile.avatar
-        });
-      }
+      // Batch profile fetch: collect unique user_ids
+      const uniqueUserIds = [...new Set((data || []).map(m => m.user_id))];
+      const { data: profiles } = await supabase
+        .rpc('get_public_profiles', { profile_ids: uniqueUserIds });
+      
+      const profileMap = new Map<string, { first_name: string; avatar_url: string | null }>();
+      (profiles || []).forEach((p: any) => profileMap.set(p.id, p));
+
+      const messagesWithProfiles: Message[] = (data || []).map(msg => ({
+        ...msg,
+        sender_name: profileMap.get(msg.user_id)?.first_name || 'Utilisateur',
+        sender_avatar: profileMap.get(msg.user_id)?.avatar_url || null
+      }));
 
       setMessages(messagesWithProfiles);
     } catch (error) {
@@ -55,7 +51,7 @@ export function useSessionChat(sessionId: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId, fetchSenderProfile]);
+  }, [sessionId]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || isSending || !user) return { success: false };
@@ -80,7 +76,7 @@ export function useSessionChat(sessionId: string) {
     }
   }, [sessionId, user, isSending]);
 
-  // Subscribe to new messages
+  // Subscribe to new messages (stable deps to avoid re-subscriptions)
   useEffect(() => {
     fetchMessages();
 
@@ -96,17 +92,19 @@ export function useSessionChat(sessionId: string) {
         },
         async (payload) => {
           const newMsg = payload.new as Message;
-          const profile = await fetchSenderProfile(newMsg.user_id);
+          const { data: profiles } = await supabase
+            .rpc('get_public_profiles', { profile_ids: [newMsg.user_id] });
+          const profile = profiles?.[0];
           
           const msgWithProfile = {
             ...newMsg,
-            sender_name: profile.name,
-            sender_avatar: profile.avatar
+            sender_name: profile?.first_name || 'Utilisateur',
+            sender_avatar: profile?.avatar_url || null
           };
 
           setMessages(prev => [...prev, msgWithProfile]);
           
-          if (newMsg.user_id !== user?.id && isSubscribed) {
+          if (newMsg.user_id !== user?.id) {
             showNotification(`${msgWithProfile.sender_name} 💬`, {
               body: newMsg.content.slice(0, 100),
               tag: `session-message-${newMsg.id}`,
@@ -119,7 +117,8 @@ export function useSessionChat(sessionId: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [sessionId, fetchMessages, fetchSenderProfile, user?.id, isSubscribed, showNotification]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId, user?.id]);
 
   return {
     messages,
