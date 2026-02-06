@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow, format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, enUS } from 'date-fns/locale';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface CronExecution {
   id: string;
@@ -20,38 +21,38 @@ interface CronExecution {
   triggered_by: 'cron' | 'manual';
 }
 
-// Cron jobs configurés
-const CONFIGURED_CRON_JOBS = [
-  {
-    name: 'daily-cleanup-expired',
-    schedule: '0 3 * * *',
-    description: 'Purge des données expirées (signaux, locations, logs)',
-    action: 'cleanup-expired',
-    lastRunInfo: 'Exécution quotidienne à 3h00 UTC'
-  },
-  {
-    name: 'hourly-cleanup-shadow-bans',
-    schedule: '0 * * * *',
-    description: 'Lever les shadow-bans expirés',
-    action: 'cleanup-shadow-bans',
-    lastRunInfo: 'Exécution toutes les heures'
-  },
-  {
-    name: 'send-session-reminders',
-    schedule: '*/5 * * * *',
-    description: 'Envoi des rappels de session (1h et 15min avant)',
-    action: 'send-session-reminders',
-    lastRunInfo: 'Exécution toutes les 5 minutes'
-  }
-];
-
 export function CronJobsMonitor() {
   const [isLoading, setIsLoading] = useState(false);
   const [jobStatuses, setJobStatuses] = useState<Record<string, 'idle' | 'running' | 'success' | 'error'>>({});
   const [executionHistory, setExecutionHistory] = useState<CronExecution[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const { t, locale } = useTranslation();
+  const dateLocale = locale === 'fr' ? fr : enUS;
 
-  // Fetch execution history
+  const CONFIGURED_CRON_JOBS = [
+    {
+      name: 'daily-cleanup-expired',
+      schedule: '0 3 * * *',
+      description: t('cronJobs.cleanupExpiredDesc'),
+      action: 'cleanup-expired',
+      lastRunInfo: t('cronJobs.cleanupExpiredSchedule'),
+    },
+    {
+      name: 'hourly-cleanup-shadow-bans',
+      schedule: '0 * * * *',
+      description: t('cronJobs.shadowBanDesc'),
+      action: 'cleanup-shadow-bans',
+      lastRunInfo: t('cronJobs.shadowBanSchedule'),
+    },
+    {
+      name: 'send-session-reminders',
+      schedule: '*/5 * * * *',
+      description: t('cronJobs.remindersDesc'),
+      action: 'send-session-reminders',
+      lastRunInfo: t('cronJobs.remindersSchedule'),
+    },
+  ];
+
   const fetchHistory = async () => {
     setLoadingHistory(true);
     try {
@@ -70,23 +71,15 @@ export function CronJobsMonitor() {
     }
   };
 
-  useEffect(() => {
-    fetchHistory();
-  }, []);
+  useEffect(() => { fetchHistory(); }, []);
 
-  // Log execution start
   const logExecutionStart = async (jobName: string) => {
     try {
       const { data, error } = await supabase
         .from('cron_job_executions')
-        .insert({
-          job_name: jobName,
-          status: 'running',
-          triggered_by: 'manual'
-        })
+        .insert({ job_name: jobName, status: 'running', triggered_by: 'manual' })
         .select()
         .single();
-
       if (error) throw error;
       return data?.id;
     } catch (error) {
@@ -95,168 +88,79 @@ export function CronJobsMonitor() {
     }
   };
 
-  // Log execution end
   const logExecutionEnd = async (
-    executionId: string | null, 
-    status: 'success' | 'error', 
-    result?: Record<string, unknown>,
-    errorMessage?: string
+    executionId: string | null, status: 'success' | 'error',
+    result?: Record<string, unknown>, errorMessage?: string
   ) => {
     if (!executionId) return;
-    
     try {
-      const durationMs = Date.now() - new Date().getTime(); // Will be calculated on backend
-
-      await supabase
-        .from('cron_job_executions')
-        .update({
-          completed_at: new Date().toISOString(),
-          duration_ms: Math.abs(durationMs) || 100,
-          status,
-          result: result ? JSON.parse(JSON.stringify(result)) : {},
-          error_message: errorMessage
-        })
-        .eq('id', executionId);
-
-      // Refresh history
+      await supabase.from('cron_job_executions').update({
+        completed_at: new Date().toISOString(),
+        duration_ms: 100,
+        status,
+        result: result ? JSON.parse(JSON.stringify(result)) : {},
+        error_message: errorMessage,
+      }).eq('id', executionId);
       fetchHistory();
     } catch (error) {
       console.error('Error logging execution end:', error);
     }
   };
 
-  const runManualCleanup = async () => {
+  const runJob = async (jobName: string, action: string, invokeTarget: string, successKey: string, errorKey: string) => {
     setIsLoading(true);
-    setJobStatuses(prev => ({ ...prev, 'daily-cleanup-expired': 'running' }));
-    const executionId = await logExecutionStart('daily-cleanup-expired');
-    
+    setJobStatuses(prev => ({ ...prev, [jobName]: 'running' }));
+    const executionId = await logExecutionStart(jobName);
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error('Session expirée');
-        await logExecutionEnd(executionId, 'error', undefined, 'Session expirée');
+        toast.error(t('cronJobs.sessionExpired'));
+        await logExecutionEnd(executionId, 'error', undefined, 'Session expired');
         return;
       }
-
-      const response = await supabase.functions.invoke('system', {
-        body: { action: 'cleanup-expired' }
-      });
-
+      const response = await supabase.functions.invoke(invokeTarget, { body: { action } });
       if (response.error) throw response.error;
-
-      setJobStatuses(prev => ({ ...prev, 'daily-cleanup-expired': 'success' }));
+      setJobStatuses(prev => ({ ...prev, [jobName]: 'success' }));
       await logExecutionEnd(executionId, 'success', response.data);
-      toast.success('Nettoyage manuel effectué');
+      toast.success(t(successKey));
     } catch (error) {
-      console.error('Cleanup error:', error);
-      setJobStatuses(prev => ({ ...prev, 'daily-cleanup-expired': 'error' }));
+      console.error(`${jobName} error:`, error);
+      setJobStatuses(prev => ({ ...prev, [jobName]: 'error' }));
       await logExecutionEnd(executionId, 'error', undefined, String(error));
-      toast.error('Erreur lors du nettoyage');
+      toast.error(t(errorKey));
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const runManualShadowBanCleanup = async () => {
-    setIsLoading(true);
-    setJobStatuses(prev => ({ ...prev, 'hourly-cleanup-shadow-bans': 'running' }));
-    const executionId = await logExecutionStart('hourly-cleanup-shadow-bans');
-    
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error('Session expirée');
-        await logExecutionEnd(executionId, 'error', undefined, 'Session expirée');
-        return;
-      }
-
-      const response = await supabase.functions.invoke('system', {
-        body: { action: 'check-shadow-bans' }
-      });
-
-      if (response.error) throw response.error;
-
-      setJobStatuses(prev => ({ ...prev, 'hourly-cleanup-shadow-bans': 'success' }));
-      await logExecutionEnd(executionId, 'success', response.data);
-      toast.success('Vérification des shadow-bans effectuée');
-    } catch (error) {
-      console.error('Shadow ban cleanup error:', error);
-      setJobStatuses(prev => ({ ...prev, 'hourly-cleanup-shadow-bans': 'error' }));
-      await logExecutionEnd(executionId, 'error', undefined, String(error));
-      toast.error('Erreur lors de la vérification');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const runManualReminders = async () => {
-    setIsLoading(true);
-    setJobStatuses(prev => ({ ...prev, 'send-session-reminders': 'running' }));
-    const executionId = await logExecutionStart('send-session-reminders');
-    
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        toast.error('Session expirée');
-        await logExecutionEnd(executionId, 'error', undefined, 'Session expirée');
-        return;
-      }
-
-      const response = await supabase.functions.invoke('notifications', {
-        body: { action: 'send-session-reminders' }
-      });
-
-      if (response.error) throw response.error;
-
-      setJobStatuses(prev => ({ ...prev, 'send-session-reminders': 'success' }));
-      await logExecutionEnd(executionId, 'success', response.data);
-      toast.success('Rappels de session envoyés');
-    } catch (error) {
-      console.error('Reminders error:', error);
-      setJobStatuses(prev => ({ ...prev, 'send-session-reminders': 'error' }));
-      await logExecutionEnd(executionId, 'error', undefined, String(error));
-      toast.error('Erreur lors de l\'envoi des rappels');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'running':
-        return <Loader2 className="h-4 w-4 animate-spin text-signal-yellow" />;
-      case 'success':
-        return <CheckCircle className="h-4 w-4 text-signal-green" />;
-      case 'error':
-        return <XCircle className="h-4 w-4 text-coral" />;
-      default:
-        return <Clock className="h-4 w-4 text-muted-foreground" />;
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'running':
-        return <Badge variant="outline" className="bg-signal-yellow/10 text-signal-yellow border-signal-yellow/30">En cours</Badge>;
-      case 'success':
-        return <Badge variant="outline" className="bg-signal-green/10 text-signal-green border-signal-green/30">Succès</Badge>;
-      case 'error':
-        return <Badge variant="outline" className="bg-coral/10 text-coral border-coral/30">Erreur</Badge>;
-      default:
-        return <Badge variant="outline">Inconnu</Badge>;
     }
   };
 
   const getActionHandler = (action: string) => {
     switch (action) {
       case 'cleanup-expired':
-        return runManualCleanup;
+        return () => runJob('daily-cleanup-expired', 'cleanup-expired', 'system', 'cronJobs.cleanupDone', 'cronJobs.cleanupFailed');
       case 'cleanup-shadow-bans':
-        return runManualShadowBanCleanup;
+        return () => runJob('hourly-cleanup-shadow-bans', 'check-shadow-bans', 'system', 'cronJobs.shadowBanDone', 'cronJobs.shadowBanFailed');
       case 'send-session-reminders':
-        return runManualReminders;
+        return () => runJob('send-session-reminders', 'send-session-reminders', 'notifications', 'cronJobs.remindersDone', 'cronJobs.remindersFailed');
       default:
         return () => {};
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'running': return <Loader2 className="h-4 w-4 animate-spin text-signal-yellow" />;
+      case 'success': return <CheckCircle className="h-4 w-4 text-signal-green" />;
+      case 'error': return <XCircle className="h-4 w-4 text-coral" />;
+      default: return <Clock className="h-4 w-4 text-muted-foreground" />;
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'running': return <Badge variant="outline" className="bg-signal-yellow/10 text-signal-yellow border-signal-yellow/30">{t('cronJobs.running')}</Badge>;
+      case 'success': return <Badge variant="outline" className="bg-signal-green/10 text-signal-green border-signal-green/30">{t('cronJobs.success')}</Badge>;
+      case 'error': return <Badge variant="outline" className="bg-coral/10 text-coral border-coral/30">{t('cronJobs.errorStatus')}</Badge>;
+      default: return <Badge variant="outline">{t('cronJobs.unknown')}</Badge>;
     }
   };
 
@@ -268,25 +172,19 @@ export function CronJobsMonitor() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <Card className="glass border-0">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Timer className="h-5 w-5 text-coral" />
-            Tâches Planifiées (Cron Jobs)
+            {t('cronJobs.title')}
           </CardTitle>
-          <CardDescription>
-            Surveillance et exécution manuelle des tâches de maintenance automatique
-          </CardDescription>
+          <CardDescription>{t('cronJobs.description')}</CardDescription>
         </CardHeader>
       </Card>
 
-      {/* Jobs List */}
       <div className="space-y-4">
         {CONFIGURED_CRON_JOBS.map((job) => {
-          // Get last execution for this job
           const lastExecution = executionHistory.find(e => e.job_name === job.name);
-          
           return (
             <Card key={job.name} className="glass border-0">
               <CardContent className="p-4">
@@ -295,13 +193,9 @@ export function CronJobsMonitor() {
                     <div className="flex items-center gap-2 mb-1">
                       {getStatusIcon(jobStatuses[job.name] || 'idle')}
                       <h3 className="font-semibold text-foreground">{job.name}</h3>
-                      <Badge variant="outline" className="text-xs font-mono">
-                        {job.schedule}
-                      </Badge>
+                      <Badge variant="outline" className="text-xs font-mono">{job.schedule}</Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {job.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground mb-2">{job.description}</p>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
@@ -311,27 +205,18 @@ export function CronJobsMonitor() {
                         <div className="flex items-center gap-1">
                           <History className="h-3 w-3" />
                           <span>
-                            Dernière exécution : {formatDistanceToNow(new Date(lastExecution.started_at), { addSuffix: true, locale: fr })}
+                            {t('signalHistory.lastExecution', { time: formatDistanceToNow(new Date(lastExecution.started_at), { addSuffix: true, locale: dateLocale }) })}
                             {lastExecution.duration_ms && ` (${formatDuration(lastExecution.duration_ms)})`}
                           </span>
                         </div>
                       )}
                     </div>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={getActionHandler(job.action)}
-                    disabled={isLoading}
-                    className="shrink-0"
-                  >
+                  <Button variant="outline" size="sm" onClick={getActionHandler(job.action)} disabled={isLoading} className="shrink-0">
                     {isLoading && jobStatuses[job.name] === 'running' ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <>
-                        <Play className="h-4 w-4 mr-1" />
-                        Exécuter
-                      </>
+                      <><Play className="h-4 w-4 mr-1" />{t('cronJobs.execute')}</>
                     )}
                   </Button>
                 </div>
@@ -341,20 +226,14 @@ export function CronJobsMonitor() {
         })}
       </div>
 
-      {/* Execution History */}
       <Card className="glass border-0">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm flex items-center gap-2">
               <History className="h-4 w-4 text-coral" />
-              Historique des exécutions
+              {t('cronJobs.executionHistory')}
             </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={fetchHistory}
-              disabled={loadingHistory}
-            >
+            <Button variant="ghost" size="sm" onClick={fetchHistory} disabled={loadingHistory}>
               <RefreshCw className={`h-4 w-4 ${loadingHistory ? 'animate-spin' : ''}`} />
             </Button>
           </div>
@@ -365,16 +244,11 @@ export function CronJobsMonitor() {
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           ) : executionHistory.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">
-              Aucune exécution enregistrée
-            </p>
+            <p className="text-sm text-muted-foreground text-center py-8">{t('cronJobs.noExecutions')}</p>
           ) : (
             <div className="space-y-2 max-h-80 overflow-y-auto">
               {executionHistory.map((execution) => (
-                <div 
-                  key={execution.id} 
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-                >
+                <div key={execution.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
                   <div className="flex items-center gap-3">
                     {getStatusIcon(execution.status)}
                     <div>
@@ -382,19 +256,17 @@ export function CronJobsMonitor() {
                         <span className="font-medium text-sm">{execution.job_name}</span>
                         {getStatusBadge(execution.status)}
                         {execution.triggered_by === 'manual' && (
-                          <Badge variant="outline" className="text-xs">Manuel</Badge>
+                          <Badge variant="outline" className="text-xs">{t('cronJobs.manual')}</Badge>
                         )}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {format(new Date(execution.started_at), 'dd/MM/yyyy HH:mm:ss', { locale: fr })}
+                        {format(new Date(execution.started_at), 'dd/MM/yyyy HH:mm:ss', { locale: dateLocale })}
                         {execution.duration_ms && (
-                          <span className="ml-2">• Durée: {formatDuration(execution.duration_ms)}</span>
+                          <span className="ml-2">• {t('cronJobs.duration')}: {formatDuration(execution.duration_ms)}</span>
                         )}
                       </div>
                       {execution.error_message && (
-                        <p className="text-xs text-coral mt-1 truncate max-w-md">
-                          {execution.error_message}
-                        </p>
+                        <p className="text-xs text-coral mt-1 truncate max-w-md">{execution.error_message}</p>
                       )}
                     </div>
                   </div>
@@ -405,7 +277,6 @@ export function CronJobsMonitor() {
         </CardContent>
       </Card>
 
-      {/* Info Card */}
       <Card className="glass border-0 bg-muted/20">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
@@ -413,12 +284,8 @@ export function CronJobsMonitor() {
               <Clock className="h-4 w-4 text-coral" />
             </div>
             <div>
-              <h4 className="font-medium text-foreground mb-1">À propos des Cron Jobs</h4>
-              <p className="text-sm text-muted-foreground">
-                Les tâches planifiées s'exécutent automatiquement via PostgreSQL pg_cron. 
-                L'historique des exécutions est conservé 30 jours. Vous pouvez exécuter manuellement 
-                chaque tâche pour tester ou forcer une exécution immédiate.
-              </p>
+              <h4 className="font-medium text-foreground mb-1">{t('cronJobs.aboutCronJobs')}</h4>
+              <p className="text-sm text-muted-foreground">{t('cronJobs.aboutCronDesc')}</p>
             </div>
           </div>
         </CardContent>

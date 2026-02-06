@@ -240,6 +240,8 @@ export const translations = {
     seeDemo: { en: 'See demo with fake signals', fr: 'Voir la démo avec de faux signaux' },
     demoMode: { en: 'Demo mode', fr: 'Mode démo' },
     demoModeDesc: { en: 'Show fake signals to discover the app', fr: 'Afficher de faux signaux pour découvrir l\'app' },
+    sessionExpired: { en: 'Session expired, please log in again', fr: 'Session expirée, veuillez vous reconnecter' },
+    mapLoadError: { en: 'Unable to load the map', fr: 'Impossible de charger la carte' },
   },
 
   // Post-signup onboarding
@@ -1539,6 +1541,74 @@ export const translations = {
     overview: { en: 'Overview', fr: 'Vue' },
     alerts: { en: 'Alerts', fr: 'Alertes' },
   },
+
+  // User Popup Card (Map)
+  userPopup: {
+    open: { en: 'Open', fr: 'Ouvert' },
+    conditional: { en: 'Conditional', fr: 'Conditionnel' },
+    busy: { en: 'Busy', fr: 'Occupé' },
+    unknownDistance: { en: 'Unknown distance', fr: 'Distance inconnue' },
+    veryClose: { en: '{meters}m - Very close!', fr: '{meters}m - Très proche !' },
+    viewProfile: { en: 'View profile', fr: 'Voir le profil' },
+    activeAgo: { en: 'Active {time}', fr: 'Actif {time}' },
+  },
+
+  // Signal History Panel
+  signalHistory: {
+    history: { en: 'History', fr: 'Historique' },
+    signalHistory: { en: 'Signal history', fr: 'Historique des signaux' },
+    noHistory: { en: 'No history', fr: 'Aucun historique' },
+    noHistoryDesc: { en: 'Your past signals will appear here', fr: 'Tes signaux passés apparaîtront ici' },
+    showingLast: { en: 'Showing the last 20 signals', fr: 'Affichage des 20 derniers signaux' },
+    lastExecution: { en: 'Last execution: {time}', fr: 'Dernière exécution : {time}' },
+  },
+
+  // QR Code Scanner
+  qrScanner: {
+    cameraError: { en: "Cannot access the camera. Check permissions.", fr: "Impossible d'accéder à la caméra. Vérifie les permissions." },
+    checkinSuccess: { en: 'Check-in successful!', fr: 'Check-in réussi !' },
+    scanError: { en: 'Error during scan', fr: 'Erreur lors du scan' },
+    checkinError: { en: 'Error during check-in', fr: 'Erreur lors du check-in' },
+    cameraErrorGeneric: { en: 'Camera error', fr: 'Erreur de la caméra' },
+    scanQR: { en: 'Scan QR Code', fr: 'Scanner le QR Code' },
+    scanDesc: { en: "Scan the organizer's code to confirm your presence", fr: "Scanne le code de l'organisateur pour confirmer ta présence" },
+    verifying: { en: 'Verifying...', fr: 'Vérification...' },
+    error: { en: 'Error', fr: 'Erreur' },
+    cameraUnavailable: { en: 'Camera unavailable', fr: 'Caméra non disponible' },
+    retry: { en: 'Retry', fr: 'Réessayer' },
+  },
+
+  // Cron Jobs Monitor
+  cronJobs: {
+    title: { en: 'Scheduled Tasks (Cron Jobs)', fr: 'Tâches Planifiées (Cron Jobs)' },
+    description: { en: 'Monitor and manually run automatic maintenance tasks', fr: 'Surveillance et exécution manuelle des tâches de maintenance automatique' },
+    cleanupExpiredDesc: { en: 'Purge expired data (signals, locations, logs)', fr: 'Purge des données expirées (signaux, locations, logs)' },
+    cleanupExpiredSchedule: { en: 'Daily at 3:00 AM UTC', fr: 'Exécution quotidienne à 3h00 UTC' },
+    shadowBanDesc: { en: 'Lift expired shadow bans', fr: 'Lever les shadow-bans expirés' },
+    shadowBanSchedule: { en: 'Every hour', fr: 'Exécution toutes les heures' },
+    remindersDesc: { en: 'Send session reminders (1h and 15min before)', fr: 'Envoi des rappels de session (1h et 15min avant)' },
+    remindersSchedule: { en: 'Every 5 minutes', fr: 'Exécution toutes les 5 minutes' },
+    sessionExpired: { en: 'Session expired', fr: 'Session expirée' },
+    cleanupDone: { en: 'Manual cleanup completed', fr: 'Nettoyage manuel effectué' },
+    cleanupFailed: { en: 'Error during cleanup', fr: 'Erreur lors du nettoyage' },
+    shadowBanDone: { en: 'Shadow ban check completed', fr: 'Vérification des shadow-bans effectuée' },
+    shadowBanFailed: { en: 'Error during verification', fr: 'Erreur lors de la vérification' },
+    remindersDone: { en: 'Session reminders sent', fr: 'Rappels de session envoyés' },
+    remindersFailed: { en: 'Error sending reminders', fr: "Erreur lors de l'envoi des rappels" },
+    execute: { en: 'Run', fr: 'Exécuter' },
+    executionHistory: { en: 'Execution history', fr: 'Historique des exécutions' },
+    noExecutions: { en: 'No executions recorded', fr: 'Aucune exécution enregistrée' },
+    manual: { en: 'Manual', fr: 'Manuel' },
+    running: { en: 'Running', fr: 'En cours' },
+    success: { en: 'Success', fr: 'Succès' },
+    errorStatus: { en: 'Error', fr: 'Erreur' },
+    unknown: { en: 'Unknown', fr: 'Inconnu' },
+    duration: { en: 'Duration', fr: 'Durée' },
+    aboutCronJobs: { en: 'About Cron Jobs', fr: 'À propos des Cron Jobs' },
+    aboutCronDesc: { en: 'Scheduled tasks run automatically via PostgreSQL pg_cron. Execution history is kept for 30 days. You can manually run each task to test or force immediate execution.', fr: "Les tâches planifiées s'exécutent automatiquement via PostgreSQL pg_cron. L'historique des exécutions est conservé 30 jours. Vous pouvez exécuter manuellement chaque tâche pour tester ou forcer une exécution immédiate." },
+  },
+
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;

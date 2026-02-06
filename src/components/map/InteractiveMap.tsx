@@ -105,8 +105,8 @@ export function InteractiveMap({
         const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
         
         if (refreshError || !session) {
-          console.warn('[InteractiveMap] Session refresh failed:', refreshError?.message);
-          setError('Session expirée, veuillez vous reconnecter');
+            console.warn('[InteractiveMap] Session refresh failed:', refreshError?.message);
+            setError('Session expired');
           setIsLoading(false);
           return;
         }
@@ -117,7 +117,7 @@ export function InteractiveMap({
           // Handle auth errors specifically
           if (error.message?.includes('401') || error.message?.includes('non-2xx')) {
             console.warn('[InteractiveMap] Auth error fetching token:', error.message);
-            setError('Session expirée, veuillez vous reconnecter');
+            setError('Session expired');
           } else {
             throw error;
           }
@@ -131,7 +131,7 @@ export function InteractiveMap({
         }
       } catch (err: unknown) {
         console.error('Failed to fetch Mapbox token:', err);
-        setError('Impossible de charger la carte');
+        setError('Map unavailable');
       } finally {
         setIsLoading(false);
       }

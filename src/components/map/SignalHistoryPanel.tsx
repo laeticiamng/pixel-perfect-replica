@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { History, Clock, MapPin, Radio } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, enUS } from 'date-fns/locale';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { EmptyState, LoadingSkeleton } from '@/components/shared';
+import { useTranslation } from '@/lib/i18n/useTranslation';
+import { ACTIVITIES } from '@/types/signal';
 
 interface SignalHistoryEntry {
   id: string;
@@ -18,29 +20,13 @@ interface SignalHistoryEntry {
   location_description?: string;
 }
 
-const activityLabels: Record<string, string> = {
-  studying: 'Réviser',
-  eating: 'Manger',
-  working: 'Bosser',
-  talking: 'Parler',
-  sport: 'Sport',
-  other: 'Autre'
-};
-
-const activityEmojis: Record<string, string> = {
-  studying: '📚',
-  eating: '🍽️',
-  working: '💻',
-  talking: '💬',
-  sport: '🏃',
-  other: '✨'
-};
-
 export function SignalHistoryPanel() {
   const [open, setOpen] = useState(false);
   const [history, setHistory] = useState<SignalHistoryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
+  const { t, locale } = useTranslation();
+  const dateLocale = locale === 'fr' ? fr : enUS;
 
   useEffect(() => {
     if (open && user) {
@@ -53,8 +39,6 @@ export function SignalHistoryPanel() {
     
     setIsLoading(true);
     try {
-      // Note: We're using analytics_events to track signal history
-      // since active_signals only contains current signals
       const { data, error } = await supabase
         .from('analytics_events')
         .select('*')
@@ -81,6 +65,16 @@ export function SignalHistoryPanel() {
     }
   };
 
+  const getActivityLabel = (activityId: string) => {
+    const activity = ACTIVITIES.find(a => a.id === activityId);
+    return activity?.label || activityId;
+  };
+
+  const getActivityEmoji = (activityId: string) => {
+    const activity = ACTIVITIES.find(a => a.id === activityId);
+    return activity?.emoji || '✨';
+  };
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
@@ -90,14 +84,14 @@ export function SignalHistoryPanel() {
           className="gap-2 text-muted-foreground hover:text-foreground"
         >
           <History className="h-4 w-4" />
-          Historique
+          {t('signalHistory.history')}
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-full sm:max-w-md">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <Radio className="h-5 w-5 text-coral" />
-            Historique des signaux
+            {t('signalHistory.signalHistory')}
           </SheetTitle>
         </SheetHeader>
 
@@ -107,8 +101,8 @@ export function SignalHistoryPanel() {
           ) : history.length === 0 ? (
             <EmptyState
               icon={History}
-              title="Aucun historique"
-              description="Tes signaux passés apparaîtront ici"
+              title={t('signalHistory.noHistory')}
+              description={t('signalHistory.noHistoryDesc')}
             />
           ) : (
             <div className="space-y-3">
@@ -119,20 +113,20 @@ export function SignalHistoryPanel() {
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-2xl">{activityEmojis[entry.activity]}</span>
+                      <span className="text-2xl">{getActivityEmoji(entry.activity)}</span>
                       <div>
                         <p className="font-medium text-foreground">
-                          {activityLabels[entry.activity] || entry.activity}
+                          {getActivityLabel(entry.activity)}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {format(new Date(entry.started_at), 'EEEE d MMMM', { locale: fr })}
+                          {format(new Date(entry.started_at), 'EEEE d MMMM', { locale: dateLocale })}
                         </p>
                       </div>
                     </div>
                     <Badge variant="secondary" className="text-xs">
                       {formatDistanceToNow(new Date(entry.started_at), { 
                         addSuffix: true,
-                        locale: fr 
+                        locale: dateLocale 
                       })}
                     </Badge>
                   </div>
@@ -154,7 +148,7 @@ export function SignalHistoryPanel() {
               ))}
 
               <p className="text-xs text-center text-muted-foreground py-4">
-                Affichage des 20 derniers signaux
+                {t('signalHistory.showingLast')}
               </p>
             </div>
           )}
