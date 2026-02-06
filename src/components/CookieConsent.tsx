@@ -1,11 +1,13 @@
 import { useState, useEffect, forwardRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 const CONSENT_KEY = 'easy-cookie-consent';
 
 export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_props, ref) {
   const [showBanner, setShowBanner] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const consent = localStorage.getItem(CONSENT_KEY);
@@ -42,7 +44,7 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
             <span className="text-xl">🍪</span>
-            <h3 className="font-semibold text-foreground text-sm">Cookies & données</h3>
+            <h3 className="font-semibold text-foreground text-sm">{t('cookies.title')}</h3>
           </div>
           <button 
             onClick={handleDecline}
@@ -53,8 +55,7 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
         </div>
         
         <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
-          EASY utilise des cookies pour améliorer ton expérience et analyser l'utilisation de l'app. 
-          Ta position n'est jamais stockée sans ton consentement.
+          {t('cookies.description')}
         </p>
         
         <div className="flex gap-2">
@@ -64,14 +65,14 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
             onClick={handleDecline}
             className="flex-1 h-9 text-xs rounded-lg"
           >
-            Refuser
+            {t('cookies.decline')}
           </Button>
           <Button
             size="sm"
             onClick={handleAccept}
             className="flex-1 h-9 text-xs bg-coral hover:bg-coral-dark text-primary-foreground rounded-lg"
           >
-            Accepter
+            {t('cookies.accept')}
           </Button>
         </div>
         
@@ -79,7 +80,7 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
           href="/privacy" 
           className="block text-center text-[10px] text-muted-foreground hover:text-coral mt-2"
         >
-          En savoir plus sur notre politique de confidentialité
+          {t('cookies.learnMore')}
         </a>
       </div>
     </div>
