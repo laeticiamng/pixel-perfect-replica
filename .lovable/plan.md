@@ -1,58 +1,88 @@
 
+# Audit Final Complet -- Emojis Permanents Restants
 
-# Corrections finales v2.0.0 -- 2 issues restantes
+## Resultat de l'audit navigateur
 
-## Audit complet -- Resultat
+Toutes les routes publiques ont ete testees physiquement via le navigateur :
+- `/` (Landing) -- OK, pas d'emoji visible
+- `/onboarding` -- OK (Sparkles Lucide corrige precedemment)
+- `/terms`, `/privacy`, `/about`, `/help`, `/install`, `/changelog` -- OK
+- `/forgot-password` -- OK
+- `/map` (protege) -- Redirige correctement vers `/onboarding` avec login state
+- `/nonexistent-page` -- 404 page s'affiche correctement MAIS contient un emoji
 
-Toutes les corrections du plan precedent ont ete appliquees avec succes. L'audit revele **2 derniers problemes** avant publication.
+**Console** : Zero erreur applicative. Toutes les erreurs sont du framework Lovable (postMessage/manifest CORS).
 
 ---
 
 ## Constats par role
 
-### CISO / DPO / CEO / COO / CDO
-- **OK** : Aucun nouveau probleme detecte. RLS, JWT, RGPD, KPIs, workflows -- tout est conforme.
+### CEO / COO / CDO / CISO / DPO
+- **OK** : Aucun changement necessaire. Securite, RGPD, KPIs, workflows -- conformes.
 
-### Head of Design / Marketing
-- **P1** : Console warning React sur la landing page -- `FeatureCard` recoit un `ref` via `RevealText` mais n'utilise pas `forwardRef`. Cela genere 3 warnings visibles dans la console developpeur. Bien que non visible par l'utilisateur final, c'est un indicateur de qualite technique.
+### Head of Design / Marketing -- Coherence premium
+**8 emojis restants dans des elements UI permanents** violent la regle "100% Lucide icons" :
+
+| # | Fichier | Ligne | Emoji | Contexte | Remplacement Lucide |
+|---|---------|-------|-------|----------|---------------------|
+| 1 | `NotFound.tsx` | L20 | `🔍` 8xl | Page 404 icon principal | `Search` dans cercle style |
+| 2 | `ResetPasswordPage.tsx` | L88 | `🔒` 6xl | Lien expire icon | `Lock` dans cercle style |
+| 3 | `PostSignupOnboardingPage.tsx` | L234 | `🎯` 5xl | Step 2 icon | `Target` dans cercle style |
+| 4 | `EventDetailPage.tsx` | L146 | `🔍` 4xl | Event non trouve | `Search` inline |
+| 5 | `ProximityRevealPage.tsx` | L262 | `📍` inline | Distance indicator | `MapPin` Lucide inline |
+| 6 | `EventsPage.tsx` | L416 | `📍` inline | Section "Mes evenements" | `MapPin` Lucide inline |
+| 7 | `translations.ts` | L547 | `🔒` inline | birthYearPrivacy text | `Lock` icon inline (ou supprimer emoji du texte) |
+| 8 | `useNearbyNotifications.ts` | L110 | `🆕` | Toast icon + `📍` L108/L123 | Acceptable (notifications ephemeres) mais devrait utiliser Lucide si possible |
 
 ### Beta Testeur / QA
-- **P1** : Emoji `🎉` restant dans `PremiumPage.tsx` (toast apres achat premium reussi). Inconsistant avec la regle "zero emoji dans les toasts".
+- Les points 1 a 7 sont visibles dans des pages permanentes
+- Le point 8 (notifications) est ephemere et donc P2
 
 ---
 
-## Synthese des corrections
+## Corrections a appliquer
 
-| # | Probleme | Gravite | Fichier | Solution | Validation |
-|---|----------|---------|---------|----------|------------|
-| 1 | Emoji dans toast premium | P1 | `PremiumPage.tsx` L79 | Supprimer le `🎉` du toast.success | Toast texte pur |
-| 2 | Console warning forwardRef sur FeatureCard | P1 | `FeatureCard.tsx` | Wrapper le composant avec `forwardRef` | 0 warning console sur landing |
+### P1 -- Elements UI permanents (7 corrections)
 
----
+**Correction 1 : NotFound.tsx L20**
+Remplacer `<div className="text-8xl mb-6">🔍</div>` par un cercle + icone `Search` Lucide style, coherent avec le design system.
 
-## Details techniques
+**Correction 2 : ResetPasswordPage.tsx L88**
+Remplacer `<div className="text-6xl mb-6">🔒</div>` par un cercle + icone `Lock` Lucide.
 
-### Correction 1 : PremiumPage.tsx
-Ligne 79 : remplacer `'🎉 ' + t('premium.welcomeEasyPlus')` par `t('premium.welcomeEasyPlus')` (sans emoji).
+**Correction 3 : PostSignupOnboardingPage.tsx L234**
+Remplacer `<div className="text-5xl mb-4">🎯</div>` par un cercle + icone `Target` Lucide.
 
-### Correction 2 : FeatureCard.tsx
-Le composant `RevealText` passe un `ref` a son enfant, mais `FeatureCard` est un composant fonction sans `forwardRef`. La solution est d'envelopper `FeatureCard` avec `React.forwardRef` pour accepter le ref correctement et eliminer les 3 warnings console.
+**Correction 4 : EventDetailPage.tsx L146**
+Remplacer `<p className="text-4xl mb-4">🔍</p>` par icone `Search` Lucide inline.
+
+**Correction 5 : ProximityRevealPage.tsx L262**
+Remplacer `📍` texte par `<MapPin className="h-4 w-4 inline" />`.
+
+**Correction 6 : EventsPage.tsx L416**
+Remplacer `<span className="text-coral">📍</span>` par `<MapPin className="h-5 w-5 text-coral" />`.
+
+**Correction 7 : translations.ts L547**
+Supprimer `🔒` du texte birthYearPrivacy (prefixer par une icone Lock dans le composant EditProfilePage a la place).
+
+### P2 -- Notifications ephemeres (acceptables)
+- `useNearbyNotifications.ts` : emojis dans les toasts et notifications push -- acceptable car ephemeres et les emojis sont natifs aux notifications systeme.
 
 ---
 
 ## Checklist "Publication Ready"
 
-- [x] 0 lien mort / 0 page 404
+- [x] 0 lien mort / 0 page 404 (404 page existe et fonctionne)
 - [x] 0 bouton sans action
 - [x] 0 chevauchement texte / UI cassee
-- [x] 0 erreur console bloquante
+- [x] 0 erreur console bloquante (toutes les erreurs sont framework Lovable)
 - [x] Mobile-first impeccable
 - [x] Etats UI (loading/empty/error/success)
-- [x] Securite : RLS, JWT, rate limiting, validation inputs
+- [x] Securite : RLS, JWT, rate limiting, validation
 - [x] RGPD : mentions legales, privacy, cookies, export, suppression
 - [x] Tracking KPI : analytics_events
-- [ ] 0 warning console (FeatureCard forwardRef -- correction 2)
-- [ ] Coherence premium : 1 emoji restant (correction 1)
+- [ ] Coherence premium : 7 emojis permanents restants (corrections ci-dessus)
 
-## Verdict : READY TO PUBLISH = OUI (apres ces 2 corrections mineures)
+## Verdict : READY TO PUBLISH = OUI (apres ces 7 corrections cosmetiques)
 
+Aucun blocage fonctionnel ou securitaire. Les 7 corrections sont purement visuelles pour atteindre la coherence "100% Lucide icons" dans les elements UI permanents.
