@@ -1308,6 +1308,126 @@ export const translations = {
     title: { en: 'EASY - The first 100% real social network', fr: 'EASY - Le premier réseau social 100% réel' },
     text: { en: 'Join me on EASY for spontaneous real-life meetups!', fr: 'Rejoignez-moi sur EASY pour des rencontres spontanées en vrai !' },
   },
+
+  // Binome Onboarding
+  binomeOnboarding: {
+    welcome: { en: 'Welcome to EASY!', fr: 'Bienvenue sur EASY !' },
+    subtitle: { en: 'Create real connections. Fight loneliness.', fr: 'Crée du lien en vrai. Lutte contre la solitude.' },
+    stepOf: { en: 'Step {current} of {total}', fr: 'Étape {current} sur {total}' },
+    letsGo: { en: "Let's go!", fr: "C'est parti !" },
+    featuresIncluded: { en: 'Features included:', fr: 'Fonctionnalités incluses :' },
+    // Steps
+    step1Title: { en: 'Fight loneliness', fr: 'Lutte contre la solitude' },
+    step1Desc: { en: 'EASY connects you with people who share your interests. No more isolation: find a partner to study, eat, exercise or simply chat.', fr: 'EASY te connecte avec des personnes qui partagent tes envies. Fini l\'isolement : trouve un binôme pour réviser, manger, faire du sport ou simplement discuter.' },
+    step2Title: { en: 'Create or join a slot', fr: 'Crée ou rejoins un créneau' },
+    step2Desc: { en: 'Schedule a 45min, 1h30 or 3h session in your city. Choose the activity: study, work, sport, meal, chat...', fr: 'Planifie une session de 45min, 1h30 ou 3h dans ta ville. Choisis l\'activité : étudier, travailler, sport, repas, discussion...' },
+    step3Title: { en: 'Find your partner', fr: 'Trouve ton binôme' },
+    step3Desc: { en: 'Others can join your slot. Maximum 4 participants for a friendly atmosphere and authentic connections.', fr: 'D\'autres personnes peuvent rejoindre ton créneau. Maximum 4 participants pour une ambiance conviviale et des liens authentiques.' },
+    step4Title: { en: 'Meet in person', fr: 'Rencontre en vrai' },
+    step4Desc: { en: 'On the day, confirm your presence on-site (GPS check-in). It\'s the chance to create real human connections!', fr: 'Le jour J, confirme ta présence sur place (check-in GPS). C\'est l\'occasion de créer de vraies connexions humaines !' },
+    step5Title: { en: 'Build lasting bonds', fr: 'Crée du lien durable' },
+    step5Desc: { en: 'Each meeting can become a friendship, a motivation group, or more. Rate your experience to help the community grow.', fr: 'Chaque rencontre peut devenir une amitié, un groupe de motivation, ou plus encore. Évalue ton expérience pour aider la communauté à grandir.' },
+    // Features
+    featureReminders: { en: 'Automatic reminders', fr: 'Rappels automatiques' },
+    featureRemindersDesc: { en: '1h and 15min before', fr: '1h et 15min avant' },
+    featureReliability: { en: 'Reliability score', fr: 'Score de fiabilité' },
+    featureReliabilityDesc: { en: 'Punctuality rewarded', fr: 'Ponctualité récompensée' },
+    featureFreeSlots: { en: '4 free slots/month', fr: '4 créneaux/mois gratuits' },
+    featureFreeSlotsDesc: { en: 'Unlimited with Premium', fr: 'Illimité en Premium' },
+  },
+
+  // Binome Description Card
+  binomeDescription: {
+    howItWorks: { en: 'How does it work?', fr: 'Comment ça marche ?' },
+    description: { en: 'Create a slot or join one in your city. On the day, check in on-site and enjoy your session! You can create up to 4 free slots per month.', fr: 'Crée un créneau ou rejoins-en un dans ta ville. Le jour J, fais ton check-in sur place et profite de ta session ! Tu peux créer jusqu\'à 4 créneaux gratuits par mois.' },
+    viewTutorial: { en: 'View full tutorial →', fr: 'Voir le tutoriel complet →' },
+  },
+
+  // Why EASY section
+  whyEasy: {
+    title: { en: 'Why EASY?', fr: 'Pourquoi EASY ?' },
+    subtitle: { en: 'More than a dating app: a tool to create real-life connections', fr: 'Plus qu\'une app de rencontre : un outil pour créer du lien en vrai' },
+    benefit1Title: { en: 'Fight loneliness', fr: 'Lutte contre la solitude' },
+    benefit1Desc: { en: 'Don\'t stay alone. Find someone to share a moment, an activity, a conversation.', fr: 'Ne reste plus seul·e. Trouve quelqu\'un pour partager un moment, une activité, une discussion.' },
+    benefit2Title: { en: 'Create authentic bonds', fr: 'Crée du lien authentique' },
+    benefit2Desc: { en: 'Friendship, motivation group, mutual aid... Each meeting can become a lasting relationship.', fr: 'Amitié, groupe de motivation, entraide... Chaque rencontre peut devenir une relation durable.' },
+    benefit3Title: { en: 'Improve your well-being', fr: 'Améliore ton bien-être' },
+    benefit3Desc: { en: 'Social interactions reduce stress, boost motivation and give meaning to daily life.', fr: 'Les interactions sociales réduisent le stress, boostent la motivation et donnent du sens au quotidien.' },
+    benefit4Title: { en: 'Build your community', fr: 'Construis ta communauté' },
+    benefit4Desc: { en: 'Join people who share your interests and build your own support network.', fr: 'Rejoins des personnes qui partagent tes centres d\'intérêt et crée ton propre réseau de soutien.' },
+    statHighlight: { en: 'Loneliness affects 1 in 2 students.', fr: 'La solitude touche 1 étudiant sur 2.' },
+    statMessage: { en: 'EASY helps you break isolation, one meeting at a time.', fr: 'EASY t\'aide à briser l\'isolement, une rencontre à la fois.' },
+    // Condensed
+    condensedTitle: { en: 'Why create a slot?', fr: 'Pourquoi créer un créneau ?' },
+    condensedDesc: { en: 'No more loneliness! Offer an activity and meet people who share your interests. Each slot can become a friendship, a support group, or more.', fr: 'Fini la solitude ! Propose une activité et rencontre des personnes qui partagent tes envies. Chaque créneau peut devenir une amitié, un groupe de soutien, ou plus encore.' },
+    studyTogether: { en: 'Study together', fr: 'Réviser ensemble' },
+    lunch: { en: 'Lunch', fr: 'Déjeuner' },
+    sport: { en: 'Sport', fr: 'Sport' },
+    chat: { en: 'Chat', fr: 'Discuter' },
+  },
+
+  // Testimonials
+  testimonials: {
+    title: { en: 'They tried EASY', fr: 'Ils ont testé EASY' },
+    subtitle: { en: 'Meetings that change everyday life', fr: 'Des rencontres qui changent le quotidien' },
+    quote1: { en: 'I found my study group thanks to EASY. We meet every week at the library and they\'ve become real friends!', fr: 'J\'ai trouvé mon groupe de révisions grâce à EASY. On se retrouve chaque semaine à la BU et c\'est devenu des vrais amis !' },
+    author1: { en: 'Marie, 21', fr: 'Marie, 21 ans' },
+    activity1: { en: 'Study sessions', fr: 'Révisions' },
+    quote2: { en: 'Moving to a new city, I struggled to meet people. EASY made me feel less alone from the first week.', fr: 'En arrivant dans une nouvelle ville, j\'avais du mal à rencontrer des gens. EASY m\'a permis de me sentir moins seul dès la première semaine.' },
+    author2: { en: 'Thomas, 24', fr: 'Thomas, 24 ans' },
+    activity2: { en: 'Sport & Chats', fr: 'Sport & Discussions' },
+    quote3: { en: 'It\'s great to have lunch with someone rather than alone in front of my laptop. It really changes daily life!', fr: 'C\'est super de pouvoir déjeuner avec quelqu\'un plutôt que seule devant mon ordi. Ça change vraiment le quotidien !' },
+    author3: { en: 'Léa, 22', fr: 'Léa, 22 ans' },
+    activity3: { en: 'Lunch', fr: 'Déjeuner' },
+  },
+
+  // Community Stats
+  communityStats: {
+    title: { en: 'Real-time community', fr: 'Communauté en temps réel' },
+    online: { en: 'Online', fr: 'En ligne' },
+    now: { en: 'now', fr: 'maintenant' },
+    slots: { en: 'Slots', fr: 'Créneaux' },
+    thisMonth: { en: 'this month', fr: 'ce mois' },
+    meetings: { en: 'Meetings', fr: 'Rencontres' },
+    successful: { en: 'successful', fr: 'réussies' },
+  },
+
+  // AI Recommendations
+  aiRecommendations: {
+    title: { en: 'AI Suggestions', fr: 'Suggestions IA' },
+    subtitle: { en: 'Personalized recommendations', fr: 'Recommandations personnalisées' },
+    empty: { en: 'No recommendations for now', fr: 'Pas de recommandations pour le moment' },
+    fromCache: { en: '⚡ From cache', fr: '⚡ Depuis le cache' },
+    refresh: { en: 'Refresh', fr: 'Actualiser' },
+    refreshSuggestions: { en: 'Refresh suggestions', fr: 'Rafraîchir les suggestions' },
+  },
+
+  // Session Quota
+  sessionQuota: {
+    premium: { en: 'Premium', fr: 'Premium' },
+    unlimited: { en: 'Unlimited', fr: 'Illimité' },
+    thisMonth: { en: 'this month', fr: 'ce mois' },
+    goPremium: { en: 'Go Premium', fr: 'Passer Premium' },
+    limitReached: { en: 'You\'ve reached your monthly limit. Go Premium to create more slots!', fr: 'Vous avez atteint votre limite mensuelle. Passez Premium pour créer plus de créneaux !' },
+    oneLeft: { en: 'Only one slot left this month', fr: 'Plus qu\'un créneau disponible ce mois-ci' },
+  },
+
+  // Icebreaker
+  icebreaker: {
+    copied: { en: 'Copied!', fr: 'Copié !' },
+    copyError: { en: 'Unable to copy', fr: 'Impossible de copier' },
+    generating: { en: 'AI generation in progress...', fr: 'Génération IA en cours...' },
+    labelAI: { en: '💬 AI Icebreaker', fr: '💬 Icebreaker IA' },
+    labelSuggested: { en: '💬 Suggested icebreaker', fr: '💬 Icebreaker suggéré' },
+    suggestions: { en: 'suggestions', fr: 'suggestions' },
+    copyLabel: { en: 'Copy', fr: 'Copier' },
+    newSuggestion: { en: 'New suggestion', fr: 'Nouvelle suggestion' },
+    // Voice
+    stop: { en: 'Stop', fr: 'Arrêter' },
+    listen: { en: 'Listen', fr: 'Écouter' },
+    generatingVoice: { en: 'Generating...', fr: 'Génération...' },
+    listenIcebreaker: { en: 'Listen to icebreaker', fr: 'Écouter l\'icebreaker' },
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

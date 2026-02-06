@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 import { ConfettiCelebration } from './ConfettiCelebration';
+import { useTranslation } from '@/lib/i18n';
 
 interface BinomeOnboardingProps {
   onComplete: () => void;
@@ -20,47 +21,41 @@ interface BinomeOnboardingProps {
 
 const ONBOARDING_KEY = 'binome_onboarding_completed';
 
-const steps = [
-  {
-    icon: <Heart className="h-8 w-8 text-coral" />,
-    title: "Lutte contre la solitude",
-    description: "EASY te connecte avec des personnes qui partagent tes envies. Fini l'isolement : trouve un binôme pour réviser, manger, faire du sport ou simplement discuter."
-  },
-  {
-    icon: <Calendar className="h-8 w-8 text-signal-green" />,
-    title: "Crée ou rejoins un créneau",
-    description: "Planifie une session de 45min, 1h30 ou 3h dans ta ville. Choisis l'activité : étudier, travailler, sport, repas, discussion..."
-  },
-  {
-    icon: <Users className="h-8 w-8 text-primary" />,
-    title: "Trouve ton binôme",
-    description: "D'autres personnes peuvent rejoindre ton créneau. Maximum 4 participants pour une ambiance conviviale et des liens authentiques."
-  },
-  {
-    icon: <MapPin className="h-8 w-8 text-coral" />,
-    title: "Rencontre en vrai",
-    description: "Le jour J, confirme ta présence sur place (check-in GPS). C'est l'occasion de créer de vraies connexions humaines !"
-  },
-  {
-    icon: <HandHeart className="h-8 w-8 text-signal-green" />,
-    title: "Crée du lien durable",
-    description: "Chaque rencontre peut devenir une amitié, un groupe de motivation, ou plus encore. Évalue ton expérience pour aider la communauté à grandir."
-  }
+const stepIcons = [
+  <Heart className="h-8 w-8 text-coral" />,
+  <Calendar className="h-8 w-8 text-signal-green" />,
+  <Users className="h-8 w-8 text-primary" />,
+  <MapPin className="h-8 w-8 text-coral" />,
+  <HandHeart className="h-8 w-8 text-signal-green" />,
 ];
 
-const features = [
-  { icon: <Clock className="h-5 w-5" />, label: "Rappels automatiques", description: "1h et 15min avant" },
-  { icon: <CheckCircle2 className="h-5 w-5" />, label: "Score de fiabilité", description: "Ponctualité récompensée" },
-  { icon: <Sparkles className="h-5 w-5" />, label: "4 créneaux/mois gratuits", description: "Illimité en Premium" },
+const featureIcons = [
+  <Clock className="h-5 w-5" />,
+  <CheckCircle2 className="h-5 w-5" />,
+  <Sparkles className="h-5 w-5" />,
 ];
 
 export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboardingProps) {
+  const { t } = useTranslation();
   const [showDialog, setShowDialog] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  const steps = [
+    { icon: stepIcons[0], title: t('binomeOnboarding.step1Title'), description: t('binomeOnboarding.step1Desc') },
+    { icon: stepIcons[1], title: t('binomeOnboarding.step2Title'), description: t('binomeOnboarding.step2Desc') },
+    { icon: stepIcons[2], title: t('binomeOnboarding.step3Title'), description: t('binomeOnboarding.step3Desc') },
+    { icon: stepIcons[3], title: t('binomeOnboarding.step4Title'), description: t('binomeOnboarding.step4Desc') },
+    { icon: stepIcons[4], title: t('binomeOnboarding.step5Title'), description: t('binomeOnboarding.step5Desc') },
+  ];
+
+  const features = [
+    { icon: featureIcons[0], label: t('binomeOnboarding.featureReminders'), description: t('binomeOnboarding.featureRemindersDesc') },
+    { icon: featureIcons[1], label: t('binomeOnboarding.featureReliability'), description: t('binomeOnboarding.featureReliabilityDesc') },
+    { icon: featureIcons[2], label: t('binomeOnboarding.featureFreeSlots'), description: t('binomeOnboarding.featureFreeSlotsDesc') },
+  ];
+
   useEffect(() => {
-    // Check if user has already seen onboarding
     const hasCompleted = localStorage.getItem(ONBOARDING_KEY);
     if (!hasCompleted || forceShow) {
       setShowDialog(true);
@@ -70,7 +65,6 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
   const handleComplete = () => {
     localStorage.setItem(ONBOARDING_KEY, 'true');
     setShowConfetti(true);
-    // Keep dialog open briefly to show confetti
     setTimeout(() => {
       setShowDialog(false);
       onComplete();
@@ -105,14 +99,13 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Heart className="h-6 w-6 text-coral" />
-            Bienvenue sur EASY !
+            {t('binomeOnboarding.welcome')}
           </DialogTitle>
           <DialogDescription>
-            Crée du lien en vrai. Lutte contre la solitude.
+            {t('binomeOnboarding.subtitle')}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Progress indicator */}
         <div className="flex items-center gap-1 my-4">
           {steps.map((_, idx) => (
             <div
@@ -125,7 +118,6 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
           ))}
         </div>
 
-        {/* Current step content */}
         <div className="py-4">
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="p-4 rounded-2xl bg-gradient-to-br from-coral/10 to-signal-green/10">
@@ -140,15 +132,13 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
           </div>
         </div>
 
-        {/* Step indicator */}
         <p className="text-center text-sm text-muted-foreground">
-          Étape {currentStep + 1} sur {steps.length}
+          {t('binomeOnboarding.stepOf', { current: currentStep + 1, total: steps.length })}
         </p>
 
-        {/* Features summary on last step */}
         {currentStep === steps.length - 1 && (
           <div className="mt-4 space-y-2">
-            <p className="text-sm font-medium text-foreground mb-3">Fonctionnalités incluses :</p>
+            <p className="text-sm font-medium text-foreground mb-3">{t('binomeOnboarding.featuresIncluded')}</p>
             {features.map((feature, idx) => (
               <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-muted/50">
                 <div className="text-coral">{feature.icon}</div>
@@ -161,27 +151,18 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
           </div>
         )}
 
-        {/* Navigation buttons */}
         <div className="flex items-center justify-between mt-6 gap-3">
-          <Button
-            variant="ghost"
-            onClick={handleSkip}
-            className="text-muted-foreground"
-          >
-            Passer
+          <Button variant="ghost" onClick={handleSkip} className="text-muted-foreground">
+            {t('skip')}
           </Button>
-          
           <div className="flex gap-2">
             {currentStep > 0 && (
               <Button variant="outline" onClick={prevStep}>
-                Retour
+                {t('back')}
               </Button>
             )}
-            <Button
-              onClick={nextStep}
-              className="bg-coral hover:bg-coral/90 gap-1"
-            >
-              {currentStep === steps.length - 1 ? "C'est parti !" : "Suivant"}
+            <Button onClick={nextStep} className="bg-coral hover:bg-coral/90 gap-1">
+              {currentStep === steps.length - 1 ? t('binomeOnboarding.letsGo') : t('next')}
               {currentStep < steps.length - 1 && <ChevronRight className="h-4 w-4" />}
             </Button>
           </div>
@@ -194,6 +175,7 @@ export function BinomeOnboarding({ onComplete, forceShow = false }: BinomeOnboar
 
 // Compact description card for the page header
 export function BinomeDescriptionCard() {
+  const { t } = useTranslation();
   const [showFullGuide, setShowFullGuide] = useState(false);
 
   const handleResetOnboarding = () => {
@@ -211,11 +193,10 @@ export function BinomeDescriptionCard() {
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-foreground text-sm mb-1">
-                Comment ça marche ?
+                {t('binomeDescription.howItWorks')}
               </h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Crée un créneau ou rejoins-en un dans ta ville. Le jour J, fais ton check-in 
-                sur place et profite de ta session ! Tu peux créer jusqu'à 4 créneaux gratuits par mois.
+                {t('binomeDescription.description')}
               </p>
               <Button
                 variant="link"
@@ -223,7 +204,7 @@ export function BinomeDescriptionCard() {
                 className="text-coral p-0 h-auto mt-2 text-xs"
                 onClick={handleResetOnboarding}
               >
-                Voir le tutoriel complet →
+                {t('binomeDescription.viewTutorial')}
               </Button>
             </div>
           </div>
@@ -240,30 +221,6 @@ export function BinomeDescriptionCard() {
   );
 }
 
-// "Pourquoi EASY ?" section with human benefits
-const whyEasyBenefits = [
-  {
-    icon: <Heart className="h-6 w-6 text-coral" />,
-    title: "Lutte contre la solitude",
-    description: "Ne reste plus seul·e. Trouve quelqu'un pour partager un moment, une activité, une discussion."
-  },
-  {
-    icon: <Users2 className="h-6 w-6 text-signal-green" />,
-    title: "Crée du lien authentique",
-    description: "Amitié, groupe de motivation, entraide... Chaque rencontre peut devenir une relation durable."
-  },
-  {
-    icon: <Smile className="h-6 w-6 text-primary" />,
-    title: "Améliore ton bien-être",
-    description: "Les interactions sociales réduisent le stress, boostent la motivation et donnent du sens au quotidien."
-  },
-  {
-    icon: <HandHeart className="h-6 w-6 text-coral" />,
-    title: "Construis ta communauté",
-    description: "Rejoins des personnes qui partagent tes centres d'intérêt et crée ton propre réseau de soutien."
-  }
-];
-
 // Animation variants for staggered cards
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -277,33 +234,32 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 20,
-    scale: 0.95
-  },
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
   visible: { 
-    opacity: 1, 
-    y: 0,
-    scale: 1,
-    transition: {
-      type: "spring" as const,
-      stiffness: 400,
-      damping: 25
-    }
+    opacity: 1, y: 0, scale: 1,
+    transition: { type: "spring" as const, stiffness: 400, damping: 25 }
   }
 };
 
 export function WhyEasySection() {
+  const { t } = useTranslation();
+
+  const whyEasyBenefits = [
+    { icon: <Heart className="h-6 w-6 text-coral" />, title: t('whyEasy.benefit1Title'), description: t('whyEasy.benefit1Desc') },
+    { icon: <Users2 className="h-6 w-6 text-signal-green" />, title: t('whyEasy.benefit2Title'), description: t('whyEasy.benefit2Desc') },
+    { icon: <Smile className="h-6 w-6 text-primary" />, title: t('whyEasy.benefit3Title'), description: t('whyEasy.benefit3Desc') },
+    { icon: <HandHeart className="h-6 w-6 text-coral" />, title: t('whyEasy.benefit4Title'), description: t('whyEasy.benefit4Desc') },
+  ];
+
   return (
     <Card className="bg-gradient-to-br from-background to-muted/30 border-border/50">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
           <Heart className="h-5 w-5 text-coral" />
-          Pourquoi EASY ?
+          {t('whyEasy.title')}
         </CardTitle>
         <CardDescription>
-          Plus qu'une app de rencontre : un outil pour créer du lien en vrai
+          {t('whyEasy.subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
@@ -343,9 +299,9 @@ export function WhyEasySection() {
           transition={{ delay: 0.4, duration: 0.4 }}
         >
           <p className="text-sm text-center text-muted-foreground">
-            <span className="font-semibold text-coral">La solitude touche 1 étudiant sur 2.</span>
+            <span className="font-semibold text-coral">{t('whyEasy.statHighlight')}</span>
             <br />
-            EASY t'aide à briser l'isolement, une rencontre à la fois.
+            {t('whyEasy.statMessage')}
           </p>
         </motion.div>
       </CardContent>
@@ -355,6 +311,15 @@ export function WhyEasySection() {
 
 // Condensed version for empty states
 export function WhyEasyCondensed() {
+  const { t } = useTranslation();
+
+  const activities = [
+    t('whyEasy.studyTogether'),
+    t('whyEasy.lunch'),
+    t('whyEasy.sport'),
+    t('whyEasy.chat'),
+  ];
+
   return (
     <motion.div 
       className="p-4 rounded-xl bg-gradient-to-r from-coral/5 to-signal-green/5 border border-coral/20"
@@ -364,14 +329,13 @@ export function WhyEasyCondensed() {
     >
       <div className="flex items-center gap-2 mb-2">
         <Heart className="h-5 w-5 text-coral" />
-        <h4 className="font-semibold text-foreground text-sm">Pourquoi créer un créneau ?</h4>
+        <h4 className="font-semibold text-foreground text-sm">{t('whyEasy.condensedTitle')}</h4>
       </div>
       <p className="text-xs text-muted-foreground leading-relaxed mb-3">
-        Fini la solitude ! Propose une activité et rencontre des personnes qui partagent tes envies. 
-        Chaque créneau peut devenir une amitié, un groupe de soutien, ou plus encore.
+        {t('whyEasy.condensedDesc')}
       </p>
       <div className="flex flex-wrap gap-2">
-        {["Réviser ensemble", "Déjeuner", "Sport", "Discuter"].map((activity) => (
+        {activities.map((activity) => (
           <span 
             key={activity}
             className="px-2 py-1 text-xs rounded-full bg-background/80 text-muted-foreground border border-border/50"
@@ -385,34 +349,24 @@ export function WhyEasyCondensed() {
 }
 
 // Testimonials section
-const testimonials = [
-  {
-    quote: "J'ai trouvé mon groupe de révisions grâce à EASY. On se retrouve chaque semaine à la BU et c'est devenu des vrais amis !",
-    author: "Marie, 21 ans",
-    activity: "Révisions"
-  },
-  {
-    quote: "En arrivant dans une nouvelle ville, j'avais du mal à rencontrer des gens. EASY m'a permis de me sentir moins seul dès la première semaine.",
-    author: "Thomas, 24 ans",
-    activity: "Sport & Discussions"
-  },
-  {
-    quote: "C'est super de pouvoir déjeuner avec quelqu'un plutôt que seule devant mon ordi. Ça change vraiment le quotidien !",
-    author: "Léa, 22 ans",
-    activity: "Déjeuner"
-  }
-];
-
 export function TestimonialsSection() {
+  const { t } = useTranslation();
+
+  const testimonials = [
+    { quote: t('testimonials.quote1'), author: t('testimonials.author1'), activity: t('testimonials.activity1') },
+    { quote: t('testimonials.quote2'), author: t('testimonials.author2'), activity: t('testimonials.activity2') },
+    { quote: t('testimonials.quote3'), author: t('testimonials.author3'), activity: t('testimonials.activity3') },
+  ];
+
   return (
     <Card className="bg-gradient-to-br from-background to-muted/30 border-border/50">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
           <Quote className="h-5 w-5 text-coral" />
-          Ils ont testé EASY
+          {t('testimonials.title')}
         </CardTitle>
         <CardDescription>
-          Des rencontres qui changent le quotidien
+          {t('testimonials.subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">

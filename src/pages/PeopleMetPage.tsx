@@ -74,7 +74,8 @@ export default function PeopleMetPage() {
   };
 
   const getActivityData = (activityId: string) => {
-    return ACTIVITIES.find(a => a.id === activityId) || { emoji: '✨', label: 'Other', labelKey: 'activities.other' };
+    const found = ACTIVITIES.find(a => a.id === activityId);
+    return found || { id: 'other' as const, emoji: '✨', label: 'Other', labelKey: 'activities.other' };
   };
 
   if (isLoading) {
@@ -160,7 +161,7 @@ export default function PeopleMetPage() {
                   <div className="flex-1">
                     <p className="font-medium text-foreground">{person.firstName}</p>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span>{activityData.emoji} {activityData.label}</span>
+                      <span>{activityData.emoji} {t(`activities.${activityData.id || 'other'}`)}</span>
                       <span>•</span>
                       <span>{formatDate(person.date)}</span>
                     </div>
