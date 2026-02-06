@@ -140,7 +140,7 @@ export function AIRecommendationsWidget() {
                           <div className="text-2xl flex-shrink-0">{activityData?.emoji || '🎯'}</div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium text-foreground text-sm">{activityData?.label || rec.activity}</span>
+                              <span className="font-medium text-foreground text-sm">{t(activityData?.labelKey || 'activities.other')}</span>
                               <span className="text-xs px-2 py-0.5 rounded-full bg-deep-blue-light text-muted-foreground flex items-center gap-1">
                                 <Clock className="h-3 w-3" />{rec.best_time}
                               </span>

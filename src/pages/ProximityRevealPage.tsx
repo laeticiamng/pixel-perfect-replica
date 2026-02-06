@@ -239,7 +239,7 @@ export default function ProximityRevealPage() {
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
               <span>{activityData?.emoji}</span>
-              <span className="text-sm text-foreground">{activityData?.label}</span>
+              <span className="text-sm text-foreground">{t(activityData?.labelKey || 'activities.other')}</span>
             </div>
             <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
               <Clock className="h-4 w-4 text-muted-foreground" />
