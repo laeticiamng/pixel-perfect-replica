@@ -1,6 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getCurrentLocale, translations } from '@/lib/i18n/translations';
 
 interface Props {
   children: ReactNode;
@@ -42,6 +43,8 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
+      const locale = getCurrentLocale();
+
       return (
         <div className="min-h-screen bg-gradient-radial flex flex-col items-center justify-center px-6">
           <div className="w-20 h-20 rounded-full bg-destructive/20 flex items-center justify-center mb-6">
@@ -49,11 +52,11 @@ export class ErrorBoundary extends Component<Props, State> {
           </div>
           
           <h1 className="text-2xl font-bold text-foreground mb-2">
-            Oups ! Quelque chose s'est mal passé
+            {translations.errors.errorBoundaryTitle[locale]}
           </h1>
           
           <p className="text-muted-foreground text-center mb-8 max-w-sm">
-            Une erreur inattendue s'est produite. Essaie de recharger la page ou retourne à l'accueil.
+            {translations.errors.errorBoundaryDesc[locale]}
           </p>
           
           {import.meta.env.DEV && this.state.error && (
@@ -71,14 +74,14 @@ export class ErrorBoundary extends Component<Props, State> {
               className="rounded-xl"
             >
               <Home className="mr-2 h-4 w-4" />
-              Accueil
+              {translations.errors.home[locale]}
             </Button>
             <Button
               onClick={this.handleReload}
               className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
-              Recharger
+              {translations.errors.reload[locale]}
             </Button>
           </div>
         </div>

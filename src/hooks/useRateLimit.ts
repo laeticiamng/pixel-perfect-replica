@@ -28,7 +28,7 @@ export function useRateLimit(options: RateLimitOptions) {
   const [isBlocked, setIsBlocked] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
 
-  const checkRateLimit = useCallback((): { allowed: boolean; message?: string } => {
+  const checkRateLimit = useCallback((): { allowed: boolean; remainingSeconds?: number } => {
     const now = Date.now();
     const state = stateRef.current;
 
@@ -38,7 +38,7 @@ export function useRateLimit(options: RateLimitOptions) {
       setRemainingTime(remaining);
       return { 
         allowed: false, 
-        message: `Trop de tentatives. Réessaie dans ${remaining}s` 
+        remainingSeconds: remaining,
       };
     }
 
@@ -64,7 +64,7 @@ export function useRateLimit(options: RateLimitOptions) {
       setRemainingTime(remaining);
       return { 
         allowed: false, 
-        message: `Trop de tentatives. Réessaie dans ${remaining}s` 
+        remainingSeconds: remaining,
       };
     }
 

@@ -32,7 +32,7 @@ export function PasswordStrengthIndicator({ password }: PasswordStrengthIndicato
         strength.score > 2 && strength.score <= 4 && 'text-signal-yellow',
         strength.score > 4 && 'text-signal-green',
       )}>
-        {t('auth.strength')} : {strength.label}
+        {t('auth.strength')} : {t(`passwordStrength.${strength.label}` as any)}
       </p>
       {/* Server validation note */}
       <div className="flex items-start gap-1.5 text-xs text-muted-foreground/80">

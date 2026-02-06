@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useReports } from '@/hooks/useReports';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
+import { useTranslation } from '@/lib/i18n';
 import { PageLayout } from '@/components/PageLayout';
 import { PageHeader } from '@/components/shared';
 import { cn } from '@/lib/utils';
@@ -14,6 +15,7 @@ import toast from 'react-hot-toast';
 type ReportType = 'bug' | 'behavior' | 'content' | 'other';
 
 export default function ReportPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { createReport, isLoading } = useReports();
   const reportRateLimit = useRateLimit(RATE_LIMIT_PRESETS.report);
@@ -46,9 +48,9 @@ export default function ReportPage() {
     }
     
     // Check rate limit
-    const { allowed, message } = reportRateLimit.checkRateLimit();
+    const { allowed } = reportRateLimit.checkRateLimit();
     if (!allowed) {
-      toast.error(message || 'Trop de signalements');
+      toast.error(t('auth.tooManyAttempts'));
       return;
     }
     

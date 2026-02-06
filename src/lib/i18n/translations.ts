@@ -446,6 +446,33 @@ export const translations = {
     noConnection: { en: 'No internet connection', fr: 'Pas de connexion internet' },
     sessionLoadError: { en: 'Error loading session', fr: 'Erreur lors du chargement de la session' },
     tryAgain: { en: 'Try again', fr: 'Réessayer' },
+    errorBoundaryTitle: { en: 'Oops! Something went wrong', fr: 'Oups ! Quelque chose s\'est mal passé' },
+    errorBoundaryDesc: { en: 'An unexpected error occurred. Try reloading the page or go back to home.', fr: 'Une erreur inattendue s\'est produite. Essaie de recharger la page ou retourne à l\'accueil.' },
+    reload: { en: 'Reload', fr: 'Recharger' },
+    home: { en: 'Home', fr: 'Accueil' },
+    activationError: { en: 'Error during activation', fr: 'Erreur lors de l\'activation' },
+    extensionError: { en: 'Error extending signal', fr: 'Erreur lors de la prolongation' },
+  },
+
+  // Map toasts
+  mapToasts: {
+    mapUpdated: { en: 'Map updated!', fr: 'Carte mise à jour !' },
+    signalDeactivated: { en: 'Signal deactivated', fr: 'Signal désactivé' },
+    signalActivated: { en: 'Signal activated!', fr: 'Signal activé !' },
+    signalExpired: { en: 'Your signal has expired!', fr: 'Ton signal a expiré !' },
+    signalExtended: { en: 'Signal extended by 2h!', fr: 'Signal prolongé de 2h !' },
+    getCLoser: { en: 'Get closer to see who it is!', fr: 'Rapproche-toi pour voir qui c\'est !' },
+    geoNotSupported: { en: 'Geolocation is not supported by your browser', fr: 'La géolocalisation n\'est pas supportée par votre navigateur' },
+    locationDenied: { en: 'Location denied — demo mode activated', fr: 'Localisation refusée — mode démo activé' },
+    locationUnavailable: { en: 'Position unavailable — demo mode activated', fr: 'Position indisponible — mode démo activé' },
+    rateLimitExceeded: { en: 'Too many attempts. Try again in {seconds}s', fr: 'Trop de tentatives. Réessaie dans {seconds}s' },
+  },
+
+  // Password strength
+  passwordStrength: {
+    weak: { en: 'Weak', fr: 'Faible' },
+    medium: { en: 'Medium', fr: 'Moyen' },
+    strong: { en: 'Strong', fr: 'Fort' },
   },
 
   // 404

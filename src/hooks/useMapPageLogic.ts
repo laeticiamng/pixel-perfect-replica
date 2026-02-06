@@ -8,8 +8,10 @@ import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
 import { ActivityType } from '@/types/signal';
 import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
+import { useTranslation } from '@/lib/i18n';
 
 export function useMapPageLogic() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { profile, user } = useAuth();
   const { position, startWatching, lastUpdated } = useLocationStore();
@@ -75,22 +77,14 @@ export function useMapPageLogic() {
     }
   }, [position, isActive, fetchNearbyUsers, settings.visibility_distance]);
 
-  // Track active time
+  // Track active time using RPC (direct UPDATE blocked by RLS)
   useEffect(() => {
     if (isActive && user) {
       activeTimeRef.current = setInterval(async () => {
-        const { data: currentStats } = await supabase
-          .from('user_stats')
-          .select('hours_active')
-          .eq('user_id', user.id)
-          .single();
-        
-        if (currentStats) {
-          await supabase
-            .from('user_stats')
-            .update({ hours_active: Number(currentStats.hours_active) + (1/60) })
-            .eq('user_id', user.id);
-        }
+        await supabase.rpc('add_hours_active', {
+          p_user_id: user.id,
+          p_hours: 1 / 60,
+        });
       }, 60000);
     } else if (activeTimeRef.current) {
       clearInterval(activeTimeRef.current);
@@ -106,19 +100,19 @@ export function useMapPageLogic() {
       fetchNearbyUsers(settings.visibility_distance);
       setTimeout(() => {
         setIsRefreshing(false);
-        toast.success('Carte mise à jour !');
+        toast.success(t('mapToasts.mapUpdated'));
       }, 500);
     }
-  }, [position, fetchNearbyUsers, settings.visibility_distance]);
+  }, [position, fetchNearbyUsers, settings.visibility_distance, t]);
 
   const handleSignalToggle = useCallback(() => {
     if (isActive) {
       deactivateSignal();
-      toast.success('Signal désactivé');
+      toast.success(t('mapToasts.signalDeactivated'));
     } else {
       setShowActivityModal(true);
     }
-  }, [isActive, deactivateSignal]);
+  }, [isActive, deactivateSignal, t]);
 
   const handleActivityConfirm = useCallback(async () => {
     if (selectedActivity) {
@@ -127,27 +121,27 @@ export function useMapPageLogic() {
       setIsActivating(false);
       
       if (error) {
-        toast.error('Erreur lors de l\'activation');
+        toast.error(t('errors.activationError'));
       } else {
         setShowActivityModal(false);
         setLocationDescription('');
-        toast.success('Signal activé !');
+        toast.success(t('mapToasts.signalActivated'));
       }
     }
-  }, [selectedActivity, activateSignal, locationDescription]);
+  }, [selectedActivity, activateSignal, locationDescription, t]);
 
   const handleSignalExpired = useCallback(() => {
-    toast('Ton signal a expiré !', { icon: '⏰' });
-  }, []);
+    toast(t('mapToasts.signalExpired'), { icon: '⏰' });
+  }, [t]);
 
   const handleExtendSignal = useCallback(async () => {
     const { error } = await extendSignal();
     if (error) {
-      toast.error('Erreur lors de la prolongation');
+      toast.error(t('errors.extensionError'));
     } else {
-      toast.success('Signal prolongé de 2h !');
+      toast.success(t('mapToasts.signalExtended'));
     }
-  }, [extendSignal]);
+  }, [extendSignal, t]);
 
   const handleEmergencyTrigger = useCallback((pos: GeolocationPosition | null) => {
     console.log('Emergency triggered at:', pos?.coords);
@@ -162,14 +156,14 @@ export function useMapPageLogic() {
     const maxRevealDistance = isDemoMode ? Infinity : settings.visibility_distance;
     
     if (distance && distance > maxRevealDistance) {
-      toast('Rapproche-toi pour voir qui c\'est !', { icon: '👀' });
+      toast(t('mapToasts.getCLoser'), { icon: '👀' });
     } else {
       if (settings.proximity_vibration && 'vibrate' in navigator) {
         navigator.vibrate(100);
       }
       navigate(`/reveal/${userId}`);
     }
-  }, [isDemoMode, settings.visibility_distance, settings.proximity_vibration, navigate]);
+  }, [isDemoMode, settings.visibility_distance, settings.proximity_vibration, navigate, t]);
 
   const toggleActivityFilter = useCallback((activity: ActivityType) => {
     setActivityFilters(prev => 

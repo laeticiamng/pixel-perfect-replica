@@ -6,12 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAppFeedback } from '@/hooks/useAppFeedback';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
+import { useTranslation } from '@/lib/i18n';
 import { PageLayout } from '@/components/PageLayout';
 import { PageHeader } from '@/components/shared';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 export default function FeedbackPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { submitFeedback, isLoading } = useAppFeedback();
   const feedbackRateLimit = useRateLimit(RATE_LIMIT_PRESETS.feedback);
@@ -25,9 +27,9 @@ export default function FeedbackPage() {
     }
     
     // Check rate limit
-    const { allowed, message } = feedbackRateLimit.checkRateLimit();
+    const { allowed } = feedbackRateLimit.checkRateLimit();
     if (!allowed) {
-      toast.error(message || 'Trop de feedbacks envoyés');
+      toast.error(t('auth.tooManyAttempts'));
       return;
     }
     
