@@ -1,71 +1,58 @@
 
 
-# Iteration 24 -- Fix last 3 hardcoded 'Anonyme' in hooks
+# Pre-Publication Audit -- Iteration 26 (Final)
 
-## Audit Summary (All Roles)
+## Multi-Role Audit Results
 
-After a complete page-by-page review and codebase-wide search, the platform is in excellent shape. BUG-41 and BUG-42 from Iteration 23 are confirmed fixed. **Three remaining hardcoded French strings** were found in hooks:
+### All Roles: PASS
 
-## Issues Found
+| Role | Status | Details |
+|------|--------|---------|
+| CEO | OK | Value proposition, KPIs, monetization, roadmap coherent |
+| CISO | OK | RLS on 25+ tables, admin role checks, rate limiting, shadow-ban, secrets managed |
+| DPO | OK | GDPR export, automated cleanup (2h/24h/30d/90d), location fuzzing, cookie consent |
+| CDO | OK | Analytics pipeline, events tracked, admin dashboard charts |
+| COO | OK | Cron monitoring, edge function rate limits, automated moderation |
+| Head of Design | OK | Mobile responsive 375px+, dark/light theme, consistent UI |
+| Beta Tester | OK | All flows work, i18n 100%, one console warning to fix |
 
-### BUG-43: Hardcoded 'Anonyme' in useActiveSignal.ts (LOW)
-
-**File**: `src/hooks/useActiveSignal.ts`, lines 200 and 274
-
-Two occurrences of `'Anonyme'` used as fallback for nearby user names on the radar map.
-
-**Fix**: Import `useTranslation` and replace both with `t('eventsExtra.anonymous')`.
-
-### BUG-44: Hardcoded 'Anonyme' in useInteractions.ts (LOW)
-
-**File**: `src/hooks/useInteractions.ts`, line 133
-
-Fallback profile name for interactions where the target user profile is unavailable.
-
-**Fix**: Import `useTranslation` and replace with `t('eventsExtra.anonymous')`.
+### i18n: 100% Complete
+Zero hardcoded French strings remain in source code. All `'Anonyme'` and `'User'` fallbacks replaced with translation keys.
 
 ---
 
-## All Other Audits: PASS
+## One Bug Found
 
-| Role | Status | Notes |
-|------|--------|-------|
-| CEO | OK | Core value proposition clear, KPIs tracked, premium monetization active |
-| CISO | OK | RLS on all 25+ tables, has_role() checks, rate limiting, shadow-ban automation |
-| DPO | OK | Automated cleanup (2h/24h/30d/90d), GDPR export, location fuzzing, cookie consent |
-| CDO | OK | Analytics pipeline functional, events tracked, admin dashboard with charts |
-| COO | OK | Cron jobs monitored, edge functions rate-limited, automated moderation |
-| Head of Design | OK | Responsive on mobile 375px+, dark/light theme, consistent component library |
-| Beta Tester | OK | All flows functional, i18n switching works, no console errors |
+### BUG-45: React ref warning on LocationDescriptionInput (LOW)
 
-## Pages Audited (30+): All Clear
+**Console Warning**: `Function components cannot be given refs. Did you mean to use React.forwardRef()?`
 
-No other issues found. Changelog and icebreaker French content are intentional (bilingual content, not UI labels).
+**File**: `src/components/radar/LocationDescriptionInput.tsx`
+
+**Cause**: The component is rendered inside an animated context (framer-motion / AnimatePresence) that passes refs to children. The function component doesn't use `forwardRef`, triggering the warning.
+
+**Fix**: Wrap the component export with `React.forwardRef` to accept and forward the ref to the root div.
 
 ---
 
 ## Plan
 
-### Step 1: Fix useActiveSignal.ts (2 lines + 1 import)
-- Add `import { useTranslation } from '@/lib/i18n';` 
-- Add `const { t } = useTranslation();` inside the hook
-- Replace `'Anonyme'` on line 200 with `t('eventsExtra.anonymous')`
-- Replace `'Anonyme'` on line 274 with `t('eventsExtra.anonymous')`
+### Step 1: Add forwardRef to LocationDescriptionInput
 
-### Step 2: Fix useInteractions.ts (1 line + 1 import)
-- Add `import { useTranslation } from '@/lib/i18n';`
-- Add `const { t } = useTranslation();` inside the hook
-- Replace `'Anonyme'` on line 133 with `t('eventsExtra.anonymous')`
+Wrap the component with `React.forwardRef`, forwarding the ref to the root `<div>`.
+
+**File**: `src/components/radar/LocationDescriptionInput.tsx`
+- Change the function signature to use `forwardRef`
+- Forward `ref` to the outer `<div>`
 
 ### Files to modify
 
 | File | Change |
 |------|--------|
-| `src/hooks/useActiveSignal.ts` | 2 lines: replace hardcoded 'Anonyme' + add i18n import |
-| `src/hooks/useInteractions.ts` | 1 line: replace hardcoded 'Anonyme' + add i18n import |
+| `src/components/radar/LocationDescriptionInput.tsx` | Wrap with `React.forwardRef` |
 
 ### Estimation
-- 2 files, 3 lines modified + 2 imports added
-- Minimal risk, mechanical fix
-- After this: 0 hardcoded French strings remain in source code
+- 1 file, ~5 lines changed
+- Zero risk, eliminates console warning
+- After this: 0 console errors/warnings from application code
 
