@@ -19,10 +19,12 @@ import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useMapPageLogic } from '@/hooks/useMapPageLogic';
 import { useLocationStore } from '@/stores/locationStore';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { useTranslation } from '@/lib/i18n';
 import { ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 
 export default function MapPage() {
+  const { t } = useTranslation();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { position, error: locationError } = useLocationStore();
   const { hasSeenLocationPrompt, setHasSeenLocationPrompt, showDemoSignals, setShowDemoSignals } = useSettingsStore();
@@ -69,7 +71,6 @@ export default function MapPage() {
   
   const handleRequestLocation = () => {
     setHasSeenLocationPrompt(true);
-    // The location store will automatically request permission when startWatching is called
   };
 
   const handleSkipLocation = () => {
@@ -113,7 +114,7 @@ export default function MapPage() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-semibold text-foreground">
-                    {isActive ? 'Tu es visible' : 'Signal désactivé'}
+                    {isActive ? t('mapUI.youAreVisible') : t('mapUI.signalDisabled')}
                   </span>
                   {isActive && mySignal?.expires_at && (
                     <ExpirationTimer 
@@ -140,7 +141,7 @@ export default function MapPage() {
                 
                 <button
                   onClick={handleManualRefresh}
-                  aria-label="Rafraîchir la carte"
+                  aria-label={t('mapUI.refreshMap')}
                   className={cn(
                     "p-2.5 rounded-xl bg-deep-blue-light/80 text-muted-foreground hover:text-foreground hover:bg-deep-blue-light transition-all",
                     isRefreshing && "animate-spin"
@@ -157,15 +158,15 @@ export default function MapPage() {
             <div className="flex items-center gap-4 mb-2 text-xs">
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-signal-green" />
-                <span className="text-muted-foreground">Ouvert</span>
+                <span className="text-muted-foreground">{t('mapUI.open')}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-signal-yellow" />
-                <span className="text-muted-foreground">Conditionnel</span>
+                <span className="text-muted-foreground">{t('mapUI.conditional')}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-coral" />
-                <span className="text-muted-foreground">Toi</span>
+                <span className="text-muted-foreground">{t('mapUI.you')}</span>
               </div>
             </div>
             
@@ -173,7 +174,7 @@ export default function MapPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
-                  aria-label={showFilters ? "Masquer les filtres" : "Afficher les filtres d'activité"}
+                  aria-label={showFilters ? t('mapUI.hideFilters') : t('mapUI.showFilters')}
                   aria-expanded={showFilters}
                   className={cn(
                     "p-2 rounded-lg transition-colors",
@@ -186,17 +187,17 @@ export default function MapPage() {
                 </button>
                 <p className="text-muted-foreground text-sm flex items-center gap-2">
                   <span className="text-signal-green font-bold">{openUsersCount}</span> 
-                  {openUsersCount === 1 ? 'personne ouverte' : 'personnes ouvertes'}
+                  {openUsersCount === 1 ? t('mapUI.personOpen') : t('mapUI.peopleOpen')}
                   {isDemoMode && (
                     <span className="px-2 py-0.5 rounded-full bg-signal-yellow/20 text-signal-yellow text-xs font-medium border border-signal-yellow/30">
-                      Démo
+                      {t('mapUI.demo')}
                     </span>
                   )}
                 </p>
               </div>
               <button
                 onClick={() => setShowLegend(!showLegend)}
-                aria-label={showLegend ? "Masquer la légende" : "Afficher la légende"}
+                aria-label={showLegend ? t('mapUI.hideLegend') : t('mapUI.showLegend')}
                 aria-expanded={showLegend}
                 className="text-muted-foreground hover:text-foreground"
               >
@@ -221,27 +222,27 @@ export default function MapPage() {
           {showLegend && (
             <div className="mt-3 glass rounded-xl p-4 animate-slide-up">
               <p className="text-xs font-bold text-coral uppercase tracking-wider mb-3">
-                💚 Tout le monde ici est ouvert à l'interaction
+                {t('mapUI.legendIntro')}
               </p>
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="w-3.5 h-3.5 rounded-full bg-signal-green shadow-sm" />
-                  <span className="text-foreground font-medium">Ouvert</span>
-                  <span className="text-muted-foreground">= "Je veux faire ça avec quelqu'un"</span>
+                  <span className="text-foreground font-medium">{t('mapUI.open')}</span>
+                  <span className="text-muted-foreground">{t('mapUI.openDesc')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3.5 h-3.5 rounded-full bg-signal-yellow shadow-sm" />
-                  <span className="text-foreground font-medium">Conditionnel</span>
-                  <span className="text-muted-foreground">= "Dépend du contexte"</span>
+                  <span className="text-foreground font-medium">{t('mapUI.conditional')}</span>
+                  <span className="text-muted-foreground">{t('mapUI.conditionalDesc')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3.5 h-3.5 rounded-full bg-coral shadow-sm" />
-                  <span className="text-foreground font-medium">Toi</span>
-                  <span className="text-muted-foreground">= Ta position</span>
+                  <span className="text-foreground font-medium">{t('mapUI.you')}</span>
+                  <span className="text-muted-foreground">{t('mapUI.youDesc')}</span>
                 </div>
               </div>
               <p className="text-xs text-muted-foreground mt-3 font-medium">
-                Distance: {settings.visibility_distance}m • Rafraîchissement: 30s
+                {t('mapUI.distance')}: {settings.visibility_distance}m • {t('mapUI.refresh')}: 30s
               </p>
             </div>
           )}
@@ -296,7 +297,7 @@ export default function MapPage() {
         <div className="px-6 mb-4">
           <button
             onClick={handleSignalToggle}
-            aria-label={isActive ? "Désactiver ton signal" : "Activer ton signal"}
+            aria-label={isActive ? t('mapUI.deactivateSignal') : t('mapUI.activateSignal')}
             className={cn(
               'w-full h-20 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-medium',
               'font-bold text-lg',
@@ -306,12 +307,12 @@ export default function MapPage() {
             )}
           >
             <Radio className="h-6 w-6" />
-            {isActive ? 'Tap pour désactiver' : 'Tap pour activer ton signal'}
+            {isActive ? t('mapUI.tapToDeactivate') : t('mapUI.tapToActivate')}
           </button>
           
           {lastUpdated && (
             <p className="text-center text-xs text-muted-foreground mt-3 font-medium">
-              Dernière mise à jour : il y a {getTimeSinceUpdate()}
+              {t('mapUI.lastUpdate', { time: getTimeSinceUpdate() || '' })}
             </p>
           )}
         </div>
@@ -322,8 +323,8 @@ export default function MapPage() {
             <div className="w-full max-w-[500px] glass-strong rounded-t-3xl p-6 pb-8 animate-slide-up">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-foreground">Tu es ouvert·e à...</h2>
-                  <p className="text-sm text-muted-foreground">Signale que tu veux faire ça avec quelqu'un</p>
+                  <h2 className="text-xl font-bold text-foreground">{t('mapUI.openTo')}</h2>
+                  <p className="text-sm text-muted-foreground">{t('mapUI.signalThat')}</p>
                 </div>
                 <button
                   onClick={() => setShowActivityModal(false)}
@@ -342,7 +343,7 @@ export default function MapPage() {
                 <LocationDescriptionInput
                   value={locationDescription}
                   onChange={setLocationDescription}
-                  placeholder="Où es-tu ? (optionnel)"
+                  placeholder={t('mapUI.wherePlaceholder')}
                 />
               </div>
               
@@ -355,14 +356,14 @@ export default function MapPage() {
                   }}
                   className="flex-1 h-12 rounded-xl"
                 >
-                  Annuler
+                  {t('cancel')}
                 </Button>
                 <Button
                   onClick={handleActivityConfirm}
                   disabled={!selectedActivity || isActivating}
                   className="flex-1 h-12 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
                 >
-                  {isActivating ? 'Activation...' : 'Confirmer'}
+                  {isActivating ? t('mapUI.activating') : t('confirm')}
                 </Button>
               </div>
             </div>
