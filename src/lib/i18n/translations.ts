@@ -1250,7 +1250,7 @@ export const translations = {
     error: { en: 'Error during deletion. Please contact support.', fr: 'Erreur lors de la suppression. Contactez le support.' },
   },
 
-  // Emergency Contacts
+  // Emergency Contacts & Button
   emergency: {
     title: { en: 'Emergency contacts', fr: 'Contacts d\'urgence' },
     subtitle: { en: 'These contacts will be alerted in case of emergency (max 3)', fr: 'Ces contacts seront alertés en cas d\'urgence (max 3)' },
@@ -1266,6 +1266,14 @@ export const translations = {
     deleteError: { en: 'Error deleting contact', fr: 'Erreur lors de la suppression' },
     deleteSuccess: { en: 'Contact deleted', fr: 'Contact supprimé' },
     info: { en: 'In an emergency, hold the 🛡️ button on the radar to alert your contacts', fr: 'En cas d\'urgence, maintenez le bouton 🛡️ sur le radar pour alerter vos contacts' },
+    // Emergency button
+    ariaLabel: { en: 'Emergency alert button - Hold to activate', fr: "Bouton d'alerte d'urgence - Maintenir pour activer" },
+    alertActivated: { en: 'Alert mode activated', fr: 'Mode alerte activé' },
+    gpsShared: { en: 'Your GPS position has been prepared for sharing.', fr: 'Ta position GPS a été préparée pour être partagée.' },
+    call112: { en: 'Call 112', fr: 'Appeler le 112' },
+    callEmergencyHelp: { en: 'In case of real danger, call emergency services immediately.', fr: 'En cas de danger réel, appelle immédiatement les secours.' },
+    alertCancelled: { en: 'Alert cancelled', fr: 'Alerte annulée' },
+    allGoodCancel: { en: "I'm fine, cancel", fr: 'Tout va bien, annuler' },
   },
 
   // Mini Chat
@@ -1608,6 +1616,62 @@ export const translations = {
     aboutCronDesc: { en: 'Scheduled tasks run automatically via PostgreSQL pg_cron. Execution history is kept for 30 days. You can manually run each task to test or force immediate execution.', fr: "Les tâches planifiées s'exécutent automatiquement via PostgreSQL pg_cron. L'historique des exécutions est conservé 30 jours. Vous pouvez exécuter manuellement chaque tâche pour tester ou forcer une exécution immédiate." },
   },
 
+  // Hooks toasts (used via getCurrentLocale + direct import)
+  hooks: {
+    revealLimitReached: { en: 'You have reached the profile view limit. Try again in 1 hour.', fr: 'Tu as atteint la limite de profils consultés. Réessaie dans 1h.' },
+    revealLimitMessage: { en: 'Reveal limit reached (10/hour)', fr: 'Limite de révélations atteinte (10/heure)' },
+    notificationsNotSupported: { en: 'Notifications are not supported', fr: 'Les notifications ne sont pas supportées' },
+    notificationPermissionDenied: { en: 'Notification permission denied', fr: 'Permission de notification refusée' },
+    notificationActivationError: { en: 'Error activating notifications', fr: "Erreur lors de l'activation des notifications" },
+    notificationsEnabled: { en: 'Notifications enabled! 🔔', fr: 'Notifications activées ! 🔔' },
+    notificationActivationFailed: { en: 'Activation error', fr: "Erreur lors de l'activation" },
+    notificationsDisabled: { en: 'Notifications disabled', fr: 'Notifications désactivées' },
+    connectionRestored: { en: 'Connection restored!', fr: 'Connexion rétablie !' },
+    noInternetConnection: { en: 'No internet connection', fr: 'Pas de connexion internet' },
+  },
+
+  // Admin Alert Preferences
+  adminAlerts: {
+    title: { en: 'Alert preferences', fr: "Préférences d'alertes" },
+    description: { en: 'Configure the notifications you want to receive by email', fr: 'Configurez les notifications que vous souhaitez recevoir par email' },
+    notificationEmail: { en: 'Notification email', fr: 'Email de notification' },
+    newUsers: { en: 'New users', fr: 'Nouveaux utilisateurs' },
+    newUsersDesc: { en: 'Receive an alert on each signup', fr: 'Recevoir une alerte à chaque inscription' },
+    highReports: { en: 'High reports', fr: 'Signalements élevés' },
+    highReportsDesc: { en: 'Alert if a user receives multiple reports', fr: 'Alerte si un utilisateur reçoit plusieurs signalements' },
+    errorSpikes: { en: 'Error spikes', fr: "Pics d'erreurs" },
+    errorSpikesDesc: { en: 'Alert if the error rate increases abnormally', fr: "Alerte si le taux d'erreurs augmente anormalement" },
+    saveError: { en: 'Error saving preferences', fr: 'Erreur lors de la sauvegarde' },
+    saveSuccess: { en: 'Preferences saved', fr: 'Préférences sauvegardées' },
+    saving: { en: 'Saving...', fr: 'Sauvegarde...' },
+    savePreferences: { en: 'Save preferences', fr: 'Sauvegarder les préférences' },
+  },
+
+  // Admin Alert History
+  adminHistory: {
+    title: { en: 'Alert history', fr: 'Historique des alertes' },
+    lastAlerts: { en: 'Last {count} alerts sent', fr: 'Les {count} dernières alertes envoyées' },
+    noAlerts: { en: 'No alerts sent', fr: 'Aucune alerte envoyée' },
+    newUser: { en: 'New', fr: 'Nouveau' },
+    reports: { en: 'Reports', fr: 'Signalements' },
+    errors: { en: 'Errors', fr: 'Erreurs' },
+    custom: { en: 'Custom', fr: 'Custom' },
+  },
+
+  // Admin Event Scraper
+  adminScraper: {
+    title: { en: 'University event scraping', fr: "Scraping d'événements universitaires" },
+    description: { en: 'Use Firecrawl to automatically extract events from university websites', fr: 'Utilise Firecrawl pour extraire automatiquement les événements des sites universitaires' },
+    eventsPageUrl: { en: 'Events page URL', fr: 'URL de la page événements' },
+    city: { en: 'City', fr: 'Ville' },
+    enterUrl: { en: 'Please enter a URL', fr: 'Veuillez entrer une URL' },
+    eventsImported: { en: '{count} events imported!', fr: '{count} événements importés !' },
+    scraping: { en: 'Scraping in progress...', fr: 'Scraping en cours...' },
+    startScraping: { en: 'Start scraping', fr: 'Lancer le scraping' },
+    pagesAnalyzed: { en: '{pages} pages analyzed', fr: '{pages} pages analysées' },
+    eventsFound: { en: '{found} events found', fr: '{found} événements trouvés' },
+    imported: { en: 'Imported', fr: 'Importé' },
+  },
 
 } as const;
 
