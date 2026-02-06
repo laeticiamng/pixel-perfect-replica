@@ -231,7 +231,9 @@ export default function PostSignupOnboardingPage() {
               animate={{ y: 0, opacity: 1 }}
               className="text-center mb-8"
             >
-              <div className="text-5xl mb-4">🎯</div>
+              <div className="w-16 h-16 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-4">
+                <Radio className="h-8 w-8 text-coral" />
+              </div>
               <h2 className="text-2xl font-bold text-foreground mb-2">
                 {t('postOnboarding.step2Title')}
               </h2>

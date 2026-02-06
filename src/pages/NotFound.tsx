@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/PageLayout";
-import { Home } from "lucide-react";
+import { Home, Search } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
 
 const NotFound = () => {
@@ -17,7 +17,9 @@ const NotFound = () => {
   return (
     <PageLayout className="flex items-center justify-center px-6">
       <div className="text-center">
-        <div className="text-8xl mb-6">🔍</div>
+        <div className="w-20 h-20 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6">
+          <Search className="h-10 w-10 text-coral" />
+        </div>
         <h1 className="mb-3 text-5xl font-bold text-foreground">404</h1>
         <p className="mb-2 text-xl text-foreground">{t('notFound.title')}</p>
         <p className="mb-8 text-muted-foreground">

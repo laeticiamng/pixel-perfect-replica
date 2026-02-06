@@ -143,7 +143,9 @@ export default function EventDetailPage() {
           </button>
         </header>
         <div className="px-6 py-12 text-center">
-          <p className="text-4xl mb-4">🔍</p>
+          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+            <MapPin className="h-8 w-8 text-muted-foreground" />
+          </div>
           <p className="text-muted-foreground">{t('eventDetail.eventNotFound')}</p>
           <Button onClick={() => navigate('/events')} className="mt-4 bg-coral hover:bg-coral-dark">{t('eventDetail.backToEvents')}</Button>
         </div>

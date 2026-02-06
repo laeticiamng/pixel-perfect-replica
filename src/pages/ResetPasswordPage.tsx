@@ -85,7 +85,9 @@ export default function ResetPasswordPage() {
   if (!isValidSession) {
     return (
       <PageLayout showSidebar={false} className="flex flex-col items-center justify-center px-6">
-        <div className="text-6xl mb-6">🔒</div>
+        <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mx-auto mb-6">
+          <Lock className="h-10 w-10 text-muted-foreground" />
+        </div>
         <h1 className="text-2xl font-bold text-foreground mb-4 text-center">
           {t('auth.linkExpired')}
         </h1>
