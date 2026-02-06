@@ -18,16 +18,19 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
       style={{ opacity: heroOpacity, scale: heroScale }}
       className="min-h-screen flex flex-col items-center justify-center px-6 relative z-10 pt-16"
     >
-      {/* Badge */}
+      {/* Badges */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="mb-8"
+        className="mb-6 flex flex-col items-center gap-3"
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-coral/30">
           <Sparkles className="h-4 w-4 text-coral" />
           <span className="text-sm font-medium text-foreground">{t('landing.meetingsReinvented')}</span>
+        </div>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive/10 border border-destructive/30">
+          <span className="text-sm font-bold text-destructive">⚠️ {t('landing.notADatingApp')}</span>
         </div>
       </motion.div>
       
@@ -54,7 +57,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         transition={{ duration: 0.8, delay: 0.4 }}
         className="text-lg md:text-xl text-muted-foreground text-center max-w-lg mb-12 leading-relaxed"
       >
-        {t('landing.motivationGroups')}
+        {t('landing.heroSubtitle')}
         <br className="hidden sm:block" />
         <span className="text-foreground font-medium">{t('landing.createRealConnections')}</span>
       </motion.p>
@@ -69,10 +72,10 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         <Button
           onClick={() => navigate('/onboarding')}
           size="lg"
-          className="h-14 px-8 text-lg font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-lg hover:shadow-coral/25 transition-all duration-300 hover:scale-105"
+          className="h-16 px-10 text-xl font-black bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl shadow-coral/30 hover:shadow-coral/40 transition-all duration-300 hover:scale-105 animate-pulse-subtle"
         >
-          {t('landing.getStarted')}
-          <ArrowRight className="ml-2 h-5 w-5" />
+          {t('landing.createMyAccount')}
+          <ArrowRight className="ml-2 h-6 w-6" />
         </Button>
         <Button
           onClick={() => navigate('/onboarding', { state: { isLogin: true } })}

@@ -13,13 +13,14 @@ export function LanguageToggle({ compact = false, className }: LanguageTogglePro
 
   const toggleContent = (
     <div className={cn(
-      "flex items-center gap-1 p-1 rounded-lg bg-muted/50 border border-border/50",
+      "flex items-center gap-1.5 p-1.5 rounded-xl bg-muted/60 border border-border/60 shadow-sm",
       className
     )}>
+      <Globe className="h-4 w-4 text-muted-foreground ml-1" />
       <button
         onClick={() => setLocale('en')}
         className={cn(
-          "px-2 py-1 rounded-md text-xs font-medium transition-all duration-200",
+          "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200",
           isEnglish
             ? "bg-coral text-primary-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -31,7 +32,7 @@ export function LanguageToggle({ compact = false, className }: LanguageTogglePro
       <button
         onClick={() => setLocale('fr')}
         className={cn(
-          "px-2 py-1 rounded-md text-xs font-medium transition-all duration-200",
+          "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200",
           !isEnglish
             ? "bg-coral text-primary-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground hover:bg-muted"
