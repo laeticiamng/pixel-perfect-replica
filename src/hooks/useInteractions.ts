@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { logger } from '@/lib/logger';
+import { useTranslation } from '@/lib/i18n';
 
 type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
 type FeedbackType = 'positive' | 'negative';
@@ -26,6 +27,7 @@ interface Interaction {
 export function useInteractions() {
   const { user } = useAuth();
   const { position } = useLocationStore();
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
   // Create a new interaction
@@ -130,7 +132,7 @@ export function useInteractions() {
       ...i,
       activity: i.activity as ActivityType,
       feedback: i.feedback as FeedbackType | null,
-      target_profile: profileMap[i.target_user_id] || { first_name: 'Anonyme', avatar_url: null },
+      target_profile: profileMap[i.target_user_id] || { first_name: t('eventsExtra.anonymous'), avatar_url: null },
     }));
 
     return { data: interactions, error: null };
