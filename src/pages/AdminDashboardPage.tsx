@@ -302,7 +302,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => navigate('/settings')}
               className="p-2 rounded-lg hover:bg-muted transition-colors"
-              aria-label="Retour"
+              aria-label={t('back')}
             >
               <ArrowLeft className="h-6 w-6 text-foreground" />
             </button>
