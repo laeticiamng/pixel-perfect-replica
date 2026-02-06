@@ -226,6 +226,8 @@ export const translations = {
 
   // Map page
   map: {
+    loading: { en: 'Loading map...', fr: 'Chargement de la carte...' },
+    unavailable: { en: 'Map unavailable', fr: 'Carte indisponible' },
     locationNeeded: { en: 'Location needed', fr: 'Localisation nécessaire' },
     locationExplain: { en: 'To see who\'s around you, we need access to your location. Your privacy is protected.', fr: 'Pour voir qui est autour de toi, on a besoin de ta position. Ta vie privée est protégée.' },
     privacyGuarantee1: { en: 'Position never stored on our servers', fr: 'Position jamais stockée sur nos serveurs' },

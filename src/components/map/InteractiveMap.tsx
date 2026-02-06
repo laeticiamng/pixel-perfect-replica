@@ -10,6 +10,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { ACTIVITIES, ActivityType } from '@/types/signal';
 import { AnimatedMarker } from './AnimatedMarker';
 import { MapStyleSelector, MAP_STYLES, MapStyleType } from './MapStyleSelector';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import { ClusterMarker } from './ClusterMarker';
 import { ActivityFilterBar } from './ActivityFilterBar';
 import { UserPopupCard } from './UserPopupCard';
@@ -55,6 +56,7 @@ export function InteractiveMap({
   const mapRef = useRef<MapRef>(null);
   const { position } = useLocationStore();
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const [mapboxToken, setMapboxToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +108,7 @@ export function InteractiveMap({
         
         if (refreshError || !session) {
             console.warn('[InteractiveMap] Session refresh failed:', refreshError?.message);
-            setError('Session expired');
+            setError(t('map.unavailable'));
           setIsLoading(false);
           return;
         }
@@ -117,7 +119,7 @@ export function InteractiveMap({
           // Handle auth errors specifically
           if (error.message?.includes('401') || error.message?.includes('non-2xx')) {
             console.warn('[InteractiveMap] Auth error fetching token:', error.message);
-            setError('Session expired');
+            setError(t('map.unavailable'));
           } else {
             throw error;
           }
@@ -131,7 +133,7 @@ export function InteractiveMap({
         }
       } catch (err: unknown) {
         console.error('Failed to fetch Mapbox token:', err);
-        setError('Map unavailable');
+        setError(t('map.unavailable'));
       } finally {
         setIsLoading(false);
       }
@@ -263,7 +265,7 @@ export function InteractiveMap({
       <div className={cn("flex items-center justify-center bg-muted rounded-2xl", className)}>
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-3 border-coral border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-muted-foreground">Loading map...</p>
+          <p className="text-sm text-muted-foreground">{t('map.loading')}</p>
         </div>
       </div>
     );
@@ -274,7 +276,7 @@ export function InteractiveMap({
       <div className={cn("flex items-center justify-center bg-muted rounded-2xl", className)}>
         <div className="flex flex-col items-center gap-3 text-center p-6">
           <span className="text-4xl">🗺️</span>
-          <p className="text-sm text-muted-foreground">{error || 'Map unavailable'}</p>
+          <p className="text-sm text-muted-foreground">{error || t('map.unavailable')}</p>
         </div>
       </div>
     );
