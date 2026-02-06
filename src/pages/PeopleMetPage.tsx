@@ -34,7 +34,7 @@ export default function PeopleMetPage() {
       if (data) {
         setPeopleMet(data.map(interaction => ({
           id: interaction.id,
-          firstName: interaction.target_profile?.first_name || 'Anonyme',
+          firstName: interaction.target_profile?.first_name || t('eventsExtra.anonymous'),
           activity: interaction.activity,
           date: new Date(interaction.created_at),
           positive: interaction.feedback === 'positive' ? true : interaction.feedback === 'negative' ? false : null,
