@@ -433,6 +433,26 @@ export const translations = {
     decline: { en: 'Decline', fr: 'Refuser' },
     learnMore: { en: 'Learn more about our privacy policy', fr: 'En savoir plus sur notre politique de confidentialité' },
   },
+
+  // About page
+  about: {
+    title: { en: 'About EASY', fr: 'À propos d\'EASY' },
+    subtitle: { en: 'The platform that reinvents real-life meetings', fr: 'La plateforme qui réinvente la rencontre en vrai' },
+    missionTitle: { en: 'Our Mission', fr: 'Notre Mission' },
+    missionText: { en: 'EASY connects real intentions, not just profiles. We believe that the best connections happen when two people are both open to interaction, at the same place, at the same time. Our mission is to fight loneliness and make genuine connections easier, by providing mutual consent before any approach.', fr: 'EASY connecte des intentions réelles, pas seulement des profils. Nous croyons que les meilleures connexions se font quand deux personnes sont toutes les deux ouvertes à l\'interaction, au même endroit, au même moment. Notre mission est de lutter contre la solitude et de faciliter les connexions authentiques, en garantissant un consentement mutuel avant toute approche.' },
+    teamTitle: { en: 'The Team', fr: 'L\'Équipe' },
+    teamText: { en: 'EASY is developed by EmotionsCare SASU, a French startup dedicated to improving human connections through technology. We believe in creating tools that bring people together in meaningful ways.', fr: 'EASY est développé par EmotionsCare SASU, une startup française dédiée à améliorer les connexions humaines grâce à la technologie. Nous croyons en la création d\'outils qui rapprochent les gens de manière significative.' },
+    valuesTitle: { en: 'Our Values', fr: 'Nos Valeurs' },
+    contactTitle: { en: 'Contact Us', fr: 'Nous Contacter' },
+    authenticity: { en: 'Authenticity', fr: 'Authenticité' },
+    authenticityDesc: { en: 'Real people, real intentions. No fake profiles, no games.', fr: 'De vraies personnes, de vraies intentions. Pas de faux profils, pas de jeux.' },
+    security: { en: 'Security', fr: 'Sécurité' },
+    securityDesc: { en: 'Your privacy is our priority. GPS fuzzing, ghost mode, and instant blocking.', fr: 'Ta vie privée est notre priorité. Floutage GPS, mode fantôme et blocage instantané.' },
+    innovation: { en: 'Innovation', fr: 'Innovation' },
+    innovationDesc: { en: 'Reinventing how people meet. Signal-based, consent-first approach.', fr: 'Réinventer la façon dont les gens se rencontrent. Approche basée sur les signaux, consentement d\'abord.' },
+    community: { en: 'Community', fr: 'Communauté' },
+    communityDesc: { en: 'Built by and for students. Growing together, connecting campuses.', fr: 'Construit par et pour les étudiants. Grandir ensemble, connecter les campus.' },
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;
