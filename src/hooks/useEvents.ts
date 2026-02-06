@@ -91,7 +91,7 @@ export function useEvents() {
     ends_at: Date;
     max_participants?: number;
   }) => {
-    if (!user) return { error: new Error('Non connecté') };
+    if (!user) return { error: new Error('Not authenticated') };
 
     const { data, error } = await supabase
       .from('events')
@@ -118,7 +118,7 @@ export function useEvents() {
 
   // Join an event
   const joinEvent = async (eventId: string) => {
-    if (!user) return { error: new Error('Non connecté') };
+    if (!user) return { error: new Error('Not authenticated') };
 
     const { data, error } = await supabase
       .from('event_participants')
@@ -138,7 +138,7 @@ export function useEvents() {
 
   // Leave an event
   const leaveEvent = async (eventId: string) => {
-    if (!user) return { error: new Error('Non connecté') };
+    if (!user) return { error: new Error('Not authenticated') };
 
     const { error } = await supabase
       .from('event_participants')
@@ -155,7 +155,7 @@ export function useEvents() {
 
   // Check in to event via QR code (uses secure RPC - never exposes qr_code_secret)
   const checkInToEvent = async (eventId: string, qrSecret: string) => {
-    if (!user) return { error: new Error('Non connecté') };
+    if (!user) return { error: new Error('Not authenticated') };
 
     const { data: success, error } = await supabase
       .rpc('check_in_event_by_qr', { p_event_id: eventId, p_qr_secret: qrSecret });

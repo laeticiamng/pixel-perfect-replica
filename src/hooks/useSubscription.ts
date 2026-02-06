@@ -50,13 +50,13 @@ export function useSubscription() {
 
   // Easy+ subscription checkout (9.90€/mois)
   const createEasyPlusCheckout = async () => {
-    if (!user) throw new Error('Utilisateur non connecté');
+    if (!user) throw new Error('Not authenticated');
 
     // Refresh session to ensure valid token
     const { error: refreshError } = await supabase.auth.refreshSession();
     if (refreshError) {
       console.error('[useSubscription] Session refresh failed:', refreshError);
-      throw new Error('Session expirée, veuillez vous reconnecter');
+      throw new Error('Session expired, please log in again');
     }
 
     const { data, error: fnError } = await supabase.functions.invoke('create-checkout', {
@@ -71,7 +71,7 @@ export function useSubscription() {
 
   // Session purchase (0.99€/session)
   const purchaseSession = async (quantity: number = 1) => {
-    if (!user) throw new Error('Utilisateur non connecté');
+    if (!user) throw new Error('Not authenticated');
 
     const { data, error: fnError } = await supabase.functions.invoke('purchase-session', {
       body: { quantity },
@@ -85,7 +85,7 @@ export function useSubscription() {
 
   // Confirm session purchase after Stripe redirect
   const confirmSessionPurchase = async (sessionsPurchased: number) => {
-    if (!user) throw new Error('Utilisateur non connecté');
+    if (!user) throw new Error('Not authenticated');
 
     const { data, error: fnError } = await supabase.functions.invoke('confirm-session-purchase', {
       body: { sessions_purchased: sessionsPurchased },
@@ -99,7 +99,7 @@ export function useSubscription() {
 
   // Legacy checkout for existing yearly plan
   const createCheckout = async (plan: 'monthly' | 'yearly') => {
-    if (!user) throw new Error('Utilisateur non connecté');
+    if (!user) throw new Error('Not authenticated');
 
     const { data, error: fnError } = await supabase.functions.invoke('create-checkout', {
       body: { plan },
@@ -112,7 +112,7 @@ export function useSubscription() {
   };
 
   const openCustomerPortal = async () => {
-    if (!user) throw new Error('Utilisateur non connecté');
+    if (!user) throw new Error('Not authenticated');
 
     const { data, error: fnError } = await supabase.functions.invoke('customer-portal');
 

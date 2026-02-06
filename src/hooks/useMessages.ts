@@ -45,7 +45,7 @@ export function useMessages(interactionId: string | null) {
   // Send a message
   const sendMessage = useCallback(async (content: string) => {
     if (!interactionId || !user) {
-      return { error: new Error('Non connecté') };
+      return { error: new Error('Not authenticated') };
     }
 
     // Check message limit
