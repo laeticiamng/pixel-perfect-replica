@@ -1,5 +1,6 @@
 import { forwardRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { BookOpen, Dumbbell, Coffee } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 
 export const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props, ref) {
@@ -14,9 +15,9 @@ export const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props,
   }, []);
   
   const signals = [
-    { color: 'bg-signal-green', glow: 'glow-green', label: t('activities.studying'), emoji: '📚' },
-    { color: 'bg-signal-green', glow: 'glow-green', label: t('activities.sport'), emoji: '🏃' },
-    { color: 'bg-signal-yellow', glow: 'glow-yellow', label: t('activities.talking'), emoji: '☕' },
+    { color: 'bg-signal-green', glow: 'glow-green', label: t('activities.studying'), icon: BookOpen },
+    { color: 'bg-signal-green', glow: 'glow-green', label: t('activities.sport'), icon: Dumbbell },
+    { color: 'bg-signal-yellow', glow: 'glow-yellow', label: t('activities.talking'), icon: Coffee },
   ];
   
   return (
@@ -56,7 +57,7 @@ export const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props,
             transition={{ duration: 0.5, delay: i * 0.2 }}
           >
             <div className={`w-10 h-10 rounded-full ${signal.color} ${activeSignal === i ? signal.glow : ''} flex items-center justify-center shadow-md transition-all duration-300`}>
-              <span className="text-sm">{signal.emoji}</span>
+              <signal.icon className="h-4 w-4 text-white" />
             </div>
             {activeSignal === i && (
               <motion.div

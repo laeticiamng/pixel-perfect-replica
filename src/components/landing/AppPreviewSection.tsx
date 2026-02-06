@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { MapPin, Calendar, Users, User } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
 import { SignalDemo } from './SignalDemo';
@@ -36,16 +37,16 @@ export function AppPreviewSection() {
                 {/* Bottom nav mock */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-card/80 backdrop-blur border-t border-muted flex items-center justify-around px-4">
                   <div className="w-10 h-10 rounded-full bg-coral/20 flex items-center justify-center">
-                    <span className="text-coral text-lg">📍</span>
+                    <MapPin className="h-5 w-5 text-coral" />
                   </div>
                   <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                    <span className="text-muted-foreground text-lg">📅</span>
+                    <Calendar className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                    <span className="text-muted-foreground text-lg">👥</span>
+                    <Users className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                    <span className="text-muted-foreground text-lg">👤</span>
+                    <User className="h-5 w-5 text-muted-foreground" />
                   </div>
                 </div>
               </div>
