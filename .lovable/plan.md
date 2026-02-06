@@ -1,143 +1,154 @@
 
 
-# Audit Triple - EASY v1.7.x (Iteration 7)
+# Audit Triple - EASY v1.7.x (Iteration 8)
 ## Phase 1 : Technique | Phase 2 : UX | Phase 3 : Beta-testeur
 
 ---
 
 ## PHASE 1 : Audit Technique (Dev Senior)
 
-### TECH-13 : Console warning -- LandingFooter missing forwardRef (BASSE)
+### TECH-21 : 6 fichiers utilisent encore `sonner` au lieu de `react-hot-toast` (HAUTE)
 
-**Fichier** : `src/components/landing/LandingFooter.tsx`
+L'iteration 5 avait pour objectif d'unifier les toasts sur `react-hot-toast` et de supprimer `sonner`. Pourtant, 6 fichiers importent encore `{ toast } from 'sonner'` :
 
-La console affiche un warning React : "Function components cannot be given refs". `LandingPage.tsx` utilise framer-motion `AnimatePresence` qui tente de passer un ref a `LandingFooter`. Le composant doit etre enveloppe avec `forwardRef` comme `ComparisonSection` et `SignalDemo`.
+| Fichier | Lignes |
+|---------|--------|
+| `src/components/admin/AlertPreferencesCard.tsx` | L10, L74, L76 |
+| `src/components/admin/EventScraperCard.tsx` | L9, L33, L40 |
+| `src/components/admin/CronJobsMonitor.tsx` | L7, L136, L149, L154, L168, L181, L186, L200, L213, L218 |
+| `src/components/binome/SessionFeedbackForm.tsx` | L12, L60, L64 |
+| `src/components/binome/SessionChat.tsx` | L7, L25 |
+| `src/pages/SessionDetailPage.tsx` | L24, L129, L142, L144, L150, L154 |
 
-### TECH-14 : BinomeOnboarding 100% hardcode en francais (HAUTE)
+Ces imports provoquent potentiellement des toasts qui s'affichent via `sonner` alors que le `Sonner` Toaster a ete supprime d'`App.tsx` lors de l'iteration 5. Resultat : **les toasts de ces composants sont silencieux** (aucune notification visible a l'utilisateur).
 
-**Fichier** : `src/components/binome/BinomeOnboarding.tsx`
+### TECH-22 : SessionFilters 100% hardcode en francais (MOYENNE)
 
-~40 textes hardcodes :
-- Steps : "Lutte contre la solitude", "Cree ou rejoins un creneau", "Trouve ton binome", "Rencontre en vrai", "Cree du lien durable" + descriptions
-- Features : "Rappels automatiques", "Score de fiabilite", "4 creneaux/mois gratuits"
-- Navigation : "Passer", "Retour", "Suivant", "C'est parti !"
-- `BinomeDescriptionCard` : "Comment ca marche ?", "Voir le tutoriel complet"
-- `WhyEasySection` : "Pourquoi EASY ?", "Plus qu'une app de rencontre"
-- `WhyEasyCondensed` : "Pourquoi creer un creneau ?", "Reviser ensemble", "Dejeuner", "Sport", "Discuter"
-- `TestimonialsSection` : "Ils ont teste EASY", testimonials complets
-- "Bienvenue sur EASY !", "Cree du lien en vrai", "Etape X sur Y", "Fonctionnalites incluses"
+**Fichier** : `src/components/binome/SessionFilters.tsx`
 
-### TECH-15 : CommunityStats 100% hardcode en francais (MOYENNE)
+~12 textes hardcodes :
+- L31-38 : `activityOptions` labels en francais (`'Réviser'`, `'Bosser'`, `'Manger'`...)
+- L76 : `placeholder="Rechercher une ville..."`
+- L88 : `'Recherche...'` / `'Chercher'`
+- L101 : `'Filtres'`
+- L117 : `'Effacer'`
+- L138-140 : `'Date'`
+- L169 : `placeholder="Activité"`
+- L172 : `'Toutes'`
+- L191 : `placeholder="Durée"`
+- L194 : `'Toutes'`
+- L88-95 : `'semaines'` / `'mois'`
 
-**Fichier** : `src/components/binome/CommunityStats.tsx`
+### TECH-23 : ChatInput, ChatEmptyState, ChatMessageBubble hardcodes en francais (MOYENNE)
 
-- "En ligne", "maintenant", "Creneaux", "ce mois", "Rencontres", "reussies", "Communaute en temps reel"
+**Fichier** : `src/components/binome/ChatInput.tsx`
+- L38 : `placeholder="Écris un message..."`
+- L47 : `aria-label="Envoyer le message"`
 
-### TECH-16 : AIRecommendationsWidget 100% hardcode en francais (MOYENNE)
+**Fichier** : `src/components/binome/ChatEmptyState.tsx`
+- L5 : `"Aucun message pour l'instant"`
+- L6 : `"Sois le premier à écrire !"`
 
-**Fichier** : `src/components/binome/AIRecommendationsWidget.tsx`
+**Fichier** : `src/components/binome/ChatMessageBubble.tsx`
+- L4 : `import { fr } from 'date-fns/locale'` -- locale hardcoded a `fr`
+- L51-54 : `formatDistanceToNow` avec `locale: fr` hardcode
 
-- "Suggestions IA", "Recommandations personnalisees", "Pas de recommandations pour le moment", "Depuis le cache", "Actualiser", "Rafraichir les suggestions", "Generation IA en cours..."
+### TECH-24 : SessionChat toast hardcode en francais (BASSE)
 
-### TECH-17 : SessionQuotaBadge 100% hardcode en francais (MOYENNE)
+**Fichier** : `src/components/binome/SessionChat.tsx`
+- L25 : `toast.error('Erreur lors de l\'envoi du message')` -- utilise `sonner` ET texte hardcode
 
-**Fichier** : `src/components/binome/SessionQuotaBadge.tsx`
+### TECH-25 : ProfileQRCode n'utilise pas le systeme i18n (MOYENNE)
 
-- "Illimite", "ce mois", "Passer Premium", "Tu as atteint ta limite mensuelle", "Plus qu'un creneau disponible"
+**Fichier** : `src/components/profile/ProfileQRCode.tsx`
 
-### TECH-18 : IcebreakerCard textes hardcodes (BASSE)
+Le composant detecte la langue via `localStorage.getItem('language')` (L35) au lieu d'utiliser `useTranslation()`. De plus, il utilise des ternaires `isFr ?` au lieu de `t()` (~10 textes).
 
-**Fichier** : `src/components/social/IcebreakerCard.tsx`
+### TECH-26 : RecurrenceSelector n'utilise pas le systeme i18n (BASSE)
 
-- "Copie !", "Impossible de copier", "Generation IA en cours...", "Icebreaker suggere/IA", "suggestions", "Copier", "Nouvelle suggestion"
+**Fichier** : `src/components/events/RecurrenceSelector.tsx`
 
-### TECH-19 : VoiceIcebreakerButton textes hardcodes (BASSE)
+Meme probleme : detecte la langue via `localStorage` (L29) et utilise des ternaires `isFr ?` (~8 textes).
 
-**Fichier** : `src/components/social/VoiceIcebreakerButton.tsx`
+### TECH-27 : Admin components entierement hardcodes (BASSE - admin only)
 
-- "Arreter", "Ecouter", "Generation...", "Ecouter l'icebreaker"
+**Fichiers** : `AlertPreferencesCard.tsx`, `EventScraperCard.tsx`, `CronJobsMonitor.tsx`, `AlertHistoryCard.tsx`
 
-### TECH-20 : PeopleMetPage utilise `activityData.label` au lieu de `t()` (BASSE)
-
-**Fichier** : `src/pages/PeopleMetPage.tsx` (ligne 163)
-
-`activityData.label` affiche le label anglais hardcode au lieu d'utiliser `t(activityData.labelKey)`.
+~80 textes hardcodes en francais. Priorite basse car pages admin uniquement. Mais les toasts sont muets car `sonner` n'a plus de Toaster.
 
 ---
 
 ## PHASE 2 : Audit UX (UX Designer Senior)
 
-### UX-16 : Onboarding Binome bloque pour les anglophones
+### UX-21 : Toasts muets dans le module Binome
 
-L'onboarding Binome (5 etapes + features + guide) est entierement en francais. Un utilisateur anglophone ne comprend pas ce qu'est le module Binome ni comment l'utiliser.
+Apres suppression du Toaster `sonner` dans `App.tsx` (iteration 5), les actions suivantes ne produisent plus de feedback visuel :
+- Rejoindre/quitter une session (SessionDetailPage)
+- Envoyer un feedback de session (SessionFeedbackForm)
+- Envoyer un message dans le chat de session (SessionChat)
+- Actions admin (AlertPreferences, CronJobs, EventScraper)
 
-### UX-17 : Statistiques de communaute en francais
+L'utilisateur clique mais ne recoit aucune confirmation.
 
-Le widget "Communaute en temps reel" sur la page Binome affiche "En ligne", "Creneaux", "Rencontres" meme en mode anglais.
+### UX-22 : Filtres de session Binome non traduits
 
-### UX-18 : Suggestions IA non traduites
+Les filtres de recherche de sessions (activite, ville, duree) affichent des labels en francais meme en mode anglais : "Réviser", "Rechercher une ville...", "Filtres", "Effacer".
 
-Le widget de recommandations IA affiche "Suggestions IA", "Recommandations personnalisees" en francais meme en mode anglais.
+### UX-23 : Chat de session entierement en francais
 
-### UX-19 : Icebreaker card UI entierement en francais
+Le chat des sessions Binome affiche "Écris un message...", "Aucun message pour l'instant", et les timestamps en francais meme en mode anglais.
 
-Les labels "Copie !", "Icebreaker suggere", "Generation IA en cours..." sont en francais pour un utilisateur anglophone.
+### UX-24 : QR Code de profil hors systeme i18n
 
-### UX-20 : Quota de sessions non traduit
-
-Le badge de quota affiche "Illimite", "ce mois", "Passer Premium" en francais.
+Le dialogue QR Code utilise `localStorage` au lieu du systeme de traduction, ce qui peut creer des incoherences si la preference est stockee differemment.
 
 ---
 
 ## PHASE 3 : Audit Beta-testeur (Utilisateur Final)
 
-### BETA-10 : "Le tutoriel Binome est en francais meme si j'ai choisi anglais"
+### BETA-14 : "Je rejoins une session mais rien ne se passe visuellement"
 
-Un utilisateur anglophone ouvre le module Binome pour la premiere fois et voit un tutoriel entierement en francais.
+Un utilisateur clique "Rejoindre" sur une session Binome. L'action fonctionne en base mais aucun toast ne confirme l'action (sonner supprime, pas de fallback react-hot-toast).
 
-### BETA-11 : "Les stats de communaute sont en francais"
+### BETA-15 : "Les filtres de session sont en francais meme si j'ai choisi anglais"
 
-Les labels "En ligne", "Creneaux", "Rencontres" restent en francais.
+Les labels "Réviser", "Bosser", "Rechercher une ville..." restent en francais.
 
-### BETA-12 : "Les suggestions IA et l'icebreaker sont en francais"
+### BETA-16 : "Le chat de session est en francais"
 
-Les widgets d'IA ne suivent pas la langue choisie.
+Le placeholder "Écris un message..." et les timestamps restent en francais.
 
-### BETA-13 : "Je vois une activite en anglais au lieu de la traduction"
+### BETA-17 : "Le QR Code de profil ne change pas de langue quand je switch"
 
-Sur la page "People Met", le label d'activite utilise la valeur anglaise brute au lieu de la traduction.
+Le QR Code utilise `localStorage` au lieu du systeme reactif, donc le switch de langue ne met pas a jour immediatement les textes.
 
 ---
 
 ## Plan de Corrections
 
-### Etape 1 : i18n -- BinomeOnboarding (priorite haute, ~50 cles)
+### Etape 1 : Migrer les 6 fichiers de `sonner` vers `react-hot-toast` (CRITIQUE)
 
-Ajouter les blocs `binomeOnboarding.*`, `binomeDescription.*`, `whyEasy.*`, `testimonials.*` dans `translations.ts`. Refactoriser les 4 sous-composants.
+Remplacer `import { toast } from 'sonner'` par `import toast from 'react-hot-toast'` dans les 6 fichiers. Adapter la syntaxe si necessaire (`toast.success()` est compatible).
 
-### Etape 2 : i18n -- CommunityStats (~10 cles)
+### Etape 2 : i18n -- SessionFilters (~12 cles)
 
-Ajouter le bloc `communityStats.*` dans `translations.ts`. Refactoriser le composant.
+Ajouter le bloc `sessionFilters.*` dans `translations.ts`. Refactoriser pour utiliser `t()` et les cles d'activites existantes.
 
-### Etape 3 : i18n -- AIRecommendationsWidget (~10 cles)
+### Etape 3 : i18n -- ChatInput + ChatEmptyState + ChatMessageBubble (~6 cles)
 
-Ajouter le bloc `aiRecommendations.*` dans `translations.ts`. Refactoriser le composant.
+Ajouter les cles `sessionChat.*`. Passer le locale dynamiquement pour `date-fns` dans `ChatMessageBubble`.
 
-### Etape 4 : i18n -- SessionQuotaBadge (~8 cles)
+### Etape 4 : i18n -- SessionChat toast
 
-Ajouter le bloc `sessionQuota.*` dans `translations.ts`. Refactoriser le composant.
+Remplacer le texte hardcode par `t()`.
 
-### Etape 5 : i18n -- IcebreakerCard + VoiceIcebreakerButton (~12 cles)
+### Etape 5 : Refactoriser ProfileQRCode vers useTranslation (~10 cles)
 
-Ajouter le bloc `icebreaker.*` dans `translations.ts`. Refactoriser les 2 composants.
+Remplacer `localStorage.getItem('language')` par `useTranslation()`. Ajouter le bloc `profileQR.*` dans `translations.ts`.
 
-### Etape 6 : Fix PeopleMetPage activity label
+### Etape 6 : Refactoriser RecurrenceSelector vers useTranslation (~8 cles)
 
-Remplacer `activityData.label` par `t(activityData.labelKey)` (ligne 163).
-
-### Etape 7 : Fix LandingFooter forwardRef
-
-Envelopper `LandingFooter` avec `forwardRef` pour supprimer le warning console.
+Remplacer `localStorage` par `useTranslation()`. Ajouter le bloc `recurrence.*`.
 
 ---
 
@@ -145,22 +156,26 @@ Envelopper `LandingFooter` avec `forwardRef` pour supprimer le warning console.
 
 | Fichier | Changements |
 |---------|------------|
-| `src/lib/i18n/translations.ts` | +90 cles (binomeOnboarding, communityStats, aiRecommendations, sessionQuota, icebreaker) |
-| `src/components/binome/BinomeOnboarding.tsx` | i18n complet (~50 textes) |
-| `src/components/binome/CommunityStats.tsx` | i18n complet |
-| `src/components/binome/AIRecommendationsWidget.tsx` | i18n complet |
-| `src/components/binome/SessionQuotaBadge.tsx` | i18n complet |
-| `src/components/social/IcebreakerCard.tsx` | i18n complet |
-| `src/components/social/VoiceIcebreakerButton.tsx` | i18n complet |
-| `src/pages/PeopleMetPage.tsx` | Fix activity label (1 ligne) |
-| `src/components/landing/LandingFooter.tsx` | forwardRef wrapper |
+| `src/lib/i18n/translations.ts` | +40 cles (sessionFilters, sessionChat, profileQR, recurrence) |
+| `src/components/admin/AlertPreferencesCard.tsx` | sonner -> react-hot-toast |
+| `src/components/admin/EventScraperCard.tsx` | sonner -> react-hot-toast |
+| `src/components/admin/CronJobsMonitor.tsx` | sonner -> react-hot-toast |
+| `src/components/binome/SessionFeedbackForm.tsx` | sonner -> react-hot-toast |
+| `src/components/binome/SessionChat.tsx` | sonner -> react-hot-toast + i18n toast |
+| `src/pages/SessionDetailPage.tsx` | sonner -> react-hot-toast |
+| `src/components/binome/SessionFilters.tsx` | i18n complet |
+| `src/components/binome/ChatInput.tsx` | i18n |
+| `src/components/binome/ChatEmptyState.tsx` | i18n |
+| `src/components/binome/ChatMessageBubble.tsx` | i18n + locale dynamique |
+| `src/components/profile/ProfileQRCode.tsx` | Refactoring useTranslation |
+| `src/components/events/RecurrenceSelector.tsx` | Refactoring useTranslation |
 
 ---
 
 ## Estimation
 
-- i18n composants Binome (BinomeOnboarding, CommunityStats, AIRecommendations, SessionQuotaBadge) : 4 fichiers, ~80 cles
-- i18n composants Social (IcebreakerCard, VoiceIcebreakerButton) : 2 fichiers, ~12 cles
-- Bug fixes (PeopleMetPage, LandingFooter) : 2 fichiers, ~5 lignes
-- Total : ~9 fichiers modifies, ~90 nouvelles cles, ~400 lignes ajoutees/modifiees
+- Migration sonner -> react-hot-toast : 6 fichiers, ~15 lignes par fichier
+- i18n composants Binome (SessionFilters, Chat*) : 4 fichiers, ~20 cles
+- Refactoring ProfileQRCode + RecurrenceSelector : 2 fichiers, ~20 cles
+- Total : ~13 fichiers modifies, ~40 nouvelles cles, ~250 lignes ajoutees/modifiees
 
