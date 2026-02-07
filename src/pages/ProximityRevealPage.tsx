@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin, ThumbsUp, ThumbsDown, UserX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
 import { IcebreakerCard, VerificationBadges, MiniChat, VoiceIcebreakerButton } from '@/components/social';
@@ -100,7 +100,9 @@ export default function ProximityRevealPage() {
     return (
       <PageLayout className="flex items-center justify-center px-6">
         <div className="text-center">
-          <div className="text-6xl mb-4">👻</div>
+          <div className="w-20 h-20 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-4">
+            <UserX className="h-10 w-10 text-muted-foreground" />
+          </div>
           <p className="text-foreground font-medium mb-2">{t('reveal.userNotFound')}</p>
           <p className="text-muted-foreground text-sm mb-6">{t('reveal.userNotFoundDesc')}</p>
           <Button

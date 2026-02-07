@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Sparkles, RefreshCw, Clock, ChevronRight, Lightbulb } from 'lucide-react';
+import { Sparkles, RefreshCw, Clock, ChevronRight, Lightbulb, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -137,7 +137,7 @@ export function AIRecommendationsWidget() {
                     return (
                       <motion.div key={rec.activity} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
                         <div className="flex items-start gap-3">
-                          <div className="text-2xl flex-shrink-0">{activityData?.emoji || '🎯'}</div>
+                          <div className="text-2xl flex-shrink-0">{activityData?.emoji || <Target className="h-6 w-6 text-muted-foreground" />}</div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="font-medium text-foreground text-sm">{t(activityData?.labelKey || 'activities.other')}</span>
@@ -146,7 +146,7 @@ export function AIRecommendationsWidget() {
                               </span>
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2">{rec.reason}</p>
-                            {rec.tip && <p className="text-xs text-coral mt-1 italic">💡 {rec.tip}</p>}
+                            {rec.tip && <p className="text-xs text-coral mt-1 italic"><Lightbulb className="h-3 w-3 inline mr-1" />{rec.tip}</p>}
                           </div>
                         </div>
                       </motion.div>

@@ -284,7 +284,7 @@ export default function ChangelogPage() {
 
         {/* Footer */}
         <div className="text-center text-sm text-muted-foreground pt-4">
-          <p>🟢 {t('changelog.tagline')}</p>
+          <p><span className="w-3 h-3 rounded-full bg-signal-green inline-block mr-1 align-middle" /> {t('changelog.tagline')}</p>
           <p className="mt-1">{t('changelog.madeWith')}</p>
         </div>
       </main>

@@ -440,7 +440,7 @@ export default function EventsPage() {
               <div className="w-20 h-20 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-4">
                 <Calendar className="h-10 w-10 text-muted-foreground" />
               </div>
-              <p className="text-4xl mb-4">📅</p>
+              
               <p className="text-foreground font-medium mb-2">
                 {categoryFilter ? t('eventsExtra.noEventsInCategory') : t('eventsExtra.noUpcomingEvents')}
               </p>
