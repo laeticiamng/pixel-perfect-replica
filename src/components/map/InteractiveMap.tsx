@@ -3,6 +3,7 @@ import Map, { Marker, NavigationControl, GeolocateControl, Source, Layer, Popup 
 import type { MapRef, ViewStateChangeEvent } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { AnimatePresence } from 'framer-motion';
+import { Map as MapIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocationStore } from '@/stores/locationStore';
 import { supabase } from '@/integrations/supabase/client';
@@ -275,7 +276,9 @@ export function InteractiveMap({
     return (
       <div className={cn("flex items-center justify-center bg-muted rounded-2xl", className)}>
         <div className="flex flex-col items-center gap-3 text-center p-6">
-          <span className="text-4xl">🗺️</span>
+          <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
+            <MapIcon className="h-8 w-8 text-muted-foreground" />
+          </div>
           <p className="text-sm text-muted-foreground">{error || t('map.unavailable')}</p>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown } from 'lucide-react';
+import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
@@ -108,7 +108,7 @@ export default function ProfilePage() {
           </p>
           {profile?.university && (
             <p className="text-muted-foreground text-sm animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              🎓 {profile.university}
+              <GraduationCap className="h-4 w-4 inline mr-1" />{profile.university}
             </p>
           )}
           
