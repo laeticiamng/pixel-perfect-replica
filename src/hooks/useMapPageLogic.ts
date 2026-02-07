@@ -131,7 +131,7 @@ export function useMapPageLogic() {
   }, [selectedActivity, activateSignal, locationDescription, t]);
 
   const handleSignalExpired = useCallback(() => {
-    toast(t('mapToasts.signalExpired'), { icon: '⏰' });
+    toast(t('mapToasts.signalExpired'));
   }, [t]);
 
   const handleExtendSignal = useCallback(async () => {

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
 import { IcebreakerCard, VerificationBadges, MiniChat, VoiceIcebreakerButton } from '@/components/social';
@@ -178,15 +178,15 @@ export default function ProximityRevealPage() {
         <div className="flex gap-6 mb-8">
           <button
             onClick={() => handleFeedback(true)}
-            className="w-24 h-24 rounded-2xl bg-signal-green/20 border-2 border-signal-green flex items-center justify-center text-5xl transition-all hover:scale-110 active:scale-95 glow-green"
+            className="w-24 h-24 rounded-2xl bg-signal-green/20 border-2 border-signal-green flex items-center justify-center transition-all hover:scale-110 active:scale-95 glow-green"
           >
-            😊
+            <ThumbsUp className="h-10 w-10 text-signal-green" />
           </button>
           <button
             onClick={() => handleFeedback(false)}
-            className="w-24 h-24 rounded-2xl bg-signal-red/20 border-2 border-signal-red flex items-center justify-center text-5xl transition-all hover:scale-110 active:scale-95"
+            className="w-24 h-24 rounded-2xl bg-signal-red/20 border-2 border-signal-red flex items-center justify-center transition-all hover:scale-110 active:scale-95"
           >
-            😕
+            <ThumbsDown className="h-10 w-10 text-signal-red" />
           </button>
         </div>
         

@@ -20,7 +20,6 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     if (!isLoading && !isAuthenticated && !hasShownToast.current) {
       hasShownToast.current = true;
       toast.error(t('auth.loginRequired'), {
-        icon: '🔒',
         duration: 4000,
       });
     }
