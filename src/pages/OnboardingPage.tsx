@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff, Sparkles, Mail, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
-import { loginSchema } from '@/lib/validation';
+import { loginSchema, registerSchema } from '@/lib/validation';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { cn } from '@/lib/utils';
 import { lovable } from '@/integrations/lovable';
 import { useTranslation } from '@/lib/i18n';
+import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
 
 type Step = 1 | 2 | 3;
@@ -19,8 +20,11 @@ type Step = 1 | 2 | 3;
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isLogin = location.state?.isLogin || false;
+  const [isLogin, setIsLogin] = useState(location.state?.isLogin || false);
   const returnPath = location.state?.from || '/map';
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [confirmationEmail, setConfirmationEmail] = useState('');
+  const [isResending, setIsResending] = useState(false);
   const { t } = useTranslation();
   
   const [step, setStep] = useState<Step>(1);
@@ -127,21 +131,14 @@ export default function OnboardingPage() {
       }
       return true;
     } else {
-      const emailResult = loginSchema.shape.email.safeParse(email);
-      if (!emailResult.success) {
-        setErrors({ email: t('auth.invalidEmail') });
-        return false;
-      }
-      if (password.length < 6) {
-        setErrors({ password: t('auth.passwordTooShort') });
-        return false;
-      }
-      if (!firstName.trim()) {
-        setErrors({ firstName: t('auth.firstNameRequired') });
-        return false;
-      }
-      if (firstName.length > 50) {
-        setErrors({ firstName: t('auth.firstNameTooLong') });
+      const result = registerSchema.safeParse({ email, password, firstName: firstName.trim(), university: university.trim() || undefined });
+      if (!result.success) {
+        const fieldErrors: Record<string, string> = {};
+        result.error.errors.forEach(err => {
+          const field = err.path[0] as string;
+          fieldErrors[field] = err.message;
+        });
+        setErrors(fieldErrors);
         return false;
       }
       return true;
@@ -168,7 +165,8 @@ export default function OnboardingPage() {
           if (error.message.includes('Invalid login credentials')) {
             toast.error(t('auth.invalidCredentials'));
           } else if (error.message.includes('Email not confirmed')) {
-            toast.error(t('auth.confirmEmail'));
+            setConfirmationEmail(email);
+            setShowEmailConfirmation(true);
           } else {
             toast.error(error.message || t('errors.generic'));
           }
@@ -199,9 +197,16 @@ export default function OnboardingPage() {
           }
         } else {
           signupRateLimit.reset();
-          toast.success(t('auth.accountCreated'));
-          // Redirect to post-signup onboarding flow
-          navigate('/welcome');
+          // Check if email confirmation is required (session will be null)
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) {
+            // Email confirmation required - show confirmation screen
+            setConfirmationEmail(email);
+            setShowEmailConfirmation(true);
+          } else {
+            toast.success(t('auth.accountCreated'));
+            navigate('/welcome');
+          }
         }
       }
     } else if (step === 2) {
@@ -397,6 +402,25 @@ export default function OnboardingPage() {
                 )}
               </Button>
             </div>
+
+            {/* Toggle login/signup */}
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setErrors({});
+                  setPassword('');
+                }}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {isLogin ? (
+                  <>{t('auth.noAccount')} <span className="text-coral font-medium">{t('auth.signUp')}</span></>
+                ) : (
+                  <>{t('auth.alreadyHaveAccount')} <span className="text-coral font-medium">{t('auth.signIn')}</span></>
+                )}
+              </button>
+            </div>
           </form>
         );
         
@@ -515,7 +539,74 @@ export default function OnboardingPage() {
     }
   };
 
+  const handleResendEmail = async () => {
+    setIsResending(true);
+    try {
+      const { error } = await supabase.auth.resend({ type: 'signup', email: confirmationEmail });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success(t('auth.emailResent'));
+      }
+    } catch {
+      toast.error(t('errors.generic'));
+    } finally {
+      setIsResending(false);
+    }
+  };
+
   const totalSteps = 3;
+
+  // Email confirmation screen
+  if (showEmailConfirmation) {
+    return (
+      <PageLayout showSidebar={false} className="flex flex-col px-6 py-8 safe-top safe-bottom">
+        <div className="max-w-md mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
+          <div className="space-y-6 animate-slide-up text-center">
+            <div className="w-24 h-24 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6 glow-coral">
+              <Mail className="h-12 w-12 text-coral" />
+            </div>
+            
+            <h2 className="text-2xl font-bold text-foreground">
+              {t('auth.checkEmail')}
+            </h2>
+            <p className="text-muted-foreground max-w-xs mx-auto leading-relaxed">
+              {t('auth.checkEmailDesc')}
+            </p>
+            <p className="text-sm text-foreground font-medium">{confirmationEmail}</p>
+            
+            <div className="space-y-3 pt-4">
+              <Button
+                onClick={handleResendEmail}
+                disabled={isResending}
+                variant="outline"
+                className="w-full h-14 rounded-xl border-border"
+              >
+                {isResending ? (
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                ) : (
+                  <RefreshCw className="h-5 w-5 mr-2" />
+                )}
+                {t('auth.resendEmail')}
+              </Button>
+              
+              <Button
+                onClick={() => {
+                  setShowEmailConfirmation(false);
+                  setIsLogin(true);
+                  setPassword('');
+                  setErrors({});
+                }}
+                className="w-full h-14 text-lg font-semibold bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl glow-coral"
+              >
+                {t('auth.confirmedGoLogin')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout showSidebar={false} className="flex flex-col px-6 py-8 safe-top safe-bottom">
