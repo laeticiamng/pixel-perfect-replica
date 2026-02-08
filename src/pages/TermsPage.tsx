@@ -68,7 +68,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-foreground">{t('terms.section8Title')}</h2>
             <p className="text-muted-foreground">
               {t('terms.section8Text')}
-              <a href="mailto:legal@easy-app.fr" className="text-coral ml-1">legal@easy-app.fr</a>
+              <a href="mailto:legal@nearvity.fr" className="text-coral ml-1">legal@nearvity.fr</a>
             </p>
           </section>
         </div>

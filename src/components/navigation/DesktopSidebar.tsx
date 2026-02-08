@@ -161,7 +161,7 @@ export function DesktopSidebar() {
           )}>
             <img 
               src="/easy-logo.png" 
-              alt="EASY" 
+              alt="NEARVITY" 
               className={cn(
                 "rounded-xl transition-all duration-300",
                 collapsed ? "h-8 w-8" : "h-10 w-10"
@@ -169,7 +169,7 @@ export function DesktopSidebar() {
             />
             {!collapsed && (
               <div>
-                <h1 className="text-xl font-bold text-coral">EASY</h1>
+                <h1 className="text-xl font-bold text-coral">NEARVITY</h1>
                 <p className="text-xs text-muted-foreground">{t('nav.irlMeetings')}</p>
               </div>
             )}

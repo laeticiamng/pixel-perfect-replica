@@ -27,8 +27,8 @@ export default defineConfig(({ mode }) => {
         registerType: "autoUpdate",
         includeAssets: ["favicon.ico", "robots.txt", "easy-logo.png"],
         manifest: {
-          name: "EASY - Le premier réseau social 100% réel",
-          short_name: "EASY",
+          name: "NEARVITY - Le premier réseau social 100% réel",
+          short_name: "NEARVITY",
           description: "Facilite les rencontres IRL. Des vraies personnes, prêtes à se retrouver.",
           theme_color: "#0f0f1a",
           background_color: "#0f0f1a",

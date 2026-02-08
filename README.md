@@ -1,6 +1,6 @@
-# 🟢 EASY — Le premier réseau social 100% réel
+# 🟢 NEARVITY — Le premier réseau social 100% réel
 
-**EASY** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton statut EASY, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
+**NEARVITY** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton statut NEARVITY, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
 
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript) ![Lovable Cloud](https://img.shields.io/badge/Lovable_Cloud-Backend-3FCF8E?logo=supabase) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss) ![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa)
 
@@ -10,11 +10,11 @@
 
 | Champ | Valeur |
 |-------|--------|
-| **Version** | 1.7.0 |
+| **Version** | 2.0.0 |
 | **Statut** | 🟢 Production Ready |
 | **Plateforme** | Web PWA (mobile-first, installable) |
 | **Backend** | Lovable Cloud |
-| **Dernière mise à jour** | 5 février 2026 |
+| **Dernière mise à jour** | 8 février 2026 |
 
 > **Note** : Ce projet est en production. Toutes les fonctionnalités de base sont implémentées et testées.
 
@@ -31,7 +31,7 @@
 ### Développement local
 ```bash
 git clone <YOUR_GIT_URL>
-cd easy-app
+cd nearvity-app
 npm install
 npm run dev
 ```
@@ -59,7 +59,7 @@ Variables optionnelles (pour les fonctionnalités premium) :
 | Fonctionnalité | Description |
 |----------------|-------------|
 | **Radar temps réel** | Visualise les personnes disponibles autour de toi |
-| **3 états EASY** | 🟢 Ouvert, 🟡 Conditionnel, 🔴 Occupé |
+| **3 états NEARVITY** | 🟢 Ouvert, 🟡 Conditionnel, 🔴 Occupé |
 | **6 activités** | 📚 Réviser, 🍽️ Manger, 💻 Bosser, 💬 Parler, 🏃 Sport, ✨ Autre |
 | **Ghost mode** | Deviens invisible sur le radar |
 | **Sessions binôme** | Planifie des sessions d'étude en groupe |
@@ -158,7 +158,7 @@ npm run test -- --coverage
 | Table | Description |
 |-------|-------------|
 | `profiles` | Informations utilisateur |
-| `active_signals` | Statuts EASY actifs (expiration 2h) |
+| `active_signals` | Statuts NEARVITY actifs (expiration 2h) |
 | `interactions` | Historique des rencontres |
 | `user_settings` | Préférences (ghost mode, etc.) |
 | `scheduled_sessions` | Sessions binôme |
@@ -185,7 +185,7 @@ npm run test -- --coverage
 
 ### Gratuit
 - 2 sessions binôme par mois
-- Radar et EASY illimités
+- Radar et NEARVITY illimités
 - Chat (10 messages par interaction)
 
 ### Premium (9,90€/mois)
@@ -254,7 +254,7 @@ Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 ---
 
 <p align="center">
-  <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 1.7.0 • Production Ready • PWA</em><br><br>
+  <strong>🟢 NEARVITY</strong> — Le premier réseau social 100% réel<br>
+  <em>Version 2.0.0 • Production Ready • PWA</em><br><br>
   Fait avec ❤️ in France par EmotionsCare Sasu
 </p>

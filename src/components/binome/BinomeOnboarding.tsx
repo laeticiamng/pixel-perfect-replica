@@ -241,14 +241,14 @@ const cardVariants = {
   }
 };
 
-export function WhyEasySection() {
+export function WhyNearvitySection() {
   const { t } = useTranslation();
 
-  const whyEasyBenefits = [
-    { icon: <Heart className="h-6 w-6 text-coral" />, title: t('whyEasy.benefit1Title'), description: t('whyEasy.benefit1Desc') },
-    { icon: <Users2 className="h-6 w-6 text-signal-green" />, title: t('whyEasy.benefit2Title'), description: t('whyEasy.benefit2Desc') },
-    { icon: <Smile className="h-6 w-6 text-primary" />, title: t('whyEasy.benefit3Title'), description: t('whyEasy.benefit3Desc') },
-    { icon: <HandHeart className="h-6 w-6 text-coral" />, title: t('whyEasy.benefit4Title'), description: t('whyEasy.benefit4Desc') },
+  const whyNearvityBenefits = [
+    { icon: <Heart className="h-6 w-6 text-coral" />, title: t('whyNearvity.benefit1Title'), description: t('whyNearvity.benefit1Desc') },
+    { icon: <Users2 className="h-6 w-6 text-signal-green" />, title: t('whyNearvity.benefit2Title'), description: t('whyNearvity.benefit2Desc') },
+    { icon: <Smile className="h-6 w-6 text-primary" />, title: t('whyNearvity.benefit3Title'), description: t('whyNearvity.benefit3Desc') },
+    { icon: <HandHeart className="h-6 w-6 text-coral" />, title: t('whyNearvity.benefit4Title'), description: t('whyNearvity.benefit4Desc') },
   ];
 
   return (
@@ -256,10 +256,10 @@ export function WhyEasySection() {
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
           <Heart className="h-5 w-5 text-coral" />
-          {t('whyEasy.title')}
+          {t('whyNearvity.title')}
         </CardTitle>
         <CardDescription>
-          {t('whyEasy.subtitle')}
+          {t('whyNearvity.subtitle')}
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-0">
@@ -270,7 +270,7 @@ export function WhyEasySection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
         >
-          {whyEasyBenefits.map((benefit, idx) => (
+          {whyNearvityBenefits.map((benefit, idx) => (
             <motion.div 
               key={idx} 
               variants={cardVariants}
@@ -299,9 +299,9 @@ export function WhyEasySection() {
           transition={{ delay: 0.4, duration: 0.4 }}
         >
           <p className="text-sm text-center text-muted-foreground">
-            <span className="font-semibold text-coral">{t('whyEasy.statHighlight')}</span>
+            <span className="font-semibold text-coral">{t('whyNearvity.statHighlight')}</span>
             <br />
-            {t('whyEasy.statMessage')}
+            {t('whyNearvity.statMessage')}
           </p>
         </motion.div>
       </CardContent>
@@ -310,14 +310,14 @@ export function WhyEasySection() {
 }
 
 // Condensed version for empty states
-export function WhyEasyCondensed() {
+export function WhyNearvityCondensed() {
   const { t } = useTranslation();
 
   const activities = [
-    t('whyEasy.studyTogether'),
-    t('whyEasy.lunch'),
-    t('whyEasy.sport'),
-    t('whyEasy.chat'),
+    t('whyNearvity.studyTogether'),
+    t('whyNearvity.lunch'),
+    t('whyNearvity.sport'),
+    t('whyNearvity.chat'),
   ];
 
   return (
@@ -329,10 +329,10 @@ export function WhyEasyCondensed() {
     >
       <div className="flex items-center gap-2 mb-2">
         <Heart className="h-5 w-5 text-coral" />
-        <h4 className="font-semibold text-foreground text-sm">{t('whyEasy.condensedTitle')}</h4>
+        <h4 className="font-semibold text-foreground text-sm">{t('whyNearvity.condensedTitle')}</h4>
       </div>
       <p className="text-xs text-muted-foreground leading-relaxed mb-3">
-        {t('whyEasy.condensedDesc')}
+        {t('whyNearvity.condensedDesc')}
       </p>
       <div className="flex flex-wrap gap-2">
         {activities.map((activity) => (

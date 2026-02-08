@@ -13,10 +13,10 @@ export function LandingHeader() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-lg">
-            <span className="text-white font-black text-lg">E</span>
+            <span className="text-white font-black text-lg">N</span>
           </div>
           <span className="text-2xl font-black tracking-tight bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">
-            EASY
+            NEARVITY
           </span>
         </div>
         <div className="flex items-center gap-2 sm:gap-3">

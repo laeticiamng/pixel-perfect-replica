@@ -60,7 +60,7 @@ export default function AboutPage() {
           className="text-center mb-12"
         >
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center">
-            <span className="text-white font-bold text-3xl">E</span>
+            <span className="text-white font-bold text-3xl">N</span>
           </div>
           <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-coral to-coral-dark bg-clip-text text-transparent">
             {t('about.title')}
@@ -164,11 +164,11 @@ export default function AboutPage() {
               </h3>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href="mailto:support@easy-app.fr"
+                  href="mailto:support@nearvity.fr"
                   className="flex items-center gap-2 text-muted-foreground hover:text-coral transition-colors"
                 >
                   <Mail className="w-4 h-4" />
-                  support@easy-app.fr
+                  support@nearvity.fr
                 </a>
               </div>
             </CardContent>

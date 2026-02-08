@@ -22,7 +22,7 @@ export default function PremiumPage() {
   const { 
     status, 
     isLoading: isCheckingSubscription, 
-    createEasyPlusCheckout, 
+    createNearvityPlusCheckout, 
     purchaseSession,
     confirmSessionPurchase,
     openCustomerPortal, 
@@ -113,7 +113,7 @@ export default function PremiumPage() {
     setIsLoading('easyplus');
 
     try {
-      const checkoutUrl = await createEasyPlusCheckout();
+      const checkoutUrl = await createNearvityPlusCheckout();
       if (checkoutUrl) {
         window.open(checkoutUrl, '_blank');
       }

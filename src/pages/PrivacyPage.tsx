@@ -102,7 +102,7 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-foreground">{t('privacy.section7Title')}</h2>
             <p className="text-muted-foreground">
               {t('privacy.section7Text')}
-              <a href="mailto:dpo@easy-app.fr" className="text-coral ml-1">dpo@easy-app.fr</a>
+              <a href="mailto:dpo@nearvity.fr" className="text-coral ml-1">dpo@nearvity.fr</a>
             </p>
           </section>
         </div>

@@ -198,7 +198,7 @@ export default function ProfilePage() {
           to="/changelog" 
           className="block text-center text-xs text-muted-foreground py-4 font-medium hover:text-coral transition-colors"
         >
-          EASY v{APP_VERSION} — Changelog
+          NEARVITY v{APP_VERSION} — Changelog
         </Link>
       </div>
 

@@ -6,7 +6,7 @@ export { SessionCheckin } from './SessionCheckin';
 export { SessionFeedbackForm } from './SessionFeedbackForm';
 export { SessionFilters } from './SessionFilters';
 export { SessionQuotaBadge } from './SessionQuotaBadge';
-export { BinomeOnboarding, BinomeDescriptionCard, WhyEasySection, WhyEasyCondensed, TestimonialsSection } from './BinomeOnboarding';
+export { BinomeOnboarding, BinomeDescriptionCard, WhyNearvitySection, WhyNearvityCondensed, TestimonialsSection } from './BinomeOnboarding';
 export { CommunityStats } from './CommunityStats';
 export { NewBadge, useShowNewBadge } from './NewBadge';
 export { ConfettiCelebration, celebrationBurst } from './ConfettiCelebration';
