@@ -96,7 +96,7 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
 
-    expect(getByText(/EASY te le montre/)).toBeInTheDocument();
+    expect(getByText(/NEARVITY te le montre/)).toBeInTheDocument();
   });
 
   it('should render the signal section', async () => {
@@ -181,7 +181,7 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
 
-    expect(getAllByText('EASY').length).toBeGreaterThan(0);
+    expect(getAllByText('NEARVITY').length).toBeGreaterThan(0);
     expect(getAllByText('Conditions').length).toBeGreaterThan(0);
     expect(getAllByText('Confidentialité').length).toBeGreaterThan(0);
   });

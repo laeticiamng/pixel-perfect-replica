@@ -1,5 +1,5 @@
 /**
- * Structured logger for EASY app
+ * Structured logger for NEARVITY app
  * Provides consistent logging with categories, timestamps, and context
  */
 

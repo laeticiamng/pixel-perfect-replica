@@ -404,11 +404,11 @@ describe("E2E Critical Path: Premium & Payments", () => {
       const tiers = {
         free: { price: 0, sessionsLimit: 2 },
         session: { price: 0.99, sessionsLimit: 1 },
-        easyplus: { price: 9.90, sessionsLimit: -1 }, // -1 = unlimited
+        nearvityplus: { price: 9.90, sessionsLimit: -1 }, // -1 = unlimited
       };
 
       expect(tiers.free.price).toBe(0);
-      expect(tiers.easyplus.sessionsLimit).toBe(-1);
+      expect(tiers.nearvityplus.sessionsLimit).toBe(-1);
     });
 
     it("should calculate pay-per-use total correctly", () => {

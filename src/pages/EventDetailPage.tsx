@@ -121,7 +121,7 @@ export default function EventDetailPage() {
 
   const handleShare = async () => {
     const shareData = {
-      title: event?.name || 'EASY',
+      title: event?.name || 'NEARVITY',
       text: t('eventDetail.shareText').replace('{name}', event?.name || ''),
       url: window.location.href,
     };
