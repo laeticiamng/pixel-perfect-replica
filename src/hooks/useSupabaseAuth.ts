@@ -163,8 +163,9 @@ export function useSupabaseAuth() {
     logger.auth.signupSuccess(data.user?.id || 'unknown');
 
     // Update profile with additional data after signup
-    // Retry with delay to handle race condition with handle_new_user trigger
-    if (data.user) {
+    // Only attempt if we have an active session (email confirmed or auto-confirm enabled)
+    // The handle_new_user trigger already saves first_name from raw_user_meta_data
+    if (data.user && data.session) {
       const updateProfileWithRetry = async (userId: string, retries = 3) => {
         for (let i = 0; i < retries; i++) {
           const { error: updateError } = await supabase
