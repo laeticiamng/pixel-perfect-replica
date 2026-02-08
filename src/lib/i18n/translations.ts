@@ -90,7 +90,8 @@ export const translations = {
     strength: { en: 'Strength', fr: 'Force' },
     loginRequired: { en: 'Log in to access this page', fr: 'Connecte-toi pour accéder à cette page' },
     // Password recovery
-    weakPassword: { en: 'This password is too common or compromised. Please choose a different one.', fr: 'Ce mot de passe est trop courant ou compromis. Choisis-en un autre.' },
+    weakPassword: { en: 'This password is too weak. Please choose a stronger one.', fr: 'Ce mot de passe est trop faible. Choisis-en un plus fort.' },
+    pwnedPassword: { en: 'This password was found in a data breach. Please choose a different one.', fr: 'Ce mot de passe a été trouvé dans une fuite de données. Choisis-en un autre.' },
     resetPasswordTitle: { en: 'Reset your password', fr: 'Réinitialise ton mot de passe' },
     resetPasswordDesc: { en: 'Enter your email and we\'ll send you a reset link.', fr: 'Entre ton email et on t\'envoie un lien de réinitialisation.' },
     emailSent: { en: 'Email sent!', fr: 'Email envoyé !' },
