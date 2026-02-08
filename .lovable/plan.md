@@ -1,99 +1,92 @@
 
+# Renommage EASY --> NEARVITY
 
-# Audit Utilisateur -- Creation de Compte et Utilisation
+Renommage complet de l'application de "EASY" en "NEARVITY" (near + activity) et de "Easy+" en "Nearvity+" sur l'ensemble du projet.
 
-## Resume Executif
+## Fichiers a modifier
 
-J'ai teste l'application comme un vrai utilisateur sur mobile (390x844). Voici les resultats.
+### 1. Constante globale
+- **`src/lib/constants.ts`** : `APP_NAME = 'NEARVITY'`
 
----
+### 2. index.html (meta tags)
+- apple-mobile-web-app-title : "NEARVITY"
+- application-name : "NEARVITY"
+- title : "NEARVITY - Le premier reseau social 100% reel"
+- og:title, og:image:alt, og:site_name : remplacer EASY par NEARVITY
+- twitter:card title, description, image:alt : idem
 
-## Tests Effectues et Resultats
+### 3. vite.config.ts (PWA manifest)
+- name : "NEARVITY - Le premier reseau social 100% reel"
+- short_name : "NEARVITY"
 
-### 1. Page d'accueil (Landing Page)
-- **Statut** : OK
-- Le bouton "Commencer gratuitement" mene bien a la page d'inscription
-- Le bouton "Se connecter" dans le header mene a la page de connexion (mode login)
+### 4. UI Components
+- **`src/components/landing/LandingHeader.tsx`** : texte "EASY" --> "NEARVITY", lettre "E" --> "N" dans le logo
+- **`src/components/landing/LandingFooter.tsx`** : texte "EASY" --> "NEARVITY", lettre "E" --> "N", email support@easy-app.fr --> support@nearvity.fr (ou garder l'ancien si le domaine n'existe pas encore)
+- **`src/components/navigation/DesktopSidebar.tsx`** : alt="EASY" --> alt="NEARVITY", references a easy-logo.png
+- **`src/pages/InstallPage.tsx`** : alt="EASY Logo" --> alt="NEARVITY Logo", lettre fallback "E" --> "N"
+- **`src/pages/ProfilePage.tsx`** : "EASY v{APP_VERSION}" --> "NEARVITY v{APP_VERSION}"
 
-### 2. Formulaire d'inscription
-- **Statut** : OK
-- Les champs email, mot de passe, prenom et universite (optionnel) sont presents
-- L'indicateur de force du mot de passe s'affiche correctement
-- Le toggle "J'ai deja un compte ? Se connecter" fonctionne dans les deux sens
+### 5. Traductions (src/lib/i18n/translations.ts)
+Toutes les occurrences de "EASY" dans les textes traduits :
+- `wantsToBeApproached` : "EASY shows you who is." --> "NEARVITY shows you who is."
+- `beTheFirst` : "Invite your friends to join EASY" --> "...NEARVITY"
+- `howDoesEasyWork` --> renommer la cle en `howDoesNearvityWork` + texte mis a jour
+- `howDoesEasyWorkAnswer` --> idem
+- `isEasyFree` --> `isNearvityFree` + texte
+- `isEasyFreeAnswer` --> `isNearvityFreeAnswer` + texte
+- `howToContactSupportAnswer` : emails easy-app.fr
+- `easyPlusTitle` : "Easy+" --> "Nearvity+"
+- `subscribe` : "Upgrade to Easy+" --> "Upgrade to Nearvity+"
+- `welcomeEasyPlus` : "You are Easy+!" --> "You are Nearvity+!"
+- Toutes les cles `whyEasy.*` : renommer en `whyNearvity.*`
 
-### 3. Validation du formulaire
-- **Statut** : OK
-- Un mot de passe faible ("abc") est correctement rejete avec des messages specifiques : "Mot de passe trop court", "Doit contenir au moins une majuscule", "Doit contenir au moins un chiffre"
-- La validation Zod (`registerSchema`) fonctionne bien
+### 6. Pages
+- **`src/pages/HelpPage.tsx`** : mettre a jour les cles FAQ renommees
+- **`src/pages/PremiumPage.tsx`** : `EASY_PLUS_FEATURES` --> `NEARVITY_PLUS_FEATURES`, `handleEasyPlusSubscribe` --> `handleNearvityPlusSubscribe`
+- **`src/pages/AboutPage.tsx`** : email support@easy-app.fr
+- **`src/pages/TermsPage.tsx`** : email legal@easy-app.fr
+- **`src/pages/PrivacyPage.tsx`** : email dpo@easy-app.fr
 
-### 4. Rejet des mots de passe compromis
-- **Statut** : OK (avec remarque)
-- Le mot de passe "Test123!" est rejete par le backend car present dans des fuites de donnees (base HaveIBeenPwned)
-- Le message d'erreur affiche est correct : toast d'erreur pour mot de passe faible
-- **Remarque** : Le message pourrait etre plus explicite ("Ce mot de passe a ete trouve dans une fuite de donnees, choisissez-en un autre")
+### 7. Hooks et stores
+- **`src/hooks/useSubscription.ts`** : `createEasyPlusCheckout` --> `createNearvityPlusCheckout`, type `'easyplus'` --> `'nearvityplus'`
+- **`src/components/binome/BinomeOnboarding.tsx`** : `WhyEasySection` --> `WhyNearvitySection`, cles `whyEasy.*`
 
-### 5. Ecran de confirmation email
-- **Statut** : OK
-- Apres inscription reussie avec un mot de passe fort, l'ecran "Verifiez votre boite email" s'affiche correctement
-- L'adresse email est affichee
-- Le bouton "Renvoyer l'email" fonctionne
-- Le bouton "J'ai confirme, me connecter" bascule en mode login
+### 8. Edge Functions
+- **`supabase/functions/notifications/index.ts`** : "EASY Alerts" --> "NEARVITY Alerts", "[EASY]" --> "[NEARVITY]"
+- **`supabase/functions/create-checkout/index.ts`** : commentaires "Easy+" --> "Nearvity+"
 
-### 6. Login avec email non confirme
-- **Statut** : OK
-- Tenter de se connecter avec un compte non confirme affiche l'ecran de confirmation email avec l'option de renvoi
+### 9. Cookie consent
+- **`src/components/CookieConsent.tsx`** : `CONSENT_KEY = 'easy-cookie-consent'` --> `'nearvity-cookie-consent'`
 
-### 7. Protection des pages
-- **Statut** : OK
-- Acceder a `/map` sans etre connecte redirige vers `/onboarding` en mode login
-- Un toast "Connexion requise" s'affiche
+### 10. Assets
+- Le fichier `public/easy-logo.png` sera renomme en `public/nearvity-logo.png` (avec mise a jour de toutes les references)
 
-### 8. Navigation directe vers /onboarding
-- **Statut** : OK
-- Arriver sur `/onboarding` via un lien direct affiche le formulaire d'inscription par defaut
-- La bascule login/signup est disponible en bas de page
+### 11. Documentation
+- **`README.md`** : EASY --> NEARVITY partout
+- **`CHANGELOG.md`** : EASY --> NEARVITY partout
 
----
-
-## Problemes Identifies
-
-### PROBLEME 1 -- MINEUR : Message mot de passe compromis pas assez clair
-
-Le message affiche quand un mot de passe est present dans la base HaveIBeenPwned n'explique pas clairement pourquoi le mot de passe est rejete. L'utilisateur voit "Mot de passe trop faible" alors que le vrai probleme est que le mot de passe a fuite.
-
-**Suggestion** : Ajouter une traduction specifique pour `auth.pwnedPassword` : "Ce mot de passe a ete trouve dans une fuite de donnees. Veuillez en choisir un autre." / "This password was found in a data breach. Please choose a different one."
-
-### PROBLEME 2 -- MINEUR : Pas de pre-remplissage email apres confirmation
-
-Quand l'utilisateur clique "J'ai confirme, me connecter", le formulaire de login s'affiche mais l'email n'est pas forcement pre-rempli (il reste dans le state `email` mais l'experience pourrait etre plus fluide avec un texte indiquant l'email pre-rempli).
-
----
-
-## Conclusion
-
-Les 5 corrections implementees precedemment fonctionnent correctement :
-1. L'ecran de confirmation email s'affiche bien quand la session est nulle
-2. La validation Zod rejette les mots de passe faibles avec des messages precis
-3. Le toggle login/signup fonctionne
-4. Le renvoi d'email de confirmation fonctionne
-5. Les routes protegees redirigent correctement
-
-**Le flux de creation de compte est fonctionnel.** Les seules ameliorations restantes sont cosmetiques (message mot de passe compromis plus explicite).
+### 12. Tests
+- **`src/test/premium-pricing.test.ts`** : "Easy+" --> "Nearvity+", `easyplus` --> `nearvityplus`
+- **`src/test/e2e-critical-paths.test.tsx`** : idem
+- **`src/test/components.test.tsx`** : `cookie-consent` key
 
 ---
 
-## Section Technique
+## Section technique
 
-### Changement propose
+### Emails
+Les adresses `support@easy-app.fr`, `legal@easy-app.fr`, `dpo@easy-app.fr` seront remplacees par `support@nearvity.fr`, `legal@nearvity.fr`, `dpo@nearvity.fr`. Si le domaine n'est pas encore configure, ces emails seront tout de meme mis a jour pour coherence de marque.
 
-**Fichier** : `src/pages/OnboardingPage.tsx` (ligne ~191)
+### Retrocompatibilite cookie
+Le changement de `CONSENT_KEY` signifie que les utilisateurs existants reverront le bandeau cookie. C'est acceptable puisque c'est un rebranding complet.
 
-Actuellement le code verifie `error.message.includes('weak_password') || error.message.includes('pwned')` et affiche `t('auth.weakPassword')`. Il faudrait differencier les deux cas :
-- Si `pwned` : afficher un message specifique expliquant la fuite de donnees
-- Si `weak_password` sans `pwned` : garder le message actuel
+### Stripe
+Les references internes `'easyplus'` dans le body envoye a l'edge function `create-checkout` seront renommees en `'nearvityplus'`. L'edge function devra accepter les deux valeurs temporairement, ou etre mise a jour en meme temps.
 
-**Fichier** : `src/lib/i18n/translations.ts`
-
-Ajouter :
-- `auth.pwnedPassword` : "Ce mot de passe a ete trouve dans une fuite de donnees. Choisissez-en un autre." / "This password was found in a data breach. Please choose a different one."
-
+### Ordre d'execution
+1. Constante + index.html + vite.config.ts (fondations)
+2. Traductions (toutes les cles i18n)
+3. Composants UI (header, footer, sidebar, pages)
+4. Hooks et logique metier
+5. Edge functions
+6. Tests et documentation
