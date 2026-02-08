@@ -1,137 +1,102 @@
 
 
-# Audit Beta Testeur -- Rapport Complet + Corrections
+# Audit Complet -- Creation de Compte (Beta Testeur)
 
-## 1) Test "3 secondes"
+## Bugs Identifies
 
-- **En 3 secondes, je crois que cette plateforme sert a** : Voir qui est disponible autour de moi pour une activite IRL (sport, cafe, revision). Un radar social en temps reel.
-- **Public cible** : Etudiants, jeunes actifs, personnes qui veulent sortir de la solitude.
-- **2 confusions possibles** :
-  1. "C'est une appli de dating deguisee" (le badge "NOT a dating app" aide)
-  2. "C'est l'app de messagerie Signal" (le mot "signal" peut induire en erreur)
-- **Note clarte : 8.5/10** -- Hero clair, mockup animee, CTA visible.
+### BUG 1 -- BLOQUANT : Pas de gestion de la confirmation email
 
-## 2) Parcours utilisateur
+**Fichier** : `src/pages/OnboardingPage.tsx` lignes 192-204
+**Fichier** : `src/hooks/useSupabaseAuth.ts` lignes 142-193
 
-| Etape | Essaye | Resultat | Ressenti | Bloquant | Attendu |
-|-------|--------|----------|----------|----------|---------|
-| Decouverte landing | Scroll page | Sections claires, animations premium | Professionnel | Non | OK |
-| Premier clic CTA | "Creer mon compte" | Onboarding page avec formulaire | Rassurant | Non | OK |
-| Footer liens | Terms/Privacy/About/Help | Toutes les pages chargent | Confiance | Non | OK |
-| Page 404 | URL invalide | Page 404 avec icone Lucide Search | Pro | Non | OK |
-| Install | /install | Page complete avec instructions PWA | Bien | Non | OK |
-| Changelog | /changelog | Liste des versions | OK | Non | OK |
-| Forgot password | /forgot-password | Formulaire email fonctionnel | OK | Non | OK |
+**Probleme** : Apres `signUp()`, quand la confirmation email est activee (comportement par defaut), Supabase retourne `data.user` mais `data.session = null`. Le code actuel :
+1. Ne verifie pas si `data.session` est null
+2. Affiche "Compte cree avec succes !" (toast succes)
+3. Redirige vers `/welcome`
+4. L'utilisateur arrive sur `/welcome` sans session, puis va sur `/map` (protege) et se fait rejeter avec "Connexion requise"
 
-## 3) Audit confiance -- Note : 8.5/10
+L'utilisateur ne voit JAMAIS le message "Verifiez votre email".
 
-**Ce qui renforce la confiance :**
-- Design premium coherent (gradients, glassmorphism, animations)
-- Pages legales completes
-- Contact email visible
-- Version visible (v2.0.0)
-- Page Help/FAQ complete
-- Badge "NOT a dating app" = intention claire
-
-**Ce qui casse la confiance (restant) :**
-- 10+ emojis permanents dans des UI visibles (cheap vs premium)
-- Emoji `👻` en 6xl sur page "user not found" (ProximityRevealPage)
-- Emoji `🗺️` en 4xl sur map error state (InteractiveMap)
-- Emoji `📅` en 4xl sur events empty state (EventsPage)
-- Emoji `🎓` inline sur ProfilePage (university)
-- Emoji `💬` inline sur ChatEmptyState
-- Emoji `🟢` sur ChangelogPage footer
-- Emoji `💚` dans legendIntro (MapPage)
-- Emojis `🙏` dans 2 feedback strings (translations)
-- Emoji `💡` dans AIRecommendationsWidget tip
-- Emojis dans notifications (acceptable car ephemeres)
-
-## 4) Audit comprehension et guidance
-
-- **Premier clic evident ?** OUI -- Bouton coral "Creer mon compte" impossible a rater
-- **Apres le premier clic ?** OUI -- Onboarding guide etape par etape
-- **Ou je me perds ?** Nulle part sur le parcours public
-- **Phrases floues ?** Aucune -- wording concret (activites : sport, revision, repas)
-
-## 5) Audit visuel non technique
-
-- **Premium** : Gradients, animations, glassmorphism, Lucide icons, phone mockup, typo bold
-- **Cheap** : Les emojis en gros format dans les etats vides/erreur (👻, 🗺️, 📅, 🎓)
-- **Trop charge** : Rien
-- **Manque** : Rien de bloquant
-- **Mobile** : OK -- teste a 390px
-
-## 6) Liste des problemes
-
-| # | Probleme | Fichier | Gravite | Impact | Fix |
-|---|----------|---------|---------|--------|-----|
-| 1 | `👻` 6xl user not found | ProximityRevealPage L103 | Majeur | Cheap look sur page protegee | Lucide `Ghost` ou `UserX` dans cercle |
-| 2 | `🗺️` 4xl map error | InteractiveMap L278 | Majeur | Cheap look sur error state | Lucide `MapOff` dans cercle |
-| 3 | `📅` 4xl events empty | EventsPage L443 | Majeur | Doublon avec Calendar icon au-dessus | Supprimer (Calendar icon deja present) |
-| 4 | `🎓` inline profile | ProfilePage L111 | Moyen | Inconsistance branding | Lucide `GraduationCap` inline |
-| 5 | `💬` inline chat empty | ChatEmptyState L8 | Moyen | Inconsistance | Lucide `MessageCircle` inline |
-| 6 | `🟢` changelog footer | ChangelogPage L287 | Moyen | Inconsistance | Div avec bg-signal-green |
-| 7 | `💚` legend intro | translations.ts L515 | Moyen | Inconsistance | Supprimer, le point vert est deja visible dans la legende |
-| 8 | `🙏` x2 feedback thanks | translations.ts L959/L1069 | Faible | Toast ephemere mais visible | Supprimer emoji du texte |
-| 9 | `💡` rec tip | AIRecommendationsWidget L149 | Faible | Inline dans widget | Lucide `Lightbulb` inline |
-| 10 | `🎯` fallback activity | AIRecommendationsWidget L140 | Faible | Rare fallback | Lucide `Target` inline |
-
-## 7) Top 10 ameliorations
-
-### P0 (blocages esthetiques avant publication)
-1. Remplacer `👻` par Lucide `UserX` dans cercle (ProximityRevealPage L103)
-2. Remplacer `🗺️` par Lucide `Map` dans cercle (InteractiveMap L278)
-3. Supprimer `📅` doublon (EventsPage L443 -- Calendar icon deja au-dessus)
-
-### P1 (coherence premium)
-4. Remplacer `🎓` par `GraduationCap` Lucide inline (ProfilePage L111)
-5. Remplacer `💬` par `MessageCircle` Lucide (ChatEmptyState L8)
-6. Remplacer `🟢` par div signal-green (ChangelogPage L287)
-7. Supprimer `💚` de legendIntro (translations.ts L515)
-
-### P2 (polish)
-8. Supprimer `🙏` des 2 feedback strings (translations.ts L959/L1069)
-9. Remplacer `💡` par Lucide `Lightbulb` (AIRecommendationsWidget L149)
-10. Remplacer `🎯` fallback par Lucide `Target` (AIRecommendationsWidget L140)
-
-## 8) Verdict final
-
-- **Publiable aujourd'hui ?** OUI -- fonctionnellement complet, securise, RGPD conforme
-- Les corrections sont 100% cosmetiques (branding premium)
-- **HERO parfait** : "Vois qui est dispo pres de toi, maintenant." (deja en place)
-- **CTA ideal** : "Creer mon compte" (deja en place)
+**Fix** : Dans `OnboardingPage.tsx`, apres le signup reussi, verifier si `data.session` est null. Si oui, afficher un ecran "Verifiez votre email" au lieu de rediriger vers `/welcome`.
 
 ---
 
-## Plan de corrections techniques (10 fichiers)
+### BUG 2 -- MAJEUR : Validation mot de passe desynchro
 
-### Correction 1 : ProximityRevealPage.tsx L103
-Remplacer `<div className="text-6xl mb-4">👻</div>` par un cercle + icone Lucide `UserX` style premium (bg-muted/30, rounded-full, etc.)
+**Fichier** : `src/pages/OnboardingPage.tsx` ligne 135
+**Fichier** : `src/lib/validation.ts` lignes 9-15
 
-### Correction 2 : InteractiveMap.tsx L278
-Remplacer `<span className="text-4xl">🗺️</span>` par un cercle + icone Lucide `Map` dans un container style.
+**Probleme** : Le formulaire valide le mot de passe avec `password.length < 6` uniquement. Mais le `passwordSchema` dans validation.ts exige aussi une majuscule, une minuscule ET un chiffre. Le `registerSchema` existe mais n'est jamais utilise dans le signup.
 
-### Correction 3 : EventsPage.tsx L443
-Supprimer `<p className="text-4xl mb-4">📅</p>` entierement -- l'icone Calendar dans le cercle au-dessus est deja presente (L440-441). C'est un doublon.
+Resultat : l'utilisateur peut soumettre "abcdef" qui passe la validation frontend mais est rejete par Supabase avec un message d'erreur vague.
 
-### Correction 4 : ProfilePage.tsx L111
-Remplacer `🎓 {profile.university}` par `<GraduationCap className="h-4 w-4 inline mr-1" /> {profile.university}`.
+**Fix** : Utiliser `registerSchema` (ou au minimum `passwordSchema`) pour valider le formulaire signup, pas juste un check de longueur.
 
-### Correction 5 : ChatEmptyState.tsx L8
-Remplacer `💬` par `<MessageCircle className="h-4 w-4 inline ml-1" />`.
+---
 
-### Correction 6 : ChangelogPage.tsx L287
-Remplacer `🟢` par `<div className="w-3 h-3 rounded-full bg-signal-green inline-block mr-1" />`.
+### BUG 3 -- MAJEUR : Pas de bascule Login/Signup sur la page
 
-### Correction 7 : translations.ts L515
-Supprimer `💚 ` du debut de legendIntro (le point vert est deja visible dans la legende au-dessus).
+**Fichier** : `src/pages/OnboardingPage.tsx`
 
-### Correction 8 : translations.ts L959 et L1069
-Supprimer ` 🙏` des chaines thanksFeedback et feedback.success (garder juste le texte).
+**Probleme** : `isLogin` est passe via `location.state` au moment de la navigation. Il n'y a AUCUN bouton "J'ai deja un compte" ou "Creer un compte" sur la page elle-meme. Si un utilisateur arrive sur `/onboarding` directement (lien, bookmark, redirect), il est TOUJOURS en mode signup, sans moyen de basculer en login.
 
-### Correction 9 : AIRecommendationsWidget.tsx L149
-Remplacer `💡 {rec.tip}` par `<Lightbulb className="h-3 w-3 inline mr-1" />{rec.tip}`.
+**Fix** : Ajouter un lien cliquable en bas du formulaire : "J'ai deja un compte ? Se connecter" / "Pas de compte ? Creer un compte" qui bascule `isLogin` via un `useState` local.
 
-### Correction 10 : AIRecommendationsWidget.tsx L140
-Remplacer le fallback `'🎯'` par un element JSX avec icone Lucide `Target`, ou utiliser un span vide comme fallback.
+---
+
+### BUG 4 -- MOYEN : Profile update echoue silencieusement
+
+**Fichier** : `src/hooks/useSupabaseAuth.ts` lignes 167-191
+
+**Probleme** : `updateProfileWithRetry` s'execute immediatement apres signup, meme quand l'utilisateur n'a pas confirme son email. Sans session active, la politique RLS `auth.uid() = id` bloque l'update. Les 3 tentatives echouent silencieusement. Le `first_name` et `university` ne sont jamais persistes au-dela de `raw_user_meta_data`.
+
+**Fix** : Ne pas lancer `updateProfileWithRetry` si `data.session` est null. Le trigger `handle_new_user` utilise deja `raw_user_meta_data->>'first_name'`, donc le prenom est sauvegarde via le trigger. L'update supplementaire n'est necessaire qu'apres confirmation (quand l'utilisateur se connecte pour la premiere fois).
+
+---
+
+### BUG 5 -- MOYEN : Erreur "Email not confirmed" mal geree au login
+
+**Fichier** : `src/pages/OnboardingPage.tsx` ligne 170-171
+
+**Probleme** : Le message affiche est `t('auth.confirmEmail')` = "Veuillez confirmer votre email" -- mais sans bouton pour renvoyer l'email de confirmation. L'utilisateur est bloque.
+
+**Fix** : Ajouter un bouton "Renvoyer l'email de confirmation" qui appelle `supabase.auth.resend({ type: 'signup', email })`.
+
+---
+
+## Plan de Corrections (5 changements)
+
+### 1. OnboardingPage.tsx -- Ecran "Verifiez votre email"
+
+- Ajouter un state `showEmailConfirmation` (boolean) et stocker l'email utilisee
+- Apres signup reussi sans session : afficher un ecran avec icone Mail, texte "Verifiez votre boite email", et bouton "Renvoyer l'email"
+- Ne PAS rediriger vers `/welcome`
+- Ajouter un bouton "J'ai confirme, me connecter" qui bascule en mode login
+
+### 2. OnboardingPage.tsx -- Validation avec registerSchema
+
+- Remplacer la validation manuelle (lignes 130-147) par `registerSchema.safeParse({ email, password, firstName, university })`
+- Afficher les erreurs specifiques (majuscule, chiffre, etc.) directement sous les champs
+
+### 3. OnboardingPage.tsx -- Toggle Login/Signup
+
+- Convertir `isLogin` de `const` a `useState` initialise depuis `location.state`
+- Ajouter en bas du formulaire (step 1) un lien : "J'ai deja un compte ? Se connecter" / "Pas de compte ? S'inscrire"
+- Reset le formulaire et les erreurs au changement de mode
+
+### 4. useSupabaseAuth.ts -- Guard profile update
+
+- Conditionner `updateProfileWithRetry` a `data.session !== null`
+- Le trigger `handle_new_user` gere deja le `first_name` via `raw_user_meta_data`
+
+### 5. translations.ts -- Nouvelles cles i18n
+
+Ajouter les traductions manquantes :
+- `auth.checkEmail` : "Verifiez votre boite email" / "Check your email"
+- `auth.checkEmailDesc` : "Un email de confirmation a ete envoye. Cliquez sur le lien pour activer votre compte." / "A confirmation email has been sent..."
+- `auth.resendEmail` : "Renvoyer l'email" / "Resend email"
+- `auth.emailResent` : "Email renvoye !" / "Email resent!"
+- `auth.alreadyHaveAccount` : "J'ai deja un compte" / "Already have an account"
+- `auth.noAccount` : "Pas encore de compte ?" / "Don't have an account?"
+- `auth.passwordRequirements` : "Min. 6 caracteres, 1 majuscule, 1 minuscule, 1 chiffre" / "Min. 6 characters, 1 uppercase, 1 lowercase, 1 digit"
 
