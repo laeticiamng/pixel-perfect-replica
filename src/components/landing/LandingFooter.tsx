@@ -14,9 +14,9 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
         <div className="flex flex-col items-center justify-between w-full gap-4 sm:flex-row">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center">
-              <span className="text-white font-bold text-sm">E</span>
+              <span className="text-white font-bold text-sm">N</span>
             </div>
-            <span className="font-bold text-foreground">EASY</span>
+            <span className="font-bold text-foreground">NEARVITY</span>
           </div>
           
           <div className="flex flex-col items-center gap-2 sm:flex-row sm:flex-wrap sm:gap-6 text-sm text-muted-foreground">
@@ -35,7 +35,7 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
             <button onClick={() => navigate('/privacy')} className="hover:text-foreground transition-colors">
               {t('nav.privacy')}
             </button>
-            <a href="mailto:support@easy-app.fr" className="hover:text-foreground transition-colors">
+            <a href="mailto:support@nearvity.fr" className="hover:text-foreground transition-colors">
               {t('landing.contact')}
             </a>
           </div>
@@ -43,7 +43,7 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
         
         <div className="text-center text-xs text-muted-foreground">
           <Link to="/changelog" className="font-medium hover:text-coral transition-colors">
-            EASY v{APP_VERSION} • PWA
+            NEARVITY v{APP_VERSION} • PWA
           </Link>
           <p className="mt-1 flex items-center justify-center gap-1">
             Made with <Heart className="h-3.5 w-3.5 text-coral fill-coral" /> in France by EmotionsCare Sasu

@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { 
   SessionCard, SessionFilters, CreateSessionForm, SessionQuotaBadge,
-  BinomeOnboarding, BinomeDescriptionCard, WhyEasySection, WhyEasyCondensed, 
+  BinomeOnboarding, BinomeDescriptionCard, WhyNearvitySection, WhyNearvityCondensed, 
   TestimonialsSection, CommunityStats, AIRecommendationsWidget 
 } from '@/components/binome';
 import { useBinomeSessions, type SessionFilters as Filters, type CreateSessionInput } from '@/hooks/useBinomeSessions';
@@ -102,12 +102,12 @@ export default function BinomePage() {
             ) : filters.city ? (
               <div className="space-y-6">
                 <EmptyState icon={Calendar} title={t('binome.noSlotsFound')} description={t('binome.noSlotsForCity').replace('{city}', filters.city)} actionLabel={t('binome.createSlot')} onAction={() => setShowCreateSheet(true)} variant="outline" />
-                <WhyEasyCondensed />
+                <WhyNearvityCondensed />
               </div>
             ) : (
               <div className="space-y-6">
                 <EmptyState icon={Calendar} title={t('binome.searchCity')} description={t('binome.searchCityDesc')} />
-                <WhyEasyCondensed />
+                <WhyNearvityCondensed />
               </div>
             )}
           </TabsContent>
@@ -129,7 +129,7 @@ export default function BinomePage() {
           </TabsContent>
         </Tabs>
 
-        <div className="mt-8"><WhyEasySection /></div>
+        <div className="mt-8"><WhyNearvitySection /></div>
         <div className="mt-6"><TestimonialsSection /></div>
       </div>
 

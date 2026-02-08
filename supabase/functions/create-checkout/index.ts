@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Easy+ Premium - 9.90€/mois
+// Nearvity+ Premium - 9.90€/mois
 const EASY_PLUS_PRICE_ID = "price_1SvGdpDFa5Y9NR1I1qP73OYs";
 
 // Legacy prices (kept for existing subscribers)
@@ -57,7 +57,7 @@ serve(async (req) => {
     logStep("User authenticated via claims", { userId, email: userEmail });
 
     const { plan } = await req.json();
-    // Use Easy+ price by default, fall back to legacy for existing plans
+    // Use Nearvity+ price by default, fall back to legacy for existing plans
     let priceId = EASY_PLUS_PRICE_ID;
     if (plan === "yearly") {
       priceId = LEGACY_PRICES.yearly;

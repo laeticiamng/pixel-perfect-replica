@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Shield, X } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 
-const CONSENT_KEY = 'easy-cookie-consent';
+const CONSENT_KEY = 'nearvity-cookie-consent';
 
 export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_props, ref) {
   const [showBanner, setShowBanner] = useState(false);

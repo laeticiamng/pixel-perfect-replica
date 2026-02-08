@@ -207,9 +207,9 @@ async function handleAdminAlert(
   // Send emails to all recipients
   const emailPromises = recipients.map(async (recipient: AdminPref) => {
     const emailResult = await resend.emails.send({
-      from: "EASY Alerts <alerts@resend.dev>",
+      from: "NEARVITY Alerts <alerts@resend.dev>",
       to: [recipient.email],
-      subject: `[EASY] ${alertLabel}: ${subject}`,
+      subject: `[NEARVITY] ${alertLabel}: ${subject}`,
       html: `
         <!DOCTYPE html>
         <html>

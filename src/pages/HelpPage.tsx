@@ -84,7 +84,7 @@ export default function HelpPage() {
   }, [searchQuery, translatedFaqs]);
 
   const supportLinks = [
-    { icon: <Mail className="h-5 w-5" />, label: t('help.contactUs'), href: 'mailto:support@easy-app.fr' },
+    { icon: <Mail className="h-5 w-5" />, label: t('help.contactUs'), href: 'mailto:support@nearvity.fr' },
     { icon: <MessageCircle className="h-5 w-5" />, label: t('help.community'), href: 'https://discord.gg', external: true },
     { icon: <FileText className="h-5 w-5" />, label: t('help.termsOfUse'), href: '/terms' },
     { icon: <Shield className="h-5 w-5" />, label: t('help.privacyPolicy'), href: '/privacy' },
@@ -224,7 +224,7 @@ export default function HelpPage() {
           }}
         >
           <Link to="/changelog" className="text-xs text-muted-foreground hover:text-coral transition-colors font-medium">
-            EASY v{APP_VERSION}
+            NEARVITY v{APP_VERSION}
           </Link>
           <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>

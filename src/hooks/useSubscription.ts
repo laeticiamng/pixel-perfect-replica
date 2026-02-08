@@ -48,8 +48,8 @@ export function useSubscription() {
     }
   }, [user, refreshProfile]);
 
-  // Easy+ subscription checkout (9.90€/mois)
-  const createEasyPlusCheckout = async () => {
+  // Nearvity+ subscription checkout (9.90€/mois)
+  const createNearvityPlusCheckout = async () => {
     if (!user) throw new Error('Not authenticated');
 
     // Refresh session to ensure valid token
@@ -60,7 +60,7 @@ export function useSubscription() {
     }
 
     const { data, error: fnError } = await supabase.functions.invoke('create-checkout', {
-      body: { plan: 'easyplus' },
+      body: { plan: 'nearvityplus' },
     });
 
     if (fnError) throw fnError;
@@ -140,7 +140,7 @@ export function useSubscription() {
     error,
     checkSubscription,
     createCheckout,
-    createEasyPlusCheckout,
+    createNearvityPlusCheckout,
     purchaseSession,
     confirmSessionPurchase,
     openCustomerPortal,

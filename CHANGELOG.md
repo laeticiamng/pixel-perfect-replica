@@ -1,4 +1,4 @@
-# 📋 CHANGELOG - EASY App
+# 📋 CHANGELOG - NEARVITY App
 
 Toutes les modifications notables du projet sont documentées dans ce fichier.
 
@@ -47,7 +47,7 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 - **Stats communautaires temps réel** : Affichage des utilisateurs actifs, sessions créées, rencontres réussies
 - **Témoignages utilisateurs** : Formulaire de partage d'expérience post-session
 - **Badge "New"** : Indicateur pour les utilisateurs n'ayant pas encore créé de session
-- **Section "Pourquoi EASY ?"** : Mise en avant des bénéfices (amitié, cohésion, bien-être)
+- **Section "Pourquoi NEARVITY ?"** : Mise en avant des bénéfices (amitié, cohésion, bien-être)
 
 #### Carte Interactive
 - **Mode démo** : Génération d'utilisateurs fictifs si aucun signal réel détecté (badge jaune visible)
@@ -66,7 +66,7 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 - **OfflineBanner** : Correction du forwardRef pour compatibilité React
 - **BottomNav** : Affichage sur toutes les pages protégées
 - **Traductions** : Couverture FR/EN complète
-- **Footer** : Affichage "EASY v2.0.0 • Made with ❤️ in France par EmotionsCare Sasu"
+- **Footer** : Affichage "NEARVITY v2.0.0 • Made with ❤️ in France par EmotionsCare Sasu"
 
 #### Backend & Infrastructure
 - **Cron job `hourly-cleanup-shadow-bans`** : Nettoyage automatique des shadow-bans expirés (toutes les heures)
@@ -143,6 +143,6 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 ---
 
 <p align="center">
-  <strong>🟢 EASY</strong> — Le premier réseau social 100% réel<br>
+  <strong>🟢 NEARVITY</strong> — Le premier réseau social 100% réel<br>
   <em>Fait avec ❤️ in France par EmotionsCare Sasu</em>
 </p>
