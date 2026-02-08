@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 /**
  * Premium Pricing Model Tests
- * Tests the hybrid pricing model: Free / Pay-per-use / Easy+
+ * Tests the hybrid pricing model: Free / Pay-per-use / Nearvity+
  */
 
 describe("Premium Pricing Model", () => {
@@ -89,33 +89,33 @@ describe("Premium Pricing Model", () => {
     });
   });
 
-  describe("Easy+ (9.90€/month)", () => {
-    const EASYPLUS_PRICE_CENTS = 990;
+  describe("Nearvity+ (9.90€/month)", () => {
+    const NEARVITYPLUS_PRICE_CENTS = 990;
 
     it("should price subscription at 9.90€/month", () => {
-      expect(EASYPLUS_PRICE_CENTS / 100).toBe(9.90);
+      expect(NEARVITYPLUS_PRICE_CENTS / 100).toBe(9.90);
     });
 
     it("should grant unlimited sessions", () => {
       const UNLIMITED = -1;
-      const easyPlusUser = { sessions_limit: UNLIMITED };
+      const nearvityPlusUser = { sessions_limit: UNLIMITED };
       
-      expect(easyPlusUser.sessions_limit).toBe(-1);
+      expect(nearvityPlusUser.sessions_limit).toBe(-1);
     });
 
     it("should include all premium features", () => {
-      const EASYPLUS_FEATURES = [
+      const NEARVITYPLUS_FEATURES = [
         "unlimited_sessions",
         "live_mode",
         "ghost_mode",
-        "priority_support",
         "premium_badge",
+        "priority_support",
       ];
 
-      expect(EASYPLUS_FEATURES).toContain("unlimited_sessions");
-      expect(EASYPLUS_FEATURES).toContain("ghost_mode");
-      expect(EASYPLUS_FEATURES).toContain("premium_badge");
-      expect(EASYPLUS_FEATURES.length).toBe(5);
+      expect(NEARVITYPLUS_FEATURES).toContain("unlimited_sessions");
+      expect(NEARVITYPLUS_FEATURES).toContain("ghost_mode");
+      expect(NEARVITYPLUS_FEATURES).toContain("premium_badge");
+      expect(NEARVITYPLUS_FEATURES.length).toBe(5);
     });
 
     it("should set is_premium flag on profile", () => {
@@ -177,7 +177,7 @@ describe("Premium Pricing Model", () => {
 
   describe("Stripe Integration", () => {
     const STRIPE_PRODUCTS = {
-      easyplus: {
+      nearvityplus: {
         product_id: "prod_Tt2j54BELa7Ou8",
         price_id: "price_1SvGdpDFa5Y9NR1I1qP73OYs",
         price_cents: 990,
@@ -190,12 +190,12 @@ describe("Premium Pricing Model", () => {
     };
 
     it("should have correct product IDs configured", () => {
-      expect(STRIPE_PRODUCTS.easyplus.product_id).toMatch(/^prod_/);
+      expect(STRIPE_PRODUCTS.nearvityplus.product_id).toMatch(/^prod_/);
       expect(STRIPE_PRODUCTS.session.product_id).toMatch(/^prod_/);
     });
 
     it("should have correct price IDs configured", () => {
-      expect(STRIPE_PRODUCTS.easyplus.price_id).toMatch(/^price_/);
+      expect(STRIPE_PRODUCTS.nearvityplus.price_id).toMatch(/^price_/);
       expect(STRIPE_PRODUCTS.session.price_id).toMatch(/^price_/);
     });
 
@@ -239,15 +239,15 @@ describe("Premium Pricing Model", () => {
       expect(displayLimit).toBe("∞");
     });
 
-    it("should highlight Easy+ as recommended", () => {
+    it("should highlight Nearvity+ as recommended", () => {
       const plans = [
         { id: "free", recommended: false },
         { id: "session", recommended: false },
-        { id: "easyplus", recommended: true },
+        { id: "nearvityplus", recommended: true },
       ];
 
       const recommended = plans.find((p) => p.recommended);
-      expect(recommended?.id).toBe("easyplus");
+      expect(recommended?.id).toBe("nearvityplus");
     });
 
     it("should show purchased sessions badge", () => {

@@ -160,7 +160,7 @@ export function DesktopSidebar() {
             collapsed ? "justify-center" : "gap-3"
           )}>
             <img 
-              src="/easy-logo.png" 
+              src="/nearvity-logo.png" 
               alt="NEARVITY" 
               className={cn(
                 "rounded-xl transition-all duration-300",

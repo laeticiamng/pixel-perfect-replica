@@ -607,12 +607,12 @@ export const translations = {
     perSession: { en: '/ session', fr: '/ session' },
     buyMore: { en: 'Need an extra session? Buy one individually, it never expires.', fr: 'Besoin d\'une session en plus ? Achète-en une à l\'unité, elle ne périme jamais.' },
     neverExpires: { en: 'Never expires', fr: 'Ne périme jamais' },
-    easyPlusTitle: { en: 'Nearvity+', fr: 'Nearvity+' },
+    nearvityPlusTitle: { en: 'Nearvity+', fr: 'Nearvity+' },
     perMonth: { en: '/ month', fr: '/ mois' },
     recommended: { en: 'RECOMMENDED', fr: 'RECOMMANDÉ' },
     subscribe: { en: 'Upgrade to Nearvity+', fr: 'Passer à Nearvity+' },
     manageSubscription: { en: 'Manage my subscription', fr: 'Gérer mon abonnement' },
-    welcomeEasyPlus: { en: 'You are Nearvity+!', fr: 'Tu es Nearvity+ !' },
+    welcomeNearvityPlus: { en: 'You are Nearvity+!', fr: 'Tu es Nearvity+ !' },
     thanksForSupport: { en: 'Thanks for your support. Enjoy all the benefits!', fr: 'Merci pour ton soutien. Profite de tous les avantages !' },
     renewsOn: { en: 'Renewal on', fr: 'Renouvellement le' },
     unlimitedSessions: { en: 'Unlimited sessions', fr: 'Sessions illimitées' },
@@ -999,7 +999,7 @@ export const translations = {
   // Testimonial form
   testimonial: {
     title: { en: 'Share your experience!', fr: 'Partage ton expérience !' },
-    description: { en: 'Your testimonial will help others discover EASY', fr: 'Ton témoignage aidera d\'autres personnes à découvrir EASY' },
+    description: { en: 'Your testimonial will help others discover NEARVITY', fr: 'Ton témoignage aidera d\'autres personnes à découvrir NEARVITY' },
     placeholder: { en: 'Tell us about your meeting... (20-500 characters)', fr: 'Raconte comment s\'est passée ta rencontre... (20-500 caractères)' },
     characters: { en: 'characters', fr: 'caractères' },
     minChars: { en: 'Minimum 20 characters', fr: 'Minimum 20 caractères' },
@@ -1067,7 +1067,7 @@ export const translations = {
   // Feedback page
   feedback: {
     title: { en: 'Give feedback', fr: 'Donner un feedback' },
-    question: { en: 'How do you find EASY?', fr: 'Comment trouvez-vous EASY ?' },
+    question: { en: 'How do you find NEARVITY?', fr: 'Comment trouvez-vous NEARVITY ?' },
     subtitle: { en: 'Your feedback helps us improve the app', fr: 'Votre avis nous aide à améliorer l\'application' },
     ratingRequired: { en: 'Please select a rating first!', fr: 'Veuillez d\'abord choisir une note !' },
     commentLabel: { en: 'A comment? (optional)', fr: 'Un commentaire ? (optionnel)' },
@@ -1337,20 +1337,20 @@ export const translations = {
 
   // Share
   share: {
-    title: { en: 'EASY - The first 100% real social network', fr: 'EASY - Le premier réseau social 100% réel' },
-    text: { en: 'Join me on EASY for spontaneous real-life meetups!', fr: 'Rejoignez-moi sur EASY pour des rencontres spontanées en vrai !' },
+    title: { en: 'NEARVITY - The first 100% real social network', fr: 'NEARVITY - Le premier réseau social 100% réel' },
+    text: { en: 'Join me on NEARVITY for spontaneous real-life meetups!', fr: 'Rejoignez-moi sur NEARVITY pour des rencontres spontanées en vrai !' },
   },
 
   // Binome Onboarding
   binomeOnboarding: {
-    welcome: { en: 'Welcome to EASY!', fr: 'Bienvenue sur EASY !' },
+    welcome: { en: 'Welcome to NEARVITY!', fr: 'Bienvenue sur NEARVITY !' },
     subtitle: { en: 'Create real connections. Fight loneliness.', fr: 'Crée du lien en vrai. Lutte contre la solitude.' },
     stepOf: { en: 'Step {current} of {total}', fr: 'Étape {current} sur {total}' },
     letsGo: { en: "Let's go!", fr: "C'est parti !" },
     featuresIncluded: { en: 'Features included:', fr: 'Fonctionnalités incluses :' },
     // Steps
     step1Title: { en: 'Fight loneliness', fr: 'Lutte contre la solitude' },
-    step1Desc: { en: 'EASY connects you with people who share your interests. No more isolation: find a partner to study, eat, exercise or simply chat.', fr: 'EASY te connecte avec des personnes qui partagent tes envies. Fini l\'isolement : trouve un binôme pour réviser, manger, faire du sport ou simplement discuter.' },
+    step1Desc: { en: 'NEARVITY connects you with people who share your interests. No more isolation: find a partner to study, eat, exercise or simply chat.', fr: 'NEARVITY te connecte avec des personnes qui partagent tes envies. Fini l\'isolement : trouve un binôme pour réviser, manger, faire du sport ou simplement discuter.' },
     step2Title: { en: 'Create or join a slot', fr: 'Crée ou rejoins un créneau' },
     step2Desc: { en: 'Schedule a 45min, 1h30 or 3h session in your city. Choose the activity: study, work, sport, meal, chat...', fr: 'Planifie une session de 45min, 1h30 ou 3h dans ta ville. Choisis l\'activité : étudier, travailler, sport, repas, discussion...' },
     step3Title: { en: 'Find your partner', fr: 'Trouve ton binôme' },

@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 // Nearvity+ Premium - 9.90€/mois
-const EASY_PLUS_PRICE_ID = "price_1SvGdpDFa5Y9NR1I1qP73OYs";
+const NEARVITY_PLUS_PRICE_ID = "price_1SvGdpDFa5Y9NR1I1qP73OYs";
 
 // Legacy prices (kept for existing subscribers)
 const LEGACY_PRICES = {
@@ -58,7 +58,7 @@ serve(async (req) => {
 
     const { plan } = await req.json();
     // Use Nearvity+ price by default, fall back to legacy for existing plans
-    let priceId = EASY_PLUS_PRICE_ID;
+    let priceId = NEARVITY_PLUS_PRICE_ID;
     if (plan === "yearly") {
       priceId = LEGACY_PRICES.yearly;
     } else if (plan === "monthly_legacy") {

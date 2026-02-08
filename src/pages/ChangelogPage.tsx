@@ -71,7 +71,7 @@ const changelog: ChangelogEntry[] = [
           'Stats communautaires en temps réel',
           'Témoignages utilisateurs post-session',
           'Badge "New" pour les nouveaux utilisateurs',
-          'Section "Pourquoi EASY ?" sur la page Binôme',
+          'Section "Pourquoi NEARVITY ?" sur la page Binôme',
           'Sélecteur de styles de carte (Satellite, Rues, Navigation, Plein air)',
           'Mode démo sur la carte avec utilisateurs fictifs',
           'Dashboard admin pour monitorer les cron jobs',

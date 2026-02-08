@@ -29,13 +29,13 @@ export default function PremiumPage() {
     checkSubscription 
   } = useSubscription();
   const { usage, refetch: refetchQuota, purchasedSessions, freeRemaining } = useSessionQuota();
-  const [isLoading, setIsLoading] = useState<'easyplus' | 'session' | 'portal' | null>(null);
+  const [isLoading, setIsLoading] = useState<'nearvityplus' | 'session' | 'portal' | null>(null);
   const [sessionQuantity, setSessionQuantity] = useState(1);
 
   const isPremium = profile?.is_premium || status?.subscribed;
   const dateLocale = locale === 'fr' ? fr : enUS;
 
-  const EASY_PLUS_FEATURES = [
+  const NEARVITY_PLUS_FEATURES = [
     {
       icon: <Infinity className="h-5 w-5" />,
       title: t('premium.unlimitedSessions'),
@@ -76,7 +76,7 @@ export default function PremiumPage() {
     const sessionPurchased = searchParams.get('session_purchased');
 
     if (success === 'true') {
-      toast.success(t('premium.welcomeEasyPlus'));
+      toast.success(t('premium.welcomeNearvityPlus'));
       checkSubscription();
       navigate('/premium', { replace: true });
     } else if (sessionPurchased) {
@@ -103,14 +103,14 @@ export default function PremiumPage() {
     }
   }, [searchParams, navigate, checkSubscription, confirmSessionPurchase, refetchQuota, t]);
 
-  const handleEasyPlusSubscribe = async () => {
+  const handleNearvityPlusSubscribe = async () => {
     if (!user) {
       toast.error(t('premium.loginFirst'));
       navigate('/onboarding');
       return;
     }
 
-    setIsLoading('easyplus');
+    setIsLoading('nearvityplus');
 
     try {
       const checkoutUrl = await createNearvityPlusCheckout();
@@ -173,7 +173,7 @@ export default function PremiumPage() {
           >
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
-          <h1 className="text-xl font-bold text-foreground">{t('premium.easyPlusTitle')}</h1>
+          <h1 className="text-xl font-bold text-foreground">{t('premium.nearvityPlusTitle')}</h1>
         </header>
 
         <div className="px-6 py-12 text-center">
@@ -181,7 +181,7 @@ export default function PremiumPage() {
             <Crown className="h-10 w-10 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            {t('premium.welcomeEasyPlus')}
+            {t('premium.welcomeNearvityPlus')}
           </h2>
           <p className="text-muted-foreground mb-2">
             {t('premium.thanksForSupport')}
@@ -195,7 +195,7 @@ export default function PremiumPage() {
 
           <Card className="glass text-left mb-6">
             <CardContent className="py-6 space-y-4">
-              {EASY_PLUS_FEATURES.map((feature, i) => (
+              {NEARVITY_PLUS_FEATURES.map((feature, i) => (
                 <div key={i} className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-coral/20 flex items-center justify-center text-coral">
                     {feature.icon}
@@ -361,7 +361,7 @@ export default function PremiumPage() {
           </CardContent>
         </Card>
 
-        {/* Easy+ */}
+        {/* Nearvity+ */}
         <Card className="glass border-coral/30 bg-coral/5 relative overflow-hidden">
           <div className="absolute top-0 right-0 bg-gradient-to-l from-coral to-coral-light text-white text-xs font-bold px-4 py-1 rounded-bl-xl">
             {t('premium.recommended')}
@@ -372,7 +372,7 @@ export default function PremiumPage() {
                 <Crown className="h-5 w-5 text-coral" />
               </div>
               <div>
-                <h3 className="font-bold text-foreground">{t('premium.easyPlusTitle')}</h3>
+                <h3 className="font-bold text-foreground">{t('premium.nearvityPlusTitle')}</h3>
                 <p className="text-2xl font-bold text-foreground">
                   9,90€ <span className="text-sm font-normal text-muted-foreground">{t('premium.perMonth')}</span>
                 </p>
@@ -380,7 +380,7 @@ export default function PremiumPage() {
             </div>
             
             <div className="space-y-3 mb-6">
-              {EASY_PLUS_FEATURES.map((feature, i) => (
+              {NEARVITY_PLUS_FEATURES.map((feature, i) => (
                 <motion.div 
                   key={i}
                   className="flex items-center gap-3"
@@ -400,12 +400,12 @@ export default function PremiumPage() {
             </div>
 
             <Button
-              onClick={handleEasyPlusSubscribe}
-              disabled={isLoading === 'easyplus'}
+              onClick={handleNearvityPlusSubscribe}
+              disabled={isLoading === 'nearvityplus'}
               size="lg"
               className="w-full h-12 text-base font-semibold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral glow-coral"
             >
-              {isLoading === 'easyplus' ? (
+              {isLoading === 'nearvityplus' ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
                 <>

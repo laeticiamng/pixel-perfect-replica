@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
       mode === "development" && componentTagger(),
       VitePWA({
         registerType: "autoUpdate",
-        includeAssets: ["favicon.ico", "robots.txt", "easy-logo.png"],
+        includeAssets: ["favicon.ico", "robots.txt", "nearvity-logo.png"],
         manifest: {
           name: "NEARVITY - Le premier réseau social 100% réel",
           short_name: "NEARVITY",

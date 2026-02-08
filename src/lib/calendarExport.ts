@@ -33,7 +33,7 @@ function formatIcsDate(date: Date): string {
  * Generates a unique ID for the calendar event
  */
 function generateUid(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}@easy.app`;
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}@nearvity.app`;
 }
 
 /**
@@ -45,7 +45,7 @@ export function generateIcsContent(event: CalendarEvent): string {
   
   let icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//EASY App//Calendar Export//FR
+PRODID:-//NEARVITY//Calendar Export//FR
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
@@ -118,9 +118,9 @@ export function exportSessionToCalendar(session: {
   };
   
   const activityLabel = activityLabels[session.activity] || session.activity;
-  const title = `EASY - Session ${activityLabel} à ${session.city}`;
+  const title = `NEARVITY - Session ${activityLabel} à ${session.city}`;
   
-  let description = `Session ${activityLabel} organisée via EASY`;
+  let description = `Session ${activityLabel} organisée via NEARVITY`;
   if (session.creator_name) {
     description += `\nOrganisateur: ${session.creator_name}`;
   }
@@ -138,8 +138,8 @@ export function exportSessionToCalendar(session: {
     location,
     startDate,
     endDate,
-    uid: `session-${session.id}@easy.app`
-  }, `easy-session-${session.scheduled_date}.ics`);
+    uid: `session-${session.id}@nearvity.app`
+  }, `nearvity-session-${session.scheduled_date}.ics`);
 }
 
 /**
@@ -154,11 +154,11 @@ export function exportEventToCalendar(event: {
   ends_at: string;
 }): void {
   downloadIcsFile({
-    title: `EASY - ${event.name}`,
-    description: event.description || 'Événement organisé via EASY',
+    title: `NEARVITY - ${event.name}`,
+    description: event.description || 'Événement organisé via NEARVITY',
     location: event.location_name,
     startDate: new Date(event.starts_at),
     endDate: new Date(event.ends_at),
-    uid: `event-${event.id}@easy.app`
-  }, `easy-event-${event.id}.ics`);
+    uid: `event-${event.id}@nearvity.app`
+  }, `nearvity-event-${event.id}.ics`);
 }

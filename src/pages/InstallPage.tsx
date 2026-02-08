@@ -154,7 +154,7 @@ export default function InstallPage() {
         <div className="text-center py-6">
           <div className="relative inline-block mb-6">
             <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-2xl glow-coral ring-4 ring-coral/20">
-              <img src="/easy-logo.png" alt="NEARVITY Logo" className="w-16 h-16 object-contain"
+              <img src="/nearvity-logo.png" alt="NEARVITY Logo" className="w-16 h-16 object-contain"
                 onError={(e) => { e.currentTarget.style.display = "none"; const s = document.createElement("span"); s.className = "text-5xl font-bold text-white"; s.textContent = "N"; e.currentTarget.parentElement?.appendChild(s); }} />
             </div>
             <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-signal-green flex items-center justify-center shadow-lg ring-2 ring-background">

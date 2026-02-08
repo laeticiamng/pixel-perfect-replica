@@ -6,10 +6,10 @@ interface SubscriptionStatus {
   subscribed: boolean;
   productId: string | null;
   subscriptionEnd: string | null;
-  plan: 'easyplus' | 'monthly' | 'yearly' | null;
+  plan: 'nearvityplus' | 'monthly' | 'yearly' | null;
 }
 
-export type PricingPlan = 'free' | 'session' | 'easyplus';
+export type PricingPlan = 'free' | 'session' | 'nearvityplus';
 
 export function useSubscription() {
   const { user, refreshProfile } = useAuth();
