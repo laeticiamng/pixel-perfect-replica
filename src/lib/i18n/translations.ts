@@ -126,6 +126,16 @@ export const translations = {
     chooseSecurePassword: { en: 'Choose a secure password.', fr: 'Choisis un mot de passe sécurisé.' },
     useStrongPassword: { en: 'Use a strong password with uppercase, lowercase and numbers', fr: 'Utilise un mot de passe fort avec majuscules, minuscules et chiffres' },
     serverMayReject: { en: 'Note: The server may reject common or compromised passwords.', fr: 'Note : Le serveur peut rejeter les mots de passe courants ou compromis.' },
+    // Magic link
+    magicLink: { en: 'Magic link', fr: 'Lien magique' },
+    sendMagicLink: { en: 'Send magic link', fr: 'Envoyer un lien magique' },
+    magicLinkDesc: { en: 'Sign in without a password — we\'ll email you a link.', fr: 'Connecte-toi sans mot de passe — on t\'envoie un lien par email.' },
+    magicLinkSent: { en: 'Magic link sent!', fr: 'Lien magique envoyé !' },
+    magicLinkSentDesc: { en: 'Check your inbox and click the link to sign in.', fr: 'Consulte ta boîte mail et clique sur le lien pour te connecter.' },
+    magicLinkError: { en: 'Error sending magic link', fr: 'Erreur lors de l\'envoi du lien magique' },
+    usePassword: { en: 'Use password instead', fr: 'Utiliser un mot de passe' },
+    useMagicLink: { en: 'Use magic link instead', fr: 'Utiliser un lien magique' },
+    orContinueWith: { en: 'or continue with', fr: 'ou continuer avec' },
   },
 
   // Onboarding
@@ -141,6 +151,15 @@ export const translations = {
     everyoneOpen: { en: 'Here, everyone is open to interaction.', fr: 'Ici, tout le monde est ouvert à l\'interaction.' },
     activateSignal: { en: 'Activate your signal to show you want to meet someone:', fr: 'Active ton signal pour montrer que tu veux rencontrer quelqu\'un :' },
     letsGo: { en: "Let's go!", fr: 'C\'est parti !' },
+  },
+
+  // Matching
+  matching: {
+    matchFound: { en: 'Compatible signal nearby!', fr: 'Signal compatible à proximité !' },
+    compatibleNearby: { en: 'is doing a compatible activity nearby', fr: 'fait une activité compatible à proximité' },
+    mutualMatch: { en: 'Mutual match!', fr: 'Match mutuel !' },
+    mutualMatchDesc: { en: 'You both want to do the same activity!', fr: 'Vous voulez tous les deux faire la même activité !' },
+    tapToConnect: { en: 'Tap to connect', fr: 'Appuie pour te connecter' },
   },
 
   // Signals

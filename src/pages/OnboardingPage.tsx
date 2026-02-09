@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff, Sparkles, Mail, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff, Sparkles, Mail, RefreshCw, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
@@ -39,23 +39,56 @@ export default function OnboardingPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
   
-  const { signIn, signUp, isAuthenticated } = useAuth();
+  const { signIn, signUp, signInWithMagicLink, signInWithOAuthSupabase, isAuthenticated } = useAuth();
+  const [useMagicLink, setUseMagicLink] = useState(false);
+  const [isMagicLinkSent, setIsMagicLinkSent] = useState(false);
+  const [isMagicLinkLoading, setIsMagicLinkLoading] = useState(false);
   const loginRateLimit = useRateLimit(RATE_LIMIT_PRESETS.login);
   const signupRateLimit = useRateLimit(RATE_LIMIT_PRESETS.signup);
   const { startWatching, position, error: locationError } = useLocationStore();
   
+  // Handle magic link
+  const handleMagicLink = async () => {
+    if (!email) {
+      setErrors({ email: t('auth.emailRequired') });
+      return;
+    }
+    setIsMagicLinkLoading(true);
+    const { error } = await signInWithMagicLink(email);
+    setIsMagicLinkLoading(false);
+    if (error) {
+      toast.error(t('auth.magicLinkError'));
+    } else {
+      setIsMagicLinkSent(true);
+      setConfirmationEmail(email);
+    }
+  };
+
   // Handle Google OAuth
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
+      // Try Lovable OAuth first, fallback to Supabase OAuth
       const result = await lovable.auth.signInWithOAuth('google');
       if (result.error) {
-        toast.error(t('auth.googleError'));
-        console.error('Google OAuth error:', result.error);
+        // Fallback to native Supabase OAuth
+        const { error } = await signInWithOAuthSupabase('google');
+        if (error) {
+          toast.error(t('auth.googleError'));
+          console.error('Google OAuth error:', error);
+        }
       }
     } catch (err) {
-      toast.error(t('auth.googleError'));
-      console.error(err);
+      // Fallback to native Supabase OAuth
+      try {
+        const { error } = await signInWithOAuthSupabase('google');
+        if (error) {
+          toast.error(t('auth.googleError'));
+        }
+      } catch {
+        toast.error(t('auth.googleError'));
+        console.error(err);
+      }
     } finally {
       setIsGoogleLoading(false);
     }
@@ -330,15 +363,56 @@ export default function OnboardingPage() {
               )}
               
               {isLogin && (
-                <button
-                  type="button"
-                  onClick={() => navigate('/forgot-password')}
-                  className="text-sm text-coral hover:text-coral-dark transition-colors"
-                >
-                  {t('auth.forgotPassword')}
-                </button>
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/forgot-password')}
+                    className="text-sm text-coral hover:text-coral-dark transition-colors"
+                  >
+                    {t('auth.forgotPassword')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUseMagicLink(true);
+                    }}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                  >
+                    <Wand2 className="h-3.5 w-3.5" />
+                    {t('auth.useMagicLink')}
+                  </button>
+                </div>
               )}
-              
+
+              {/* Magic Link Section (login only) */}
+              {isLogin && useMagicLink && (
+                <div className="space-y-3 p-4 rounded-xl bg-coral/5 border border-coral/20">
+                  <p className="text-sm text-muted-foreground">{t('auth.magicLinkDesc')}</p>
+                  <Button
+                    type="button"
+                    onClick={handleMagicLink}
+                    disabled={isMagicLinkLoading || !email}
+                    className="w-full h-12 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl gap-2"
+                  >
+                    {isMagicLinkLoading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Wand2 className="h-4 w-4" />
+                        {t('auth.sendMagicLink')}
+                      </>
+                    )}
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => setUseMagicLink(false)}
+                    className="text-xs text-muted-foreground hover:text-foreground transition-colors w-full text-center"
+                  >
+                    {t('auth.usePassword')}
+                  </button>
+                </div>
+              )}
+
               {/* Divider */}
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
@@ -558,6 +632,56 @@ export default function OnboardingPage() {
   };
 
   const totalSteps = 3;
+
+  // Magic link sent screen
+  if (isMagicLinkSent) {
+    return (
+      <PageLayout showSidebar={false} className="flex flex-col px-6 py-8 safe-top safe-bottom">
+        <div className="max-w-md mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
+          <div className="space-y-6 animate-slide-up text-center">
+            <div className="w-24 h-24 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6 glow-coral">
+              <Wand2 className="h-12 w-12 text-coral" />
+            </div>
+
+            <h2 className="text-2xl font-bold text-foreground">
+              {t('auth.magicLinkSent')}
+            </h2>
+            <p className="text-muted-foreground max-w-xs mx-auto leading-relaxed">
+              {t('auth.magicLinkSentDesc')}
+            </p>
+            <p className="text-sm text-foreground font-medium">{confirmationEmail}</p>
+
+            <div className="space-y-3 pt-4">
+              <Button
+                onClick={handleMagicLink}
+                disabled={isMagicLinkLoading}
+                variant="outline"
+                className="w-full h-14 rounded-xl border-border"
+              >
+                {isMagicLinkLoading ? (
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                ) : (
+                  <RefreshCw className="h-5 w-5 mr-2" />
+                )}
+                {t('auth.resendEmail')}
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setIsMagicLinkSent(false);
+                  setUseMagicLink(false);
+                  setIsLogin(true);
+                }}
+                className="w-full h-14 text-lg font-semibold bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl glow-coral"
+              >
+                {t('auth.usePassword')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
 
   // Email confirmation screen
   if (showEmailConfirmation) {

@@ -211,6 +211,40 @@ export function useSupabaseAuth() {
     return { data, error: null };
   };
 
+  const signInWithMagicLink = async (email: string) => {
+    const redirectUrl = `${window.location.origin}/map`;
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: redirectUrl,
+      },
+    });
+
+    if (error) {
+      console.error('Magic link error:', error);
+      return { error };
+    }
+
+    return { error: null };
+  };
+
+  const signInWithOAuthSupabase = async (provider: 'google') => {
+    const redirectUrl = `${window.location.origin}/map`;
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: redirectUrl,
+      },
+    });
+
+    if (error) {
+      console.error(`${provider} OAuth error:`, error);
+      return { error };
+    }
+
+    return { data, error: null };
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -258,6 +292,8 @@ export function useSupabaseAuth() {
     ...authState,
     signUp,
     signIn,
+    signInWithMagicLink,
+    signInWithOAuthSupabase,
     signOut,
     updateProfile,
     refreshProfile,
