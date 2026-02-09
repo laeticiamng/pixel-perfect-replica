@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Toaster as HotToaster } from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ErrorBoundary, CookieConsent, OfflineBanner, ProtectedRoute, CommandPalette } from "@/components";
@@ -113,7 +113,14 @@ function AnimatedRoutes() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/install" element={<InstallPage />} />
           <Route path="/changelog" element={<ChangelogPage />} />
-          
+
+          {/* Auth redirect routes */}
+          <Route path="/signup" element={<Navigate to="/onboarding" state={{ isLogin: false }} replace />} />
+          <Route path="/login" element={<Navigate to="/onboarding" state={{ isLogin: true }} replace />} />
+
+          {/* App radar redirect */}
+          <Route path="/app/radar" element={<Navigate to="/map" replace />} />
+
           {/* Protected Routes */}
           <Route path="/map" element={
             <ProtectedRoute>

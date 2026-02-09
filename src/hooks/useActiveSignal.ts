@@ -58,7 +58,7 @@ export function useActiveSignal() {
     setMySignal(data);
   }, [user]);
 
-  // Activate signal
+  // Activate signal (with rate limiting: max 10 new signals per hour)
   const activateSignal = async (activity: ActivityType, signalType: SignalType = 'green', locationDescription?: string) => {
     if (!user || !position) return { error: new Error('Missing user or position') };
 
@@ -96,7 +96,16 @@ export function useActiveSignal() {
       }
       return { data, error };
     } else {
-      // Insert new
+      // Check rate limit before creating a new signal (max 10/hour)
+      const { data: rateLimitOk } = await supabase
+        .rpc('check_signal_rate_limit', { p_user_id: user.id });
+
+      if (rateLimitOk === false) {
+        setIsLoading(false);
+        return { data: null, error: new Error('Rate limit exceeded: max 10 signals per hour') };
+      }
+
+      // Insert new signal
       const { data, error } = await supabase
         .from('active_signals')
         .insert({
@@ -112,6 +121,11 @@ export function useActiveSignal() {
         })
         .select()
         .single();
+
+      // Record signal creation for rate limiting
+      if (!error && data) {
+        await supabase.from('signal_rate_limits').insert({ user_id: user.id });
+      }
 
       setIsLoading(false);
       if (!error && data) {

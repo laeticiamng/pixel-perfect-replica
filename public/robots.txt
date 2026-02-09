@@ -18,4 +18,4 @@ Disallow: /settings
 Disallow: /admin
 Disallow: /diagnostics
 
-Sitemap: https://nearvity.fr/sitemap.xml
+Sitemap: https://pixel-perfect-clone-6574.lovable.app/sitemap.xml

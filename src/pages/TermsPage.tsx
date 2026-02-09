@@ -66,11 +66,28 @@ export default function TermsPage() {
 
           <section className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground">{t('terms.section8Title')}</h2>
+            <p className="text-muted-foreground">{t('terms.section8Text')}</p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-foreground">{t('terms.section9Title')}</h2>
+            <p className="text-muted-foreground">{t('terms.section9Text')}</p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-foreground">{t('terms.section10Title')}</h2>
+            <p className="text-muted-foreground">{t('terms.section10Text')}</p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-foreground">{t('terms.section11Title')}</h2>
             <p className="text-muted-foreground">
-              {t('terms.section8Text')}
+              {t('terms.section11Text')}
               <a href="mailto:legal@nearvity.fr" className="text-coral ml-1">legal@nearvity.fr</a>
             </p>
           </section>
+
+          <p className="text-sm text-muted-foreground mt-4">{t('terms.editorInfo')}</p>
         </div>
 
         <p className="text-center text-xs text-muted-foreground">{t('terms.copyright')}</p>
