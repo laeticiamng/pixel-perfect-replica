@@ -2,58 +2,66 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://nearvity.fr/</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/" />
+    <loc>https://pixel-perfect-clone-6574.lovable.app/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pixel-perfect-clone-6574.lovable.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixel-perfect-clone-6574.lovable.app/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixel-perfect-clone-6574.lovable.app/" />
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://nearvity.fr/about</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/about" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/about" />
+    <loc>https://pixel-perfect-clone-6574.lovable.app/about</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pixel-perfect-clone-6574.lovable.app/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixel-perfect-clone-6574.lovable.app/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixel-perfect-clone-6574.lovable.app/about" />
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nearvity.fr/terms</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/terms" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/terms" />
+    <loc>https://pixel-perfect-clone-6574.lovable.app/terms</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pixel-perfect-clone-6574.lovable.app/terms" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixel-perfect-clone-6574.lovable.app/terms" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixel-perfect-clone-6574.lovable.app/terms" />
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://nearvity.fr/privacy</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/privacy" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/privacy" />
+    <loc>https://pixel-perfect-clone-6574.lovable.app/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pixel-perfect-clone-6574.lovable.app/privacy" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixel-perfect-clone-6574.lovable.app/privacy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixel-perfect-clone-6574.lovable.app/privacy" />
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://nearvity.fr/help</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/help" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/help" />
+    <loc>https://pixel-perfect-clone-6574.lovable.app/help</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pixel-perfect-clone-6574.lovable.app/help" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixel-perfect-clone-6574.lovable.app/help" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixel-perfect-clone-6574.lovable.app/help" />
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://nearvity.fr/onboarding</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/onboarding" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/onboarding" />
+    <loc>https://pixel-perfect-clone-6574.lovable.app/signup</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pixel-perfect-clone-6574.lovable.app/signup" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixel-perfect-clone-6574.lovable.app/signup" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixel-perfect-clone-6574.lovable.app/signup" />
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://nearvity.fr/changelog</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/changelog" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/changelog" />
+    <loc>https://pixel-perfect-clone-6574.lovable.app/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pixel-perfect-clone-6574.lovable.app/changelog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixel-perfect-clone-6574.lovable.app/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixel-perfect-clone-6574.lovable.app/changelog" />
     <changefreq>weekly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://nearvity.fr/install</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/install" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/install" />
+    <loc>https://pixel-perfect-clone-6574.lovable.app/install</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pixel-perfect-clone-6574.lovable.app/install" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixel-perfect-clone-6574.lovable.app/install" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixel-perfect-clone-6574.lovable.app/install" />
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

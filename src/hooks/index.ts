@@ -25,6 +25,8 @@ export { useNetworkStatus } from './useNetworkStatus';
 export { useSwipeNavigation } from './useSwipeNavigation';
 export { useRateLimit, RATE_LIMIT_PRESETS } from './useRateLimit';
 export { useRevealRateLimit } from './useRevealRateLimit';
+export { useSignalRateLimit } from './useSignalRateLimit';
+export { useConnections } from './useConnections';
 
 // Feature hooks
 export { useAdminAlerts } from './useAdminAlerts';

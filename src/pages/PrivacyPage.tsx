@@ -100,10 +100,26 @@ export default function PrivacyPage() {
 
           <section className="space-y-3">
             <h2 className="text-lg font-semibold text-foreground">{t('privacy.section7Title')}</h2>
+            <p className="text-muted-foreground">{t('privacy.section7Text')}</p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-foreground">{t('privacy.section8Title')}</h2>
+            <p className="text-muted-foreground">{t('privacy.section8Text')}</p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-foreground">{t('privacy.section9Title')}</h2>
+            <p className="text-muted-foreground">{t('privacy.section9Text')}</p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-foreground">{t('privacy.section10Title')}</h2>
             <p className="text-muted-foreground">
-              {t('privacy.section7Text')}
+              {t('privacy.section10Text')}
               <a href="mailto:dpo@nearvity.fr" className="text-coral ml-1">dpo@nearvity.fr</a>
             </p>
+            <p className="text-sm text-muted-foreground mt-2">{t('privacy.cnilNotice')}</p>
           </section>
         </div>
 

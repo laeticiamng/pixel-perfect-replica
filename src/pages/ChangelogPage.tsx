@@ -18,6 +18,54 @@ interface ChangelogEntry {
 
 const changelog: ChangelogEntry[] = [
   {
+    version: '2.0.0',
+    date: '2026-02-09',
+    sections: [
+      {
+        type: 'new',
+        items: [
+          'Système de connexions mutuelles (matching par activité + proximité)',
+          'Messagerie éphémère 24h (auto-suppression RGPD)',
+          'Routes /signup et /login dédiées',
+          'Table connections avec confirmation mutuelle',
+          'Rate limiting serveur sur les signaux (max 10/heure)',
+          'Hook useConnections pour le flux de matching',
+          'Hook useSignalRateLimit pour la limitation côté client',
+          'Migration SQL complète : connections, signal_rate_limits, expires_at',
+        ],
+      },
+      {
+        type: 'improved',
+        items: [
+          'SEO : alignement domaine canonical/OG/sitemap/robots.txt',
+          'Pages légales enrichies (CGU RGPD, Politique de confidentialité)',
+          'Changelog complet justifiant la version 2.0.0',
+          'Hreflang x-default ajouté dans le sitemap',
+          'Types TypeScript mis à jour pour toutes les nouvelles tables',
+        ],
+      },
+      {
+        type: 'fixed',
+        items: [
+          'Domaine incohérent entre sitemap (nearvity.fr) et hébergement (lovable.app)',
+          'Canonical URL pointant vers le mauvais domaine',
+          'OG tags et JSON-LD avec URLs mixtes',
+          'Version 2.0.0 affichée sans changelog correspondant',
+        ],
+      },
+      {
+        type: 'security',
+        items: [
+          'RLS activé sur la table connections',
+          'Rate limiting serveur (check_signal_rate_limit) côté PostgreSQL',
+          'Nettoyage automatique des messages expirés (cleanup_expired_messages)',
+          'Nettoyage automatique des connexions pendantes après 48h',
+          'Politique de suppression éphémère (expires_at) sur les messages',
+        ],
+      },
+    ],
+  },
+  {
     version: '1.7.0',
     date: '2026-02-06',
     sections: [
