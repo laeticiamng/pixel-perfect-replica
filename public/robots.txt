@@ -12,3 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /map
+Disallow: /profile
+Disallow: /settings
+Disallow: /admin
+Disallow: /diagnostics
+
+Sitemap: https://nearvity.fr/sitemap.xml

@@ -535,6 +535,30 @@ async function handleCleanupExpired(
     results.analytics_events = { deleted: 0, error: String(err) };
   }
 
+  // Cleanup ephemeral messages (older than 24 hours)
+  try {
+    const { error } = await supabase.rpc('cleanup_old_messages');
+    if (error) {
+      results.messages = { deleted: 0, error: error.message };
+    } else {
+      results.messages = { deleted: 0 };
+    }
+  } catch (err) {
+    results.messages = { deleted: 0, error: String(err) };
+  }
+
+  // Cleanup old session messages (older than 7 days)
+  try {
+    const { error } = await supabase.rpc('cleanup_old_session_messages');
+    if (error) {
+      results.session_messages = { deleted: 0, error: error.message };
+    } else {
+      results.session_messages = { deleted: 0 };
+    }
+  } catch (err) {
+    results.session_messages = { deleted: 0, error: String(err) };
+  }
+
   console.log("[system/cleanup-expired] Cleanup completed:", results);
 
   return new Response(

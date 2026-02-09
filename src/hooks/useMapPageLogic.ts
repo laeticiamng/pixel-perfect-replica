@@ -5,6 +5,7 @@ import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
+import { useSignalMatching } from '@/hooks/useSignalMatching';
 import { ActivityType } from '@/types/signal';
 import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
@@ -41,7 +42,19 @@ export function useMapPageLogic() {
   // Setup realtime notifications for new nearby users
   const { initializeKnownUsers } = useNearbyNotifications({
     isActive,
-    onNewUserNearby: useCallback((user) => {
+    onNewUserNearby: useCallback((_nearbyUser) => {
+      if (position) {
+        fetchNearbyUsers(settings.visibility_distance);
+      }
+    }, [position, fetchNearbyUsers, settings.visibility_distance]),
+  });
+
+  // Setup signal matching notifications (compatible activities)
+  useSignalMatching({
+    isActive,
+    myActivity: myActivity || null,
+    onMatch: useCallback((match) => {
+      // Refresh nearby users when a compatible match is found
       if (position) {
         fetchNearbyUsers(settings.visibility_distance);
       }
