@@ -6,7 +6,7 @@ import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
 import { useSignalMatching } from '@/hooks/useSignalMatching';
-import { ActivityType } from '@/types/signal';
+import { ActivityType, SignalType } from '@/types/signal';
 import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n';
@@ -21,11 +21,13 @@ export function useMapPageLogic() {
     isActive, 
     mySignal,
     activity: myActivity, 
+    signalType,
     nearbyUsers, 
     isDemoMode,
     activateSignal, 
     deactivateSignal,
     extendSignal,
+    updateSignalState,
     fetchNearbyUsers,
   } = useActiveSignal();
 
@@ -127,6 +129,21 @@ export function useMapPageLogic() {
     }
   }, [isActive, deactivateSignal, t]);
 
+
+  const handleCycleSignalState = useCallback(async () => {
+    if (!isActive || !signalType) return;
+
+    const nextSignal: SignalType = signalType === 'green' ? 'yellow' : signalType === 'yellow' ? 'red' : 'green';
+    const { error } = await updateSignalState(nextSignal);
+
+    if (error) {
+      toast.error(t('errors.activationError'));
+      return;
+    }
+
+    toast.success(t(`mapToasts.signal${nextSignal.charAt(0).toUpperCase()}${nextSignal.slice(1)}`));
+  }, [isActive, signalType, updateSignalState, t]);
+
   const handleActivityConfirm = useCallback(async () => {
     if (selectedActivity) {
       setIsActivating(true);
@@ -214,6 +231,7 @@ export function useMapPageLogic() {
     isActive,
     mySignal,
     myActivity,
+    signalType,
     nearbyUsers,
     isDemoMode,
     showActivityModal,
@@ -238,6 +256,7 @@ export function useMapPageLogic() {
     // Handlers
     handleManualRefresh,
     handleSignalToggle,
+    handleCycleSignalState,
     handleActivityConfirm,
     handleSignalExpired,
     handleExtendSignal,

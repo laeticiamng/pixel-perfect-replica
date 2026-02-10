@@ -7,6 +7,7 @@ import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicato
 import { PageLayout } from '@/components/PageLayout';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from '@/lib/i18n';
+import { getPasswordPolicyErrorMessage, isPwnedPasswordError, isWeakPasswordError } from '@/lib/authErrorMapper';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -63,9 +64,10 @@ export default function ResetPasswordPage() {
 
     if (updateError) {
       // Handle weak/pwned password error
-      if (updateError.message.includes('weak_password') || updateError.message.includes('pwned')) {
-        toast.error(t('auth.weakPassword'));
-        setError(t('auth.weakPassword'));
+      if (isWeakPasswordError(updateError.message) || isPwnedPasswordError(updateError.message)) {
+        const errorMessage = getPasswordPolicyErrorMessage(updateError.message, t);
+        toast.error(errorMessage);
+        setError(errorMessage);
       } else {
         toast.error(t('auth.updateError'));
         setError(updateError.message);

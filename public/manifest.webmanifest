@@ -1,0 +1,17 @@
+{
+  "name": "NEARVITY - Le premier réseau social 100% réel",
+  "short_name": "NEARVITY",
+  "description": "Facilite les rencontres IRL. Des vraies personnes, prêtes à se retrouver.",
+  "theme_color": "#0f0f1a",
+  "background_color": "#0f0f1a",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "categories": ["social", "lifestyle"],
+  "icons": [
+    { "src": "/pwa-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/pwa-512x512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/pwa-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

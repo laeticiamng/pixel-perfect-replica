@@ -4,6 +4,16 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 
 ---
 
+## [Unreleased]
+
+### ✅ Correctifs QA & fiabilité
+- Auth: distinction explicite des erreurs mot de passe compromis (`pwned`) vs mot de passe faible (`weak_password`) avec messages UI dédiés et exigences détaillées.
+- PWA: ajout d'un `public/manifest.webmanifest` statique pour éviter les erreurs de résolution en preview.
+- Rebranding/Support: centralisation des emails de contact sur la boîte vérifiée `contact@emotionscare.com`.
+- Checkout Edge Function: rétrocompatibilité temporaire des plans legacy `easyplus` -> `nearvityplus` (fin de support prévue: 2026-06-30).
+
+---
+
 ## [2.0.0] - 2026-02-06
 
 ### 🎉 Publication Officielle

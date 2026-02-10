@@ -75,6 +75,7 @@ export function CommandPalette() {
     { id: 'events', label: t('commandPalette.events'), icon: Calendar, action: () => navigate('/events'), keywords: ['events', 'evenements', 'agenda'], group: 'navigation' },
     { id: 'statistics', label: t('commandPalette.statistics'), icon: BarChart3, action: () => navigate('/statistics'), keywords: ['stats', 'statistiques', 'analytics'], group: 'navigation' },
     { id: 'people-met', label: t('commandPalette.peopleMet'), icon: Users, action: () => navigate('/people-met'), keywords: ['people', 'rencontres', 'contacts'], group: 'navigation' },
+    { id: 'messages', label: t('commandPalette.messages'), icon: MessageSquare, action: () => navigate('/messages'), keywords: ['messages', 'chat', 'messagerie'], group: 'navigation' },
   ];
 
   const settingsItems: CommandItemData[] = [
