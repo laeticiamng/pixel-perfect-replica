@@ -15,6 +15,7 @@ import {
   LocationPermissionScreen,
 } from '@/components/map';
 import { EmergencyButton } from '@/components/safety';
+import { ConnectionRequestsPanel } from '@/components/social';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useMapPageLogic } from '@/hooks/useMapPageLogic';
 import { useLocationStore } from '@/stores/locationStore';
@@ -291,6 +292,11 @@ export default function MapPage() {
               onActivityFilterToggle={toggleActivityFilter}
             />
           )}
+        </div>
+
+        {/* Connection Requests */}
+        <div className="px-6">
+          <ConnectionRequestsPanel />
         </div>
 
         {/* Signal Button */}

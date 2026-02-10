@@ -58,7 +58,7 @@ serve(async (req) => {
       logStep("Existing customer found", { customerId });
     }
 
-    const origin = req.headers.get("origin") || "https://pixel-perfect-clone-6574.lovable.app";
+    const origin = req.headers.get("origin") || "https://nearvity.fr";
     
     const session = await stripe.checkout.sessions.create({
       customer: customerId,

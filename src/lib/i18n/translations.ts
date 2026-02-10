@@ -1861,6 +1861,32 @@ export const translations = {
     hint: { en: 'Optional - helps others find you', fr: 'Optionnel - aide les autres à te trouver' },
   },
 
+  // Connections
+  connections: {
+    title: { en: 'Connection Requests', fr: 'Demandes de connexion' },
+    pendingRequests: { en: 'Pending requests', fr: 'Demandes en attente' },
+    noPending: { en: 'No pending requests', fr: 'Aucune demande en attente' },
+    noPendingDesc: { en: 'When someone nearby wants to connect, it will appear here.', fr: 'Quand quelqu\'un à proximité veut se connecter, ça apparaîtra ici.' },
+    accept: { en: 'Accept', fr: 'Accepter' },
+    decline: { en: 'Decline', fr: 'Décliner' },
+    accepted: { en: 'Connection accepted!', fr: 'Connexion acceptée !' },
+    declined: { en: 'Request declined', fr: 'Demande déclinée' },
+    requestSent: { en: 'Connection request sent!', fr: 'Demande de connexion envoyée !' },
+    requestError: { en: 'Could not send request', fr: 'Impossible d\'envoyer la demande' },
+    connect: { en: 'Connect', fr: 'Se connecter' },
+    wantsToConnect: { en: 'wants to connect for', fr: 'veut se connecter pour' },
+    justNow: { en: 'Just now', fr: 'À l\'instant' },
+    minutesAgo: { en: '{n} min ago', fr: 'Il y a {n} min' },
+    acceptError: { en: 'Could not accept request', fr: 'Impossible d\'accepter' },
+    declineError: { en: 'Could not decline request', fr: 'Impossible de décliner' },
+  },
+
+  // Ephemeral messages
+  ephemeral: {
+    expiresIn: { en: 'Messages expire in {time}', fr: 'Les messages expirent dans {time}' },
+    expired: { en: 'This conversation has expired', fr: 'Cette conversation a expiré' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;

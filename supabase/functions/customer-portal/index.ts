@@ -51,7 +51,7 @@ serve(async (req) => {
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
-    const origin = req.headers.get("origin") || "https://pixel-perfect-clone-6574.lovable.app";
+    const origin = req.headers.get("origin") || "https://nearvity.fr";
     
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
