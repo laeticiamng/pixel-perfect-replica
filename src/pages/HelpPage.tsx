@@ -16,8 +16,8 @@ export default function HelpPage() {
 
   const faqs = [
     {
-      questionKey: 'help.howDoesEasyWork',
-      answerKey: 'help.howDoesEasyWorkAnswer',
+      questionKey: 'help.howDoesNearvityWork',
+      answerKey: 'help.howDoesNearvityWorkAnswer',
     },
     {
       questionKey: 'help.isMyLocationStored',
@@ -56,8 +56,8 @@ export default function HelpPage() {
       answerKey: 'help.howToContactSupportAnswer',
     },
     {
-      questionKey: 'help.isEasyFree',
-      answerKey: 'help.isEasyFreeAnswer',
+      questionKey: 'help.isNearvityFree',
+      answerKey: 'help.isNearvityFreeAnswer',
     },
     {
       questionKey: 'help.howDoesMiniChatWork',

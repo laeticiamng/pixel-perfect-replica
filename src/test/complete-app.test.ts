@@ -184,20 +184,20 @@ describe("Complete Application Tests", () => {
     it("should calculate weak password strength", () => {
       const result = getPasswordStrength("abc");
       expect(result.score).toBeLessThanOrEqual(2);
-      expect(result.label).toBe("Faible");
+      expect(result.label).toBe("weak");
     });
 
     it("should calculate medium password strength", () => {
       const result = getPasswordStrength("Password");
       expect(result.score).toBeGreaterThan(2);
       expect(result.score).toBeLessThanOrEqual(4);
-      expect(result.label).toBe("Moyen");
+      expect(result.label).toBe("medium");
     });
 
     it("should calculate strong password strength", () => {
       const result = getPasswordStrength("Password123!");
       expect(result.score).toBeGreaterThan(4);
-      expect(result.label).toBe("Fort");
+      expect(result.label).toBe("strong");
     });
   });
 
