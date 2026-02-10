@@ -18,6 +18,7 @@ import {
   AdminDashboardPage,
   PremiumPage,
   ChangelogPage,
+  PresidentCockpitPage,
   NotFound,
   // Auth
   OnboardingPage,
@@ -191,6 +192,11 @@ function AnimatedRoutes() {
           <Route path="/admin" element={
             <ProtectedRoute>
               <AdminDashboardPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/president-cockpit" element={
+            <ProtectedRoute>
+              <PresidentCockpitPage />
             </ProtectedRoute>
           } />
           <Route path="/blocked-users" element={
