@@ -5,3 +5,4 @@ export { VerificationBadges } from './VerificationBadges';
 export { FavoriteActivitiesSelector } from './FavoriteActivitiesSelector';
 export { SmartLocationRecommender } from './SmartLocationRecommender';
 export { VoiceIcebreakerButton } from './VoiceIcebreakerButton';
+export { ConnectionRequestsPanel } from './ConnectionRequestsPanel';

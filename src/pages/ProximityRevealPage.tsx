@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin, ThumbsUp, ThumbsDown, UserX } from 'lucide-react';
+import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin, ThumbsUp, ThumbsDown, UserX, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
 import { IcebreakerCard, VerificationBadges, MiniChat, VoiceIcebreakerButton } from '@/components/social';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useRevealRateLimit } from '@/hooks/useRevealRateLimit';
+import { useConnections } from '@/hooks/useConnections';
 import { useTranslation } from '@/lib/i18n';
 import { ACTIVITIES, getIcebreaker as getIcebreakerFn } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
@@ -27,7 +28,8 @@ export default function ProximityRevealPage() {
   const { nearbyUsers } = useActiveSignal();
   const { createInteraction, addFeedback } = useInteractions();
   const { checkAndLogReveal, isChecking: isCheckingReveal } = useRevealRateLimit();
-  
+  const { requestConnection } = useConnections();
+
   const [icebreaker, setIcebreaker] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -36,6 +38,8 @@ export default function ProximityRevealPage() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [revealBlocked, setRevealBlocked] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionSent, setConnectionSent] = useState(false);
 
   const user = nearbyUsers.find(u => u.id === userId);
 
@@ -138,6 +142,19 @@ export default function ProximityRevealPage() {
   }
 
   const activityData = ACTIVITIES.find(a => a.id === user.activity);
+
+  const handleConnect = async () => {
+    if (!userId || !user) return;
+    setIsConnecting(true);
+    const result = await requestConnection(userId, null, user.activity as any);
+    setIsConnecting(false);
+    if (result.success) {
+      setConnectionSent(true);
+      toast.success(t('connections.requestSent'));
+    } else {
+      toast.error(t('connections.requestError'));
+    }
+  };
 
   const handleRefreshIcebreaker = () => {
     generateIcebreaker();
@@ -275,13 +292,28 @@ export default function ProximityRevealPage() {
       <div className="px-6 pb-8 space-y-3">
         {!showChat ? (
           <>
-            <Button
-              onClick={handleTalked}
-              className="w-full h-14 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl text-lg font-semibold glow-coral"
-              aria-label={t('reveal.talkConfirm')}
-            >
-              {t('reveal.iTalked')}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={handleTalked}
+                className="flex-1 h-14 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl text-lg font-semibold glow-coral"
+                aria-label={t('reveal.talkConfirm')}
+              >
+                {t('reveal.iTalked')}
+              </Button>
+              <Button
+                onClick={handleConnect}
+                disabled={isConnecting || connectionSent}
+                className="h-14 px-5 bg-signal-green hover:bg-signal-green/80 text-primary-foreground rounded-xl font-semibold gap-2"
+                aria-label={t('connections.connect')}
+              >
+                {isConnecting ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <UserPlus className="h-5 w-5" />
+                )}
+                {connectionSent ? '✓' : t('connections.connect')}
+              </Button>
+            </div>
             <div className="flex gap-3">
               <Button
                 variant="outline"
