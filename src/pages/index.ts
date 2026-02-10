@@ -4,6 +4,9 @@
 // Main pages
 export { default as LandingPage } from './LandingPage';
 export { default as MapPage } from './MapPage';
+export { default as RadarPage } from './RadarPage';
+export { default as SessionPage } from './SessionPage';
+export { default as MessagesPage } from './MessagesPage';
 export { default as ProximityRevealPage } from './ProximityRevealPage';
 export { default as AdminDashboardPage } from './AdminDashboardPage';
 export { default as PremiumPage } from './PremiumPage';

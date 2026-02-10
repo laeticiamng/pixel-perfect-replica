@@ -30,9 +30,9 @@ export function FinalCTASection() {
         
         <RevealText delay={0.4}>
           <Button
-            onClick={() => navigate('/onboarding')}
+            onClick={() => navigate('/app/radar')}
             size="lg"
-            className="h-16 px-12 text-xl font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl hover:shadow-coral/30 transition-all duration-300 hover:scale-105"
+            className="h-16 px-12 text-xl font-bold bg-gradient-to-r from-violet to-violet-light hover:from-violet-dark hover:to-violet text-white rounded-full shadow-xl hover:shadow-violet/30 transition-all duration-300 hover:scale-105"
           >
             {t('landing.startNow')}
             <ArrowRight className="ml-3 h-6 w-6" />

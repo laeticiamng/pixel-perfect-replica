@@ -14,6 +14,9 @@ import {
   // Main
   LandingPage,
   MapPage,
+  RadarPage,
+  SessionPage,
+  MessagesPage,
   ProximityRevealPage,
   AdminDashboardPage,
   PremiumPage,
@@ -62,28 +65,28 @@ const queryClient = new QueryClient();
 
 // Page transition variants - smoother with easing
 const pageVariants = {
-  initial: { 
-    opacity: 0, 
+  initial: {
+    opacity: 0,
     y: 8,
     scale: 0.99,
   },
-  enter: { 
-    opacity: 1, 
-    y: 0, 
+  enter: {
+    opacity: 1,
+    y: 0,
     scale: 1,
-    transition: { 
-      duration: 0.35, 
+    transition: {
+      duration: 0.35,
       ease: 'easeOut' as const,
-    } 
+    }
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     y: -8,
     scale: 0.99,
-    transition: { 
-      duration: 0.2, 
+    transition: {
+      duration: 0.2,
       ease: 'easeIn' as const,
-    } 
+    }
   },
 };
 
@@ -91,7 +94,7 @@ const pageVariants = {
 function AnimatedRoutes() {
   const location = useLocation();
   useKeyboardShortcuts(); // Enable global keyboard shortcuts
-  
+
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
@@ -119,33 +122,27 @@ function AnimatedRoutes() {
           <Route path="/signup" element={<Navigate to="/onboarding" state={{ isLogin: false }} replace />} />
           <Route path="/login" element={<Navigate to="/onboarding" state={{ isLogin: true }} replace />} />
 
-          {/* App radar redirect */}
-          <Route path="/app/radar" element={<Navigate to="/map" replace />} />
+          {/* NEARVITY Core App Routes */}
+          <Route path="/app/radar" element={<RadarPage />} />
+          <Route path="/app/session" element={<SessionPage />} />
+          <Route path="/app/messages" element={<MessagesPage />} />
+          <Route path="/app/profil" element={<ProfilePage />} />
+          <Route path="/app/settings" element={<SettingsPage />} />
+
+          {/* Legacy route redirects */}
+          <Route path="/map" element={<Navigate to="/app/radar" replace />} />
+          <Route path="/profile" element={<Navigate to="/app/profil" replace />} />
+          <Route path="/settings" element={<Navigate to="/app/settings" replace />} />
 
           {/* Protected Routes */}
-          <Route path="/map" element={
-            <ProtectedRoute>
-              <MapPage />
-            </ProtectedRoute>
-          } />
           <Route path="/reveal/:userId" element={
             <ProtectedRoute>
               <ProximityRevealPage />
             </ProtectedRoute>
           } />
-          <Route path="/profile" element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          } />
           <Route path="/profile/edit" element={
             <ProtectedRoute>
               <EditProfilePage />
-            </ProtectedRoute>
-          } />
-          <Route path="/settings" element={
-            <ProtectedRoute>
-              <SettingsPage />
             </ProtectedRoute>
           } />
           <Route path="/statistics" element={
@@ -249,7 +246,7 @@ function AnimatedRoutes() {
               <SessionHistoryPage />
             </ProtectedRoute>
           } />
-          
+
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>

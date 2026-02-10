@@ -13,7 +13,7 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
       <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">
         <div className="flex flex-col items-center justify-between w-full gap-4 sm:flex-row">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet to-violet-dark flex items-center justify-center">
               <span className="text-white font-bold text-sm">N</span>
             </div>
             <span className="font-bold text-foreground">NEARVITY</span>
@@ -42,11 +42,11 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
         </div>
         
         <div className="text-center text-xs text-muted-foreground">
-          <Link to="/changelog" className="font-medium hover:text-coral transition-colors">
-            NEARVITY v{APP_VERSION} • PWA
+          <Link to="/changelog" className="font-medium hover:text-violet transition-colors">
+            NEARVITY v{APP_VERSION} — Made in France by EmotionsCare SASU
           </Link>
           <p className="mt-1 flex items-center justify-center gap-1">
-            Made with <Heart className="h-3.5 w-3.5 text-coral fill-coral" /> in France by EmotionsCare Sasu
+            Made with <Heart className="h-3.5 w-3.5 text-violet fill-violet" /> in France
           </p>
         </div>
       </div>

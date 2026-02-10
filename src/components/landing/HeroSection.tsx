@@ -65,9 +65,9 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         className="flex flex-col sm:flex-row gap-4"
       >
         <Button
-          onClick={() => navigate('/onboarding')}
+          onClick={() => navigate('/app/radar')}
           size="lg"
-          className="h-16 px-10 text-xl font-black bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl shadow-coral/30 hover:shadow-coral/40 transition-all duration-300 hover:scale-105"
+          className="h-16 px-10 text-xl font-black bg-gradient-to-r from-violet to-violet-light hover:from-violet-dark hover:to-violet text-white rounded-full shadow-xl shadow-violet/30 hover:shadow-violet/40 transition-all duration-300 hover:scale-105"
         >
           {t('landing.createMyAccount')}
           <ArrowRight className="ml-2 h-6 w-6" />
