@@ -1,213 +1,228 @@
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Settings, ChevronRight, Award, BookOpen, Dumbbell, Coffee, MessageSquare, Zap, Shield, GraduationCap, Edit2 } from 'lucide-react';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
-import { SwipeIndicator } from '@/components/SwipeIndicator';
-import { ProfileQRCode } from '@/components/profile';
-import { useAuth } from '@/contexts/AuthContext';
-import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
-import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
-import { APP_VERSION } from '@/lib/constants';
-import toast from 'react-hot-toast';
 
-interface MenuItem {
-  icon: React.ReactNode;
+interface Badge {
+  id: string;
   label: string;
-  onClick?: () => void;
-  route?: string;
-  danger?: boolean;
+  emoji: string;
+  earned: boolean;
+  description: string;
 }
 
-interface MenuSection {
-  title: string;
-  items: MenuItem[];
-}
+const MOCK_BADGES: Badge[] = [
+  { id: 'first-session', label: 'Première session', emoji: '🌟', earned: true, description: 'Tu as fait ta première session !' },
+  { id: 'social-butterfly', label: 'Papillon social', emoji: '🦋', earned: true, description: '10 sessions complétées' },
+  { id: 'study-buddy', label: 'Binôme de choc', emoji: '📚', earned: true, description: '5 sessions de révision' },
+  { id: 'early-bird', label: 'Lève-tôt', emoji: '🌅', earned: false, description: 'Session avant 8h' },
+  { id: 'night-owl', label: 'Noctambule', emoji: '🦉', earned: false, description: 'Session après 22h' },
+  { id: 'explorer', label: 'Explorateur', emoji: '🗺️', earned: true, description: '3 lieux différents' },
+];
+
+const MOCK_STATS = {
+  sessions: 23,
+  hoursActive: 18.5,
+  rating: 4.8,
+  peopleMet: 15,
+  favoriteActivities: [
+    { activity: 'Réviser', emoji: '📚', count: 12, icon: BookOpen },
+    { activity: 'Sport', emoji: '🏃', count: 6, icon: Dumbbell },
+    { activity: 'Manger', emoji: '🍽️', count: 3, icon: Coffee },
+    { activity: 'Discuter', emoji: '💬', count: 2, icon: MessageSquare },
+  ],
+};
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { profile, stats, signOut } = useAuth();
-  const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
-  const { t } = useTranslation();
+  const [showAllBadges, setShowAllBadges] = useState(false);
 
-  const handleLogout = async () => {
-    const { error } = await signOut();
-    if (error) {
-      toast.error(t('errors.generic'));
-      return;
-    }
-    toast.success(t('profile.seeYouSoon'));
-    navigate('/');
-  };
-
-  const handleNotifications = () => {
-    navigate('/notifications-settings');
-  };
-
-  const handlePrivacy = () => {
-    navigate('/privacy-settings');
-  };
-
-  const menuSections: MenuSection[] = [
-    {
-      title: t('profile.account'),
-      items: [
-        { icon: <User className="h-5 w-5" />, label: t('profile.editProfile'), route: '/profile/edit' },
-        { icon: <Crown className="h-5 w-5" />, label: t('profile.goPremium'), route: '/premium' },
-        { icon: <Bell className="h-5 w-5" />, label: t('settings.notifications'), onClick: handleNotifications },
-        { icon: <Lock className="h-5 w-5" />, label: t('settings.privacy'), onClick: handlePrivacy },
-      ],
-    },
-    {
-      title: t('profile.history'),
-      items: [
-        { icon: <BarChart3 className="h-5 w-5" />, label: t('profile.myStats'), route: '/statistics' },
-        { icon: <Users className="h-5 w-5" />, label: t('profile.peopleMet'), route: '/people-met' },
-      ],
-    },
-    {
-      title: t('profile.support'),
-      items: [
-        { icon: <HelpCircle className="h-5 w-5" />, label: t('profile.helpFaq'), route: '/help' },
-        { icon: <MessageSquare className="h-5 w-5" />, label: t('profile.giveFeedback'), route: '/feedback' },
-        { icon: <AlertTriangle className="h-5 w-5" />, label: t('profile.reportProblem'), route: '/report' },
-      ],
-    },
-  ];
+  const displayedBadges = showAllBadges ? MOCK_BADGES : MOCK_BADGES.filter(b => b.earned);
 
   return (
     <PageLayout className="pb-28">
-      <div className="max-w-2xl mx-auto w-full">
-        {/* Profile Header */}
-        <header className="safe-top px-6 py-8">
-        <div className="flex flex-col items-center">
-          {/* Avatar with enhanced glow */}
-          <div className="relative mb-5">
-            <div className="absolute inset-0 rounded-full bg-coral/30 blur-xl animate-breathing" />
-            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center glow-coral overflow-hidden relative shadow-medium">
-              {profile?.avatar_url ? (
-                <img 
-                  src={profile.avatar_url} 
-                  alt="Avatar" 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-4xl font-bold text-primary-foreground">
-                  {profile?.first_name?.charAt(0).toUpperCase() || '?'}
-                </span>
-              )}
-            </div>
-          </div>
-          
-          {/* Name & Info */}
-          <h1 className="text-2xl font-bold text-foreground mb-1 animate-fade-in">
-            {profile?.first_name || t('profile.user')}
-          </h1>
-          <p className="text-muted-foreground text-sm mb-1 animate-fade-in" style={{ animationDelay: '0.05s' }}>
-            {profile?.email}
-          </p>
-          {profile?.university && (
-            <p className="text-muted-foreground text-sm animate-fade-in" style={{ animationDelay: '0.1s' }}>
-              <GraduationCap className="h-4 w-4 inline mr-1" />{profile.university}
-            </p>
-          )}
-          
-          {/* QR Code button */}
-          {profile?.id && (
-            <div className="mt-4 animate-fade-in" style={{ animationDelay: '0.12s' }}>
-              <ProfileQRCode
-                userId={profile.id}
-                firstName={profile.first_name}
-                avatarUrl={profile.avatar_url}
-              />
-            </div>
-          )}
-          
-          {/* Stats with enhanced styling */}
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 mt-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
-            <button 
-              onClick={() => navigate('/statistics')}
-              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
+      <div className="max-w-[430px] mx-auto w-full">
+        {/* Header */}
+        <header className="safe-top px-6 pt-6 pb-2">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-foreground">Mon Profil</h1>
+            <button
+              onClick={() => navigate('/app/settings')}
+              className="p-2.5 rounded-xl bg-card border border-white/10 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <p className="text-2xl font-bold text-foreground">{stats?.interactions || 0}</p>
-              <p className="text-xs text-muted-foreground font-medium">{t('profile.interactions')}</p>
-            </button>
-            <button 
-              onClick={() => navigate('/statistics')}
-              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
-            >
-              <p className="text-2xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
-              <p className="text-xs text-muted-foreground font-medium">{t('profile.active')}</p>
-            </button>
-            <button 
-              onClick={() => navigate('/statistics')}
-              className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
-            >
-              <p className="text-2xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.rating?.toFixed(1) || '5.0'}</p>
-              <p className="text-xs text-muted-foreground font-medium">{t('profile.rating')}</p>
+              <Settings className="h-5 w-5" />
             </button>
           </div>
+        </header>
+
+        {/* Profile Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-6 mt-4"
+        >
+          <div className="glass-strong rounded-2xl p-6 shadow-medium relative overflow-hidden">
+            {/* Glow background */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-violet/10 rounded-full blur-3xl" />
+
+            <div className="flex items-start gap-4 relative">
+              {/* Avatar - small round thumbnail */}
+              <div className="relative flex-shrink-0">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet to-violet-dark flex items-center justify-center glow-violet shadow-medium overflow-hidden">
+                  <span className="text-2xl font-bold text-white">A</span>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-green-500 border-2 border-card flex items-center justify-center">
+                  <Shield className="h-3 w-3 text-white" />
+                </div>
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-bold text-foreground">Alex</h2>
+                  <button className="p-1 rounded-md hover:bg-muted/50 text-muted-foreground">
+                    <Edit2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                  <GraduationCap className="h-3.5 w-3.5" />
+                  Sorbonne Université
+                </p>
+                <p className="text-sm text-muted-foreground/70 mt-1">
+                  Étudiant en droit, passionné de sport et de café ☕
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Stats Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="px-6 mt-4"
+        >
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { value: MOCK_STATS.sessions, label: 'Sessions', color: 'text-violet' },
+              { value: `${MOCK_STATS.hoursActive}h`, label: 'Actif', color: 'text-green-400' },
+              { value: MOCK_STATS.rating.toFixed(1), label: 'Note', color: 'text-yellow-400' },
+              { value: MOCK_STATS.peopleMet, label: 'Rencontres', color: 'text-orange-400' },
+            ].map((stat, i) => (
+              <div key={i} className="glass rounded-xl p-3 text-center">
+                <p className={cn('text-lg font-bold', stat.color)}>{stat.value}</p>
+                <p className="text-[10px] text-muted-foreground font-medium mt-0.5">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Favorite Activities */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="px-6 mt-6"
+        >
+          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 px-1">
+            Activités préférées
+          </h3>
+          <div className="space-y-2">
+            {MOCK_STATS.favoriteActivities.map((act, i) => (
+              <div key={i} className="glass rounded-xl p-3 flex items-center gap-3">
+                <span className="text-xl">{act.emoji}</span>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-foreground">{act.activity}</span>
+                    <span className="text-xs text-muted-foreground">{act.count} sessions</span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 rounded-full bg-muted overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(act.count / MOCK_STATS.sessions) * 100}%` }}
+                      transition={{ delay: 0.3 + i * 0.1, duration: 0.6 }}
+                      className="h-full rounded-full bg-violet"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Badges */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="px-6 mt-6"
+        >
+          <div className="flex items-center justify-between mb-3 px-1">
+            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <Award className="h-3.5 w-3.5" /> Badges
+            </h3>
+            <button
+              onClick={() => setShowAllBadges(!showAllBadges)}
+              className="text-xs text-violet font-medium"
+            >
+              {showAllBadges ? 'Masquer' : 'Tout voir'}
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {displayedBadges.map((badge, i) => (
+              <motion.div
+                key={badge.id}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.25 + i * 0.05 }}
+                className={cn(
+                  'glass rounded-xl p-3 text-center transition-all',
+                  badge.earned
+                    ? 'border border-violet/20'
+                    : 'opacity-40 grayscale'
+                )}
+              >
+                <div className="text-2xl mb-1">{badge.emoji}</div>
+                <p className="text-[10px] font-bold text-foreground leading-tight">{badge.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Quick Links */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="px-6 mt-6 space-y-2"
+        >
+          {[
+            { label: 'Modifier le profil', route: '/profile/edit' },
+            { label: 'Personnes rencontrées', route: '/people-met' },
+            { label: 'Paramètres', route: '/app/settings' },
+          ].map(item => (
+            <button
+              key={item.label}
+              onClick={() => navigate(item.route)}
+              className="w-full flex items-center justify-between px-4 py-3.5 glass rounded-xl hover:bg-card/80 transition-colors"
+            >
+              <span className="text-sm font-medium text-foreground">{item.label}</span>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+          ))}
+        </motion.div>
+
+        {/* Footer */}
+        <div className="px-6 py-6 text-center">
+          <Link to="/changelog" className="text-[10px] text-muted-foreground/50 font-medium hover:text-violet transition-colors">
+            NEARVITY v2.0.0 — Made in France by EmotionsCare SASU
+          </Link>
         </div>
-      </header>
 
-      {/* Menu Sections */}
-      <div className="px-6 space-y-6">
-        {menuSections.map((section, sectionIdx) => (
-          <div key={section.title} className="animate-slide-up" style={{ animationDelay: `${0.2 + sectionIdx * 0.1}s` }}>
-            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 px-1">
-              {section.title}
-            </h2>
-            <div className="glass rounded-2xl overflow-hidden shadow-soft">
-              {section.items.map((item, index) => (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    if (item.route) {
-                      navigate(item.route);
-                    } else if (item.onClick) {
-                      item.onClick();
-                    }
-                  }}
-                  className={cn(
-                    'w-full flex items-center gap-4 px-5 py-4 transition-all duration-200',
-                    'hover:bg-muted/50 active:bg-muted/70 active:scale-[0.98]',
-                    index !== section.items.length - 1 && 'border-b border-border/50'
-                  )}
-                >
-                  <span className="text-coral">{item.icon}</span>
-                  <span className="flex-1 text-left text-foreground font-medium">{item.label}</span>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-destructive/10 text-destructive hover:bg-destructive/20 active:scale-[0.98] transition-all duration-200 shadow-soft animate-slide-up"
-          style={{ animationDelay: '0.5s' }}
-        >
-          <LogOut className="h-5 w-5" />
-          <span className="font-bold">{t('nav.logout')}</span>
-        </button>
-
-        {/* Version */}
-        <Link 
-          to="/changelog" 
-          className="block text-center text-xs text-muted-foreground py-4 font-medium hover:text-coral transition-colors"
-        >
-          NEARVITY v{APP_VERSION} — Changelog
-        </Link>
-      </div>
-
-      {/* Swipe Indicator */}
-      <div className="fixed bottom-24 left-0 right-0 z-40 pointer-events-none">
-        <SwipeIndicator currentIndex={currentRouteIndex} totalRoutes={totalRoutes} />
-      </div>
-
-      <BottomNav />
+        <BottomNav />
       </div>
     </PageLayout>
   );

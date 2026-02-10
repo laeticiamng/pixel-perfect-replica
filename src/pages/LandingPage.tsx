@@ -152,7 +152,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/map');
+      navigate('/app/radar');
     }
   }, [isAuthenticated, navigate]);
 

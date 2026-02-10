@@ -6,135 +6,154 @@
 
 @layer base {
   :root {
-    /* Core coral palette - more vibrant */
-    --coral: 8 100% 65%;
-    --coral-light: 12 100% 72%;
-    --coral-dark: 4 85% 55%;
-    --coral-glow: 8 100% 70%;
-    
-    /* Deep blue backgrounds - richer depth */
-    --deep-blue: 235 45% 12%;
-    --deep-blue-light: 230 50% 18%;
-    --midnight: 240 50% 6%;
-    
+    /* Core violet palette - NEARVITY brand */
+    --violet: 263 83% 58%;
+    --violet-light: 263 78% 68%;
+    --violet-dark: 263 85% 48%;
+    --violet-glow: 263 83% 62%;
+
+    /* Keep coral alias for backwards compat */
+    --coral: 263 83% 58%;
+    --coral-light: 263 78% 68%;
+    --coral-dark: 263 85% 48%;
+    --coral-glow: 263 83% 62%;
+
+    /* Deep dark backgrounds - NEARVITY #0F0F1A */
+    --deep-blue: 240 29% 10%;
+    --deep-blue-light: 240 25% 16%;
+    --midnight: 240 29% 8%;
+
     /* Accent purple for depth */
-    --purple-accent: 270 60% 50%;
-    --purple-glow: 270 80% 65%;
-    
-    /* Signal colors - more saturated */
+    --purple-accent: 263 83% 58%;
+    --purple-glow: 263 90% 65%;
+
+    /* Signal colors - Vert / Orange / Gris */
     --signal-green: 155 90% 48%;
-    --signal-yellow: 45 100% 55%;
-    --signal-red: 0 90% 58%;
-    
-    /* Gray scale - IMPROVED contrast */
+    --signal-orange: 30 95% 55%;
+    --signal-yellow: 30 95% 55%;
+    --signal-gray: 240 10% 45%;
+    --signal-red: 240 10% 45%;
+
+    /* Gray scale */
     --gray-100: 220 15% 97%;
     --gray-200: 220 12% 88%;
     --gray-300: 220 10% 72%;
     --gray-400: 220 8% 55%;
     --gray-500: 220 6% 38%;
-    
+
     /* Semantic tokens - dark mode default */
-    --background: 240 50% 6%;
+    --background: 240 29% 8%;
     --foreground: 220 15% 96%;
-    
-    --card: 235 45% 12%;
+
+    --card: 240 29% 12%;
     --card-foreground: 220 15% 96%;
-    
-    --popover: 235 45% 14%;
+
+    --popover: 240 29% 14%;
     --popover-foreground: 220 15% 96%;
-    
-    --primary: 8 100% 65%;
-    --primary-foreground: 240 50% 6%;
-    
-    --secondary: 230 50% 18%;
+
+    --primary: 263 83% 58%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 25% 18%;
     --secondary-foreground: 220 15% 96%;
-    
-    --muted: 230 40% 22%;
+
+    --muted: 240 20% 22%;
     --muted-foreground: 220 12% 72%;
-    
-    --accent: 8 100% 65%;
-    --accent-foreground: 240 50% 6%;
-    
+
+    --accent: 263 83% 58%;
+    --accent-foreground: 0 0% 100%;
+
     --destructive: 0 90% 58%;
     --destructive-foreground: 220 15% 96%;
-    
-    --border: 235 30% 22%;
-    --input: 235 35% 18%;
-    --ring: 8 100% 65%;
-    
+
+    --border: 240 20% 22%;
+    --input: 240 25% 18%;
+    --ring: 263 83% 58%;
+
     --radius: 1rem;
-    
-    /* Enhanced shadows with color */
-    --glow-coral: 0 0 30px hsl(8 100% 65% / 0.5), 0 0 60px hsl(8 100% 65% / 0.2);
+
+    /* Enhanced shadows with violet */
+    --glow-coral: 0 0 30px hsl(263 83% 58% / 0.5), 0 0 60px hsl(263 83% 58% / 0.2);
+    --glow-violet: 0 0 30px hsl(263 83% 58% / 0.5), 0 0 60px hsl(263 83% 58% / 0.2);
     --glow-green: 0 0 25px hsl(155 90% 48% / 0.6), 0 0 50px hsl(155 90% 48% / 0.25);
-    --glow-yellow: 0 0 25px hsl(45 100% 55% / 0.6), 0 0 50px hsl(45 100% 55% / 0.25);
+    --glow-orange: 0 0 25px hsl(30 95% 55% / 0.6), 0 0 50px hsl(30 95% 55% / 0.25);
+    --glow-yellow: 0 0 25px hsl(30 95% 55% / 0.6), 0 0 50px hsl(30 95% 55% / 0.25);
     --glow-red: 0 0 25px hsl(0 90% 58% / 0.6), 0 0 50px hsl(0 90% 58% / 0.25);
-    --glow-purple: 0 0 25px hsl(270 80% 65% / 0.5), 0 0 50px hsl(270 80% 65% / 0.2);
-    
+    --glow-purple: 0 0 25px hsl(263 90% 65% / 0.5), 0 0 50px hsl(263 90% 65% / 0.2);
+
     /* Depth shadows */
-    --shadow-soft: 0 4px 20px -2px hsl(240 50% 3% / 0.5);
-    --shadow-medium: 0 8px 30px -4px hsl(240 50% 3% / 0.6);
-    --shadow-strong: 0 12px 40px -6px hsl(240 50% 3% / 0.7);
+    --shadow-soft: 0 4px 20px -2px hsl(240 29% 3% / 0.5);
+    --shadow-medium: 0 8px 30px -4px hsl(240 29% 3% / 0.6);
+    --shadow-strong: 0 12px 40px -6px hsl(240 29% 3% / 0.7);
   }
 
   /* Light theme */
   .light {
-    --coral: 8 85% 55%;
-    --coral-light: 12 90% 62%;
-    --coral-dark: 4 80% 48%;
-    --coral-glow: 8 90% 60%;
-    
+    --violet: 263 75% 52%;
+    --violet-light: 263 70% 60%;
+    --violet-dark: 263 80% 44%;
+    --violet-glow: 263 75% 55%;
+
+    --coral: 263 75% 52%;
+    --coral-light: 263 70% 60%;
+    --coral-dark: 263 80% 44%;
+    --coral-glow: 263 75% 55%;
+
     --deep-blue: 220 20% 96%;
     --deep-blue-light: 220 25% 92%;
     --midnight: 220 15% 98%;
-    
-    --purple-accent: 270 50% 55%;
-    --purple-glow: 270 60% 60%;
-    
+
+    --purple-accent: 263 75% 52%;
+    --purple-glow: 263 70% 60%;
+
     --signal-green: 155 75% 40%;
-    --signal-yellow: 45 95% 45%;
-    --signal-red: 0 80% 50%;
-    
+    --signal-orange: 30 85% 48%;
+    --signal-yellow: 30 85% 48%;
+    --signal-gray: 240 5% 55%;
+    --signal-red: 240 5% 55%;
+
     --gray-100: 220 15% 20%;
     --gray-200: 220 12% 30%;
     --gray-300: 220 10% 40%;
     --gray-400: 220 8% 55%;
     --gray-500: 220 6% 70%;
-    
+
     --background: 220 25% 98%;
     --foreground: 220 25% 10%;
-    
+
     --card: 0 0% 100%;
     --card-foreground: 220 25% 10%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 220 25% 10%;
-    
-    --primary: 8 85% 55%;
+
+    --primary: 263 75% 52%;
     --primary-foreground: 0 0% 100%;
-    
+
     --secondary: 220 20% 92%;
     --secondary-foreground: 220 25% 15%;
-    
+
     --muted: 220 15% 92%;
     --muted-foreground: 220 10% 45%;
-    
-    --accent: 8 85% 55%;
+
+    --accent: 263 75% 52%;
     --accent-foreground: 0 0% 100%;
-    
+
     --destructive: 0 80% 50%;
     --destructive-foreground: 0 0% 100%;
-    
+
     --border: 220 15% 88%;
     --input: 220 15% 92%;
-    --ring: 8 85% 55%;
-    
-    --glow-coral: 0 0 20px hsl(8 85% 55% / 0.3), 0 0 40px hsl(8 85% 55% / 0.1);
+    --ring: 263 75% 52%;
+
+    --glow-coral: 0 0 20px hsl(263 75% 52% / 0.3), 0 0 40px hsl(263 75% 52% / 0.1);
+    --glow-violet: 0 0 20px hsl(263 75% 52% / 0.3), 0 0 40px hsl(263 75% 52% / 0.1);
     --glow-green: 0 0 15px hsl(155 75% 40% / 0.4), 0 0 30px hsl(155 75% 40% / 0.15);
-    --glow-yellow: 0 0 15px hsl(45 95% 45% / 0.4), 0 0 30px hsl(45 95% 45% / 0.15);
+    --glow-orange: 0 0 15px hsl(30 85% 48% / 0.4), 0 0 30px hsl(30 85% 48% / 0.15);
+    --glow-yellow: 0 0 15px hsl(30 85% 48% / 0.4), 0 0 30px hsl(30 85% 48% / 0.15);
     --glow-red: 0 0 15px hsl(0 80% 50% / 0.4), 0 0 30px hsl(0 80% 50% / 0.15);
-    --glow-purple: 0 0 15px hsl(270 60% 60% / 0.3), 0 0 30px hsl(270 60% 60% / 0.1);
-    
+    --glow-purple: 0 0 15px hsl(263 70% 60% / 0.3), 0 0 30px hsl(263 70% 60% / 0.1);
+
     --shadow-soft: 0 4px 20px -2px hsl(220 15% 50% / 0.1);
     --shadow-medium: 0 8px 30px -4px hsl(220 15% 50% / 0.15);
     --shadow-strong: 0 12px 40px -6px hsl(220 15% 50% / 0.2);
@@ -301,6 +320,53 @@
   .border-signal-red {
     border-color: hsl(var(--signal-red));
   }
+
+  /* Orange signal utilities */
+  .text-signal-orange {
+    color: hsl(var(--signal-orange));
+  }
+
+  .bg-signal-orange {
+    background-color: hsl(var(--signal-orange));
+  }
+
+  .border-signal-orange {
+    border-color: hsl(var(--signal-orange));
+  }
+
+  /* Gray signal utilities */
+  .text-signal-gray {
+    color: hsl(var(--signal-gray));
+  }
+
+  .bg-signal-gray {
+    background-color: hsl(var(--signal-gray));
+  }
+
+  .border-signal-gray {
+    border-color: hsl(var(--signal-gray));
+  }
+
+  /* Violet utilities */
+  .text-violet {
+    color: hsl(var(--violet));
+  }
+
+  .bg-violet {
+    background-color: hsl(var(--violet));
+  }
+
+  .border-violet {
+    border-color: hsl(var(--violet));
+  }
+
+  .glow-violet {
+    box-shadow: var(--glow-violet);
+  }
+
+  .glow-orange {
+    box-shadow: var(--glow-orange);
+  }
   
   /* Gray utilities */
   .text-gray-100 {
@@ -437,10 +503,10 @@
 
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 20px hsl(var(--coral) / 0.4), 0 0 40px hsl(var(--coral) / 0.15);
+    box-shadow: 0 0 20px hsl(var(--violet) / 0.4), 0 0 40px hsl(var(--violet) / 0.15);
   }
   50% {
-    box-shadow: 0 0 35px hsl(var(--coral) / 0.6), 0 0 70px hsl(var(--coral) / 0.25);
+    box-shadow: 0 0 35px hsl(var(--violet) / 0.6), 0 0 70px hsl(var(--violet) / 0.25);
   }
 }
 
