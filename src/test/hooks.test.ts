@@ -64,13 +64,13 @@ describe("Hooks Integration", () => {
   });
 
   describe("useTheme", () => {
-    it("should provide theme context", async () => {
+    it("should provide theme state without provider", async () => {
       const { useTheme } = await import("@/hooks/useTheme");
-      
-      // This will throw if not wrapped in provider, which is expected
-      expect(() => {
-        renderHook(() => useTheme());
-      }).toThrow();
+      const { result } = renderHook(() => useTheme());
+
+      expect(result.current.theme).toBeDefined();
+      expect(result.current.resolvedTheme).toMatch(/dark|light/);
+      expect(typeof result.current.setTheme).toBe("function");
     });
   });
 

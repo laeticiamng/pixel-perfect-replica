@@ -67,25 +67,25 @@ describe('LandingPage', () => {
 
   it('should render the main title', async () => {
     const { default: LandingPage } = await import('@/pages/LandingPage');
-    const { getByText } = render(
+    const { getByText, getAllByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
 
     expect(getByText(/Vois qui est/)).toBeInTheDocument();
-    expect(getByText(/dispo/)).toBeInTheDocument();
+    expect(getAllByText(/dispo/).length).toBeGreaterThan(0);
   });
 
   it('should render the badge', async () => {
     const { default: LandingPage } = await import('@/pages/LandingPage');
-    const { getByText } = render(
+    const { getAllByText } = render(
       <BrowserRouter>
         <LandingPage />
       </BrowserRouter>
     );
 
-    expect(getByText('La rencontre réinventée')).toBeInTheDocument();
+    expect(getAllByText("Ce n'est PAS une app de rencontre amoureuse").length).toBeGreaterThan(0);
   });
 
   it('should render the problem statement', async () => {
@@ -158,7 +158,7 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
 
-    expect(getByText('Commencer')).toBeInTheDocument();
+    expect(getByText('Créer mon compte gratuit')).toBeInTheDocument();
     expect(getAllByText('Se connecter').length).toBeGreaterThan(0);
   });
 

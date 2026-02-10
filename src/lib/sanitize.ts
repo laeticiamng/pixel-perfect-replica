@@ -91,8 +91,13 @@ export function sanitizeDbText(input: string, maxLength: number = 500): string {
 // Sanitize HTML - escape all HTML entities
 export function sanitizeHtml(input: string): string {
   if (!input) return '';
-  
-  return input
+
+  const sanitizedInput = input
+    .replace(/javascript\s*:/gi, '')
+    .replace(/vbscript\s*:/gi, '')
+    .replace(/data\s*:[^,]*,/gi, '');
+
+  return sanitizedInput
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
