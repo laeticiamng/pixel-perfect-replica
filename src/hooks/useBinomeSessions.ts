@@ -68,41 +68,75 @@ export function useBinomeSessions() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch available sessions with filters
+  // Fetch available sessions with filters (city optional)
   const fetchSessions = useCallback(async (filters: SessionFilters) => {
-    if (!user || !filters.city) return;
-    
+    if (!user) return;
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const { data, error: rpcError } = await supabase.rpc('get_available_sessions', {
-        p_city: filters.city,
-        p_activity: filters.activity || null,
-        p_date: filters.date || null,
-        p_duration: filters.duration || null
+      let rows: Array<Record<string, unknown>> = [];
+
+      if (filters.city) {
+        const { data, error: rpcError } = await supabase.rpc('get_available_sessions', {
+          p_city: filters.city,
+          p_activity: filters.activity || null,
+          p_date: filters.date || null,
+          p_duration: filters.duration || null,
+        });
+
+        if (rpcError) throw rpcError;
+        rows = (data || []) as Array<Record<string, unknown>>;
+      } else {
+        const nowIso = new Date().toISOString();
+        const { data, error: queryError } = await supabase
+          .from('scheduled_sessions')
+          .select('id, creator_id, scheduled_date, start_time, duration_minutes, activity, city, location_name, note, max_participants, created_at')
+          .eq('status', 'open')
+          .neq('creator_id', user.id)
+          .gte('scheduled_date', nowIso.slice(0, 10))
+          .order('scheduled_date', { ascending: true })
+          .order('start_time', { ascending: true })
+          .limit(40);
+
+        if (queryError) throw queryError;
+        rows = (data || []) as Array<Record<string, unknown>>;
+      }
+
+      const creatorIds = Array.from(new Set(rows.map((s) => String(s.creator_id))));
+      const [{ data: profiles }, { data: reliability }] = await Promise.all([
+        creatorIds.length > 0
+          ? supabase.rpc('get_public_profiles', { profile_ids: creatorIds })
+          : Promise.resolve({ data: [] as Array<Record<string, unknown>> }),
+        creatorIds.length > 0
+          ? supabase.from('user_reliability').select('user_id, reliability_score').in('user_id', creatorIds)
+          : Promise.resolve({ data: [] as Array<Record<string, unknown>> }),
+      ]);
+
+      const formatted: ScheduledSession[] = rows.map((s) => {
+        const profile = profiles?.find((p: Record<string, unknown>) => p.id === s.creator_id);
+        const rel = reliability?.find((r: Record<string, unknown>) => r.user_id === s.creator_id);
+
+        return {
+          id: String(s.id),
+          creator_id: String(s.creator_id),
+          creator_name: (profile?.first_name as string | undefined) || undefined,
+          creator_avatar: (profile?.avatar_url as string | undefined) || undefined,
+          creator_reliability: rel?.reliability_score as number | undefined,
+          scheduled_date: String(s.scheduled_date),
+          start_time: String(s.start_time),
+          duration_minutes: s.duration_minutes as DurationOption,
+          activity: s.activity as ActivityType,
+          city: String(s.city),
+          location_name: (s.location_name as string | undefined) || undefined,
+          note: (s.note as string | undefined) || undefined,
+          max_participants: Number(s.max_participants),
+          current_participants: Number((s.current_participants as number | undefined) || 0),
+          status: 'open' as SessionStatus,
+          created_at: String(s.created_at),
+        };
       });
-
-      if (rpcError) throw rpcError;
-
-      const formatted: ScheduledSession[] = (data || []).map((s: any) => ({
-        id: s.id,
-        creator_id: s.creator_id,
-        creator_name: s.creator_name,
-        creator_avatar: s.creator_avatar,
-        creator_reliability: s.creator_reliability,
-        scheduled_date: s.scheduled_date,
-        start_time: s.start_time,
-        duration_minutes: s.duration_minutes,
-        activity: s.activity,
-        city: s.city,
-        location_name: s.location_name,
-        note: s.note,
-        max_participants: s.max_participants,
-        current_participants: Number(s.current_participants),
-        status: 'open' as SessionStatus,
-        created_at: s.created_at
-      }));
 
       setSessions(formatted);
     } catch (err) {
@@ -217,6 +251,7 @@ export function useBinomeSessions() {
       });
 
       if (rpcError) throw rpcError;
+      if (!data) throw new Error(t('binomeToasts.joinError'));
 
       toast.success(t('binomeToasts.joinedSession'));
       await fetchMyParticipations();
@@ -234,11 +269,12 @@ export function useBinomeSessions() {
     if (!user) return false;
 
     try {
-      const { error: rpcError } = await supabase.rpc('leave_session', {
+      const { data, error: rpcError } = await supabase.rpc('leave_session', {
         p_session_id: sessionId
       });
 
       if (rpcError) throw rpcError;
+      if (!data) throw new Error(t('binomeToasts.leaveError'));
 
       toast.success(t('binomeToasts.leftSession'));
       await fetchMyParticipations();
@@ -277,8 +313,9 @@ export function useBinomeSessions() {
     if (user) {
       fetchMySessions();
       fetchMyParticipations();
+      fetchSessions({ city: '' });
     }
-  }, [user, fetchMySessions, fetchMyParticipations]);
+  }, [user, fetchMySessions, fetchMyParticipations, fetchSessions]);
 
   return {
     sessions,

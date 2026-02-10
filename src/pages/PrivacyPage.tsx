@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, User, Shield } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
+import { DPO_EMAIL } from '@/lib/constants';
 
 export default function PrivacyPage() {
   const navigate = useNavigate();
@@ -117,7 +118,7 @@ export default function PrivacyPage() {
             <h2 className="text-lg font-semibold text-foreground">{t('privacy.section10Title')}</h2>
             <p className="text-muted-foreground">
               {t('privacy.section10Text')}
-              <a href="mailto:dpo@nearvity.fr" className="text-coral ml-1">dpo@nearvity.fr</a>
+              <a href={`mailto:${DPO_EMAIL}`} className="text-coral ml-1">{DPO_EMAIL}</a>
             </p>
             <p className="text-sm text-muted-foreground mt-2">{t('privacy.cnilNotice')}</p>
           </section>

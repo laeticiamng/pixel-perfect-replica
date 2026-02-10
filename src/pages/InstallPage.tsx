@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/PageLayout";
+import { BrandLogo } from "@/components/shared";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
@@ -154,8 +155,11 @@ export default function InstallPage() {
         <div className="text-center py-6">
           <div className="relative inline-block mb-6">
             <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-2xl glow-coral ring-4 ring-coral/20">
-              <img src="/nearvity-logo.png" alt="NEARVITY Logo" className="w-16 h-16 object-contain"
-                onError={(e) => { e.currentTarget.style.display = "none"; const s = document.createElement("span"); s.className = "text-5xl font-bold text-white"; s.textContent = "N"; e.currentTarget.parentElement?.appendChild(s); }} />
+              <BrandLogo
+                alt="NEARVITY Logo"
+                className="w-16 h-16 object-contain"
+                fallbackClassName="w-16 h-16 text-5xl"
+              />
             </div>
             <div className="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-signal-green flex items-center justify-center shadow-lg ring-2 ring-background">
               <Sparkles className="h-4 w-4 text-white" />

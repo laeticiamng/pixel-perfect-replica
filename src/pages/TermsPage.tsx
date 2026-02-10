@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
+import { LEGAL_EMAIL } from '@/lib/constants';
 
 export default function TermsPage() {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-foreground">{t('terms.section11Title')}</h2>
             <p className="text-muted-foreground">
               {t('terms.section11Text')}
-              <a href="mailto:legal@nearvity.fr" className="text-coral ml-1">legal@nearvity.fr</a>
+              <a href={`mailto:${LEGAL_EMAIL}`} className="text-coral ml-1">{LEGAL_EMAIL}</a>
             </p>
           </section>
 

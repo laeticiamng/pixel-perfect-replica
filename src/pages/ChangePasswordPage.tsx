@@ -9,6 +9,7 @@ import { passwordSchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
 import { PageHeader } from '@/components/shared';
 import { useTranslation } from '@/lib/i18n';
+import { getPasswordPolicyErrorMessage, isPwnedPasswordError, isWeakPasswordError } from '@/lib/authErrorMapper';
 import toast from 'react-hot-toast';
 
 export default function ChangePasswordPage() {
@@ -73,8 +74,8 @@ export default function ChangePasswordPage() {
 
       if (error) {
         // Handle weak/pwned password error
-        if (error.message.includes('weak_password') || error.message.includes('pwned')) {
-          toast.error(t('auth.weakPassword'));
+        if (isWeakPasswordError(error.message) || isPwnedPasswordError(error.message)) {
+          toast.error(getPasswordPolicyErrorMessage(error.message, t));
         } else if (error.message.includes('same')) {
           toast.error(t('auth.passwordMustBeDifferent'));
         } else {

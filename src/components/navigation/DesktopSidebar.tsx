@@ -23,6 +23,7 @@ import { useShortcutHint } from '@/hooks/useKeyboardShortcuts';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useShowNewBadge } from '@/components/binome/NewBadge';
 import { useTranslation } from '@/lib/i18n';
+import { BrandLogo } from '@/components/shared';
 
 interface NavItem {
   to: string;
@@ -159,12 +160,15 @@ export function DesktopSidebar() {
             "flex items-center",
             collapsed ? "justify-center" : "gap-3"
           )}>
-            <img 
-              src="/nearvity-logo.png" 
-              alt="NEARVITY" 
+            <BrandLogo
+              alt="NEARVITY"
               className={cn(
                 "rounded-xl transition-all duration-300",
                 collapsed ? "h-8 w-8" : "h-10 w-10"
+              )}
+              fallbackClassName={cn(
+                "rounded-xl bg-gradient-to-br from-coral to-coral-dark",
+                collapsed ? "h-8 w-8 text-xs" : "h-10 w-10 text-sm"
               )}
             />
             {!collapsed && (

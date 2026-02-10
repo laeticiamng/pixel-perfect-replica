@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { normalizeCheckoutPlan } from "./plan.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,6 +16,7 @@ const LEGACY_PRICES = {
   monthly: "price_1SvEe4DFa5Y9NR1ImEz1QUFQ",
   yearly: "price_1SvEe5DFa5Y9NR1IQGnbirFh",
 };
+
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -57,14 +59,20 @@ serve(async (req) => {
     logStep("User authenticated via claims", { userId, email: userEmail });
 
     const { plan } = await req.json();
+    const normalizedPlan = normalizeCheckoutPlan(plan);
+
+    if (plan !== normalizedPlan) {
+      logStep("Legacy plan alias mapped", { from: plan, to: normalizedPlan });
+    }
+
     // Use Nearvity+ price by default, fall back to legacy for existing plans
     let priceId = NEARVITY_PLUS_PRICE_ID;
-    if (plan === "yearly") {
+    if (normalizedPlan === "yearly") {
       priceId = LEGACY_PRICES.yearly;
-    } else if (plan === "monthly_legacy") {
+    } else if (normalizedPlan === "monthly_legacy") {
       priceId = LEGACY_PRICES.monthly;
     }
-    logStep("Plan selected", { plan, priceId });
+    logStep("Plan selected", { rawPlan: plan, normalizedPlan, priceId });
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");

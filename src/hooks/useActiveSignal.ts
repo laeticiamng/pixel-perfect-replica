@@ -188,6 +188,25 @@ export function useActiveSignal() {
     return { data, error };
   };
 
+
+  // Update active signal state (green/yellow/red)
+  const updateSignalState = async (signalType: SignalType) => {
+    if (!user || !mySignal) return { error: new Error('No active signal') };
+
+    const { data, error } = await supabase
+      .from('active_signals')
+      .update({ signal_type: signalType })
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (!error && data) {
+      setMySignal(data);
+    }
+
+    return { data, error };
+  };
+
   // Fetch nearby users with signals (respects ghost mode)
   const fetchNearbyUsers = useCallback(async (maxDistance: number = 200) => {
     if (!user || !position) return;
@@ -422,7 +441,9 @@ export function useActiveSignal() {
     deactivateSignal,
     updatePosition,
     extendSignal,
+    updateSignalState,
     fetchNearbyUsers,
     fetchMySignal,
+    signalType: mySignal?.signal_type as SignalType | null,
   };
 }

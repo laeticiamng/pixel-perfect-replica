@@ -1,4 +1,5 @@
-import { X, Radio, RefreshCw, Info, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { X, Radio, RefreshCw, Info, Filter, Map, Radar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
@@ -13,6 +14,7 @@ import {
   SignalHistoryPanel,
   EmptyRadarState,
   LocationPermissionScreen,
+  RadarSonarView,
 } from '@/components/map';
 import { EmergencyButton } from '@/components/safety';
 import { ConnectionRequestsPanel } from '@/components/social';
@@ -35,6 +37,7 @@ export default function MapPage() {
     isActive,
     mySignal,
     myActivity,
+    signalType,
     isDemoMode,
     showActivityModal,
     setShowActivityModal,
@@ -54,6 +57,7 @@ export default function MapPage() {
     openUsersCount,
     handleManualRefresh,
     handleSignalToggle,
+    handleCycleSignalState,
     handleActivityConfirm,
     handleSignalExpired,
     handleExtendSignal,
@@ -66,6 +70,7 @@ export default function MapPage() {
   } = useMapPageLogic();
 
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
+  const [mapMode, setMapMode] = useState<'map' | 'radar'>('map');
 
   // Show location permission screen if not seen yet and no position
   const showLocationPrompt = !hasSeenLocationPrompt && !position && !locationError;
@@ -259,7 +264,41 @@ export default function MapPage() {
           </div>
         )}
 
-        {/* Interactive Map */}
+        {/* View mode + Signal state */}
+        <div className="px-4 sm:px-6 mb-3 flex items-center justify-between gap-3">
+          <div className="inline-flex rounded-xl bg-muted p-1">
+            <button
+              onClick={() => setMapMode('map')}
+              className={cn('px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2', mapMode === 'map' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground')}
+            >
+              <Map className="h-4 w-4" />
+              {t('mapUI.mapView')}
+            </button>
+            <button
+              onClick={() => setMapMode('radar')}
+              className={cn('px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2', mapMode === 'radar' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground')}
+            >
+              <Radar className="h-4 w-4" />
+              {t('mapUI.radarView')}
+            </button>
+          </div>
+
+          {isActive && (
+            <button
+              onClick={handleCycleSignalState}
+              className={cn(
+                'px-3 py-2 rounded-xl text-sm font-semibold border transition-colors',
+                signalType === 'green' && 'bg-signal-green/10 text-signal-green border-signal-green/40',
+                signalType === 'yellow' && 'bg-signal-yellow/10 text-signal-yellow border-signal-yellow/40',
+                signalType === 'red' && 'bg-signal-red/10 text-signal-red border-signal-red/40',
+              )}
+            >
+              {signalType === 'green' ? t('mapUI.open') : signalType === 'yellow' ? t('mapUI.conditional') : t('mapUI.busy')}
+            </button>
+          )}
+        </div>
+
+        {/* Interactive Map / Radar */}
         <div className="flex-1 min-h-0 px-4 sm:px-6">
           {filteredNearbyUsers.length === 0 && !isActive && !isDemoMode ? (
             <EmptyRadarState 
@@ -267,7 +306,7 @@ export default function MapPage() {
               isDemoMode={isDemoMode}
               onEnableDemo={showDemoSignals ? undefined : handleEnableDemo}
             />
-          ) : (
+          ) : mapMode === 'map' ? (
             <InteractiveMap
               nearbyUsers={filteredNearbyUsers.map(u => ({
                 id: u.id,
@@ -290,6 +329,13 @@ export default function MapPage() {
               userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
               activityFilters={activityFilters}
               onActivityFilterToggle={toggleActivityFilter}
+            />
+          ) : (
+            <RadarSonarView
+              users={filteredNearbyUsers}
+              maxDistance={settings.visibility_distance}
+              className="w-full h-full"
+              onUserClick={handleUserClick}
             />
           )}
         </div>

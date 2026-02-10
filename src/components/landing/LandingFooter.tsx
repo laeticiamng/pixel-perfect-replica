@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from '@/lib/i18n';
-import { APP_VERSION } from '@/lib/constants';
+import { APP_VERSION, SUPPORT_EMAIL } from '@/lib/constants';
 import { Heart } from 'lucide-react';
 
 export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, ref) {
@@ -35,7 +35,7 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
             <button onClick={() => navigate('/privacy')} className="hover:text-foreground transition-colors">
               {t('nav.privacy')}
             </button>
-            <a href="mailto:support@nearvity.fr" className="hover:text-foreground transition-colors">
+            <a href={`mailto:${SUPPORT_EMAIL}`} className="hover:text-foreground transition-colors">
               {t('landing.contact')}
             </a>
           </div>

@@ -19,3 +19,4 @@ export { FullPageLoader } from './FullPageLoader';
 export { SettingsRow } from './SettingsRow';
 export { StatsGrid, StatCard } from './StatsGrid';
 export { LoadingSkeleton } from './LoadingSkeleton';
+export { BrandLogo } from './BrandLogo';
