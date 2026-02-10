@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
-import { APP_VERSION } from '@/lib/constants';
+import { APP_VERSION, SUPPORT_EMAIL } from '@/lib/constants';
 
 export default function HelpPage() {
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ export default function HelpPage() {
   }, [searchQuery, translatedFaqs]);
 
   const supportLinks = [
-    { icon: <Mail className="h-5 w-5" />, label: t('help.contactUs'), href: 'mailto:support@nearvity.fr' },
+    { icon: <Mail className="h-5 w-5" />, label: t('help.contactUs'), href: `mailto:${SUPPORT_EMAIL}` },
     { icon: <MessageCircle className="h-5 w-5" />, label: t('help.community'), href: 'https://discord.gg', external: true },
     { icon: <FileText className="h-5 w-5" />, label: t('help.termsOfUse'), href: '/terms' },
     { icon: <Shield className="h-5 w-5" />, label: t('help.privacyPolicy'), href: '/privacy' },

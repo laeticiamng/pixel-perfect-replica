@@ -1,5 +1,6 @@
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
+import { SUPPORT_EMAIL } from '@/lib/constants';
 import { ArrowLeft, Users, Heart, Shield, Rocket, Mail, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -164,11 +165,11 @@ export default function AboutPage() {
               </h3>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
-                  href="mailto:support@nearvity.fr"
+                  href={`mailto:${SUPPORT_EMAIL}`}
                   className="flex items-center gap-2 text-muted-foreground hover:text-coral transition-colors"
                 >
                   <Mail className="w-4 h-4" />
-                  support@nearvity.fr
+                  {SUPPORT_EMAIL}
                 </a>
               </div>
             </CardContent>

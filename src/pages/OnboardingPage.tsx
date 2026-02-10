@@ -12,6 +12,7 @@ import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { cn } from '@/lib/utils';
 import { lovable } from '@/integrations/lovable';
 import { useTranslation } from '@/lib/i18n';
+import { getPasswordPolicyErrorMessage, isPwnedPasswordError, isWeakPasswordError } from '@/lib/authErrorMapper';
 import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
 
@@ -221,10 +222,8 @@ export default function OnboardingPage() {
         setIsLoading(false);
         
         if (error) {
-          if (error.message.includes('pwned')) {
-            toast.error(t('auth.pwnedPassword'));
-          } else if (error.message.includes('weak_password')) {
-            toast.error(t('auth.weakPassword'));
+          if (isPwnedPasswordError(error.message) || isWeakPasswordError(error.message)) {
+            toast.error(getPasswordPolicyErrorMessage(error.message, t));
           } else if (error.message.includes('User already registered')) {
             toast.error(t('auth.accountExists'));
           } else {
