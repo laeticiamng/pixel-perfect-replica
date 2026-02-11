@@ -13,7 +13,6 @@ import { AnalyticsProvider } from "@/hooks/useAnalytics";
 import {
   // Main
   LandingPage,
-  MapPage,
   RadarPage,
   SessionPage,
   MessagesPage,
@@ -55,6 +54,12 @@ import {
   TermsPage,
   PrivacyPage,
   AboutPage,
+  // New public pages
+  PricingPage,
+  FAQPage,
+  MentionsLegalesPage,
+  CGVPage,
+  CookiePolicyPage,
   // Support
   HelpPage,
   FeedbackPage,
@@ -115,8 +120,17 @@ function AnimatedRoutes() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/faq" element={<FAQPage />} />
           <Route path="/install" element={<InstallPage />} />
           <Route path="/changelog" element={<ChangelogPage />} />
+
+          {/* Legal pages with /legal/ prefix */}
+          <Route path="/legal/mentions" element={<MentionsLegalesPage />} />
+          <Route path="/legal/cgv" element={<CGVPage />} />
+          <Route path="/legal/cookies" element={<CookiePolicyPage />} />
+          <Route path="/legal/privacy" element={<PrivacyPage />} />
+          <Route path="/legal/terms" element={<TermsPage />} />
 
           {/* Auth redirect routes */}
           <Route path="/signup" element={<Navigate to="/onboarding" state={{ isLogin: false }} replace />} />
