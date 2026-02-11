@@ -59,10 +59,10 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
 
         <div className="text-center text-xs text-muted-foreground">
           <Link to="/changelog" className="font-medium hover:text-violet transition-colors">
-            NEARVITY v{APP_VERSION} — Made in France by EmotionsCare SASU
+            NEARVITY v{APP_VERSION} — {t('footer.madeBy')}
           </Link>
           <p className="mt-1 flex items-center justify-center gap-1">
-            Made with <Heart className="h-3.5 w-3.5 text-violet fill-violet" /> in France
+            {t('footer.madeWithLove')} <Heart className="h-3.5 w-3.5 text-violet fill-violet" /> {t('footer.inFrance')}
           </p>
         </div>
       </div>

@@ -24,7 +24,7 @@ export default function DiagnosticsPage() {
   const { user, profile, isAuthenticated, isLoading: authLoading } = useAuth();
   const { position, isWatching, lastUpdated } = useLocationStore();
   const { isOnline } = useNetworkStatus();
-  
+
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [latencyTests, setLatencyTests] = useState<ApiLatencyTest[]>([]);
   const [isTestingLatency, setIsTestingLatency] = useState(false);
@@ -75,13 +75,13 @@ export default function DiagnosticsPage() {
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
         <h1 className="text-xl font-bold text-foreground">{t('diagnostics.title')}</h1>
-        <span className="ml-auto text-xs bg-signal-yellow/20 text-signal-yellow px-2 py-1 rounded">DEV ONLY</span>
+        <span className="ml-auto text-xs bg-signal-yellow/20 text-signal-yellow px-2 py-1 rounded">{t('diagnostics.devOnly')}</span>
       </header>
 
       <div className="px-6 space-y-6">
         {/* Quick Health Check */}
         <div className="glass rounded-xl p-4 border-2 border-signal-green/30">
-          <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">✅ {t('diagnostics.systemStatus')}</h2>
+          <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">{t('diagnostics.systemStatus')}</h2>
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className={cn('p-2 rounded-lg', isOnline ? 'bg-signal-green/20' : 'bg-signal-red/20')}>
               <Wifi className={cn('h-5 w-5 mx-auto mb-1', isOnline ? 'text-signal-green' : 'text-signal-red')} />
@@ -89,11 +89,11 @@ export default function DiagnosticsPage() {
             </div>
             <div className={cn('p-2 rounded-lg', isAuthenticated ? 'bg-signal-green/20' : 'bg-signal-red/20')}>
               <User className={cn('h-5 w-5 mx-auto mb-1', isAuthenticated ? 'text-signal-green' : 'text-signal-red')} />
-              <span className="text-xs text-muted-foreground">Auth</span>
+              <span className="text-xs text-muted-foreground">{t('diagnostics.auth')}</span>
             </div>
             <div className={cn('p-2 rounded-lg', position ? 'bg-signal-green/20' : 'bg-signal-yellow/20')}>
               <Database className={cn('h-5 w-5 mx-auto mb-1', position ? 'text-signal-green' : 'text-signal-yellow')} />
-              <span className="text-xs text-muted-foreground">GPS</span>
+              <span className="text-xs text-muted-foreground">{t('diagnostics.gps')}</span>
             </div>
           </div>
         </div>
@@ -102,11 +102,11 @@ export default function DiagnosticsPage() {
         <div className="glass rounded-xl p-4">
           <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2"><Database className="h-5 w-5 text-coral" />{t('diagnostics.systemDetails')}</h2>
           <div className="space-y-3 text-sm">
-            <div className="flex justify-between"><span className="text-muted-foreground">Environment</span><span className="text-foreground font-mono">{import.meta.env.MODE}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.network')}</span><span className={cn('font-semibold', isOnline ? 'text-signal-green' : 'text-signal-red')}>{isOnline ? '● Online' : '○ Offline'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Geolocation</span><span className={cn('font-semibold', isWatching ? 'text-signal-green' : 'text-signal-yellow')}>{isWatching ? '● Active' : '○ Inactive'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Position</span><span className="text-foreground font-mono text-xs">{position ? `${position.latitude.toFixed(4)}, ${position.longitude.toFixed(4)}` : 'N/A'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Backend URL</span><span className="text-foreground font-mono text-xs truncate max-w-[150px]">{import.meta.env.VITE_SUPABASE_URL?.replace('https://', '').slice(0, 20)}...</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.environment')}</span><span className="text-foreground font-mono">{import.meta.env.MODE}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.network')}</span><span className={cn('font-semibold', isOnline ? 'text-signal-green' : 'text-signal-red')}>{isOnline ? `● ${t('diagnostics.online')}` : `○ ${t('diagnostics.offline')}`}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.geolocation')}</span><span className={cn('font-semibold', isWatching ? 'text-signal-green' : 'text-signal-yellow')}>{isWatching ? `● ${t('diagnostics.active')}` : `○ ${t('diagnostics.inactive')}`}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.position')}</span><span className="text-foreground font-mono text-xs">{position ? `${position.latitude.toFixed(4)}, ${position.longitude.toFixed(4)}` : t('diagnostics.notAvailable')}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.backendUrl')}</span><span className="text-foreground font-mono text-xs truncate max-w-[150px]">{import.meta.env.VITE_SUPABASE_URL?.replace('https://', '').slice(0, 20)}...</span></div>
           </div>
         </div>
 
@@ -114,9 +114,9 @@ export default function DiagnosticsPage() {
         <div className="glass rounded-xl p-4">
           <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2"><User className="h-5 w-5 text-coral" />{t('diagnostics.authentication')}</h2>
           <div className="space-y-3 text-sm">
-            <div className="flex justify-between"><span className="text-muted-foreground">Status</span><span className={cn('font-semibold', authLoading ? 'text-signal-yellow' : isAuthenticated ? 'text-signal-green' : 'text-signal-red')}>{authLoading ? 'Loading...' : isAuthenticated ? 'Authenticated' : 'Not authenticated'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">User ID</span><span className="text-foreground font-mono text-xs truncate max-w-[180px]">{user?.id || 'N/A'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Profile</span><span className="text-foreground">{profile?.first_name || 'N/A'}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.status')}</span><span className={cn('font-semibold', authLoading ? 'text-signal-yellow' : isAuthenticated ? 'text-signal-green' : 'text-signal-red')}>{authLoading ? t('diagnostics.loadingStatus') : isAuthenticated ? t('diagnostics.authenticated') : t('diagnostics.notAuthenticated')}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.userId')}</span><span className="text-foreground font-mono text-xs truncate max-w-[180px]">{user?.id || t('diagnostics.notAvailable')}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">{t('diagnostics.profile')}</span><span className="text-foreground">{profile?.first_name || t('diagnostics.notAvailable')}</span></div>
           </div>
         </div>
 
@@ -129,7 +129,7 @@ export default function DiagnosticsPage() {
           {latencyTests.length > 0 ? (
             <div className="space-y-2">
               {latencyTests.map(test => (
-                <div key={test.name} className="flex justify-between text-sm"><span className="text-muted-foreground font-mono">{test.name}</span><span className={cn('font-semibold', test.status === 'success' ? 'text-signal-green' : test.status === 'error' ? 'text-signal-red' : 'text-muted-foreground')}>{test.status === 'pending' ? '...' : test.status === 'error' ? 'Error' : `${test.latency}ms`}</span></div>
+                <div key={test.name} className="flex justify-between text-sm"><span className="text-muted-foreground font-mono">{test.name}</span><span className={cn('font-semibold', test.status === 'success' ? 'text-signal-green' : test.status === 'error' ? 'text-signal-red' : 'text-muted-foreground')}>{test.status === 'pending' ? t('diagnostics.pending') : test.status === 'error' ? t('diagnostics.error') : `${test.latency}ms`}</span></div>
               ))}
               {avgLatency !== null && (
                 <div className="flex justify-between text-sm border-t border-border pt-2 mt-2"><span className="text-foreground font-semibold">{t('diagnostics.average')}</span><span className={cn('font-bold', avgLatency < 200 ? 'text-signal-green' : avgLatency < 500 ? 'text-signal-yellow' : 'text-signal-red')}>{avgLatency}ms</span></div>

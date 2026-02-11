@@ -13,7 +13,6 @@ import { AnalyticsProvider } from "@/hooks/useAnalytics";
 import {
   // Main
   LandingPage,
-  MapPage,
   RadarPage,
   SessionPage,
   MessagesPage,

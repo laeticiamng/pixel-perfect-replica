@@ -3,7 +3,7 @@
 
 // Main pages
 export { default as LandingPage } from './LandingPage';
-export { default as MapPage } from './MapPage';
+
 export { default as RadarPage } from './RadarPage';
 export { default as SessionPage } from './SessionPage';
 export { default as MessagesPage } from './MessagesPage';

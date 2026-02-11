@@ -2041,6 +2041,55 @@ export const translations = {
     faq: { en: 'FAQ', fr: 'FAQ' },
   },
 
+  // Footer
+  footer: {
+    madeBy: { en: 'Made in France by EmotionsCare SASU', fr: 'Conçu en France par EmotionsCare SASU' },
+    madeWithLove: { en: 'Made with', fr: 'Fait avec' },
+    inFrance: { en: 'in France', fr: 'en France' },
+  },
+
+  // Diagnostics (dev only)
+  diagnostics: {
+    title: { en: 'Diagnostics', fr: 'Diagnostics' },
+    backLabel: { en: 'Back to settings', fr: 'Retour aux paramètres' },
+    devOnly: { en: 'DEV ONLY', fr: 'DEV ONLY' },
+    systemStatus: { en: 'System Status', fr: 'État du système' },
+    network: { en: 'Network', fr: 'Réseau' },
+    auth: { en: 'Auth', fr: 'Auth' },
+    gps: { en: 'GPS', fr: 'GPS' },
+    systemDetails: { en: 'System Details', fr: 'Détails système' },
+    environment: { en: 'Environment', fr: 'Environnement' },
+    online: { en: 'Online', fr: 'En ligne' },
+    offline: { en: 'Offline', fr: 'Hors ligne' },
+    geolocation: { en: 'Geolocation', fr: 'Géolocalisation' },
+    active: { en: 'Active', fr: 'Actif' },
+    inactive: { en: 'Inactive', fr: 'Inactif' },
+    position: { en: 'Position', fr: 'Position' },
+    notAvailable: { en: 'N/A', fr: 'N/D' },
+    backendUrl: { en: 'Backend URL', fr: 'URL Backend' },
+    authentication: { en: 'Authentication', fr: 'Authentification' },
+    status: { en: 'Status', fr: 'Statut' },
+    loadingStatus: { en: 'Loading...', fr: 'Chargement...' },
+    authenticated: { en: 'Authenticated', fr: 'Authentifié' },
+    notAuthenticated: { en: 'Not authenticated', fr: 'Non authentifié' },
+    userId: { en: 'User ID', fr: 'ID Utilisateur' },
+    profile: { en: 'Profile', fr: 'Profil' },
+    apiLatency: { en: 'API Latency', fr: 'Latence API' },
+    test: { en: 'Test', fr: 'Tester' },
+    testLatency: { en: 'Click Test to measure API latency', fr: 'Cliquez sur Tester pour mesurer la latence API' },
+    average: { en: 'Average', fr: 'Moyenne' },
+    pending: { en: '...', fr: '...' },
+    error: { en: 'Error', fr: 'Erreur' },
+    recentLogs: { en: 'Recent Logs', fr: 'Logs récents' },
+    noRecentLogs: { en: 'No recent logs', fr: 'Aucun log récent' },
+    recentErrors: { en: 'Recent Errors', fr: 'Erreurs récentes' },
+  },
+
+  // Admin alerts
+  adminAlerts: {
+    emailPlaceholder: { en: 'admin@example.com', fr: 'admin@example.com' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
