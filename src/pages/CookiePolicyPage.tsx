@@ -17,7 +17,7 @@ export default function CookiePolicyPage() {
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
-        <h1 className="text-xl font-bold text-foreground">{t('cookiePolicy.policyTitle')}</h1>
+        <h1 className="text-xl font-bold text-foreground">{t('cookiePolicy.title')}</h1>
       </header>
 
       <div className="px-6 space-y-6">
