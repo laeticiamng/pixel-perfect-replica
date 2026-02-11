@@ -40,119 +40,180 @@ export function useActiveSignal() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
 
-  // Fetch my current signal
+  // Fetch my current signal (graceful on Supabase errors)
   const fetchMySignal = useCallback(async () => {
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from('active_signals')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from('active_signals')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-    if (error) {
-      console.error('Error fetching signal:', error);
-      return;
+      if (error) {
+        console.warn('[useActiveSignal] Error fetching my signal:', error.message);
+        return;
+      }
+
+      setMySignal(data);
+    } catch (err) {
+      console.warn('[useActiveSignal] fetchMySignal failed:', err);
     }
-
-    setMySignal(data);
   }, [user]);
 
+  // Create a local-only signal (used when Supabase is unreachable)
+  const createLocalSignal = (activity: ActivityType, signalType: SignalType = 'green'): ActiveSignal => ({
+    id: `local-${Date.now()}`,
+    user_id: user!.id,
+    signal_type: signalType,
+    activity,
+    latitude: position!.latitude,
+    longitude: position!.longitude,
+    started_at: new Date().toISOString(),
+    expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+  });
+
   // Activate signal (with rate limiting: max 10 new signals per hour)
+  // Falls back to local-only signal if Supabase tables are unreachable
   const activateSignal = async (activity: ActivityType, signalType: SignalType = 'green', locationDescription?: string) => {
     if (!user || !position) return { error: new Error('Missing user or position') };
 
     setIsLoading(true);
 
-    // First try to update existing signal
-    const { data: existingData, error: existingError } = await supabase
-      .from('active_signals')
-      .select('id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (existingData) {
-      // Update existing
-      const { data, error } = await supabase
+    try {
+      // First try to update existing signal
+      const { data: existingData } = await supabase
         .from('active_signals')
-        .update({
-          signal_type: signalType,
-          activity: activity,
-          latitude: position.latitude,
-          longitude: position.longitude,
-          accuracy: position.accuracy || null,
-          started_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-          location_description: locationDescription || null,
-        })
+        .select('id')
         .eq('user_id', user.id)
-        .select()
-        .single();
+        .maybeSingle();
 
-      setIsLoading(false);
-      if (!error && data) {
-        setMySignal(data);
-        logger.action.signalActivated(user.id, activity);
-      }
-      return { data, error };
-    } else {
-      // Check rate limit before creating a new signal (max 10/hour)
-      const { data: rateLimitOk } = await supabase
-        .rpc('check_signal_rate_limit', { p_user_id: user.id });
+      if (existingData) {
+        const { data, error } = await supabase
+          .from('active_signals')
+          .update({
+            signal_type: signalType,
+            activity: activity,
+            latitude: position.latitude,
+            longitude: position.longitude,
+            accuracy: position.accuracy || null,
+            started_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+            location_description: locationDescription || null,
+          })
+          .eq('user_id', user.id)
+          .select()
+          .single();
 
-      if (rateLimitOk === false) {
         setIsLoading(false);
-        return { data: null, error: new Error('Rate limit exceeded: max 10 signals per hour') };
+        if (!error && data) {
+          setMySignal(data);
+          logger.action.signalActivated(user.id, activity);
+        } else if (error) {
+          // Update failed — fall back to local signal
+          const local = createLocalSignal(activity, signalType);
+          setMySignal(local);
+          loadDemoUsers();
+        }
+        return { data, error };
+      } else {
+        // Check rate limit (non-critical, skip on error)
+        const { data: rateLimitOk } = await supabase
+          .rpc('check_signal_rate_limit', { p_user_id: user.id })
+          .catch(() => ({ data: true }));
+
+        if (rateLimitOk === false) {
+          setIsLoading(false);
+          return { data: null, error: new Error('Rate limit exceeded: max 10 signals per hour') };
+        }
+
+        const { data, error } = await supabase
+          .from('active_signals')
+          .insert({
+            user_id: user.id,
+            signal_type: signalType,
+            activity: activity,
+            latitude: position.latitude,
+            longitude: position.longitude,
+            accuracy: position.accuracy || null,
+            started_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+            location_description: locationDescription || null,
+          })
+          .select()
+          .single();
+
+        if (!error && data) {
+          await supabase.from('signal_rate_limits').insert({ user_id: user.id }).catch(() => {});
+          setMySignal(data);
+          logger.action.signalActivated(user.id, activity);
+        } else if (error) {
+          // Insert failed — fall back to local signal
+          const local = createLocalSignal(activity, signalType);
+          setMySignal(local);
+          loadDemoUsers();
+        }
+
+        setIsLoading(false);
+        return { data, error };
       }
-
-      // Insert new signal
-      const { data, error } = await supabase
-        .from('active_signals')
-        .insert({
-          user_id: user.id,
-          signal_type: signalType,
-          activity: activity,
-          latitude: position.latitude,
-          longitude: position.longitude,
-          accuracy: position.accuracy || null,
-          started_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
-          location_description: locationDescription || null,
-        })
-        .select()
-        .single();
-
-      // Record signal creation for rate limiting
-      if (!error && data) {
-        await supabase.from('signal_rate_limits').insert({ user_id: user.id });
-      }
-
+    } catch (err) {
+      // Supabase completely unreachable — local-only signal
+      console.warn('[useActiveSignal] Supabase unreachable, using local signal');
+      const local = createLocalSignal(activity, signalType);
+      setMySignal(local);
+      loadDemoUsers();
       setIsLoading(false);
-      if (!error && data) {
-        setMySignal(data);
-        logger.action.signalActivated(user.id, activity);
-      }
-      return { data, error };
+      return { data: local, error: null };
     }
   };
 
-  // Deactivate signal
+  // Load demo users around current position
+  const loadDemoUsers = () => {
+    if (!position) return;
+    const mockUsers = generateMockUsers(position.latitude, position.longitude, 8);
+    const mocksWithDistance = mockUsers.map(u => ({
+      ...u,
+      distance: calculateDistance(position.latitude, position.longitude, u.position.latitude, u.position.longitude),
+    })).sort((a, b) => (a.distance || 0) - (b.distance || 0));
+    setNearbyUsers(mocksWithDistance);
+    setIsDemoMode(true);
+  };
+
+  // Deactivate signal (handles both real and local signals)
   const deactivateSignal = async () => {
     if (!user) return { error: new Error('Not authenticated') };
 
     setIsLoading(true);
 
-    const { error } = await supabase
-      .from('active_signals')
-      .delete()
-      .eq('user_id', user.id);
-
-    setIsLoading(false);
-    if (!error) {
+    // Local signal — just clear state
+    if (mySignal?.id.startsWith('local-')) {
       setMySignal(null);
-      logger.action.signalDeactivated(user.id);
+      setNearbyUsers([]);
+      setIsDemoMode(false);
+      setIsLoading(false);
+      return { error: null };
     }
-    return { error };
+
+    try {
+      const { error } = await supabase
+        .from('active_signals')
+        .delete()
+        .eq('user_id', user.id);
+
+      setIsLoading(false);
+      if (!error) {
+        setMySignal(null);
+        logger.action.signalDeactivated(user.id);
+      }
+      return { error };
+    } catch {
+      // Supabase unreachable — just clear local state
+      setMySignal(null);
+      setIsLoading(false);
+      return { error: null };
+    }
   };
 
   // Update signal position
@@ -175,36 +236,58 @@ export function useActiveSignal() {
 
     const newExpiry = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
 
-    const { data, error } = await supabase
-      .from('active_signals')
-      .update({ expires_at: newExpiry })
-      .eq('user_id', user.id)
-      .select()
-      .single();
-
-    if (!error && data) {
-      setMySignal(data);
+    // Local signal — update in place
+    if (mySignal.id.startsWith('local-')) {
+      setMySignal({ ...mySignal, expires_at: newExpiry });
+      return { data: { ...mySignal, expires_at: newExpiry }, error: null };
     }
-    return { data, error };
+
+    try {
+      const { data, error } = await supabase
+        .from('active_signals')
+        .update({ expires_at: newExpiry })
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+      if (!error && data) {
+        setMySignal(data);
+      }
+      return { data, error };
+    } catch {
+      setMySignal({ ...mySignal, expires_at: newExpiry });
+      return { data: { ...mySignal, expires_at: newExpiry }, error: null };
+    }
   };
 
-
-  // Update active signal state (green/yellow/red)
+  // Update active signal state (green/yellow/red) — 1-tap cycle
   const updateSignalState = async (signalType: SignalType) => {
     if (!user || !mySignal) return { error: new Error('No active signal') };
 
-    const { data, error } = await supabase
-      .from('active_signals')
-      .update({ signal_type: signalType })
-      .eq('user_id', user.id)
-      .select()
-      .single();
-
-    if (!error && data) {
-      setMySignal(data);
+    // Local signal — update in place
+    if (mySignal.id.startsWith('local-')) {
+      const updated = { ...mySignal, signal_type: signalType };
+      setMySignal(updated);
+      return { data: updated, error: null };
     }
 
-    return { data, error };
+    try {
+      const { data, error } = await supabase
+        .from('active_signals')
+        .update({ signal_type: signalType })
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+      if (!error && data) {
+        setMySignal(data);
+      }
+      return { data, error };
+    } catch {
+      const updated = { ...mySignal, signal_type: signalType };
+      setMySignal(updated);
+      return { data: updated, error: null };
+    }
   };
 
   // Fetch nearby users with signals (respects ghost mode)
@@ -269,7 +352,9 @@ export function useActiveSignal() {
         .gte('expires_at', new Date().toISOString());
 
       if (fallbackError) {
-        console.error('Error fetching nearby signals:', fallbackError);
+        console.warn('[useActiveSignal] Fallback query error:', fallbackError.message);
+        // Table doesn't exist or query failed — show demo users
+        loadDemoUsers();
         return;
       }
 
@@ -336,7 +421,9 @@ export function useActiveSignal() {
       setIsDemoMode(false);
       setNearbyUsers(nearbyFiltered);
     } catch (err) {
-      console.error('Error in fetchNearbyUsers:', err);
+      console.warn('[useActiveSignal] fetchNearbyUsers failed:', err);
+      // Any unhandled error — show demo users rather than empty state
+      loadDemoUsers();
     }
   }, [user, position]);
 

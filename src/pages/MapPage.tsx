@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { X, Radio, RefreshCw, Info, Filter, Map, Radar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
@@ -71,6 +71,15 @@ export default function MapPage() {
 
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
   const [mapMode, setMapMode] = useState<'map' | 'radar'>('map');
+  const [mapFailed, setMapFailed] = useState(false);
+
+  // When map can't load (no Mapbox token), auto-switch to radar view
+  const handleMapUnavailable = useCallback(() => {
+    if (!mapFailed) {
+      setMapFailed(true);
+      setMapMode('radar');
+    }
+  }, [mapFailed]);
 
   // Show location permission screen if not seen yet and no position
   const showLocationPrompt = !hasSeenLocationPrompt && !position && !locationError;
@@ -268,8 +277,13 @@ export default function MapPage() {
         <div className="px-4 sm:px-6 mb-3 flex items-center justify-between gap-3">
           <div className="inline-flex rounded-xl bg-muted p-1">
             <button
-              onClick={() => setMapMode('map')}
-              className={cn('px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2', mapMode === 'map' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground')}
+              onClick={() => !mapFailed && setMapMode('map')}
+              disabled={mapFailed}
+              className={cn(
+                'px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2',
+                mapMode === 'map' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground',
+                mapFailed && 'opacity-40 cursor-not-allowed'
+              )}
             >
               <Map className="h-4 w-4" />
               {t('mapUI.mapView')}
@@ -329,6 +343,7 @@ export default function MapPage() {
               userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
               activityFilters={activityFilters}
               onActivityFilterToggle={toggleActivityFilter}
+              onMapUnavailable={handleMapUnavailable}
             />
           ) : (
             <RadarSonarView
