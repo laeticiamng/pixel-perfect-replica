@@ -41,7 +41,6 @@ interface InteractiveMapProps {
   userInitial?: string;
   activityFilters?: ActivityType[];
   onActivityFilterToggle?: (activity: ActivityType) => void;
-  onMapUnavailable?: () => void;
 }
 
 export function InteractiveMap({
@@ -54,7 +53,6 @@ export function InteractiveMap({
   userInitial = '?',
   activityFilters = [],
   onActivityFilterToggle,
-  onMapUnavailable,
 }: InteractiveMapProps) {
   const mapRef = useRef<MapRef>(null);
   const { position } = useLocationStore();
@@ -102,42 +100,41 @@ export function InteractiveMap({
     zoom: currentZoom,
   });
 
-  // Fetch Mapbox token with fallback chain:
-  // 1. Environment variable (VITE_MAPBOX_TOKEN)
-  // 2. Supabase edge function (get-mapbox-token)
-  // 3. Fail gracefully → parent can switch to radar view via onMapUnavailable
+  // Fetch Mapbox token
   useEffect(() => {
     const fetchToken = async () => {
-      // Try env var first (fastest, no network)
-      const envToken = import.meta.env.VITE_MAPBOX_TOKEN;
-      if (envToken) {
-        setMapboxToken(envToken);
-        setIsLoading(false);
-        return;
-      }
-
-      // Try Supabase edge function
       try {
+        // Try to refresh the session first to get a fresh token
         const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
-
+        
         if (refreshError || !session) {
-          console.warn('[InteractiveMap] No session for token fetch');
-          setError('map_unavailable');
+            console.warn('[InteractiveMap] Session refresh failed:', refreshError?.message);
+            setError(t('map.unavailable'));
           setIsLoading(false);
           return;
         }
 
         const { data, error } = await supabase.functions.invoke('get-mapbox-token');
-
-        if (!error && data?.token) {
+        
+        if (error) {
+          // Handle auth errors specifically
+          if (error.message?.includes('401') || error.message?.includes('non-2xx')) {
+            console.warn('[InteractiveMap] Auth error fetching token:', error.message);
+            setError(t('map.unavailable'));
+          } else {
+            throw error;
+          }
+          return;
+        }
+        
+        if (data?.token) {
           setMapboxToken(data.token);
         } else {
-          console.warn('[InteractiveMap] Token fetch failed:', error?.message);
-          setError('map_unavailable');
+          throw new Error('No token returned');
         }
-      } catch (err) {
-        console.error('[InteractiveMap] Token error:', err);
-        setError('map_unavailable');
+      } catch (err: unknown) {
+        console.error('Failed to fetch Mapbox token:', err);
+        setError(t('map.unavailable'));
       } finally {
         setIsLoading(false);
       }
@@ -275,13 +272,6 @@ export function InteractiveMap({
     );
   }
 
-  // Auto-switch to radar when map is unavailable
-  useEffect(() => {
-    if ((error || (!isLoading && !mapboxToken)) && onMapUnavailable) {
-      onMapUnavailable();
-    }
-  }, [error, isLoading, mapboxToken, onMapUnavailable]);
-
   if (error || !mapboxToken) {
     return (
       <div className={cn("flex items-center justify-center bg-muted rounded-2xl", className)}>
@@ -289,15 +279,7 @@ export function InteractiveMap({
           <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center">
             <MapIcon className="h-8 w-8 text-muted-foreground" />
           </div>
-          <p className="text-sm text-muted-foreground">{t('map.unavailable')}</p>
-          {onMapUnavailable && (
-            <button
-              onClick={onMapUnavailable}
-              className="text-sm text-coral hover:text-coral-dark font-medium transition-colors"
-            >
-              {t('mapUI.radarView')} →
-            </button>
-          )}
+          <p className="text-sm text-muted-foreground">{error || t('map.unavailable')}</p>
         </div>
       </div>
     );

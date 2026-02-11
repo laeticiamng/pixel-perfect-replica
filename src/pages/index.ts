@@ -10,13 +10,11 @@ export { default as PremiumPage } from './PremiumPage';
 export { default as ChangelogPage } from './ChangelogPage';
 export { default as PresidentCockpitPage } from './PresidentCockpitPage';
 export { default as NotFound } from './NotFound';
-export { default as PricingPage } from './PricingPage';
-export { default as FaqPage } from './FaqPage';
 
 // Auth pages
 export * from './auth';
 
-// Profile pages
+// Profile pages  
 export * from './profile';
 
 // Settings pages

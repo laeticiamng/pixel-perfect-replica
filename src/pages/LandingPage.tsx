@@ -82,7 +82,7 @@ function FeaturesSection() {
   const { t } = useTranslation();
   
   return (
-    <section id="features" className="py-12 px-6 relative z-10">
+    <section className="py-12 px-6 relative z-10">
       <div className="max-w-5xl mx-auto">
         <RevealText>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">

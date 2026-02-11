@@ -23,60 +23,47 @@ export function useUserSettings() {
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch settings (graceful fallback to defaults on any error)
+  // Fetch settings
   const fetchSettings = useCallback(async () => {
     if (!user) {
       setIsLoading(false);
       return;
     }
 
-    try {
-      const { data, error } = await supabase
-        .from('user_settings')
-        .select('ghost_mode, visibility_distance, push_notifications, sound_notifications, proximity_vibration')
-        .eq('user_id', user.id)
-        .maybeSingle();
+    const { data, error } = await supabase
+      .from('user_settings')
+      .select('ghost_mode, visibility_distance, push_notifications, sound_notifications, proximity_vibration')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-      if (error) {
-        console.warn('[useUserSettings] Fetch error, using defaults:', error.message);
-        setIsLoading(false);
-        return;
-      }
-
-      if (data) {
-        setSettings(data);
-      }
-    } catch (err) {
-      console.warn('[useUserSettings] Supabase unreachable, using defaults');
-    } finally {
+    if (error) {
+      console.error('Error fetching settings:', error);
       setIsLoading(false);
+      return;
     }
+
+    if (data) {
+      setSettings(data);
+    }
+    setIsLoading(false);
   }, [user]);
 
-  // Update settings (applies locally even if Supabase fails)
+  // Update settings
   const updateSettings = async (updates: Partial<UserSettings>) => {
     if (!user) return { error: new Error('Not authenticated') };
 
-    // Always apply locally first for responsive UX
-    setSettings(prev => ({ ...prev, ...updates }));
+    const { data, error } = await supabase
+      .from('user_settings')
+      .update(updates)
+      .eq('user_id', user.id)
+      .select()
+      .single();
 
-    try {
-      const { data, error } = await supabase
-        .from('user_settings')
-        .update(updates)
-        .eq('user_id', user.id)
-        .select()
-        .single();
-
-      if (error) {
-        console.warn('[useUserSettings] Update failed:', error.message);
-      }
-
-      return { data, error };
-    } catch (err) {
-      console.warn('[useUserSettings] Supabase unreachable for update');
-      return { data: null, error: null };
+    if (!error && data) {
+      setSettings(prev => ({ ...prev, ...updates }));
     }
+
+    return { data, error };
   };
 
   // Convenience methods
