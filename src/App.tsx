@@ -20,12 +20,16 @@ import {
   ChangelogPage,
   PresidentCockpitPage,
   NotFound,
+  PricingPage,
+  FaqPage,
   // Auth
   OnboardingPage,
   PostSignupOnboardingPage,
   ForgotPasswordPage,
   ResetPasswordPage,
   ChangePasswordPage,
+  LoginPage,
+  SignupPage,
   // Profile
   ProfilePage,
   EditProfilePage,
@@ -52,6 +56,9 @@ import {
   TermsPage,
   PrivacyPage,
   AboutPage,
+  MentionsLegalesPage,
+  CgvPage,
+  CookiePolicyPage,
   // Support
   HelpPage,
   FeedbackPage,
@@ -62,28 +69,28 @@ const queryClient = new QueryClient();
 
 // Page transition variants - smoother with easing
 const pageVariants = {
-  initial: { 
-    opacity: 0, 
+  initial: {
+    opacity: 0,
     y: 8,
     scale: 0.99,
   },
-  enter: { 
-    opacity: 1, 
-    y: 0, 
+  enter: {
+    opacity: 1,
+    y: 0,
     scale: 1,
-    transition: { 
-      duration: 0.35, 
+    transition: {
+      duration: 0.35,
       ease: 'easeOut' as const,
-    } 
+    }
   },
-  exit: { 
-    opacity: 0, 
+  exit: {
+    opacity: 0,
     y: -8,
     scale: 0.99,
-    transition: { 
-      duration: 0.2, 
+    transition: {
+      duration: 0.2,
       ease: 'easeIn' as const,
-    } 
+    }
   },
 };
 
@@ -91,7 +98,7 @@ const pageVariants = {
 function AnimatedRoutes() {
   const location = useLocation();
   useKeyboardShortcuts(); // Enable global keyboard shortcuts
-  
+
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
@@ -109,15 +116,28 @@ function AnimatedRoutes() {
           <Route path="/welcome" element={<PostSignupOnboardingPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
+
+          {/* Auth pages - dedicated */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+
+          {/* Public info pages */}
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/faq" element={<FaqPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/install" element={<InstallPage />} />
           <Route path="/changelog" element={<ChangelogPage />} />
 
-          {/* Auth redirect routes */}
-          <Route path="/signup" element={<Navigate to="/onboarding" state={{ isLogin: false }} replace />} />
-          <Route path="/login" element={<Navigate to="/onboarding" state={{ isLogin: true }} replace />} />
+          {/* Legal pages - canonical /legal/* paths */}
+          <Route path="/legal/mentions" element={<MentionsLegalesPage />} />
+          <Route path="/legal/cgv" element={<CgvPage />} />
+          <Route path="/legal/cookies" element={<CookiePolicyPage />} />
+          <Route path="/legal/privacy" element={<PrivacyPage />} />
+          <Route path="/legal/terms" element={<TermsPage />} />
+
+          {/* Legacy legal routes - redirect to /legal/* */}
+          <Route path="/terms" element={<Navigate to="/legal/terms" replace />} />
+          <Route path="/privacy" element={<Navigate to="/legal/privacy" replace />} />
 
           {/* App radar redirect */}
           <Route path="/app/radar" element={<Navigate to="/map" replace />} />
@@ -249,7 +269,10 @@ function AnimatedRoutes() {
               <SessionHistoryPage />
             </ProtectedRoute>
           } />
-          
+
+          {/* Protected app routes */}
+          <Route path="/app/profile" element={<Navigate to="/profile" replace />} />
+
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
