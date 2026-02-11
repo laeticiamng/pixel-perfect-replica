@@ -1,57 +1,69 @@
 import { forwardRef } from 'react';
 import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
-import { Radar, MessageCircle, User } from 'lucide-react';
+import { MapPin, User, Settings, CalendarDays, Users2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useShowNewBadge } from '@/components/binome/NewBadge';
+import { useTranslation } from '@/lib/i18n';
 
 interface NavItem {
   to: string;
   icon: React.ReactNode;
-  label: string;
+  labelKey: string;
+  showNewBadge?: boolean;
 }
 
 export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
   function BottomNav(_, ref) {
     const location = useLocation();
+    const showBinomeBadge = useShowNewBadge();
+    const { t } = useTranslation();
 
     const navItems: NavItem[] = [
-      { to: '/app/radar', icon: <Radar className="h-6 w-6" />, label: 'Radar' },
-      { to: '/app/messages', icon: <MessageCircle className="h-6 w-6" />, label: 'Messages' },
-      { to: '/app/profil', icon: <User className="h-6 w-6" />, label: 'Profil' },
+      { to: '/map', icon: <MapPin className="h-6 w-6" />, labelKey: 'nav.map' },
+      { to: '/binome', icon: <Users2 className="h-6 w-6" />, labelKey: 'nav.book', showNewBadge: showBinomeBadge },
+      { to: '/events', icon: <CalendarDays className="h-6 w-6" />, labelKey: 'nav.events' },
+      { to: '/profile', icon: <User className="h-6 w-6" />, labelKey: 'nav.profile' },
+      { to: '/settings', icon: <Settings className="h-5 w-5" />, labelKey: 'nav.settings' },
     ];
 
     return (
       <nav ref={ref} className="fixed bottom-0 left-0 right-0 z-50 safe-bottom lg:hidden">
-        <div className="mx-auto max-w-[430px]">
+        <div className="mx-auto max-w-[500px]">
           <div className="mx-4 mb-4 glass-strong rounded-2xl shadow-medium">
             <div className="flex items-center justify-around py-3.5 px-6">
               {navItems.map((item) => {
-                const isActive = location.pathname.startsWith(item.to);
+                const isActive = location.pathname === item.to;
+                const label = t(item.labelKey);
                 return (
                   <RouterNavLink
                     key={item.to}
                     to={item.to}
-                    aria-label={item.label}
+                    aria-label={label}
                     aria-current={isActive ? 'page' : undefined}
                     className={cn(
                       'flex flex-col items-center gap-1.5 transition-all duration-300 relative',
                       isActive
-                        ? 'text-violet scale-110'
+                        ? 'text-coral scale-110'
                         : 'text-muted-foreground hover:text-foreground'
                     )}
                   >
                     {isActive && (
-                      <div className="absolute -inset-2 bg-violet/10 rounded-xl -z-10" />
+                      <div className="absolute -inset-2 bg-coral/10 rounded-xl -z-10" />
                     )}
                     <div className={cn(
                       'transition-all duration-300 relative',
-                      isActive && 'drop-shadow-[0_0_12px_hsl(var(--violet)/0.7)]'
+                      isActive && 'drop-shadow-[0_0_12px_hsl(var(--coral)/0.7)]'
                     )}>
                       {item.icon}
+                      {/* New badge */}
+                      {item.showNewBadge && !isActive && (
+                        <span className="absolute -top-1 -right-1 flex items-center justify-center w-2 h-2 bg-coral rounded-full animate-pulse" />
+                      )}
                     </div>
                     <span className={cn(
                       'text-xs',
                       isActive ? 'font-bold' : 'font-medium'
-                    )}>{item.label}</span>
+                    )}>{label}</span>
                   </RouterNavLink>
                 );
               })}

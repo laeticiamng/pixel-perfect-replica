@@ -1,6 +1,6 @@
 export type SignalType = 'green' | 'yellow' | 'red';
 
-export type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'coworking' | 'other';
+export type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
 
 export interface Position {
   latitude: number;
@@ -31,7 +31,6 @@ export interface NearbyUser {
   distance?: number;
   activeSince: Date;
   rating: number;
-  university?: string;
 }
 
 export interface ActivityOption {
@@ -46,9 +45,8 @@ export const ACTIVITY_LABELS: Record<ActivityType, { en: string; fr: string }> =
   studying: { en: 'Study', fr: 'Réviser' },
   eating: { en: 'Eat', fr: 'Manger' },
   working: { en: 'Work', fr: 'Bosser' },
-  talking: { en: 'Talk', fr: 'Discuter' },
+  talking: { en: 'Talk', fr: 'Parler' },
   sport: { en: 'Sport', fr: 'Sport' },
-  coworking: { en: 'Coworking', fr: 'Coworking' },
   other: { en: 'Other', fr: 'Autre' },
 };
 
@@ -60,10 +58,10 @@ export const getActivityLabel = (id: ActivityType, locale: 'en' | 'fr' = 'en'): 
 // Activity options with translation keys
 export const ACTIVITIES: ActivityOption[] = [
   { id: 'studying', label: 'Réviser', labelKey: 'activities.studying', emoji: '📚' },
-  { id: 'sport', label: 'Sport', labelKey: 'activities.sport', emoji: '🏃' },
   { id: 'eating', label: 'Manger', labelKey: 'activities.eating', emoji: '🍽️' },
-  { id: 'talking', label: 'Discuter', labelKey: 'activities.talking', emoji: '💬' },
-  { id: 'coworking', label: 'Coworking', labelKey: 'activities.coworking', emoji: '🤝' },
+  { id: 'working', label: 'Bosser', labelKey: 'activities.working', emoji: '💻' },
+  { id: 'talking', label: 'Parler', labelKey: 'activities.talking', emoji: '💬' },
+  { id: 'sport', label: 'Sport', labelKey: 'activities.sport', emoji: '🏃' },
   { id: 'other', label: 'Autre', labelKey: 'activities.other', emoji: '✨' },
 ];
 
@@ -72,40 +70,36 @@ export const ACTIVITY_CONFIG: Record<ActivityType, { label: string; emoji: strin
   studying: { label: 'Réviser', emoji: '📚', color: 'bg-blue-500' },
   eating: { label: 'Manger', emoji: '🍽️', color: 'bg-orange-500' },
   working: { label: 'Bosser', emoji: '💻', color: 'bg-purple-500' },
-  talking: { label: 'Discuter', emoji: '💬', color: 'bg-green-500' },
+  talking: { label: 'Parler', emoji: '💬', color: 'bg-green-500' },
   sport: { label: 'Sport', emoji: '🏃', color: 'bg-red-500' },
-  coworking: { label: 'Coworking', emoji: '🤝', color: 'bg-indigo-500' },
   other: { label: 'Autre', emoji: '✨', color: 'bg-gray-500' },
 };
 
 export const ICEBREAKERS: Record<ActivityType, string[]> = {
   studying: [
-    "Tu prépares quel exam ?",
-    "C'est quoi ta matière préférée ?",
+    "What exam are you preparing for?",
+    "What's your favorite subject?",
+    "What study method do you use?",
   ],
   eating: [
-    "Tu connais un bon resto dans le coin ?",
-    "C'est bon ce que tu manges ?",
+    "Is that good what you're eating?",
+    "Do you know a good restaurant around here?",
   ],
   working: [
-    "Tu bosses sur quoi ?",
-    "C'est pour le taf ou un projet perso ?",
+    "What are you working on?",
+    "Is it for work or a personal project?",
   ],
   talking: [
-    "Alors, quoi de neuf ?",
-    "Tu fais quoi dans la vie ?",
+    "So, what's new?",
+    "What do you do for a living?",
   ],
   sport: [
-    "Tu fais quoi comme sport ?",
-    "Tu viens souvent ici ?",
-  ],
-  coworking: [
-    "Tu bosses sur quel projet ?",
-    "Tu viens souvent coworker ici ?",
+    "What sport do you do?",
+    "Do you come here often?",
   ],
   other: [
-    "Qu'est-ce qui t'amène ici ?",
-    "Tu fais quoi de beau ?",
+    "What brings you here?",
+    "What are you up to?",
   ],
 };
 
@@ -161,16 +155,6 @@ export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[]
     fr: [
       "Tu fais quoi comme sport ?",
       "Tu viens souvent ici ?",
-    ],
-  },
-  coworking: {
-    en: [
-      "What project are you working on?",
-      "Do you cowork here often?",
-    ],
-    fr: [
-      "Tu bosses sur quel projet ?",
-      "Tu viens souvent coworker ici ?",
     ],
   },
   other: {

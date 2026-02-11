@@ -72,7 +72,7 @@ export function AlertPreferencesCard() {
       <CardContent className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="alert-email" className="flex items-center gap-2"><Mail className="h-4 w-4 text-muted-foreground" />{t('adminAlerts.notificationEmail')}</Label>
-          <Input id="alert-email" type="email" placeholder={t('adminAlerts.emailPlaceholder')} value={preferences.email} onChange={(e) => setPreferences(prev => ({ ...prev, email: e.target.value }))} className="bg-background/50" />
+          <Input id="alert-email" type="email" placeholder="admin@example.com" value={preferences.email} onChange={(e) => setPreferences(prev => ({ ...prev, email: e.target.value }))} className="bg-background/50" />
         </div>
         <div className="space-y-4">
           <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">

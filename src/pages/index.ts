@@ -3,18 +3,10 @@
 
 // Main pages
 export { default as LandingPage } from './LandingPage';
-
-export { default as RadarPage } from './RadarPage';
-export { default as SessionPage } from './SessionPage';
-export { default as MessagesPage } from './MessagesPage';
+export { default as MapPage } from './MapPage';
 export { default as ProximityRevealPage } from './ProximityRevealPage';
 export { default as AdminDashboardPage } from './AdminDashboardPage';
 export { default as PremiumPage } from './PremiumPage';
-export { default as PricingPage } from './PricingPage';
-export { default as FAQPage } from './FAQPage';
-export { default as MentionsLegalesPage } from './MentionsLegalesPage';
-export { default as CGVPage } from './CGVPage';
-export { default as CookiePolicyPage } from './CookiePolicyPage';
 export { default as ChangelogPage } from './ChangelogPage';
 export { default as PresidentCockpitPage } from './PresidentCockpitPage';
 export { default as NotFound } from './NotFound';

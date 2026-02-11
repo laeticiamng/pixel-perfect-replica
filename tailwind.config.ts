@@ -31,12 +31,6 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        violet: {
-          DEFAULT: "hsl(var(--violet))",
-          light: "hsl(var(--violet-light))",
-          dark: "hsl(var(--violet-dark))",
-          glow: "hsl(var(--violet-glow))",
-        },
         coral: {
           DEFAULT: "hsl(var(--coral))",
           light: "hsl(var(--coral-light))",
@@ -54,9 +48,7 @@ export default {
         midnight: "hsl(var(--midnight))",
         signal: {
           green: "hsl(var(--signal-green))",
-          orange: "hsl(var(--signal-orange))",
           yellow: "hsl(var(--signal-yellow))",
-          gray: "hsl(var(--signal-gray))",
           red: "hsl(var(--signal-red))",
         },
         gray: {
@@ -104,9 +96,7 @@ export default {
       },
       boxShadow: {
         'glow-coral': 'var(--glow-coral)',
-        'glow-violet': 'var(--glow-violet)',
         'glow-green': 'var(--glow-green)',
-        'glow-orange': 'var(--glow-orange)',
         'glow-yellow': 'var(--glow-yellow)',
         'glow-red': 'var(--glow-red)',
       },
