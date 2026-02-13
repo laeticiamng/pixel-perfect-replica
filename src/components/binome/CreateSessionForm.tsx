@@ -18,12 +18,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ActivitySelector } from '@/components/radar';
 import type { CreateSessionInput, ActivityType, DurationOption } from '@/hooks/useBinomeSessions';
 
-const formSchema = z.object({
-  scheduled_date: z.date({ required_error: "required" }).refine(date => date >= new Date(new Date().setHours(0,0,0,0)), { message: "future" }),
-  start_time: z.string().min(1, "required"),
-  duration_minutes: z.number().refine(val => [45, 90, 180].includes(val), { message: "invalid" }),
+// Schema factory to inject translated error messages (fixes I18N-02)
+const createFormSchema = (t: (key: string) => string) => z.object({
+  scheduled_date: z.date({ required_error: t('createSession.dateRequired') }).refine(date => date >= new Date(new Date().setHours(0,0,0,0)), { message: t('createSession.dateFuture') }),
+  start_time: z.string().min(1, t('createSession.timeRequired')),
+  duration_minutes: z.number().refine(val => [45, 90, 180].includes(val), { message: t('createSession.invalidDuration') }),
   activity: z.enum(['studying', 'eating', 'working', 'talking', 'sport', 'other'] as const),
-  city: z.string().min(2, "required").max(100),
+  city: z.string().min(2, t('createSession.cityRequired')).max(100),
   location_name: z.string().max(200).optional(),
   note: z.string().max(500).optional(),
   max_participants: z.number().min(1).max(10).default(3),
@@ -53,6 +54,8 @@ export function CreateSessionForm({ onSubmit, onCancel, isLoading }: CreateSessi
     { value: 90, label: t('createSession.duration90') },
     { value: 180, label: t('createSession.duration180') },
   ];
+
+  const formSchema = createFormSchema(t);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -167,13 +170,14 @@ export function CreateSessionForm({ onSubmit, onCancel, isLoading }: CreateSessi
           <SmartLocationRecommender activity={selectedActivity} city={cityValue} onSelectLocation={handleSelectLocation} />
         )}
 
+        {/* UX-02: Aligned max participants UI with DB constraint (1-10) */}
         <FormField control={form.control} name="max_participants" render={({ field }) => (
           <FormItem>
             <FormLabel className="flex items-center gap-2"><Users className="h-4 w-4" />{t('createSession.maxParticipants')}</FormLabel>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((num) => (
+            <div className="flex gap-2 flex-wrap">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                 <Button key={num} type="button" variant={field.value === num ? "default" : "outline"} size="sm"
-                  className={cn("flex-1", field.value === num && "bg-coral hover:bg-coral/90")} onClick={() => field.onChange(num)}>
+                  className={cn("w-10 h-10", field.value === num && "bg-coral hover:bg-coral/90")} onClick={() => field.onChange(num)}>
                   {num}
                 </Button>
               ))}

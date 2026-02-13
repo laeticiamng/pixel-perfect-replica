@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
-import { translations, getCurrentLocale } from '@/lib/i18n/translations';
 
 export type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
 export type SessionStatus = 'open' | 'full' | 'cancelled' | 'completed';
@@ -49,26 +49,46 @@ export interface SessionFilters {
   duration?: DurationOption;
 }
 
+// Typed interfaces for Supabase responses (fixes PF-01: no more `any`)
+interface ProfileRecord {
+  id: string;
+  first_name?: string;
+  avatar_url?: string | null;
+}
+
+interface ReliabilityRecord {
+  user_id: string;
+  reliability_score: number;
+}
+
+interface SessionRow {
+  id: string;
+  creator_id: string;
+  scheduled_date: string;
+  start_time: string;
+  duration_minutes: number;
+  activity: string;
+  city: string;
+  location_name?: string | null;
+  note?: string | null;
+  max_participants: number;
+  current_participants?: number;
+  created_at: string;
+  status?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
 export function useBinomeSessions() {
   const { user } = useAuth();
-  
-  const t = (key: string) => {
-    const locale = getCurrentLocale();
-    const keys = key.split('.');
-    let obj: any = translations;
-    for (const k of keys) {
-      obj = obj?.[k];
-    }
-    return obj?.[locale] || obj?.en || key;
-  };
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<ScheduledSession[]>([]);
-
   const [mySessions, setMySessions] = useState<ScheduledSession[]>([]);
   const [myParticipations, setMyParticipations] = useState<ScheduledSession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch available sessions with filters (city optional)
+  // Fetch available sessions with filters (city required for RPC, fallback for no city)
   const fetchSessions = useCallback(async (filters: SessionFilters) => {
     if (!user) return;
 
@@ -76,7 +96,7 @@ export function useBinomeSessions() {
     setError(null);
 
     try {
-      let rows: Array<Record<string, unknown>> = [];
+      let rows: SessionRow[] = [];
 
       if (filters.city) {
         const { data, error: rpcError } = await supabase.rpc('get_available_sessions', {
@@ -87,7 +107,7 @@ export function useBinomeSessions() {
         });
 
         if (rpcError) throw rpcError;
-        rows = (data || []) as Array<Record<string, unknown>>;
+        rows = (data || []) as SessionRow[];
       } else {
         const nowIso = new Date().toISOString();
         const { data, error: queryError } = await supabase
@@ -101,52 +121,55 @@ export function useBinomeSessions() {
           .limit(40);
 
         if (queryError) throw queryError;
-        rows = (data || []) as Array<Record<string, unknown>>;
+        rows = (data || []) as SessionRow[];
       }
 
-      const creatorIds = Array.from(new Set(rows.map((s) => String(s.creator_id))));
+      const creatorIds = Array.from(new Set(rows.map((s) => s.creator_id)));
       const [{ data: profiles }, { data: reliability }] = await Promise.all([
         creatorIds.length > 0
           ? supabase.rpc('get_public_profiles', { profile_ids: creatorIds })
-          : Promise.resolve({ data: [] as Array<Record<string, unknown>> }),
+          : Promise.resolve({ data: [] as ProfileRecord[] }),
         creatorIds.length > 0
           ? supabase.from('user_reliability').select('user_id, reliability_score').in('user_id', creatorIds)
-          : Promise.resolve({ data: [] as Array<Record<string, unknown>> }),
+          : Promise.resolve({ data: [] as ReliabilityRecord[] }),
       ]);
 
+      const typedProfiles = (profiles || []) as ProfileRecord[];
+      const typedReliability = (reliability || []) as ReliabilityRecord[];
+
       const formatted: ScheduledSession[] = rows.map((s) => {
-        const profile = profiles?.find((p: Record<string, unknown>) => p.id === s.creator_id);
-        const rel = reliability?.find((r: Record<string, unknown>) => r.user_id === s.creator_id);
+        const profile = typedProfiles.find((p) => p.id === s.creator_id);
+        const rel = typedReliability.find((r) => r.user_id === s.creator_id);
 
         return {
-          id: String(s.id),
-          creator_id: String(s.creator_id),
-          creator_name: (profile?.first_name as string | undefined) || undefined,
-          creator_avatar: (profile?.avatar_url as string | undefined) || undefined,
-          creator_reliability: rel?.reliability_score as number | undefined,
-          scheduled_date: String(s.scheduled_date),
-          start_time: String(s.start_time),
+          id: s.id,
+          creator_id: s.creator_id,
+          creator_name: profile?.first_name || undefined,
+          creator_avatar: profile?.avatar_url || undefined,
+          creator_reliability: rel?.reliability_score,
+          scheduled_date: s.scheduled_date,
+          start_time: s.start_time,
           duration_minutes: s.duration_minutes as DurationOption,
           activity: s.activity as ActivityType,
-          city: String(s.city),
-          location_name: (s.location_name as string | undefined) || undefined,
-          note: (s.note as string | undefined) || undefined,
+          city: s.city,
+          location_name: s.location_name || undefined,
+          note: s.note || undefined,
           max_participants: Number(s.max_participants),
-          current_participants: Number((s.current_participants as number | undefined) || 0),
+          current_participants: Number(s.current_participants || 0),
           status: 'open' as SessionStatus,
-          created_at: String(s.created_at),
+          created_at: s.created_at,
         };
       });
 
       setSessions(formatted);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Loading error';
+      const message = err instanceof Error ? err.message : t('binome.loadError');
       setError(message);
       console.error('[useBinomeSessions] fetchSessions error:', err);
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, t]);
 
   // Fetch my created sessions
   const fetchMySessions = useCallback(async () => {
@@ -161,7 +184,24 @@ export function useBinomeSessions() {
         .order('start_time', { ascending: true });
 
       if (queryError) throw queryError;
-      setMySessions(data as ScheduledSession[]);
+
+      const sessions: ScheduledSession[] = (data || []).map((row) => ({
+        id: row.id,
+        creator_id: row.creator_id,
+        scheduled_date: row.scheduled_date,
+        start_time: row.start_time,
+        duration_minutes: row.duration_minutes as DurationOption,
+        activity: row.activity as ActivityType,
+        city: row.city,
+        location_name: row.location_name || undefined,
+        latitude: row.latitude ? Number(row.latitude) : undefined,
+        longitude: row.longitude ? Number(row.longitude) : undefined,
+        note: row.note || undefined,
+        max_participants: row.max_participants,
+        status: row.status as SessionStatus,
+        created_at: row.created_at,
+      }));
+      setMySessions(sessions);
     } catch (err) {
       console.error('[useBinomeSessions] fetchMySessions error:', err);
     }
@@ -181,7 +221,7 @@ export function useBinomeSessions() {
 
       if (participations && participations.length > 0) {
         const sessionIds = participations.map(p => p.session_id);
-        
+
         const { data: sessionsData, error: sError } = await supabase
           .from('scheduled_sessions')
           .select('*')
@@ -189,7 +229,24 @@ export function useBinomeSessions() {
           .order('scheduled_date', { ascending: true });
 
         if (sError) throw sError;
-        setMyParticipations(sessionsData as ScheduledSession[]);
+
+        const sessions: ScheduledSession[] = (sessionsData || []).map((row) => ({
+          id: row.id,
+          creator_id: row.creator_id,
+          scheduled_date: row.scheduled_date,
+          start_time: row.start_time,
+          duration_minutes: row.duration_minutes as DurationOption,
+          activity: row.activity as ActivityType,
+          city: row.city,
+          location_name: row.location_name || undefined,
+          latitude: row.latitude ? Number(row.latitude) : undefined,
+          longitude: row.longitude ? Number(row.longitude) : undefined,
+          note: row.note || undefined,
+          max_participants: row.max_participants,
+          status: row.status as SessionStatus,
+          created_at: row.created_at,
+        }));
+        setMyParticipations(sessions);
       } else {
         setMyParticipations([]);
       }
@@ -201,7 +258,7 @@ export function useBinomeSessions() {
   // Create a new session
   const createSession = async (input: CreateSessionInput): Promise<boolean> => {
     if (!user) {
-      toast.error(t('binomeToasts.mustBeLoggedIn'));
+      toast.error(t('binome.mustBeConnected'));
       return false;
     }
 
@@ -227,11 +284,11 @@ export function useBinomeSessions() {
       // Update user reliability via secure RPC (increments instead of replacing)
       await supabase.rpc('increment_reliability_sessions_created', { p_user_id: user.id });
 
-      toast.success(t('binomeToasts.sessionCreated'));
+      toast.success(t('binome.slotCreated'));
       await fetchMySessions();
       return true;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Creation error';
+      const message = err instanceof Error ? err.message : t('binome.cancelError');
       toast.error(message);
       console.error('[useBinomeSessions] createSession error:', err);
       return false;
@@ -241,7 +298,7 @@ export function useBinomeSessions() {
   // Join a session
   const joinSession = async (sessionId: string): Promise<boolean> => {
     if (!user) {
-      toast.error(t('binomeToasts.mustBeLoggedIn'));
+      toast.error(t('binome.mustBeConnected'));
       return false;
     }
 
@@ -251,13 +308,13 @@ export function useBinomeSessions() {
       });
 
       if (rpcError) throw rpcError;
-      if (!data) throw new Error(t('binomeToasts.joinError'));
+      if (!data) throw new Error(t('binome.joinError'));
 
-      toast.success(t('binomeToasts.joinedSession'));
+      toast.success(t('binome.joinedSession'));
       await fetchMyParticipations();
       return true;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Error';
+      const message = err instanceof Error ? err.message : t('binome.joinError');
       toast.error(message);
       console.error('[useBinomeSessions] joinSession error:', err);
       return false;
@@ -274,13 +331,13 @@ export function useBinomeSessions() {
       });
 
       if (rpcError) throw rpcError;
-      if (!data) throw new Error(t('binomeToasts.leaveError'));
+      if (!data) throw new Error(t('binome.leaveError'));
 
-      toast.success(t('binomeToasts.leftSession'));
+      toast.success(t('binome.leftSession'));
       await fetchMyParticipations();
       return true;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Error';
+      const message = err instanceof Error ? err.message : t('binome.leaveError');
       toast.error(message);
       return false;
     }
@@ -299,23 +356,22 @@ export function useBinomeSessions() {
 
       if (updateError) throw updateError;
 
-      toast.success(t('binomeToasts.sessionCancelled'));
+      toast.success(t('binome.sessionCancelled'));
       await fetchMySessions();
       return true;
     } catch (err) {
-      toast.error(t('binomeToasts.cancelError'));
+      toast.error(t('binome.cancelError'));
       return false;
     }
   };
 
-  // Load my sessions on mount
+  // Load my sessions on mount (removed unnecessary fetchSessions with empty city)
   useEffect(() => {
     if (user) {
       fetchMySessions();
       fetchMyParticipations();
-      fetchSessions({ city: '' });
     }
-  }, [user, fetchMySessions, fetchMyParticipations, fetchSessions]);
+  }, [user, fetchMySessions, fetchMyParticipations]);
 
   return {
     sessions,

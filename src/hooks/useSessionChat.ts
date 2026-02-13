@@ -1,8 +1,9 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePushNotifications } from './usePushNotifications';
 import { useTranslation } from '@/lib/i18n';
+import { sanitizeInput } from '@/lib/sanitize';
 
 interface Message {
   id: string;
@@ -14,14 +15,40 @@ interface Message {
   sender_avatar?: string;
 }
 
+interface ProfileCacheEntry {
+  first_name: string;
+  avatar_url: string | null;
+}
+
 export function useSessionChat(sessionId: string) {
   const { user } = useAuth();
-  const { showNotification, isSubscribed } = usePushNotifications();
+  const { showNotification } = usePushNotifications();
   const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
 
+  // PERF-05: Local profile cache to avoid re-fetching on each real-time message
+  const profileCacheRef = useRef<Map<string, ProfileCacheEntry>>(new Map());
+
+  const getProfilesCached = useCallback(async (userIds: string[]): Promise<Map<string, ProfileCacheEntry>> => {
+    const cache = profileCacheRef.current;
+    const uncachedIds = userIds.filter(id => !cache.has(id));
+
+    if (uncachedIds.length > 0) {
+      const { data: profiles } = await supabase
+        .rpc('get_public_profiles', { profile_ids: uncachedIds });
+
+      (profiles || []).forEach((p: { id: string; first_name?: string; avatar_url?: string | null }) => {
+        cache.set(p.id, {
+          first_name: p.first_name || t('eventsExtra.anonymous'),
+          avatar_url: p.avatar_url || null,
+        });
+      });
+    }
+
+    return cache;
+  }, [t]);
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -33,18 +60,13 @@ export function useSessionChat(sessionId: string) {
 
       if (error) throw error;
 
-      // Batch profile fetch: collect unique user_ids
       const uniqueUserIds = [...new Set((data || []).map(m => m.user_id))];
-      const { data: profiles } = await supabase
-        .rpc('get_public_profiles', { profile_ids: uniqueUserIds });
-      
-      const profileMap = new Map<string, { first_name: string; avatar_url: string | null }>();
-      (profiles || []).forEach((p: any) => profileMap.set(p.id, p));
+      const cache = await getProfilesCached(uniqueUserIds);
 
       const messagesWithProfiles: Message[] = (data || []).map(msg => ({
         ...msg,
-        sender_name: profileMap.get(msg.user_id)?.first_name || t('eventsExtra.anonymous'),
-        sender_avatar: profileMap.get(msg.user_id)?.avatar_url || null
+        sender_name: cache.get(msg.user_id)?.first_name || t('eventsExtra.anonymous'),
+        sender_avatar: cache.get(msg.user_id)?.avatar_url || null
       }));
 
       setMessages(messagesWithProfiles);
@@ -53,10 +75,14 @@ export function useSessionChat(sessionId: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId]);
+  }, [sessionId, getProfilesCached, t]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || isSending || !user) return { success: false };
+
+    // SEC-08: Sanitize message content before sending
+    const sanitizedContent = sanitizeInput(content.trim(), 1000);
+    if (!sanitizedContent) return { success: false };
 
     setIsSending(true);
     try {
@@ -65,7 +91,7 @@ export function useSessionChat(sessionId: string) {
         .insert({
           session_id: sessionId,
           user_id: user.id,
-          content: content.trim()
+          content: sanitizedContent
         });
 
       if (error) throw error;
@@ -94,10 +120,11 @@ export function useSessionChat(sessionId: string) {
         },
         async (payload) => {
           const newMsg = payload.new as Message;
-          const { data: profiles } = await supabase
-            .rpc('get_public_profiles', { profile_ids: [newMsg.user_id] });
-          const profile = profiles?.[0];
-          
+
+          // Use cached profiles to avoid N+1
+          const cache = await getProfilesCached([newMsg.user_id]);
+          const profile = cache.get(newMsg.user_id);
+
           const msgWithProfile = {
             ...newMsg,
             sender_name: profile?.first_name || t('eventsExtra.anonymous'),
@@ -105,7 +132,7 @@ export function useSessionChat(sessionId: string) {
           };
 
           setMessages(prev => [...prev, msgWithProfile]);
-          
+
           if (newMsg.user_id !== user?.id) {
             showNotification(`${msgWithProfile.sender_name} 💬`, {
               body: newMsg.content.slice(0, 100),
