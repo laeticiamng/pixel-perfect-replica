@@ -857,6 +857,9 @@ export const translations = {
     you: { en: 'You', fr: 'Toi' },
     reliability: { en: 'reliability', fr: 'fiabilité' },
     checkedIn: { en: 'Check-in ✓', fr: 'Check-in ✓' },
+    leaveWarning: { en: 'Are you sure you want to leave this session?', fr: 'Êtes-vous sûr de vouloir quitter cette session ?' },
+    leaveWarningLate: { en: 'Warning: leaving less than 2h before the session starts will impact your reliability score (-5 points).', fr: 'Attention : quitter moins de 2h avant le début impactera votre score de fiabilité (-5 points).' },
+    loadError2: { en: 'Unable to load session', fr: 'Impossible de charger la session' },
   },
 
   // Binome page
@@ -880,7 +883,7 @@ export const translations = {
     loginRequiredDesc: { en: 'Log in to book a binôme', fr: 'Connecte-toi pour réserver un binôme' },
     loginAction: { en: 'Log in', fr: 'Se connecter' },
     quotaReached: { en: 'Slot limit reached this month. Go Premium for more!', fr: 'Limite de créneaux atteinte ce mois-ci. Passe Premium pour plus !' },
-    quotaReachedCreate: { en: 'You have reached your limit of 4 slots this month. Go Premium!', fr: 'Tu as atteint ta limite de 4 créneaux ce mois. Passe Premium !' },
+    quotaReachedCreate: { en: 'You have reached your limit of 2 slots this month. Go Premium!', fr: 'Tu as atteint ta limite de 2 créneaux ce mois. Passe Premium !' },
     mustBeConnected: { en: 'You must be logged in', fr: 'Vous devez être connecté' },
     sessionHistory: { en: 'Session history', fr: 'Historique des sessions' },
     createSlotTitle: { en: 'Create a slot', fr: 'Créer un créneau' },

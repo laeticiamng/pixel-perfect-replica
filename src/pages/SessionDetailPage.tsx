@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { 
-  ArrowLeft, Calendar, Clock, MapPin, Users, 
+import {
+  ArrowLeft, Calendar, Clock, MapPin, Users,
   MessageCircle, Shield, Loader2, AlertTriangle,
-  CheckCircle2
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr, enUS } from 'date-fns/locale';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -57,6 +57,17 @@ interface CreatorProfile {
   university: string | null;
 }
 
+interface ProfileRecord {
+  id: string;
+  first_name: string;
+  avatar_url: string | null;
+}
+
+interface ReliabilityRecord {
+  user_id: string;
+  reliability_score: number;
+}
+
 const activityEmojis: Record<ActivityType, string> = {
   studying: '📚', working: '💻', eating: '🍽️', sport: '🏃', talking: '💬', other: '✨'
 };
@@ -68,7 +79,7 @@ export default function SessionDetailPage() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const { user } = useAuth();
   const { t, locale } = useTranslation();
-  
+
   const [session, setSession] = useState<SessionDetail | null>(null);
   const [creator, setCreator] = useState<CreatorProfile | null>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -96,30 +107,49 @@ export default function SessionDetailPage() {
         .from('session_participants').select('id, user_id, joined_at, checked_in, checked_out').eq('session_id', sessionId);
       if (participantsError) throw participantsError;
 
-      // Batch fetch profiles and reliability
+      // PERF-02: Batch fetch profiles and reliability in 2 queries instead of N+1
       const participantUserIds = (participantsData || []).map(p => p.user_id);
-      const [{ data: profilesData }, ...reliabilityResults] = await Promise.all([
-        supabase.rpc('get_public_profiles', { profile_ids: participantUserIds }),
-        ...participantUserIds.map(uid => supabase.rpc('get_user_reliability_public', { p_user_id: uid }))
+
+      const [{ data: profilesData }, { data: reliabilityData }] = await Promise.all([
+        participantUserIds.length > 0
+          ? supabase.rpc('get_public_profiles', { profile_ids: participantUserIds })
+          : Promise.resolve({ data: [] as ProfileRecord[] }),
+        participantUserIds.length > 0
+          ? supabase.from('user_reliability').select('user_id, reliability_score').in('user_id', participantUserIds)
+          : Promise.resolve({ data: [] as ReliabilityRecord[] }),
       ]);
 
       const profileMap = new Map<string, { first_name: string; avatar_url: string | null }>();
-      (profilesData || []).forEach((p: any) => profileMap.set(p.id, p));
+      ((profilesData || []) as ProfileRecord[]).forEach((p) => profileMap.set(p.id, p));
       const reliabilityMap = new Map<string, { reliability_score: number }>();
-      reliabilityResults.forEach((res, idx) => { if (res.data?.[0]) reliabilityMap.set(participantUserIds[idx], res.data[0]); });
+      ((reliabilityData || []) as ReliabilityRecord[]).forEach((r) => reliabilityMap.set(r.user_id, r));
 
+      let foundParticipant = false;
+      let foundCheckedOut = false;
       const participantProfiles: Participant[] = (participantsData || []).map(p => {
-        if (p.user_id === user?.id) { setIsParticipant(true); if (p.checked_out) setHasCheckedOut(true); }
-        return { ...p, checked_out: p.checked_out, profile: profileMap.get(p.user_id) || { first_name: t('profile.user'), avatar_url: null }, reliability: reliabilityMap.get(p.user_id) || undefined };
+        if (p.user_id === user?.id) { foundParticipant = true; if (p.checked_out) foundCheckedOut = true; }
+        return {
+          ...p,
+          checked_out: p.checked_out,
+          profile: profileMap.get(p.user_id) || { first_name: t('profile.user'), avatar_url: null },
+          reliability: reliabilityMap.get(p.user_id) || undefined,
+        };
       });
+      setIsParticipant(foundParticipant);
+      setHasCheckedOut(foundCheckedOut);
       setParticipants(participantProfiles);
 
-      if (sessionData.status === 'completed') {
+      // UX-06: Only show feedback if participant actually checked in
+      if (sessionData.status === 'completed' && foundParticipant) {
         const sessionDateTime = new Date(`${sessionData.scheduled_date}T${sessionData.start_time}`);
         const endTime = new Date(sessionDateTime.getTime() + sessionData.duration_minutes * 60000);
         if (new Date() > endTime) {
-          const { data: feedbackData } = await supabase.from('session_feedback').select('id').eq('session_id', sessionId).eq('from_user_id', user?.id).single();
-          if (!feedbackData) setShowFeedback(true);
+          const myParticipation = (participantsData || []).find(p => p.user_id === user?.id);
+          // Only show feedback if user checked in
+          if (myParticipation?.checked_in) {
+            const { data: feedbackData } = await supabase.from('session_feedback').select('id').eq('session_id', sessionId).eq('from_user_id', user?.id).single();
+            if (!feedbackData) setShowFeedback(true);
+          }
           const { data: testimonialData } = await supabase.from('user_testimonials').select('id').eq('session_id', sessionId).eq('user_id', user?.id).single();
           if (!testimonialData) setShowTestimonial(true);
         }
@@ -130,7 +160,7 @@ export default function SessionDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [sessionId, user?.id]);
+  }, [sessionId, user?.id, t]);
 
   useEffect(() => { fetchSessionDetails(); }, [fetchSessionDetails]);
 
@@ -180,6 +210,20 @@ export default function SessionDetailPage() {
 
   const statusLabel = session.status === 'open' ? t('sessionDetail.open') : session.status === 'full' ? t('sessionDetail.full') : session.status === 'cancelled' ? t('sessionDetail.cancelled') : t('sessionDetail.completed');
 
+  // Calculate if leaving would incur a late cancellation penalty
+  const getLeaveWarning = (): string => {
+    const sessionDateTime = new Date(`${session.scheduled_date}T${session.start_time}`);
+    const hoursUntil = (sessionDateTime.getTime() - Date.now()) / (1000 * 60 * 60);
+    if (hoursUntil < 2) {
+      return locale === 'fr'
+        ? 'Attention : quitter moins de 2h avant le début impactera votre score de fiabilité (-5 points).'
+        : 'Warning: leaving less than 2h before the session starts will impact your reliability score (-5 points).';
+    }
+    return locale === 'fr'
+      ? 'Êtes-vous sûr de vouloir quitter cette session ?'
+      : 'Are you sure you want to leave this session?';
+  };
+
   return (
     <PageLayout className="pb-24 safe-bottom">
       <header className="safe-top px-6 py-4">
@@ -189,7 +233,7 @@ export default function SessionDetailPage() {
           </button>
           <div className="flex-1">
             <h1 className="text-xl font-bold text-foreground">
-              {activityEmojis[session.activity]} {t(`activities.${session.activity}` as any)}
+              {activityEmojis[session.activity]} {t(`activities.${session.activity}` as Parameters<typeof t>[0])}
             </h1>
             <p className="text-sm text-muted-foreground">{session.city}</p>
           </div>
@@ -219,18 +263,28 @@ export default function SessionDetailPage() {
 
         {/* Session Info */}
         <div className="space-y-4">
-          <div className="flex items-center gap-3 text-foreground"><Calendar className="h-5 w-5 text-coral" /><span className="capitalize">{formattedDate}</span></div>
-          <div className="flex items-center gap-3 text-foreground"><Clock className="h-5 w-5 text-coral" /><span>{session.start_time.slice(0, 5)} • {durationLabels[session.duration_minutes] || `${session.duration_minutes} min`}</span></div>
-          <div className="flex items-center gap-3 text-foreground"><MapPin className="h-5 w-5 text-signal-green" /><span>{session.city}{session.location_name && ` - ${session.location_name}`}</span></div>
-          <div className="flex items-center gap-3"><Users className="h-5 w-5 text-signal-yellow" /><span className={isFull ? 'text-coral' : 'text-foreground'}>{participants.length} / {session.max_participants} {t('sessionDetail.participants').toLowerCase()}</span></div>
+          <div className="flex items-center gap-3 text-foreground"><Calendar className="h-5 w-5 text-coral" aria-hidden="true" /><span className="capitalize">{formattedDate}</span></div>
+          <div className="flex items-center gap-3 text-foreground"><Clock className="h-5 w-5 text-coral" aria-hidden="true" /><span>{session.start_time.slice(0, 5)} • {durationLabels[session.duration_minutes] || `${session.duration_minutes} min`}</span></div>
+          <div className="flex items-center gap-3 text-foreground"><MapPin className="h-5 w-5 text-signal-green" aria-hidden="true" /><span>{session.city}{session.location_name && ` - ${session.location_name}`}</span></div>
+          <div className="flex items-center gap-3"><Users className="h-5 w-5 text-signal-yellow" aria-hidden="true" /><span className={isFull ? 'text-coral' : 'text-foreground'}>{participants.length} / {session.max_participants} {t('sessionDetail.participants').toLowerCase()}</span></div>
           {session.note && <div className="glass rounded-xl p-4 mt-4"><p className="text-sm text-muted-foreground italic">"{session.note}"</p></div>}
         </div>
 
-        {/* Actions */}
+        {/* Actions - UX-03: Confirmation dialog for leave */}
         {!isCreator && (
           <div className="flex gap-3">
-            {canJoin ? (<Button onClick={handleJoin} className="flex-1 bg-coral hover:bg-coral/90">{t('sessionDetail.joinSession')}</Button>)
-            : isParticipant ? (<Button onClick={handleLeave} variant="outline" className="flex-1">{t('sessionDetail.leaveSession')}</Button>) : null}
+            {canJoin ? (
+              <Button onClick={handleJoin} className="flex-1 bg-coral hover:bg-coral/90">{t('sessionDetail.joinSession')}</Button>
+            ) : isParticipant ? (
+              <ConfirmDialog
+                trigger={<Button variant="outline" className="flex-1">{t('sessionDetail.leaveSession')}</Button>}
+                title={t('sessionDetail.leaveSession')}
+                description={getLeaveWarning()}
+                confirmText={t('sessionDetail.leaveSession')}
+                onConfirm={handleLeave}
+                variant="destructive"
+              />
+            ) : null}
           </div>
         )}
 
@@ -238,7 +292,7 @@ export default function SessionDetailPage() {
         {isParticipant && (
           <SessionCheckin
             sessionId={session.id}
-            sessionLocation={session.latitude && session.longitude ? { latitude: session.latitude as unknown as number, longitude: session.longitude as unknown as number, name: session.location_name || undefined } : undefined}
+            sessionLocation={session.latitude && session.longitude ? { latitude: Number(session.latitude), longitude: Number(session.longitude), name: session.location_name || undefined } : undefined}
             scheduledDate={session.scheduled_date}
             startTime={session.start_time}
             onCheckinComplete={() => fetchSessionDetails()}
@@ -255,7 +309,7 @@ export default function SessionDetailPage() {
             </TabsList>
 
             <TabsContent value="participants" className="space-y-3">
-              <div className="glass rounded-xl p-4 flex items-center gap-3">
+              <div className="glass rounded-xl p-4 flex items-center gap-3" role="listitem">
                 <Avatar className="h-12 w-12 border-2 border-coral/30">
                   <AvatarImage src={creator?.avatar_url || undefined} />
                   <AvatarFallback className="bg-coral/20 text-coral">{creator?.first_name?.charAt(0) || '?'}</AvatarFallback>
@@ -270,7 +324,7 @@ export default function SessionDetailPage() {
               </div>
 
               {participants.map((participant) => (
-                <div key={participant.id} className="glass rounded-xl p-4 flex items-center gap-3">
+                <div key={participant.id} className="glass rounded-xl p-4 flex items-center gap-3" role="listitem">
                   <Avatar className="h-12 w-12 border-2 border-border">
                     <AvatarImage src={participant.profile?.avatar_url || undefined} />
                     <AvatarFallback className="bg-muted text-muted-foreground">{participant.profile?.first_name?.charAt(0) || '?'}</AvatarFallback>
@@ -282,7 +336,7 @@ export default function SessionDetailPage() {
                     </div>
                     {participant.reliability && (
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Shield className="h-3 w-3 text-signal-green" />
+                        <Shield className="h-3 w-3 text-signal-green" aria-hidden="true" />
                         <span>{Math.round(participant.reliability.reliability_score)}% {t('sessionDetail.reliability')}</span>
                       </div>
                     )}
@@ -317,7 +371,7 @@ export default function SessionDetailPage() {
         {(showTestimonial || hasCheckedOut) && isParticipant && (
           <TestimonialForm
             sessionId={session.id}
-            activity={t(`activities.${session.activity}` as any)}
+            activity={t(`activities.${session.activity}` as Parameters<typeof t>[0])}
             onSuccess={() => setShowTestimonial(false)}
             onCancel={() => setShowTestimonial(false)}
           />
