@@ -298,7 +298,7 @@ export default function OnboardingPage() {
                   autoComplete="email"
                 />
                 {errors.email && (
-                  <p className="text-sm text-destructive">{errors.email}</p>
+                  <p className="text-sm text-destructive" role="alert" aria-live="polite">{errors.email}</p>
                 )}
               </div>
               
@@ -319,12 +319,13 @@ export default function OnboardingPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-destructive">{errors.password}</p>
+                  <p className="text-sm text-destructive" role="alert" aria-live="polite">{errors.password}</p>
                 )}
                 {!isLogin && password && (
                   <PasswordStrengthIndicator password={password} />
@@ -346,7 +347,7 @@ export default function OnboardingPage() {
                       autoComplete="given-name"
                     />
                     {errors.firstName && (
-                      <p className="text-sm text-destructive">{errors.firstName}</p>
+                      <p className="text-sm text-destructive" role="alert" aria-live="polite">{errors.firstName}</p>
                     )}
                   </div>
                   

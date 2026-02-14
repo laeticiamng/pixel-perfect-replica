@@ -64,14 +64,14 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
             variant="outline"
             size="sm"
             onClick={handleDecline}
-            className="flex-1 h-9 text-xs rounded-lg"
+            className="flex-1 h-11 min-h-[44px] text-xs rounded-lg"
           >
             {t('cookies.decline')}
           </Button>
           <Button
             size="sm"
             onClick={handleAccept}
-            className="flex-1 h-9 text-xs bg-coral hover:bg-coral-dark text-primary-foreground rounded-lg"
+            className="flex-1 h-11 min-h-[44px] text-xs bg-coral hover:bg-coral-dark text-primary-foreground rounded-lg"
           >
             {t('cookies.accept')}
           </Button>

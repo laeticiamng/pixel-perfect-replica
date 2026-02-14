@@ -1,0 +1,5 @@
+Contact: mailto:contact@emotionscare.com
+Expires: 2027-02-14T00:00:00.000Z
+Preferred-Languages: fr, en
+Canonical: https://nearvity.fr/.well-known/security.txt
+Policy: https://nearvity.fr/privacy

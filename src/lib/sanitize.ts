@@ -1,6 +1,7 @@
 /**
  * Input sanitization utilities for XSS prevention
  */
+import { z } from 'zod';
 
 // Basic HTML entity encoding to prevent XSS
 export function sanitizeText(input: string): string {
@@ -42,9 +43,9 @@ export function sanitizeEmail(email: string): string {
   // Trim and lowercase
   const cleaned = email.trim().toLowerCase();
   
-  // Basic email format check
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(cleaned)) {
+  // Validate email format using Zod
+  const emailValidation = z.string().email().safeParse(cleaned);
+  if (!emailValidation.success) {
     return '';
   }
   
@@ -93,6 +94,8 @@ export function sanitizeHtml(input: string): string {
   if (!input) return '';
 
   const sanitizedInput = input
+    .replace(/&#x6A;&#x61;&#x76;&#x61;&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;/gi, '')
+    .replace(/&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;/gi, '')
     .replace(/javascript\s*:/gi, '')
     .replace(/vbscript\s*:/gi, '')
     .replace(/data\s*:[^,]*,/gi, '');
