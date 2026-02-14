@@ -74,8 +74,6 @@ export function useSupabaseAuth() {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
-        
         if (event === 'SIGNED_IN' && session?.user) {
           logger.auth.login(session.user.id, 'email');
         } else if (event === 'SIGNED_OUT') {

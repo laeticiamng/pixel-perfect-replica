@@ -4,7 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { normalizeCheckoutPlan } from "./plan.ts";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://nearvity.fr",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
@@ -56,7 +56,7 @@ serve(async (req) => {
     
     if (!userEmail) throw new Error("Email not available in token");
     
-    logStep("User authenticated via claims", { userId, email: userEmail });
+    logStep("User authenticated via claims");
 
     const { plan } = await req.json();
     const normalizedPlan = normalizeCheckoutPlan(plan);
@@ -85,8 +85,8 @@ serve(async (req) => {
     
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
-      logStep("Existing customer found", { customerId });
-      
+      logStep("Existing customer found");
+
       // Check if already has active subscription
       const subscriptions = await stripe.subscriptions.list({
         customer: customerId,
@@ -103,7 +103,9 @@ serve(async (req) => {
       }
     }
 
-    const origin = req.headers.get("origin") || "https://nearvity.fr";
+    const ALLOWED_ORIGINS = ["https://nearvity.fr", "https://www.nearvity.fr"];
+    const requestOrigin = req.headers.get("origin") || "";
+    const origin = ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : "https://nearvity.fr";
     
     const session = await stripe.checkout.sessions.create({
       customer: customerId,

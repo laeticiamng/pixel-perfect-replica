@@ -25,6 +25,7 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { useTranslation } from '@/lib/i18n';
 import { ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function MapPage() {
   const { t } = useTranslation();
@@ -104,6 +105,7 @@ export default function MapPage() {
   }
 
   return (
+    <ErrorBoundary>
     <PageLayout className="pb-28" animate={false}>
       <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
         {/* Header */}
@@ -435,5 +437,6 @@ export default function MapPage() {
         <BottomNav />
       </div>
     </PageLayout>
+    </ErrorBoundary>
   );
 }

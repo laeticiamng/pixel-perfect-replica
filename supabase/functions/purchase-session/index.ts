@@ -3,7 +3,7 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://nearvity.fr",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
@@ -38,11 +38,10 @@ serve(async (req) => {
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
     
-    logStep("User authenticated", { userId: user.id, email: user.email });
+    logStep("User authenticated");
 
     const { quantity = 1 } = await req.json().catch(() => ({ quantity: 1 }));
     const sessionQuantity = Math.min(Math.max(1, quantity), 10); // Limit 1-10 sessions per purchase
-    logStep("Quantity", { quantity: sessionQuantity });
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -55,10 +54,12 @@ serve(async (req) => {
     
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
-      logStep("Existing customer found", { customerId });
+      logStep("Existing customer found");
     }
 
-    const origin = req.headers.get("origin") || "https://nearvity.fr";
+    const ALLOWED_ORIGINS = ["https://nearvity.fr", "https://www.nearvity.fr"];
+    const requestOrigin = req.headers.get("origin") || "";
+    const origin = ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : "https://nearvity.fr";
     
     const session = await stripe.checkout.sessions.create({
       customer: customerId,

@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': 'https://nearvity.fr',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
@@ -79,7 +79,7 @@ serve(async (req) => {
     const action = url.searchParams.get('action') || 'icebreaker';
     const body = await req.json();
 
-    console.log(`[ai-assistant] Action: ${action}`, JSON.stringify(body, null, 2));
+    console.log(`[ai-assistant] Action: ${action}`);
 
     // Create Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -105,7 +105,7 @@ serve(async (req) => {
       const rateLimitResult = checkInMemoryRateLimit(userId, action);
       
       if (!rateLimitResult.allowed) {
-        console.log(`[ai-assistant] Rate limit exceeded for user ${userId}, action: ${action}`);
+        console.log(`[ai-assistant] Rate limit exceeded for action: ${action}`);
         return new Response(JSON.stringify({ 
           error: 'Rate limit exceeded',
           retry_after: rateLimitResult.retryAfter 
