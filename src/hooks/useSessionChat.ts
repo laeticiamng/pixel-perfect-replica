@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePushNotifications } from './usePushNotifications';
 import { useTranslation } from '@/lib/i18n';
 import { sanitizeInput } from '@/lib/sanitize';
+import { logger } from '@/lib/logger';
 
 interface Message {
   id: string;
@@ -71,7 +72,7 @@ export function useSessionChat(sessionId: string) {
 
       setMessages(messagesWithProfiles);
     } catch (error) {
-      console.error('[useSessionChat] Error fetching messages:', error);
+      logger.api.error('session_messages', 'select', String(error));
     } finally {
       setIsLoading(false);
     }
@@ -97,7 +98,7 @@ export function useSessionChat(sessionId: string) {
       if (error) throw error;
       return { success: true };
     } catch (error) {
-      console.error('[useSessionChat] Error sending message:', error);
+      logger.api.error('session_messages', 'insert', String(error));
       return { success: false, error };
     } finally {
       setIsSending(false);

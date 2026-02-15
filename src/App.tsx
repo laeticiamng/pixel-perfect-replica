@@ -94,6 +94,7 @@ function AnimatedRoutes() {
         variants={pageVariants}
         className="will-change-transform"
       >
+        <ErrorBoundary>
         <Suspense fallback={<FullPageLoader message="Chargement..." />}>
           <Routes location={location}>
             {/* Public Routes */}
@@ -247,6 +248,7 @@ function AnimatedRoutes() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+        </ErrorBoundary>
       </motion.div>
     </AnimatePresence>
   );

@@ -1,24 +1,7 @@
 import { createContext, useContext, useMemo, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
-
-interface Profile {
-  id: string;
-  email: string;
-  first_name: string;
-  avatar_url: string | null;
-  university: string | null;
-  is_premium: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-interface UserStats {
-  interactions: number;
-  hours_active: number;
-  rating: number;
-  total_ratings: number;
-}
+import type { Profile, UserStats } from '@/types/auth';
 
 interface AuthContextType {
   user: User | null;
