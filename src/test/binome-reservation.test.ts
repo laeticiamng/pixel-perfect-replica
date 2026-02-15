@@ -278,20 +278,20 @@ describe('Chat Message Sanitization', () => {
     expect(sanitized).toContain('Normal text');
   });
 
-  it('should sanitize HTML entities for XSS prevention', () => {
-    const xss = 'javascript:alert(1)';
+  it('should strip script tags for XSS prevention', () => {
+    const xss = '<script>alert(1)</script>';
     const sanitized = sanitizeHtml(xss);
-    expect(sanitized).not.toContain('javascript:');
+    expect(sanitized).not.toContain('<script>');
+    expect(sanitized).not.toContain('alert');
+    expect(sanitized).toBe('');
   });
 
   it('should handle event handler injection', () => {
     const xss = '<img onerror=alert(1) src=x>';
     const sanitized = sanitizeHtml(xss);
-    // sanitizeHtml escapes HTML entities, so the tag becomes safe text
-    expect(sanitized).toContain('&lt;');
-    expect(sanitized).toContain('&gt;');
-    // The = sign is escaped to prevent attribute parsing
-    expect(sanitized).toContain('&#x3D;');
+    // DOMPurify keeps the img tag but strips the dangerous onerror attribute
+    expect(sanitized).not.toContain('onerror');
+    expect(sanitized).toContain('<img');
   });
 });
 

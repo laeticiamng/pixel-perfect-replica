@@ -66,15 +66,20 @@ describe("Complete Application Tests", () => {
       expect(sanitizeDbText("Hello\0World")).toBe("HelloWorld");
     });
 
-    it("should sanitize HTML entities", () => {
-      expect(sanitizeHtml("<div>Test</div>")).not.toContain("<div>");
-      expect(sanitizeHtml("test=\"value\"")).toContain("&#x3D;");
-      expect(sanitizeHtml("<img onerror='alert(1)'>")).not.toContain("<img");
+    it("should sanitize HTML intelligently", () => {
+      // DOMPurify preserves safe HTML elements
+      expect(sanitizeHtml("<div>Test</div>")).toContain("<div>");
+      // Plain text passes through as-is
+      expect(sanitizeHtml("test=\"value\"")).toContain("test=");
+      // DOMPurify keeps img tag but strips dangerous onerror attribute
+      expect(sanitizeHtml("<img onerror='alert(1)'>")).not.toContain("onerror");
+      expect(sanitizeHtml("<img onerror='alert(1)'>")).toContain("<img");
     });
 
     it("should strip HTML tags", () => {
       expect(stripHtml("<p>Hello</p>")).toBe("Hello");
-      expect(stripHtml("<script>bad</script>")).toBe("bad");
+      // DOMPurify strips script tags AND their content
+      expect(stripHtml("<script>bad</script>")).toBe("");
       expect(stripHtml("No tags here")).toBe("No tags here");
     });
 

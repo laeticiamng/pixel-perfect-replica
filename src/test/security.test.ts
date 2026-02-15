@@ -29,9 +29,10 @@ describe("Security - Input Sanitization", () => {
       expect(sanitizeHtml("<script>alert('xss')</script>")).not.toContain("<script>");
     });
 
-    it("should escape special characters", () => {
+    it("should preserve safe HTML elements", () => {
       const result = sanitizeHtml("<div class=\"test\">&amp;</div>");
-      expect(result).not.toContain("<div");
+      expect(result).toContain("<div");
+      expect(result).toContain("&amp;");
     });
   });
 
@@ -112,19 +113,20 @@ describe("Security - Input Validation", () => {
 });
 
 describe("Security - XSS Prevention", () => {
-  it("should escape script tags to prevent XSS", () => {
+  it("should strip script tags entirely to prevent XSS", () => {
     const maliciousInput = "<script>alert('xss')</script>";
     const sanitized = sanitizeHtml(maliciousInput);
-    // Tags should be escaped, not contain actual < and >
+    // DOMPurify removes script tags and their content entirely
     expect(sanitized).not.toContain("<script>");
-    expect(sanitized).toContain("&lt;script&gt;");
+    expect(sanitized).not.toContain("alert");
+    expect(sanitized).toBe("");
   });
 
-  it("should escape equals signs used in event handlers", () => {
+  it("should strip dangerous attributes from elements", () => {
     const maliciousInput = "<img onerror='alert(1)' src='x'>";
     const sanitized = sanitizeHtml(maliciousInput);
-    // The = signs should be escaped
-    expect(sanitized).toContain("&#x3D;");
-    expect(sanitized).not.toContain("<img");
+    // DOMPurify keeps the img tag but removes the dangerous onerror attribute
+    expect(sanitized).not.toContain("onerror");
+    expect(sanitized).toContain("<img");
   });
 });
