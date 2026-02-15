@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { X, Radio, RefreshCw, Info, Filter, Map, Radar } from 'lucide-react';
+import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
 import { PageLayout } from '@/components/PageLayout';
-import { 
-  ActivitySelector, 
-  ActivityFilter, 
-  ExpirationTimer, 
-  LocationDescriptionInput, 
+import { FullPageLoader } from '@/components/shared/FullPageLoader';
+import {
+  ActivitySelector,
+  ActivityFilter,
+  ExpirationTimer,
+  LocationDescriptionInput,
   SearchingIndicator,
   InteractiveMap,
   SignalHistoryPanel,
@@ -29,8 +30,9 @@ import { cn } from '@/lib/utils';
 export default function MapPage() {
   const { t } = useTranslation();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
-  const { position, error: locationError } = useLocationStore();
+  const { position, error: locationError, isWatching } = useLocationStore();
   const { hasSeenLocationPrompt, setHasSeenLocationPrompt, showDemoSignals, setShowDemoSignals } = useSettingsStore();
+  const [locationBannerDismissed, setLocationBannerDismissed] = useState(false);
   const {
     profile,
     settings,
@@ -93,7 +95,7 @@ export default function MapPage() {
     return (
       <PageLayout className="pb-28" animate={false}>
         <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
-          <LocationPermissionScreen 
+          <LocationPermissionScreen
             onRequestPermission={handleRequestLocation}
             onSkip={handleSkipLocation}
           />
@@ -103,9 +105,42 @@ export default function MapPage() {
     );
   }
 
+  // Show loading state while waiting for position
+  if (isWatching && !position && !locationError) {
+    return (
+      <PageLayout className="pb-28" animate={false}>
+        <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
+          <FullPageLoader message={t('mapUI.loadingMap')} />
+          <BottomNav />
+        </div>
+      </PageLayout>
+    );
+  }
+
+  // Geolocation error banner
+  const showLocationBanner = locationError && !locationBannerDismissed;
+  const locationBannerMessage = locationError === 'location_denied'
+    ? t('mapUI.locationDenied')
+    : t('mapUI.locationFallback');
+
   return (
     <PageLayout className="pb-28" animate={false}>
       <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
+        {/* Geolocation fallback banner */}
+        {showLocationBanner && (
+          <div className="px-6 pt-4">
+            <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-signal-yellow/10 border border-signal-yellow/30 text-sm">
+              <div className="flex items-center gap-2 text-signal-yellow">
+                <MapPin className="h-4 w-4 shrink-0" />
+                <span>{locationBannerMessage}</span>
+              </div>
+              <button onClick={() => setLocationBannerDismissed(true)} className="text-muted-foreground hover:text-foreground">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <header className="safe-top px-6 py-4">
           <div className="glass-strong rounded-2xl p-4 shadow-medium">

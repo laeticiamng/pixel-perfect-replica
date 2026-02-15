@@ -205,8 +205,7 @@ export function useConnections() {
       supabase.removeChannel(channelA);
       supabase.removeChannel(channelB);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [user?.id, refreshConnections]);
 
   return {
     connections,

@@ -138,6 +138,25 @@ export const translations = {
     orContinueWith: { en: 'or continue with', fr: 'ou continuer avec' },
   },
 
+  // Validation messages
+  validation: {
+    emailInvalid: { en: 'Invalid email', fr: 'Email invalide' },
+    emailTooLong: { en: 'Email too long (max 255 characters)', fr: 'Email trop long (max 255 caract\u00e8res)' },
+    passwordTooShort: { en: 'Password too short (min 6 characters)', fr: 'Mot de passe trop court (min 6 caract\u00e8res)' },
+    passwordTooLong: { en: 'Password too long (max 100 characters)', fr: 'Mot de passe trop long (max 100 caract\u00e8res)' },
+    passwordNeedsLower: { en: 'Must contain at least one lowercase letter', fr: 'Doit contenir au moins une minuscule' },
+    passwordNeedsUpper: { en: 'Must contain at least one uppercase letter', fr: 'Doit contenir au moins une majuscule' },
+    passwordNeedsNumber: { en: 'Must contain at least one number', fr: 'Doit contenir au moins un chiffre' },
+    passwordRequired: { en: 'Password required', fr: 'Mot de passe requis' },
+    firstNameRequired: { en: 'First name required', fr: 'Pr\u00e9nom requis' },
+    firstNameTooLong: { en: 'First name too long (max 50 characters)', fr: 'Pr\u00e9nom trop long (max 50 caract\u00e8res)' },
+    firstNameInvalidChars: { en: 'Invalid characters in first name', fr: 'Caract\u00e8res invalides dans le pr\u00e9nom' },
+    universityTooLong: { en: 'University name too long', fr: "Nom d'universit\u00e9 trop long" },
+    weak: { en: 'weak', fr: 'faible' },
+    medium: { en: 'medium', fr: 'moyen' },
+    strong: { en: 'strong', fr: 'fort' },
+  },
+
   // Onboarding
   onboarding: {
     enableLocation: { en: 'Enable location', fr: 'Active la localisation' },
@@ -560,6 +579,9 @@ export const translations = {
     activating: { en: 'Activating...', fr: 'Activation...' },
     deactivateSignal: { en: 'Deactivate your signal', fr: 'Désactiver ton signal' },
     activateSignal: { en: 'Activate your signal', fr: 'Activer ton signal' },
+    loadingMap: { en: 'Loading map...', fr: 'Chargement de la carte...' },
+    locationFallback: { en: 'Geolocation unavailable — showing demo position', fr: 'G\u00e9olocalisation indisponible \u2014 position de d\u00e9mo affich\u00e9e' },
+    locationDenied: { en: 'Location access denied — showing demo position', fr: 'Acc\u00e8s \u00e0 la localisation refus\u00e9 \u2014 position de d\u00e9mo affich\u00e9e' },
   },
 
   // Edit profile page

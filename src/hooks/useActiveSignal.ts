@@ -363,12 +363,13 @@ export function useActiveSignal() {
     }
   }, [isAuthenticated, fetchMySignal]);
 
-  // Update position when it changes
+  // Update position when it changes — only fires on actual coordinate changes
   useEffect(() => {
     if (mySignal && position) {
       updatePosition();
     }
-  }, [position]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position?.latitude, position?.longitude]);
 
   // Setup realtime subscription for nearby signals
   useEffect(() => {

@@ -146,8 +146,7 @@ export function useSessionChat(sessionId: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId, user?.id]);
+  }, [sessionId, user?.id, fetchMessages, getProfilesCached, t, showNotification]);
 
   return {
     messages,
