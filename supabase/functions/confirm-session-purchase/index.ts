@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://nearvity.fr",
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
@@ -34,16 +34,16 @@ serve(async (req) => {
     const user = userData.user;
     if (!user) throw new Error("User not authenticated");
     
-    logStep("User authenticated");
+    logStep("User authenticated", { userId: user.id });
 
     const { sessions_purchased } = await req.json();
     const count = parseInt(sessions_purchased, 10);
-
+    
     if (isNaN(count) || count < 1 || count > 10) {
       throw new Error("Invalid sessions count");
     }
-
-    logStep("Adding sessions");
+    
+    logStep("Adding sessions", { count });
 
     // Add purchased sessions to user profile
     const { data: newTotal, error: addError } = await supabaseClient

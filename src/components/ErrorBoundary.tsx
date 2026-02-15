@@ -71,14 +71,14 @@ export class ErrorBoundary extends Component<Props, State> {
             <Button
               variant="outline"
               onClick={this.handleGoHome}
-              className="rounded-xl focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2"
+              className="rounded-xl"
             >
               <Home className="mr-2 h-4 w-4" />
               {translations.errors.home[locale]}
             </Button>
             <Button
               onClick={this.handleReload}
-              className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2"
+              className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl"
             >
               <RefreshCw className="mr-2 h-4 w-4" />
               {translations.errors.reload[locale]}

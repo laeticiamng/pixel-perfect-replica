@@ -24,7 +24,7 @@ interface PastSession {
   start_time: string;
   duration_minutes: number;
   city: string;
-  location_name?: string | null;
+  location_name?: string;
   status: string;
   creator_id: string;
   creator_name?: string;

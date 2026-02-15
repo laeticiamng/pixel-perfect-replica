@@ -1,11 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { logger } from '@/lib/logger';
 import { generateMockUsers } from '@/utils/mockData';
 import { useTranslation } from '@/lib/i18n';
-import { calculateDistance } from '@/utils/distance';
 
 type SignalType = 'green' | 'yellow' | 'red';
 type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
@@ -52,6 +51,7 @@ export function useActiveSignal() {
       .maybeSingle();
 
     if (error) {
+      console.error('Error fetching signal:', error);
       return;
     }
 
@@ -96,9 +96,9 @@ export function useActiveSignal() {
       }
       return { data, error };
     } else {
-      // Rate limit check - use edge_function_rate_limits table
+      // Check rate limit before creating a new signal (max 10/hour)
       const { data: rateLimitOk } = await supabase
-        .rpc('check_edge_function_rate_limit', { p_user_id: user.id, p_function_name: 'signal_activate', p_max_requests: 10, p_window_seconds: 3600 });
+        .rpc('check_signal_rate_limit', { p_user_id: user.id });
 
       if (rateLimitOk === false) {
         setIsLoading(false);
@@ -122,7 +122,10 @@ export function useActiveSignal() {
         .select()
         .single();
 
-      // Signal creation recorded via rate limit RPC above
+      // Record signal creation for rate limiting
+      if (!error && data) {
+        await supabase.from('signal_rate_limits').insert({ user_id: user.id });
+      }
 
       setIsLoading(false);
       if (!error && data) {
@@ -240,8 +243,8 @@ export function useActiveSignal() {
               longitude: Number(signal.longitude),
             },
           };
-        }).filter((u: NearbyUser) => (u.distance ?? 0) <= maxDistance)
-          .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
+        }).filter((u: NearbyUser) => u.distance <= maxDistance)
+          .sort((a, b) => a.distance - b.distance);
 
         if (nearby.length > 0) {
           setIsDemoMode(false);
@@ -266,6 +269,7 @@ export function useActiveSignal() {
         .gte('expires_at', new Date().toISOString());
 
       if (fallbackError) {
+        console.error('Error fetching nearby signals:', fallbackError);
         return;
       }
 
@@ -332,9 +336,25 @@ export function useActiveSignal() {
       setIsDemoMode(false);
       setNearbyUsers(nearbyFiltered);
     } catch (err) {
-      // error handled silently
+      console.error('Error in fetchNearbyUsers:', err);
     }
   }, [user, position]);
+
+  // Haversine distance calculation
+  function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = (lat1 * Math.PI) / 180;
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return Math.round(R * c);
+  }
 
   // Initial fetch
   useEffect(() => {
@@ -351,22 +371,14 @@ export function useActiveSignal() {
   }, [position]);
 
   // Setup realtime subscription for nearby signals
-  const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
-
   useEffect(() => {
     if (!user || !position) return;
 
     // Initial fetch
     fetchNearbyUsers(200);
 
-    // Clean up previous channel before creating a new one
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
-    }
-
     const channel = supabase
-      .channel(`active-signals-realtime-${user.id}`)
+      .channel('active-signals-realtime')
       .on(
         'postgres_changes',
         {
@@ -375,6 +387,7 @@ export function useActiveSignal() {
           table: 'active_signals',
         },
         () => {
+          console.log('[Realtime] New signal activated nearby');
           fetchNearbyUsers(200);
         }
       )
@@ -386,7 +399,9 @@ export function useActiveSignal() {
           table: 'active_signals',
         },
         (payload) => {
+          // Only refetch if it's not my own signal update
           if (payload.new && (payload.new as { user_id: string }).user_id !== user.id) {
+            console.log('[Realtime] Signal updated nearby');
             fetchNearbyUsers(200);
           }
         }
@@ -399,19 +414,20 @@ export function useActiveSignal() {
           table: 'active_signals',
         },
         () => {
+          console.log('[Realtime] Signal deactivated nearby');
           fetchNearbyUsers(200);
         }
       )
-      .subscribe();
-
-    channelRef.current = channel;
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('[Realtime] Connected to active_signals');
+        }
+      });
 
     return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
+      supabase.removeChannel(channel);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, fetchNearbyUsers]);
 
   return {

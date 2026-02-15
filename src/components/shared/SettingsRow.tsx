@@ -73,7 +73,6 @@ export function SettingsRow(props: SettingsRowProps) {
 
       {type === 'toggle' && (
         <Switch
-          aria-label={label}
           checked={props.value}
           onCheckedChange={props.onChange}
           disabled={props.disabled || premium}
@@ -95,7 +94,6 @@ export function SettingsRow(props: SettingsRowProps) {
         </div>
         <div className="mt-4 px-1">
           <Slider
-            aria-label={label}
             value={[props.value]}
             onValueChange={([value]) => props.onChange(value)}
             min={props.min}
@@ -140,7 +138,6 @@ export function SettingsRow(props: SettingsRowProps) {
         className={cn(
           "w-full glass rounded-xl p-4 flex items-center justify-between gap-4",
           "hover:bg-muted/50 active:bg-muted/70 transition-colors",
-          "focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2",
           className
         )}
       >

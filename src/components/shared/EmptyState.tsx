@@ -31,7 +31,7 @@ export function EmptyState({
   
   return (
     <div className={cn("text-center py-12", className)}>
-      <div className="text-muted-foreground mx-auto mb-4" aria-hidden="true">
+      <div className="text-muted-foreground mx-auto mb-4">
         {isLucideIcon ? (
           <Icon className="h-12 w-12 mx-auto" />
         ) : (

@@ -8,7 +8,7 @@ export const emailSchema = z
 
 export const passwordSchema = z
   .string()
-  .min(12, { message: "Mot de passe trop court (min 12 caractères)" })
+  .min(6, { message: "Mot de passe trop court (min 6 caractères)" })
   .max(100, { message: "Mot de passe trop long (max 100 caractères)" })
   .regex(/[a-z]/, { message: "Doit contenir au moins une minuscule" })
   .regex(/[A-Z]/, { message: "Doit contenir au moins une majuscule" })
@@ -29,7 +29,7 @@ export const universitySchema = z
 
 export const loginSchema = z.object({
   email: z.string().trim().email({ message: "Email invalide" }),
-  password: z.string().min(6, { message: "Mot de passe requis" }),
+  password: z.string().min(4, { message: "Mot de passe requis" }),
 });
 
 export const registerSchema = z.object({
@@ -51,9 +51,9 @@ export function getPasswordStrength(password: string): {
   color: string;
 } {
   let score = 0;
-
-  if (password.length >= 8) score++;
-  if (password.length >= 12) score++;
+  
+  if (password.length >= 6) score++;
+  if (password.length >= 10) score++;
   if (/[a-z]/.test(password)) score++;
   if (/[A-Z]/.test(password)) score++;
   if (/[0-9]/.test(password)) score++;
@@ -69,10 +69,11 @@ export const signupSchema = registerSchema;
 
 // Email validation helper
 export function validateEmail(email: string): boolean {
-  return emailSchema.safeParse(email).success;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email.trim());
 }
 
 // Password validation helper
 export function validatePassword(password: string): boolean {
-  return password.length >= 12;
+  return password.length >= 6;
 }

@@ -6,7 +6,6 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { ACTIVITIES } from '@/types/signal';
 import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
-import { calculateDistance } from '@/utils/distance';
 
 interface CompatibleSignal {
   userId: string;
@@ -33,6 +32,16 @@ export function useSignalMatching({ isActive, myActivity, onMatch }: UseSignalMa
   const { t } = useTranslation();
   const notifiedMatchesRef = useRef<Set<string>>(new Set());
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+
+  const calculateDistance = useCallback((lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371e3;
+    const p1 = (lat1 * Math.PI) / 180;
+    const p2 = (lat2 * Math.PI) / 180;
+    const dp = ((lat2 - lat1) * Math.PI) / 180;
+    const dl = ((lon2 - lon1) * Math.PI) / 180;
+    const a = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+    return Math.round(2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  }, []);
 
   const isCompatibleActivity = useCallback((theirActivity: string, mine: string | null): boolean => {
     if (!mine) return false;
@@ -132,7 +141,7 @@ export function useSignalMatching({ isActive, myActivity, onMatch }: UseSignalMa
     }
 
     onMatch?.({ userId: signal.user_id, firstName, activity: signal.activity, distance });
-  }, [user, position, isActive, myActivity, settings, isCompatibleActivity, onMatch, t]);
+  }, [user, position, isActive, myActivity, settings, calculateDistance, isCompatibleActivity, onMatch, t]);
 
   useEffect(() => {
     if (!isActive || !user || !myActivity) {

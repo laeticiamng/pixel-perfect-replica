@@ -44,7 +44,7 @@ export function useMapPageLogic() {
   // Setup realtime notifications for new nearby users
   const { initializeKnownUsers } = useNearbyNotifications({
     isActive,
-    onNewUserNearby: useCallback((_nearbyUser: { firstName: string; activity: string; distance: number }) => {
+    onNewUserNearby: useCallback((_nearbyUser) => {
       if (position) {
         fetchNearbyUsers(settings.visibility_distance);
       }
@@ -55,7 +55,7 @@ export function useMapPageLogic() {
   useSignalMatching({
     isActive,
     myActivity: myActivity || null,
-    onMatch: useCallback((match: { userId: string; firstName: string; activity: string; distance: number }) => {
+    onMatch: useCallback((match) => {
       // Refresh nearby users when a compatible match is found
       if (position) {
         fetchNearbyUsers(settings.visibility_distance);
