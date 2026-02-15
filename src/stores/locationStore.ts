@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Position } from '@/types/signal';
 import { DEFAULT_POSITION } from '@/utils/mockData';
+import { logger } from '@/lib/logger';
 
 interface LocationState {
   position: Position | null;
@@ -47,7 +48,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
         });
       },
       (error) => {
-        console.warn('Geolocation error:', error.code, error.message);
+        logger.ui.warning(`Geolocation error: code=${error.code} ${error.message}`);
         const errorMsg = error.code === 1
           ? 'location_denied'
           : 'location_unavailable';

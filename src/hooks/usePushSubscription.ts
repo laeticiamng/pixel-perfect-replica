@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface PushSubscription {
   endpoint: string;
@@ -44,7 +45,7 @@ export function usePushSubscription() {
       setIsSubscribed(false);
       return false;
     } catch (error) {
-      console.error('[usePushSubscription] Check error:', error);
+      logger.api.error('push_subscriptions', 'check', String(error));
       return false;
     }
   }, [user]);
@@ -98,7 +99,7 @@ export function usePushSubscription() {
       setIsLoading(false);
       return true;
     } catch (error) {
-      console.error('[usePushSubscription] Subscribe error:', error);
+      logger.api.error('push_subscriptions', 'subscribe', String(error));
       setIsLoading(false);
       return false;
     }
@@ -130,7 +131,7 @@ export function usePushSubscription() {
       setIsLoading(false);
       return true;
     } catch (error) {
-      console.error('[usePushSubscription] Unsubscribe error:', error);
+      logger.api.error('push_subscriptions', 'unsubscribe', String(error));
       setIsLoading(false);
       return false;
     }

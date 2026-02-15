@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface NewBadgeProps {
   className?: string;
@@ -27,14 +28,14 @@ export function NewBadge({ className }: NewBadgeProps) {
           .limit(1);
 
         if (error) {
-          console.error('Error checking user sessions:', error);
+          logger.api.error('scheduled_sessions', 'check-new', String(error));
           return;
         }
 
         // Show badge if no sessions created yet
         setShowBadge(!data || data.length === 0);
       } catch (err) {
-        console.error('Error:', err);
+        logger.api.error('scheduled_sessions', 'check-new', String(err));
       }
     };
 
@@ -77,13 +78,13 @@ export function useShowNewBadge() {
           .limit(1);
 
         if (error) {
-          console.error('Error checking user sessions:', error);
+          logger.api.error('scheduled_sessions', 'check-new', String(error));
           return;
         }
 
         setShowBadge(!data || data.length === 0);
       } catch (err) {
-        console.error('Error:', err);
+        logger.api.error('scheduled_sessions', 'check-new', String(err));
       }
     };
 

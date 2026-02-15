@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 import { 
   getCachedRecommendations, 
   cacheRecommendations, 
@@ -85,7 +86,7 @@ export function useLocationRecommendations() {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
-      console.error('[useLocationRecommendations] Error:', err);
+      logger.api.error('recommendations', 'fetch', String(err));
       return [];
     } finally {
       setIsLoading(false);

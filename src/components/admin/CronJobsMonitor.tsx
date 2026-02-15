@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { formatDistanceToNow, format } from 'date-fns';
 import { fr, enUS } from 'date-fns/locale';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { logger } from '@/lib/logger';
 
 interface CronExecution {
   id: string;
@@ -65,7 +66,7 @@ export function CronJobsMonitor() {
       if (error) throw error;
       setExecutionHistory((data as CronExecution[]) || []);
     } catch (error) {
-      console.error('Error fetching execution history:', error);
+      logger.api.error('cron_executions', 'fetch', String(error));
     } finally {
       setLoadingHistory(false);
     }
@@ -83,7 +84,7 @@ export function CronJobsMonitor() {
       if (error) throw error;
       return data?.id;
     } catch (error) {
-      console.error('Error logging execution start:', error);
+      logger.api.error('cron_executions', 'log-start', String(error));
       return null;
     }
   };
@@ -103,7 +104,7 @@ export function CronJobsMonitor() {
       }).eq('id', executionId);
       fetchHistory();
     } catch (error) {
-      console.error('Error logging execution end:', error);
+      logger.api.error('cron_executions', 'log-end', String(error));
     }
   };
 
@@ -124,7 +125,7 @@ export function CronJobsMonitor() {
       await logExecutionEnd(executionId, 'success', response.data);
       toast.success(t(successKey));
     } catch (error) {
-      console.error(`${jobName} error:`, error);
+      logger.api.error('cron_jobs', jobName, String(error));
       setJobStatuses(prev => ({ ...prev, [jobName]: 'error' }));
       await logExecutionEnd(executionId, 'error', undefined, String(error));
       toast.error(t(errorKey));

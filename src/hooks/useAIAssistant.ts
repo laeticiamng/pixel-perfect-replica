@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { ActivityType } from '@/types/signal';
 import { useI18nStore } from '@/lib/i18n/useTranslation';
+import { logger } from '@/lib/logger';
 
 interface IcebreakerContext {
   time_of_day?: string;
@@ -55,7 +56,7 @@ export function useAIAssistant() {
       });
 
       if (fnError) {
-        console.error('AI Assistant error:', fnError);
+        logger.api.error('ai_assistant', 'icebreaker', String(fnError));
         throw new Error(fnError.message);
       }
 
@@ -67,7 +68,7 @@ export function useAIAssistant() {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
-      console.error('Icebreaker generation failed:', err);
+      logger.api.error('ai_assistant', 'icebreaker', String(err));
       
       // Return fallback icebreakers
       return getFallbackIcebreakers(activity, locale);
@@ -113,7 +114,7 @@ export function useAIAssistant() {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
-      console.error('Session recommendations failed:', err);
+      logger.api.error('ai_assistant', 'recommendations', String(err));
       return null;
     } finally {
       setIsLoading(false);

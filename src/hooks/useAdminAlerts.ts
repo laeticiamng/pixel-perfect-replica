@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdminCheck } from './useAdminCheck';
+import { logger } from '@/lib/logger';
 
 interface AlertPreferences {
   id?: string;
@@ -39,7 +40,7 @@ export function useAdminAlerts() {
       .maybeSingle();
 
     if (error) {
-      console.error('Error fetching alert preferences:', error);
+      logger.api.error('admin_alert_preferences', 'fetch', String(error));
       return;
     }
 
@@ -83,7 +84,7 @@ export function useAdminAlerts() {
       .limit(limit);
 
     if (error) {
-      console.error('Error fetching alert logs:', error);
+      logger.api.error('admin_alert_logs', 'fetch', String(error));
       return;
     }
 

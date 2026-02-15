@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
+import { logger } from '@/lib/logger';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
@@ -92,7 +93,7 @@ export default function PremiumPage() {
             refetchQuota();
           })
           .catch((err) => {
-            console.error('Error confirming session purchase:', err);
+            logger.api.error('subscriptions', 'confirm-purchase', String(err));
             toast.error(t('premium.confirmError'));
           });
       }
@@ -118,7 +119,7 @@ export default function PremiumPage() {
         window.open(checkoutUrl, '_blank');
       }
     } catch (error) {
-      console.error('[PremiumPage] Subscribe error:', error);
+      logger.api.error('subscriptions', 'subscribe', String(error));
       toast.error(error instanceof Error ? error.message : t('errors.generic'));
     } finally {
       setIsLoading(null);
@@ -140,7 +141,7 @@ export default function PremiumPage() {
         window.open(checkoutUrl, '_blank');
       }
     } catch (error) {
-      console.error('[PremiumPage] Purchase session error:', error);
+      logger.api.error('subscriptions', 'purchase-session', String(error));
       toast.error(error instanceof Error ? error.message : t('errors.generic'));
     } finally {
       setIsLoading(null);
@@ -155,7 +156,7 @@ export default function PremiumPage() {
         window.open(portalUrl, '_blank');
       }
     } catch (error) {
-      console.error('[PremiumPage] Portal error:', error);
+      logger.api.error('subscriptions', 'portal', String(error));
       toast.error(error instanceof Error ? error.message : t('errors.generic'));
     } finally {
       setIsLoading(null);

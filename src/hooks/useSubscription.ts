@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface SubscriptionStatus {
   subscribed: boolean;
@@ -41,7 +42,7 @@ export function useSubscription() {
       // Refresh profile to get updated is_premium status
       await refreshProfile();
     } catch (err) {
-      console.error('[useSubscription] Error:', err);
+      logger.api.error('subscriptions', 'fetch', String(err));
       setError(err instanceof Error ? err.message : 'Verification error');
     } finally {
       setIsLoading(false);
@@ -55,7 +56,7 @@ export function useSubscription() {
     // Refresh session to ensure valid token
     const { error: refreshError } = await supabase.auth.refreshSession();
     if (refreshError) {
-      console.error('[useSubscription] Session refresh failed:', refreshError);
+      logger.api.error('auth', 'session-refresh', String(refreshError));
       throw new Error('Session expired, please log in again');
     }
 

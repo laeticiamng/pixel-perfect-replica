@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
 import { firstNameSchema, universitySchema } from '@/lib/validation';
+import { logger } from '@/lib/logger';
 import { PageLayout } from '@/components/PageLayout';
 import { PageHeader } from '@/components/shared';
 import { FavoriteActivitiesSelector } from '@/components/social';
@@ -97,7 +98,7 @@ export default function EditProfilePage() {
       setAvatarUrl(publicUrl);
       toast.success(t('editProfile.photoUpdated'));
     } catch (error) {
-      console.error('Upload error:', error);
+      logger.api.error('avatars', 'upload', String(error));
       toast.error(t('editProfile.uploadError'));
     } finally {
       setIsUploading(false);
@@ -115,7 +116,7 @@ export default function EditProfilePage() {
       setAvatarUrl('');
       toast.success(t('editProfile.photoDeleted'));
     } catch (error) {
-      console.error('Delete error:', error);
+      logger.api.error('avatars', 'delete', String(error));
       toast.error(t('editProfile.deleteError'));
     } finally {
       setIsUploading(false);

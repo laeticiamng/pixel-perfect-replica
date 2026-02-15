@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/PageLayout";
 import { Home, Search } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
+import { logger } from "@/lib/logger";
 
 const NotFound = () => {
   const location = useLocation();
@@ -11,7 +12,7 @@ const NotFound = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
+    logger.ui.warning(`404: attempted to access ${location.pathname}`);
   }, [location.pathname]);
 
   return (

@@ -2,6 +2,7 @@
  * Client-side cache for AI location recommendations
  * Reduces Perplexity API calls by caching results for 24 hours
  */
+import { logger } from '@/lib/logger';
 
 interface CachedRecommendation {
   data: {
@@ -61,7 +62,7 @@ export function getCachedRecommendations(
     console.log('[RecommendationCache] Cache hit for:', activity, city);
     return parsed.data;
   } catch (error) {
-    console.error('[RecommendationCache] Error reading cache:', error);
+    logger.ui.error('RecommendationCache', 'Error reading cache: ' + String(error));
     return null;
   }
 }
@@ -86,7 +87,7 @@ export function cacheRecommendations(
     localStorage.setItem(key, JSON.stringify(cacheEntry));
     console.log('[RecommendationCache] Cached recommendations for:', activity, city);
   } catch (error) {
-    console.error('[RecommendationCache] Error caching:', error);
+    logger.ui.error('RecommendationCache', 'Error caching: ' + String(error));
     // If localStorage is full, clear old entries
     if (error instanceof DOMException && error.name === 'QuotaExceededError') {
       clearExpiredCache();
@@ -121,7 +122,7 @@ export function clearExpiredCache(): void {
     keysToRemove.forEach(key => localStorage.removeItem(key));
     console.log('[RecommendationCache] Cleared', keysToRemove.length, 'expired entries');
   } catch (error) {
-    console.error('[RecommendationCache] Error clearing cache:', error);
+    logger.ui.error('RecommendationCache', 'Error clearing cache: ' + String(error));
   }
 }
 
@@ -142,7 +143,7 @@ export function clearAllRecommendationCache(): void {
     keysToRemove.forEach(key => localStorage.removeItem(key));
     console.log('[RecommendationCache] Cleared all', keysToRemove.length, 'cache entries');
   } catch (error) {
-    console.error('[RecommendationCache] Error clearing all cache:', error);
+    logger.ui.error('RecommendationCache', 'Error clearing all cache: ' + String(error));
   }
 }
 
@@ -176,7 +177,7 @@ export function getCacheStats(): { count: number; oldestTimestamp: number | null
       }
     }
   } catch (error) {
-    console.error('[RecommendationCache] Error getting stats:', error);
+    logger.ui.error('RecommendationCache', 'Error getting stats: ' + String(error));
   }
   
   return { count, oldestTimestamp, newestTimestamp };

@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 type AlertType = 'new_user' | 'high_reports' | 'error_spike' | 'custom';
 
@@ -22,13 +23,13 @@ export async function sendAdminAlert({ alert_type, subject, message, metadata }:
     });
 
     if (error) {
-      console.error('Failed to send admin alert:', error);
+      logger.api.error('notifications', 'send-admin-alert', String(error));
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error('Error sending admin alert:', error);
+    logger.api.error('notifications', 'send-admin-alert', String(error));
     return { success: false, error };
   }
 }

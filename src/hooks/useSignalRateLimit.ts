@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 const MAX_SIGNALS_PER_HOUR = 10;
 
@@ -74,7 +75,7 @@ export function useSignalRateLimit() {
         .gte('created_at', oneHourAgo);
 
       if (countError) {
-        console.error('[SignalRateLimit] Count query error:', countError);
+        logger.api.error('signal_rate_limits', 'count', String(countError));
         // Fail open to avoid blocking legitimate users
         setCanCreateSignal(true);
         setRemainingSignals(MAX_SIGNALS_PER_HOUR);
@@ -87,7 +88,7 @@ export function useSignalRateLimit() {
       setRemainingSignals(remaining);
       return remaining > 0;
     } catch (err) {
-      console.error('[SignalRateLimit] Exception during check:', err);
+      logger.api.error('signal_rate_limits', 'check', String(err));
       // Fail open on unexpected errors
       setCanCreateSignal(true);
       setRemainingSignals(MAX_SIGNALS_PER_HOUR);
@@ -111,7 +112,7 @@ export function useSignalRateLimit() {
         .insert({ user_id: user.id });
 
       if (error) {
-        console.error('[SignalRateLimit] Error recording signal creation:', error);
+        logger.api.error('signal_rate_limits', 'insert', String(error));
         return false;
       }
 
@@ -124,7 +125,7 @@ export function useSignalRateLimit() {
 
       return true;
     } catch (err) {
-      console.error('[SignalRateLimit] Exception recording signal creation:', err);
+      logger.api.error('signal_rate_limits', 'insert', String(err));
       return false;
     }
   }, [user]);

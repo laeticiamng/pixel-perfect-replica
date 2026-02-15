@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n';
+import { logger } from '@/lib/logger';
 
 interface EmergencyButtonProps {
   onTrigger?: (position: GeolocationPosition | null) => void;
@@ -55,7 +56,7 @@ export function EmergencyButton({ onTrigger, className }: EmergencyButtonProps) 
       position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 5000 });
       });
-    } catch (e) { console.error('Could not get position for emergency'); }
+    } catch (e) { logger.ui.error('EmergencyButton', 'Could not get position for emergency'); }
     setShowConfirmation(true);
     onTrigger?.(position);
   };

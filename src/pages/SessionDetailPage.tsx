@@ -8,6 +8,7 @@ import { format } from 'date-fns';
 import { fr, enUS } from 'date-fns/locale';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
+import { logger } from '@/lib/logger';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -155,7 +156,7 @@ export default function SessionDetailPage() {
         }
       }
     } catch (error) {
-      console.error('[SessionDetail] Error:', error);
+      logger.api.error('scheduled_sessions', 'fetch-detail', String(error));
       toast.error(t('sessionDetail.loadError'));
     } finally {
       setIsLoading(false);

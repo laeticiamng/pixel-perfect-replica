@@ -16,6 +16,7 @@ import { ClusterMarker } from './ClusterMarker';
 import { ActivityFilterBar } from './ActivityFilterBar';
 import { UserPopupCard } from './UserPopupCard';
 import { useClustering, ClusterPoint } from '@/hooks/useClustering';
+import { logger } from '@/lib/logger';
 
 interface NearbyUser {
   id: string;
@@ -108,7 +109,7 @@ export function InteractiveMap({
         const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
         
         if (refreshError || !session) {
-            console.warn('[InteractiveMap] Session refresh failed:', refreshError?.message);
+            logger.ui.warning('InteractiveMap: session refresh failed: ' + (refreshError?.message || ''));
             setError(t('map.unavailable'));
           setIsLoading(false);
           return;
@@ -119,7 +120,7 @@ export function InteractiveMap({
         if (error) {
           // Handle auth errors specifically
           if (error.message?.includes('401') || error.message?.includes('non-2xx')) {
-            console.warn('[InteractiveMap] Auth error fetching token:', error.message);
+            logger.ui.warning('InteractiveMap: auth error fetching token: ' + error.message);
             setError(t('map.unavailable'));
           } else {
             throw error;
@@ -133,7 +134,7 @@ export function InteractiveMap({
           throw new Error('No token returned');
         }
       } catch (err: unknown) {
-        console.error('Failed to fetch Mapbox token:', err);
+        logger.ui.error('InteractiveMap', String(err));
         setError(t('map.unavailable'));
       } finally {
         setIsLoading(false);

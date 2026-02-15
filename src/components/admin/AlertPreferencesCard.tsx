@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n';
+import { logger } from '@/lib/logger';
 
 interface AlertPreferences {
   email: string;
@@ -30,7 +31,7 @@ export function AlertPreferencesCard() {
     const fetchPreferences = async () => {
       if (!user) return;
       const { data, error } = await supabase.from('admin_alert_preferences').select('*').eq('user_id', user.id).maybeSingle();
-      if (error) { console.error('Error fetching preferences:', error); }
+      if (error) { logger.api.error('admin_alert_preferences', 'fetch', String(error)); }
       else if (data) {
         setPreferences({ email: data.email, alert_new_user: data.alert_new_user, alert_high_reports: data.alert_high_reports, alert_error_spike: data.alert_error_spike });
       }
@@ -46,7 +47,7 @@ export function AlertPreferencesCard() {
       user_id: user.id, email: preferences.email, alert_new_user: preferences.alert_new_user,
       alert_high_reports: preferences.alert_high_reports, alert_error_spike: preferences.alert_error_spike, updated_at: new Date().toISOString(),
     });
-    if (error) { console.error('Error saving preferences:', error); toast.error(t('adminAlerts.saveError')); }
+    if (error) { logger.api.error('admin_alert_preferences', 'save', String(error)); toast.error(t('adminAlerts.saveError')); }
     else { toast.success(t('adminAlerts.saveSuccess')); }
     setIsSaving(false);
   };

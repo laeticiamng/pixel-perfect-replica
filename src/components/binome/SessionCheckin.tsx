@@ -9,6 +9,7 @@ import { useLocationStore } from '@/stores/locationStore';
 import { useTranslation } from '@/lib/i18n';
 import { calculateDistance } from '@/utils/distance';
 import { cn } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 import toast from 'react-hot-toast';
 
 interface SessionCheckinProps {
@@ -83,7 +84,7 @@ export function SessionCheckin({ sessionId, sessionLocation, scheduledDate, star
       toast.success(t('sessionCheckin.checkinSuccess'));
       onCheckinComplete?.();
     } catch (error) {
-      console.error('[SessionCheckin] Checkin error:', error);
+      logger.api.error('session_participants', 'checkin', String(error));
       toast.error(t('sessionCheckin.checkinErrorToast'));
     } finally { setIsLoading(false); }
   };
@@ -100,7 +101,7 @@ export function SessionCheckin({ sessionId, sessionLocation, scheduledDate, star
       toast.success(t('sessionCheckin.checkoutSuccess'));
       onCheckoutComplete?.();
     } catch (error) {
-      console.error('[SessionCheckin] Checkout error:', error);
+      logger.api.error('session_participants', 'checkout', String(error));
       toast.error(t('sessionCheckin.checkoutError'));
     } finally { setIsLoading(false); }
   };

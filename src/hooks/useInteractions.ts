@@ -86,7 +86,7 @@ export function useInteractions() {
       });
 
       if (ratingError) {
-        console.error('Error submitting rating via RPC:', ratingError);
+        logger.api.error('user_stats', 'submit-rating', String(ratingError));
       }
 
       // Increment interaction counts using RPC

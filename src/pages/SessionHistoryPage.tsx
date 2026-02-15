@@ -8,6 +8,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { BottomNav } from '@/components/BottomNav';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { EmptyState, LoadingSkeleton } from '@/components/shared';
@@ -98,7 +99,7 @@ export default function SessionHistoryPage() {
         allSessions.sort((a, b) => new Date(b.scheduled_date).getTime() - new Date(a.scheduled_date).getTime());
         setSessions(allSessions);
       } catch (err) {
-        console.error('Error fetching session history:', err);
+        logger.api.error('scheduled_sessions', 'fetch-history', String(err));
         toast.error(t('sessionHistory.loadError'));
       } finally {
         setIsLoading(false);

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 import toast from 'react-hot-toast';
 import { translations, getCurrentLocale } from '@/lib/i18n/translations';
 
@@ -39,7 +40,7 @@ export function useRevealRateLimit() {
       });
 
       if (error) {
-        console.error('[RevealRateLimit] Error:', error);
+        logger.api.error('reveal_rate_limits', 'check', String(error));
         return { allowed: true };
       }
 
@@ -55,7 +56,7 @@ export function useRevealRateLimit() {
       return { allowed: true };
 
     } catch (err) {
-      console.error('[RevealRateLimit] Exception:', err);
+      logger.api.error('reveal_rate_limits', 'check', String(err));
       return { allowed: true };
     } finally {
       setIsChecking(false);
@@ -71,7 +72,7 @@ export function useRevealRateLimit() {
       });
 
       if (error) {
-        console.error('[RevealRateLimit] Check error:', error);
+        logger.api.error('reveal_rate_limits', 'record', String(error));
         return true;
       }
 

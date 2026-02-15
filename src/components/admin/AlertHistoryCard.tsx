@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useTranslation } from '@/lib/i18n';
+import { logger } from '@/lib/logger';
 
 import type { Json } from '@/integrations/supabase/types';
 
@@ -32,7 +33,7 @@ export function AlertHistoryCard() {
   useEffect(() => {
     const fetchAlerts = async () => {
       const { data, error } = await supabase.from('alert_logs').select('*').order('sent_at', { ascending: false }).limit(50);
-      if (error) { console.error('Error fetching alert logs:', error); }
+      if (error) { logger.api.error('admin_alert_logs', 'fetch', String(error)); }
       else { setAlerts(data || []); }
       setIsLoading(false);
     };

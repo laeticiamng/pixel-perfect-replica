@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
+import { logger } from '@/lib/logger';
 import toast from 'react-hot-toast';
 
 export type ActivityType = 'studying' | 'eating' | 'working' | 'talking' | 'sport' | 'other';
@@ -165,7 +166,7 @@ export function useBinomeSessions() {
     } catch (err) {
       const message = err instanceof Error ? err.message : t('binome.loadError');
       setError(message);
-      console.error('[useBinomeSessions] fetchSessions error:', err);
+      logger.api.error('binome_sessions', 'fetchSessions', String(err));
     } finally {
       setIsLoading(false);
     }
@@ -203,7 +204,7 @@ export function useBinomeSessions() {
       }));
       setMySessions(sessions);
     } catch (err) {
-      console.error('[useBinomeSessions] fetchMySessions error:', err);
+      logger.api.error('binome_sessions', 'fetchMySessions', String(err));
     }
   }, [user]);
 
@@ -251,7 +252,7 @@ export function useBinomeSessions() {
         setMyParticipations([]);
       }
     } catch (err) {
-      console.error('[useBinomeSessions] fetchMyParticipations error:', err);
+      logger.api.error('binome_sessions', 'fetchMyParticipations', String(err));
     }
   }, [user]);
 
@@ -290,7 +291,7 @@ export function useBinomeSessions() {
     } catch (err) {
       const message = err instanceof Error ? err.message : t('binome.cancelError');
       toast.error(message);
-      console.error('[useBinomeSessions] createSession error:', err);
+      logger.api.error('binome_sessions', 'createSession', String(err));
       return false;
     }
   };
@@ -316,7 +317,7 @@ export function useBinomeSessions() {
     } catch (err) {
       const message = err instanceof Error ? err.message : t('binome.joinError');
       toast.error(message);
-      console.error('[useBinomeSessions] joinSession error:', err);
+      logger.api.error('binome_sessions', 'joinSession', String(err));
       return false;
     }
   };

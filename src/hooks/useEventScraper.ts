@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface ScrapedEvent {
   id: string;
@@ -52,7 +53,7 @@ export function useEventScraper() {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
-      console.error('[useEventScraper] Error:', err);
+      logger.api.error('events', 'scrape', String(err));
       return null;
     } finally {
       setIsLoading(false);

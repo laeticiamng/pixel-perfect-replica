@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface VoiceIcebreakerResponse {
   success: boolean;
@@ -39,7 +40,7 @@ export function useVoiceIcebreaker() {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       setError(message);
-      console.error('[useVoiceIcebreaker] Error:', err);
+      logger.api.error('voice_icebreaker', 'generate', String(err));
       return null;
     } finally {
       setIsLoading(false);
@@ -80,7 +81,7 @@ export function useVoiceIcebreaker() {
 
       await audio.play();
     } catch (err) {
-      console.error('[useVoiceIcebreaker] Playback error:', err);
+      logger.ui.error('useVoiceIcebreaker', String(err));
       setError('Unable to play audio');
     }
   }, [generateVoice]);

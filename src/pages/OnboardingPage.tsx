@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicator';
 import { loginSchema, registerSchema } from '@/lib/validation';
+import { logger } from '@/lib/logger';
 import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { cn } from '@/lib/utils';
 import { lovable } from '@/integrations/lovable';
@@ -76,7 +77,7 @@ export default function OnboardingPage() {
         const { error } = await signInWithOAuthSupabase('google');
         if (error) {
           toast.error(t('auth.googleError'));
-          console.error('Google OAuth error:', error);
+          logger.api.error('auth', 'oauth-google', String(error));
         }
       }
     } catch (err) {
@@ -88,7 +89,7 @@ export default function OnboardingPage() {
         }
       } catch {
         toast.error(t('auth.googleError'));
-        console.error(err);
+        logger.api.error('auth', 'oauth-google-fallback', String(err));
       }
     } finally {
       setIsGoogleLoading(false);
@@ -102,11 +103,11 @@ export default function OnboardingPage() {
       const result = await lovable.auth.signInWithOAuth('apple');
       if (result.error) {
         toast.error(t('auth.appleError'));
-        console.error('Apple OAuth error:', result.error);
+        logger.api.error('auth', 'oauth-apple', String(result.error));
       }
     } catch (err) {
       toast.error(t('auth.appleError'));
-      console.error(err);
+      logger.api.error('auth', 'oauth-apple', String(err));
     } finally {
       setIsAppleLoading(false);
     }
