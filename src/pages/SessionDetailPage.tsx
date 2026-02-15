@@ -147,10 +147,10 @@ export default function SessionDetailPage() {
           const myParticipation = (participantsData || []).find(p => p.user_id === user?.id);
           // Only show feedback if user checked in
           if (myParticipation?.checked_in) {
-            const { data: feedbackData } = await supabase.from('session_feedback').select('id').eq('session_id', sessionId).eq('from_user_id', user?.id).single();
+            const { data: feedbackData } = await supabase.from('session_feedback').select('id').eq('session_id', sessionId).eq('from_user_id', user!.id).single();
             if (!feedbackData) setShowFeedback(true);
           }
-          const { data: testimonialData } = await supabase.from('user_testimonials').select('id').eq('session_id', sessionId).eq('user_id', user?.id).single();
+          const { data: testimonialData } = await supabase.from('user_testimonials').select('id').eq('session_id', sessionId).eq('user_id', user!.id).single();
           if (!testimonialData) setShowTestimonial(true);
         }
       }

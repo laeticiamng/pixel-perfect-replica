@@ -509,79 +509,10 @@ export type Database = {
           },
         ]
       }
-      connections: {
-        Row: {
-          id: string
-          user_a: string
-          user_b: string
-          signal_id: string | null
-          activity: Database["public"]["Enums"]["activity_type"]
-          status: Database["public"]["Enums"]["connection_status"]
-          initiated_by: string
-          accepted_at: string | null
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          user_a: string
-          user_b: string
-          signal_id?: string | null
-          activity: Database["public"]["Enums"]["activity_type"]
-          status?: Database["public"]["Enums"]["connection_status"]
-          initiated_by: string
-          accepted_at?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          user_a?: string
-          user_b?: string
-          signal_id?: string | null
-          activity?: Database["public"]["Enums"]["activity_type"]
-          status?: Database["public"]["Enums"]["connection_status"]
-          initiated_by?: string
-          accepted_at?: string | null
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "connections_user_a_fkey"
-            columns: ["user_a"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "connections_user_b_fkey"
-            columns: ["user_b"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "connections_signal_id_fkey"
-            columns: ["signal_id"]
-            isOneToOne: false
-            referencedRelation: "active_signals"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "connections_initiated_by_fkey"
-            columns: ["initiated_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       messages: {
         Row: {
           content: string
           created_at: string
-          expires_at: string | null
           id: string
           interaction_id: string
           sender_id: string
@@ -589,7 +520,6 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
-          expires_at?: string | null
           id?: string
           interaction_id: string
           sender_id: string
@@ -597,7 +527,6 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
-          expires_at?: string | null
           id?: string
           interaction_id?: string
           sender_id?: string
@@ -1306,32 +1235,6 @@ export type Database = {
           },
         ]
       }
-      signal_rate_limits: {
-        Row: {
-          id: string
-          user_id: string
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          user_id: string
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          user_id?: string
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "signal_rate_limits_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
     }
     Views: {
       [_ in never]: never
@@ -1360,15 +1263,12 @@ export type Database = {
         Returns: boolean
       }
       check_report_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
-      check_signal_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       check_reveal_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       check_reveal_rate_limit_strict: {
         Args: { p_user_id: string }
         Returns: boolean
       }
       cleanup_edge_function_rate_limits: { Args: never; Returns: undefined }
-      cleanup_expired_connections: { Args: never; Returns: undefined }
-      cleanup_expired_messages: { Args: never; Returns: undefined }
       cleanup_expired_shadow_bans: { Args: never; Returns: undefined }
       cleanup_expired_signals: { Args: never; Returns: undefined }
       cleanup_old_analytics_events: { Args: never; Returns: undefined }
@@ -1682,7 +1582,6 @@ export type Database = {
         | "talking"
         | "sport"
         | "other"
-      connection_status: "pending" | "accepted" | "declined" | "expired"
       signal_type: "green" | "yellow" | "red"
     }
     CompositeTypes: {

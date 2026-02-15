@@ -57,9 +57,9 @@ export function QRCodeScanner({ onScan, onClose, isOpen }: QRCodeScannerProps) {
     }
   };
 
-  const handleError = (error: Error) => {
+  const handleError = (error: unknown) => {
     console.error('QR Scanner error:', error);
-    setErrorMessage(error.message || t('qrScanner.cameraErrorGeneric'));
+    setErrorMessage(error instanceof Error ? error.message : t('qrScanner.cameraErrorGeneric'));
     setHasCamera(false);
   };
 

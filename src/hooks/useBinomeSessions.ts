@@ -101,13 +101,13 @@ export function useBinomeSessions() {
       if (filters.city) {
         const { data, error: rpcError } = await supabase.rpc('get_available_sessions', {
           p_city: filters.city,
-          p_activity: filters.activity || null,
-          p_date: filters.date || null,
-          p_duration: filters.duration || null,
+          p_activity: filters.activity || undefined,
+          p_date: filters.date || undefined,
+          p_duration: filters.duration || undefined,
         });
 
         if (rpcError) throw rpcError;
-        rows = (data || []) as SessionRow[];
+        rows = (data || []).map(d => ({ ...d, created_at: '', status: 'open' })) as SessionRow[];
       } else {
         const nowIso = new Date().toISOString();
         const { data, error: queryError } = await supabase

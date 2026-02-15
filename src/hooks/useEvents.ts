@@ -13,7 +13,7 @@ export interface Event {
   starts_at: string;
   ends_at: string;
   qr_code_secret?: string; // Only visible to organizers
-  max_participants: number;
+  max_participants: number | null;
   is_active: boolean;
   created_at: string;
 }
