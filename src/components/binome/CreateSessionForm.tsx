@@ -30,7 +30,7 @@ const createFormSchema = (t: (key: string) => string) => z.object({
   max_participants: z.number().min(1).max(10).default(3),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<ReturnType<typeof createFormSchema>>;
 
 interface CreateSessionFormProps {
   onSubmit: (data: CreateSessionInput) => Promise<boolean>;

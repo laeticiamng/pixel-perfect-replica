@@ -66,7 +66,7 @@ export function useSessionChat(sessionId: string) {
       const messagesWithProfiles: Message[] = (data || []).map(msg => ({
         ...msg,
         sender_name: cache.get(msg.user_id)?.first_name || t('eventsExtra.anonymous'),
-        sender_avatar: cache.get(msg.user_id)?.avatar_url || null
+        sender_avatar: cache.get(msg.user_id)?.avatar_url ?? undefined
       }));
 
       setMessages(messagesWithProfiles);
@@ -125,10 +125,10 @@ export function useSessionChat(sessionId: string) {
           const cache = await getProfilesCached([newMsg.user_id]);
           const profile = cache.get(newMsg.user_id);
 
-          const msgWithProfile = {
+          const msgWithProfile: Message = {
             ...newMsg,
             sender_name: profile?.first_name || t('eventsExtra.anonymous'),
-            sender_avatar: profile?.avatar_url || null
+            sender_avatar: profile?.avatar_url ?? undefined
           };
 
           setMessages(prev => [...prev, msgWithProfile]);

@@ -97,7 +97,7 @@ export function exportSessionToCalendar(session: {
   duration_minutes: number;
   activity: string;
   city: string;
-  location_name?: string;
+  location_name?: string | null;
   creator_name?: string;
   note?: string;
 }): void {

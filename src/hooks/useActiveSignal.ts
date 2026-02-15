@@ -96,9 +96,9 @@ export function useActiveSignal() {
       }
       return { data, error };
     } else {
-      // Check rate limit before creating a new signal (max 10/hour)
+      // Rate limit check - use edge_function_rate_limits table
       const { data: rateLimitOk } = await supabase
-        .rpc('check_signal_rate_limit', { p_user_id: user.id });
+        .rpc('check_edge_function_rate_limit', { p_user_id: user.id, p_function_name: 'signal_activate', p_max_requests: 10, p_window_seconds: 3600 });
 
       if (rateLimitOk === false) {
         setIsLoading(false);
@@ -122,10 +122,7 @@ export function useActiveSignal() {
         .select()
         .single();
 
-      // Record signal creation for rate limiting
-      if (!error && data) {
-        await supabase.from('signal_rate_limits').insert({ user_id: user.id });
-      }
+      // Signal creation recorded via rate limit RPC above
 
       setIsLoading(false);
       if (!error && data) {
@@ -243,8 +240,8 @@ export function useActiveSignal() {
               longitude: Number(signal.longitude),
             },
           };
-        }).filter((u: NearbyUser) => u.distance <= maxDistance)
-          .sort((a, b) => a.distance - b.distance);
+        }).filter((u: NearbyUser) => (u.distance ?? 0) <= maxDistance)
+          .sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
 
         if (nearby.length > 0) {
           setIsDemoMode(false);

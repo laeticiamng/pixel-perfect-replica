@@ -167,7 +167,7 @@ export default function EditProfilePage() {
         birth_year: birthYear ? parseInt(birthYear, 10) : null,
         favorite_activities: favoriteActivities,
       })
-      .eq('id', user?.id);
+      .eq('id', user!.id);
     
     setIsLoading(false);
     
