@@ -42,7 +42,7 @@ function getCachedRecommendations(userId: string): CachedRecommendations | null 
 function setCachedRecommendations(userId: string, recommendations: SessionRecommendation[], motivation: string) {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify({ recommendations, motivation, timestamp: Date.now(), userId }));
-  } catch {}
+  } catch { /* localStorage quota exceeded — skip caching */ }
 }
 
 export function AIRecommendationsWidget() {

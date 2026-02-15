@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 
 interface UserBlock {
@@ -37,7 +38,7 @@ export function useUserBlocks() {
 
     if (!error && data) {
       setBlocks(prev => [...prev, data]);
-      console.log('[ACTION] User blocked:', blockedId);
+      logger.action.interactionCreated(user.id, blockedId);
     }
 
     return { data, error };
@@ -59,7 +60,7 @@ export function useUserBlocks() {
 
     if (!error) {
       setBlocks(prev => prev.filter(b => b.blocked_id !== blockedId));
-      console.log('[ACTION] User unblocked:', blockedId);
+      logger.api.success('user_blocks', 'unblock');
     }
 
     return { error };

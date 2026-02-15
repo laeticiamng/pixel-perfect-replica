@@ -60,7 +60,7 @@ export function usePushSubscription() {
       // Request notification permission
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
-        console.log('[usePushSubscription] Permission denied');
+        logger.ui.warning('Push notification permission denied');
         setIsLoading(false);
         return false;
       }

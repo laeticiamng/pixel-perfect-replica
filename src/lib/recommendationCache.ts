@@ -55,11 +55,10 @@ export function getCachedRecommendations(
     // Check if expired
     if (Date.now() > parsed.expiresAt) {
       localStorage.removeItem(key);
-      console.log('[RecommendationCache] Cache expired for:', activity, city);
+      localStorage.removeItem(key);
       return null;
     }
-    
-    console.log('[RecommendationCache] Cache hit for:', activity, city);
+
     return parsed.data;
   } catch (error) {
     logger.ui.error('RecommendationCache', 'Error reading cache: ' + String(error));
@@ -85,7 +84,6 @@ export function cacheRecommendations(
     };
     
     localStorage.setItem(key, JSON.stringify(cacheEntry));
-    console.log('[RecommendationCache] Cached recommendations for:', activity, city);
   } catch (error) {
     logger.ui.error('RecommendationCache', 'Error caching: ' + String(error));
     // If localStorage is full, clear old entries
@@ -120,7 +118,6 @@ export function clearExpiredCache(): void {
     }
     
     keysToRemove.forEach(key => localStorage.removeItem(key));
-    console.log('[RecommendationCache] Cleared', keysToRemove.length, 'expired entries');
   } catch (error) {
     logger.ui.error('RecommendationCache', 'Error clearing cache: ' + String(error));
   }
@@ -141,7 +138,6 @@ export function clearAllRecommendationCache(): void {
     }
     
     keysToRemove.forEach(key => localStorage.removeItem(key));
-    console.log('[RecommendationCache] Cleared all', keysToRemove.length, 'cache entries');
   } catch (error) {
     logger.ui.error('RecommendationCache', 'Error clearing all cache: ' + String(error));
   }

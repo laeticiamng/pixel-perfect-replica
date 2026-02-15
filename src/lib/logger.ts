@@ -14,6 +14,9 @@ interface LogEntry {
   userId?: string;
 }
 
+// In production, suppress debug/info to keep the console clean
+const IS_PROD = import.meta.env.PROD;
+
 // Store recent logs for diagnostics
 const logHistory: LogEntry[] = [];
 const MAX_LOG_HISTORY = 100;
@@ -34,6 +37,12 @@ const createLogEntry = (
   data,
   userId,
 });
+
+const shouldEmitToConsole = (level: LogLevel): boolean => {
+  if (!IS_PROD) return true;
+  // In production only emit warn/error to console
+  return level === 'warn' || level === 'error';
+};
 
 const storeLog = (entry: LogEntry) => {
   logHistory.push(entry);
@@ -58,32 +67,32 @@ export const logger = {
     login: (userId: string, method: 'email' | 'social' = 'email') => {
       const entry = createLogEntry('info', 'AUTH', 'User logged in', { method }, userId);
       storeLog(entry);
-      console.log(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('info')) console.log(formatLogMessage(entry), entry.data);
     },
     logout: (userId?: string) => {
       const entry = createLogEntry('info', 'AUTH', 'User logged out', undefined, userId);
       storeLog(entry);
-      console.log(formatLogMessage(entry));
+      if (shouldEmitToConsole('info')) console.log(formatLogMessage(entry));
     },
     signupSuccess: (userId: string) => {
       const entry = createLogEntry('info', 'AUTH', 'User signed up', undefined, userId);
       storeLog(entry);
-      console.log(formatLogMessage(entry));
+      if (shouldEmitToConsole('info')) console.log(formatLogMessage(entry));
     },
     signupFailed: (error: string) => {
       const entry = createLogEntry('error', 'AUTH', 'Signup failed', { error });
       storeLog(entry);
-      console.error(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('error')) console.error(formatLogMessage(entry), entry.data);
     },
     loginFailed: (error: string) => {
       const entry = createLogEntry('error', 'AUTH', 'Login failed', { error });
       storeLog(entry);
-      console.error(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('error')) console.error(formatLogMessage(entry), entry.data);
     },
     sessionRefresh: (userId: string) => {
       const entry = createLogEntry('debug', 'AUTH', 'Session refreshed', undefined, userId);
       storeLog(entry);
-      console.debug(formatLogMessage(entry));
+      if (shouldEmitToConsole('debug')) console.debug(formatLogMessage(entry));
     },
   },
 
@@ -92,17 +101,17 @@ export const logger = {
     request: (table: string, operation: string, userId?: string) => {
       const entry = createLogEntry('debug', 'API', `${operation} on ${table}`, undefined, userId);
       storeLog(entry);
-      console.debug(formatLogMessage(entry));
+      if (shouldEmitToConsole('debug')) console.debug(formatLogMessage(entry));
     },
     success: (table: string, operation: string, count?: number) => {
       const entry = createLogEntry('info', 'API', `${operation} on ${table} succeeded`, { count });
       storeLog(entry);
-      console.log(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('info')) console.log(formatLogMessage(entry), entry.data);
     },
     error: (table: string, operation: string, error: string) => {
       const entry = createLogEntry('error', 'API', `${operation} on ${table} failed`, { error });
       storeLog(entry);
-      console.error(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('error')) console.error(formatLogMessage(entry), entry.data);
     },
   },
 
@@ -111,27 +120,27 @@ export const logger = {
     signalActivated: (userId: string, activity: string) => {
       const entry = createLogEntry('info', 'ACTION', 'Signal activated', { activity }, userId);
       storeLog(entry);
-      console.log(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('info')) console.log(formatLogMessage(entry), entry.data);
     },
     signalDeactivated: (userId: string) => {
       const entry = createLogEntry('info', 'ACTION', 'Signal deactivated', undefined, userId);
       storeLog(entry);
-      console.log(formatLogMessage(entry));
+      if (shouldEmitToConsole('info')) console.log(formatLogMessage(entry));
     },
     interactionCreated: (userId: string, targetUserId: string) => {
       const entry = createLogEntry('info', 'ACTION', 'Interaction created', { targetUserId }, userId);
       storeLog(entry);
-      console.log(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('info')) console.log(formatLogMessage(entry), entry.data);
     },
     feedbackGiven: (userId: string, interactionId: string, positive: boolean) => {
       const entry = createLogEntry('info', 'ACTION', 'Feedback given', { interactionId, positive }, userId);
       storeLog(entry);
-      console.log(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('info')) console.log(formatLogMessage(entry), entry.data);
     },
     reportSubmitted: (userId: string, reason: string) => {
       const entry = createLogEntry('warn', 'ACTION', 'Report submitted', { reason }, userId);
       storeLog(entry);
-      console.warn(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('warn')) console.warn(formatLogMessage(entry), entry.data);
     },
   },
 
@@ -140,12 +149,12 @@ export const logger = {
     error: (componentName: string, error: string, stack?: string) => {
       const entry = createLogEntry('error', 'UI', `Error in ${componentName}`, { error, stack });
       storeLog(entry);
-      console.error(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('error')) console.error(formatLogMessage(entry), entry.data);
     },
     warning: (message: string, context?: Record<string, unknown>) => {
       const entry = createLogEntry('warn', 'UI', message, context);
       storeLog(entry);
-      console.warn(formatLogMessage(entry), entry.data);
+      if (shouldEmitToConsole('warn')) console.warn(formatLogMessage(entry), entry.data);
     },
   },
 

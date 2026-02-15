@@ -50,7 +50,15 @@ const HelpPage = lazy(() => import('./pages/HelpPage'));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
 const ReportPage = lazy(() => import('./pages/ReportPage'));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,       // 5 min — avoid refetching on every mount
+      retry: 1,                         // retry once on failure
+      refetchOnWindowFocus: false,      // don't spam Supabase on tab switch
+    },
+  },
+});
 
 // Page transition variants - smoother with easing
 const pageVariants = {

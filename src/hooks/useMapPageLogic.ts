@@ -8,6 +8,7 @@ import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
 import { useSignalMatching } from '@/hooks/useSignalMatching';
 import { ActivityType, SignalType } from '@/types/signal';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n';
 
@@ -174,7 +175,7 @@ export function useMapPageLogic() {
   }, [extendSignal, t]);
 
   const handleEmergencyTrigger = useCallback((pos: GeolocationPosition | null) => {
-    console.log('Emergency triggered at:', pos?.coords);
+    logger.action.reportSubmitted(user?.id ?? 'unknown', 'emergency');
   }, []);
 
   const handleChangeActivity = useCallback(() => {

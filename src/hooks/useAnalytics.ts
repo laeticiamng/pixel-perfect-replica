@@ -52,7 +52,7 @@ export function useAnalytics() {
         });
     } catch (error) {
       // Silently fail - analytics should not break the app
-      console.debug('Analytics event failed:', error);
+      // Silently swallowed — analytics must never break the app
     }
   }, [user, location.pathname]);
 

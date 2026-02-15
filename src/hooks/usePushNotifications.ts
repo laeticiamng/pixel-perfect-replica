@@ -128,7 +128,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         ...options,
       });
     } catch (err) {
-      console.log('Notification:', title, options);
+      // Notification API not available, silently ignored
     }
   }, [isSupported, permission]);
 

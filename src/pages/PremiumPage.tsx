@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Crown, Check, Zap, Shield, Infinity, Loader2, ExternalLink, Ticket, Sparkles, Radio } from 'lucide-react';
+import { ArrowLeft, Crown, Check, Zap, Shield, Infinity as InfinityIcon, Loader2, ExternalLink, Ticket, Sparkles, Radio } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -38,7 +38,7 @@ export default function PremiumPage() {
 
   const NEARVITY_PLUS_FEATURES = [
     {
-      icon: <Infinity className="h-5 w-5" />,
+      icon: <InfinityIcon className="h-5 w-5" />,
       title: t('premium.unlimitedSessions'),
       description: t('premium.unlimitedSessionsDesc')
     },

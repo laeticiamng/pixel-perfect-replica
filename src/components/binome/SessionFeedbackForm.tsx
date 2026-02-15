@@ -66,7 +66,7 @@ export function SessionFeedbackForm({ sessionId, participants, onComplete }: Ses
     } finally { setIsSubmitting(false); }
   };
 
-  const handleNext = () => { currentIndex < participants.length - 1 ? setCurrentIndex(currentIndex + 1) : handleSubmit(); };
+  const handleNext = () => { if (currentIndex < participants.length - 1) { setCurrentIndex(currentIndex + 1); } else { handleSubmit(); } };
   const handlePrevious = () => { if (currentIndex > 0) setCurrentIndex(currentIndex - 1); };
 
   if (participants.length === 0) return null;
