@@ -110,9 +110,12 @@ export default function EventsPage() {
     if (hasError && successCount === 0) {
       toast.error(t('events.createError'));
     } else if (hasError) {
+      // Partial success — some events created, some failed
       toast.success(t('eventsExtra.someEventsFailed').replace('{count}', String(successCount)));
       setShowCreate(false);
       resetForm();
+    } else {
+      // Full success
       toast.success(
         recurrence === 'none'
           ? t('events.eventCreated')

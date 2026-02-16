@@ -312,6 +312,8 @@ export const translations = {
     sessionExpired: { en: 'Session expired, please log in again', fr: 'Session expirée, veuillez vous reconnecter' },
     mapLoadError: { en: 'Unable to load the map', fr: 'Impossible de charger la carte' },
     me: { en: 'ME', fr: 'MOI' },
+    deactivateConfirm: { en: 'Are you sure you want to deactivate your signal? You will no longer be visible to others.', fr: 'Tu es sûr(e) de vouloir désactiver ton signal ? Tu ne seras plus visible pour les autres.' },
+    deactivate: { en: 'Deactivate', fr: 'Désactiver' },
   },
 
   // Post-signup onboarding

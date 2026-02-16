@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
 import { PageLayout } from '@/components/PageLayout';
@@ -59,6 +60,9 @@ export default function MapPage() {
     openUsersCount,
     handleManualRefresh,
     handleSignalToggle,
+    handleConfirmDeactivate,
+    showDeactivateConfirm,
+    setShowDeactivateConfirm,
     handleCycleSignalState,
     handleActivityConfirm,
     handleSignalExpired,
@@ -468,6 +472,22 @@ export default function MapPage() {
         </div>
 
         <BottomNav />
+
+        {/* Signal deactivation confirmation */}
+        <AlertDialog open={showDeactivateConfirm} onOpenChange={setShowDeactivateConfirm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('mapToasts.signalDeactivated')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('map.deactivateConfirm')}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmDeactivate} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                {t('map.deactivate')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </PageLayout>
   );

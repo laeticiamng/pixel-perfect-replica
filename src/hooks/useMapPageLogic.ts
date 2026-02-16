@@ -121,14 +121,21 @@ export function useMapPageLogic() {
     }
   }, [position, fetchNearbyUsers, settings.visibility_distance, t]);
 
+  const [showDeactivateConfirm, setShowDeactivateConfirm] = useState(false);
+
   const handleSignalToggle = useCallback(() => {
     if (isActive) {
-      deactivateSignal();
-      toast.success(t('mapToasts.signalDeactivated'));
+      setShowDeactivateConfirm(true);
     } else {
       setShowActivityModal(true);
     }
-  }, [isActive, deactivateSignal, t]);
+  }, [isActive]);
+
+  const handleConfirmDeactivate = useCallback(() => {
+    deactivateSignal();
+    setShowDeactivateConfirm(false);
+    toast.success(t('mapToasts.signalDeactivated'));
+  }, [deactivateSignal, t]);
 
 
   const handleCycleSignalState = useCallback(async () => {
@@ -255,7 +262,9 @@ export function useMapPageLogic() {
     locationDescription,
     setLocationDescription,
     lastUpdated,
-    
+    showDeactivateConfirm,
+    setShowDeactivateConfirm,
+
     // Computed
     filteredNearbyUsers,
     openUsersCount,
@@ -263,6 +272,7 @@ export function useMapPageLogic() {
     // Handlers
     handleManualRefresh,
     handleSignalToggle,
+    handleConfirmDeactivate,
     handleCycleSignalState,
     handleActivityConfirm,
     handleSignalExpired,
