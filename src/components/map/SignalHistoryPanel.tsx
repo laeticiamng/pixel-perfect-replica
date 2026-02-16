@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { EmptyState, LoadingSkeleton } from '@/components/shared';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { ACTIVITIES } from '@/types/signal';
+import { logger } from '@/lib/logger';
 
 interface SignalHistoryEntry {
   id: string;
@@ -59,7 +60,7 @@ export function SignalHistoryPanel() {
 
       setHistory(entries);
     } catch (err) {
-      console.error('Error loading signal history:', err);
+      logger.api.error('signal_history', 'fetch', String(err));
     } finally {
       setIsLoading(false);
     }

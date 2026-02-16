@@ -22,7 +22,7 @@ export function EmptyRadarState({ onActivateSignal, isDemoMode, onEnableDemo }: 
           url: window.location.origin,
         });
       } catch (err) {
-        console.log('Share cancelled');
+        // Share dialog was cancelled by the user — no action needed
       }
     } else {
       // Fallback: copy to clipboard

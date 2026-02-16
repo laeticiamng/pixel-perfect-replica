@@ -4,6 +4,7 @@ import { useEffect, useCallback } from 'react';
 import { translations, Locale, setCurrentLocale } from './translations';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface I18nStore {
   locale: Locale;
@@ -90,7 +91,7 @@ export function useTranslation() {
     const translation = getNestedValue(translations, key);
     
     if (!translation) {
-      console.warn(`Missing translation for key: ${key}`);
+      logger.ui.warning(`Missing translation for key: ${key}`);
       return key;
     }
     

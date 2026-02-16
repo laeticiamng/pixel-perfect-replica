@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
 import { SwipeIndicator } from '@/components/SwipeIndicator';
@@ -183,15 +185,30 @@ export default function ProfilePage() {
           </div>
         ))}
 
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-destructive/10 text-destructive hover:bg-destructive/20 active:scale-[0.98] transition-all duration-200 shadow-soft animate-slide-up"
-          style={{ animationDelay: '0.5s' }}
-        >
-          <LogOut className="h-5 w-5" />
-          <span className="font-bold">{t('nav.logout')}</span>
-        </button>
+        {/* Logout with confirmation */}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl bg-destructive/10 text-destructive hover:bg-destructive/20 active:scale-[0.98] transition-all duration-200 shadow-soft animate-slide-up"
+              style={{ animationDelay: '0.5s' }}
+            >
+              <LogOut className="h-5 w-5" />
+              <span className="font-bold">{t('nav.logout')}</span>
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('nav.logout')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('profile.logoutConfirm')}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleLogout} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                {t('nav.logout')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* Version */}
         <Link 

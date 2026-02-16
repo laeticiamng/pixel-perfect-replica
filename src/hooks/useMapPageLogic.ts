@@ -8,6 +8,7 @@ import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
 import { useSignalMatching } from '@/hooks/useSignalMatching';
 import { ActivityType, SignalType } from '@/types/signal';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n';
 
@@ -120,14 +121,21 @@ export function useMapPageLogic() {
     }
   }, [position, fetchNearbyUsers, settings.visibility_distance, t]);
 
+  const [showDeactivateConfirm, setShowDeactivateConfirm] = useState(false);
+
   const handleSignalToggle = useCallback(() => {
     if (isActive) {
-      deactivateSignal();
-      toast.success(t('mapToasts.signalDeactivated'));
+      setShowDeactivateConfirm(true);
     } else {
       setShowActivityModal(true);
     }
-  }, [isActive, deactivateSignal, t]);
+  }, [isActive]);
+
+  const handleConfirmDeactivate = useCallback(() => {
+    deactivateSignal();
+    setShowDeactivateConfirm(false);
+    toast.success(t('mapToasts.signalDeactivated'));
+  }, [deactivateSignal, t]);
 
 
   const handleCycleSignalState = useCallback(async () => {
@@ -151,7 +159,13 @@ export function useMapPageLogic() {
       setIsActivating(false);
       
       if (error) {
-        toast.error(t('errors.activationError'));
+        if (error.message?.includes('Rate limit')) {
+          toast.error(t('mapToasts.rateLimitExceeded').replace('{seconds}', '60'));
+        } else if (error.message?.includes('Missing user or position')) {
+          toast.error(t('map.locationNeeded'));
+        } else {
+          toast.error(t('errors.activationError'));
+        }
       } else {
         setShowActivityModal(false);
         setLocationDescription('');
@@ -174,7 +188,7 @@ export function useMapPageLogic() {
   }, [extendSignal, t]);
 
   const handleEmergencyTrigger = useCallback((pos: GeolocationPosition | null) => {
-    console.log('Emergency triggered at:', pos?.coords);
+    logger.action.reportSubmitted(user?.id ?? 'unknown', 'emergency');
   }, []);
 
   const handleChangeActivity = useCallback(() => {
@@ -248,7 +262,9 @@ export function useMapPageLogic() {
     locationDescription,
     setLocationDescription,
     lastUpdated,
-    
+    showDeactivateConfirm,
+    setShowDeactivateConfirm,
+
     // Computed
     filteredNearbyUsers,
     openUsersCount,
@@ -256,6 +272,7 @@ export function useMapPageLogic() {
     // Handlers
     handleManualRefresh,
     handleSignalToggle,
+    handleConfirmDeactivate,
     handleCycleSignalState,
     handleActivityConfirm,
     handleSignalExpired,

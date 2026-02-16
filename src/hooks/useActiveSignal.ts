@@ -51,7 +51,7 @@ export function useActiveSignal() {
       .maybeSingle();
 
     if (error) {
-      console.error('Error fetching signal:', error);
+      logger.api.error('active_signals', 'select', String(error));
       return;
     }
 
@@ -269,7 +269,7 @@ export function useActiveSignal() {
         .gte('expires_at', new Date().toISOString());
 
       if (fallbackError) {
-        console.error('Error fetching nearby signals:', fallbackError);
+        logger.api.error('active_signals', 'select-nearby', fallbackError.message);
         return;
       }
 
@@ -336,7 +336,7 @@ export function useActiveSignal() {
       setIsDemoMode(false);
       setNearbyUsers(nearbyFiltered);
     } catch (err) {
-      console.error('Error in fetchNearbyUsers:', err);
+      logger.api.error('active_signals', 'fetchNearbyUsers', String(err));
     }
   }, [user, position]);
 
@@ -363,12 +363,13 @@ export function useActiveSignal() {
     }
   }, [isAuthenticated, fetchMySignal]);
 
-  // Update position when it changes
+  // Update position when it changes — only fires on actual coordinate changes
   useEffect(() => {
     if (mySignal && position) {
       updatePosition();
     }
-  }, [position]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position?.latitude, position?.longitude]);
 
   // Setup realtime subscription for nearby signals
   useEffect(() => {
@@ -387,7 +388,7 @@ export function useActiveSignal() {
           table: 'active_signals',
         },
         () => {
-          console.log('[Realtime] New signal activated nearby');
+          logger.api.request('active_signals', 'realtime-insert');
           fetchNearbyUsers(200);
         }
       )
@@ -401,7 +402,7 @@ export function useActiveSignal() {
         (payload) => {
           // Only refetch if it's not my own signal update
           if (payload.new && (payload.new as { user_id: string }).user_id !== user.id) {
-            console.log('[Realtime] Signal updated nearby');
+            logger.api.request('active_signals', 'realtime-update');
             fetchNearbyUsers(200);
           }
         }
@@ -414,13 +415,13 @@ export function useActiveSignal() {
           table: 'active_signals',
         },
         () => {
-          console.log('[Realtime] Signal deactivated nearby');
+          logger.api.request('active_signals', 'realtime-delete');
           fetchNearbyUsers(200);
         }
       )
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
-          console.log('[Realtime] Connected to active_signals');
+          logger.api.success('active_signals', 'realtime-subscribe');
         }
       });
 

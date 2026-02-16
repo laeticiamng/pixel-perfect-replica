@@ -86,7 +86,7 @@ export function useInteractions() {
       });
 
       if (ratingError) {
-        console.error('Error submitting rating via RPC:', ratingError);
+        logger.api.error('user_stats', 'submit-rating', String(ratingError));
       }
 
       // Increment interaction counts using RPC
@@ -114,7 +114,7 @@ export function useInteractions() {
     // Fetch target profiles via secure RPC
     const targetIds = [...new Set(rawInteractions.map(i => i.target_user_id))];
     
-    let profileMap: Record<string, { first_name: string; avatar_url: string | null }> = {};
+    const profileMap: Record<string, { first_name: string; avatar_url: string | null }> = {};
     
     if (targetIds.length > 0) {
       const { data: profiles } = await supabase

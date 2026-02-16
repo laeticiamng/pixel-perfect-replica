@@ -6,6 +6,16 @@ export const setCurrentLocale = (locale: Locale) => { currentLocale = locale; };
 export const getCurrentLocale = (): Locale => currentLocale;
 
 export const translations = {
+  // Common shared strings
+  common: {
+    cancel: { en: 'Cancel', fr: 'Annuler' },
+    confirm: { en: 'Confirm', fr: 'Confirmer' },
+    save: { en: 'Save', fr: 'Enregistrer' },
+    close: { en: 'Close', fr: 'Fermer' },
+    back: { en: 'Back', fr: 'Retour' },
+    retry: { en: 'Retry', fr: 'Réessayer' },
+  },
+
   // Common
   loading: { en: 'Loading...', fr: 'Chargement...' },
   continue: { en: 'Continue', fr: 'Continuer' },
@@ -80,8 +90,8 @@ export const translations = {
     accountExists: { en: 'An account already exists with this email', fr: 'Un compte existe déjà avec cet email' },
     googleError: { en: 'Google sign-in error', fr: 'Erreur de connexion Google' },
     appleError: { en: 'Apple sign-in error', fr: 'Erreur de connexion Apple' },
-    tooManyAttempts: { en: 'Too many attempts', fr: 'Trop de tentatives' },
-    emailPlaceholder: { en: 'your.email@university.edu', fr: 'ton.email@universite.fr' },
+    tooManyAttempts: { en: 'Too many attempts. Please wait a moment.', fr: 'Trop de tentatives. Patiente un instant.' },
+    emailPlaceholder: { en: 'your.email@example.com', fr: 'ton.email@exemple.fr' },
     invalidEmail: { en: 'Invalid email', fr: 'Email invalide' },
     emailRequired: { en: 'Email required', fr: 'Email requis' },
     passwordTooShort: { en: 'Password too short (min 6 characters)', fr: 'Mot de passe trop court (min 6 caractères)' },
@@ -136,6 +146,25 @@ export const translations = {
     usePassword: { en: 'Use password instead', fr: 'Utiliser un mot de passe' },
     useMagicLink: { en: 'Use magic link instead', fr: 'Utiliser un lien magique' },
     orContinueWith: { en: 'or continue with', fr: 'ou continuer avec' },
+  },
+
+  // Validation messages
+  validation: {
+    emailInvalid: { en: 'Invalid email', fr: 'Email invalide' },
+    emailTooLong: { en: 'Email too long (max 255 characters)', fr: 'Email trop long (max 255 caract\u00e8res)' },
+    passwordTooShort: { en: 'Password too short (min 6 characters)', fr: 'Mot de passe trop court (min 6 caract\u00e8res)' },
+    passwordTooLong: { en: 'Password too long (max 100 characters)', fr: 'Mot de passe trop long (max 100 caract\u00e8res)' },
+    passwordNeedsLower: { en: 'Must contain at least one lowercase letter', fr: 'Doit contenir au moins une minuscule' },
+    passwordNeedsUpper: { en: 'Must contain at least one uppercase letter', fr: 'Doit contenir au moins une majuscule' },
+    passwordNeedsNumber: { en: 'Must contain at least one number', fr: 'Doit contenir au moins un chiffre' },
+    passwordRequired: { en: 'Password required', fr: 'Mot de passe requis' },
+    firstNameRequired: { en: 'First name required', fr: 'Pr\u00e9nom requis' },
+    firstNameTooLong: { en: 'First name too long (max 50 characters)', fr: 'Pr\u00e9nom trop long (max 50 caract\u00e8res)' },
+    firstNameInvalidChars: { en: 'Invalid characters in first name', fr: 'Caract\u00e8res invalides dans le pr\u00e9nom' },
+    universityTooLong: { en: 'University name too long', fr: "Nom d'universit\u00e9 trop long" },
+    weak: { en: 'weak', fr: 'faible' },
+    medium: { en: 'medium', fr: 'moyen' },
+    strong: { en: 'strong', fr: 'fort' },
   },
 
   // Onboarding
@@ -282,6 +311,9 @@ export const translations = {
     demoModeDesc: { en: 'Show fake signals to discover the app', fr: 'Afficher de faux signaux pour découvrir l\'app' },
     sessionExpired: { en: 'Session expired, please log in again', fr: 'Session expirée, veuillez vous reconnecter' },
     mapLoadError: { en: 'Unable to load the map', fr: 'Impossible de charger la carte' },
+    me: { en: 'ME', fr: 'MOI' },
+    deactivateConfirm: { en: 'Are you sure you want to deactivate your signal? You will no longer be visible to others.', fr: 'Tu es sûr(e) de vouloir désactiver ton signal ? Tu ne seras plus visible pour les autres.' },
+    deactivate: { en: 'Deactivate', fr: 'Désactiver' },
   },
 
   // Post-signup onboarding
@@ -327,6 +359,7 @@ export const translations = {
     reportProblem: { en: 'Report a problem', fr: 'Signaler un problème' },
     user: { en: 'User', fr: 'Utilisateur' },
     seeYouSoon: { en: 'See you soon!', fr: 'À bientôt !' },
+    logoutConfirm: { en: 'Are you sure you want to log out?', fr: 'Tu es sûr(e) de vouloir te déconnecter ?' },
   },
 
   // Events
@@ -560,6 +593,9 @@ export const translations = {
     activating: { en: 'Activating...', fr: 'Activation...' },
     deactivateSignal: { en: 'Deactivate your signal', fr: 'Désactiver ton signal' },
     activateSignal: { en: 'Activate your signal', fr: 'Activer ton signal' },
+    loadingMap: { en: 'Loading map...', fr: 'Chargement de la carte...' },
+    locationFallback: { en: 'Geolocation unavailable — showing demo position', fr: 'G\u00e9olocalisation indisponible \u2014 position de d\u00e9mo affich\u00e9e' },
+    locationDenied: { en: 'Location access denied — showing demo position', fr: 'Acc\u00e8s \u00e0 la localisation refus\u00e9 \u2014 position de d\u00e9mo affich\u00e9e' },
   },
 
   // Edit profile page
@@ -1282,7 +1318,7 @@ export const translations = {
     updateHistory: { en: 'Update history', fr: 'Historique des mises à jour' },
     tagline: { en: 'NEARVITY — The first 100% real social network', fr: 'NEARVITY — Le premier réseau social 100% réel' },
     madeWith: { en: 'Made with love in France by EmotionsCare Sasu', fr: 'Made with love in France par EmotionsCare Sasu' },
-    frenchOnly: { en: 'Changelog items are currently available in French only.', fr: '' },
+    frenchOnly: { en: 'Changelog items are currently available in French only.', fr: 'Les éléments du changelog sont actuellement disponibles en français uniquement.' },
   },
 
   // Diagnostics (dev only)

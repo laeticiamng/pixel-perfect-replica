@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { passwordSchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
 import { PageHeader } from '@/components/shared';
+import { logger } from '@/lib/logger';
 import { useTranslation } from '@/lib/i18n';
 import { getPasswordPolicyErrorMessage, isPwnedPasswordError, isWeakPasswordError } from '@/lib/authErrorMapper';
 import toast from 'react-hot-toast';
@@ -87,7 +88,7 @@ export default function ChangePasswordPage() {
       toast.success(t('auth.passwordChanged'));
       navigate('/settings');
     } catch (error) {
-      console.error('Change password error:', error);
+      logger.api.error('auth', 'change-password', String(error));
       toast.error(t('errors.generic'));
     } finally {
       setIsLoading(false);

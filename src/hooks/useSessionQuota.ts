@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface SessionUsage {
   sessionsCreated: number;
@@ -60,7 +61,7 @@ export function useSessionQuota() {
         });
       }
     } catch (err) {
-      console.error('Error fetching session usage:', err);
+      logger.api.error('session_quota', 'fetch', String(err));
       // Fallback
       setUsage({
         sessionsCreated: 0,

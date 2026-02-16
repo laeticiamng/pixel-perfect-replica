@@ -7,11 +7,16 @@ import { VitePWA } from "vite-plugin-pwa";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  
+
+  // Supabase config — env vars are injected by Lovable Cloud in production.
+  // Fallbacks kept for local development only.
+  const supabaseUrl = env.VITE_SUPABASE_URL || 'https://afvssugntxjolqqeyffn.supabase.co';
+  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmdnNzdWdudHhqb2xxcWV5ZmZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2MzkzNjIsImV4cCI6MjA4NTIxNTM2Mn0.-OMupENyeT43nrybPSB9EtS7KBVYP4XYlhZgGZuebkM';
+
   return {
     define: {
-      'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(env.VITE_SUPABASE_URL || 'https://afvssugntxjolqqeyffn.supabase.co'),
-      'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': JSON.stringify(env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmdnNzdWdudHhqb2xxcWV5ZmZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2MzkzNjIsImV4cCI6MjA4NTIxNTM2Mn0.-OMupENyeT43nrybPSB9EtS7KBVYP4XYlhZgGZuebkM'),
+      'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(supabaseUrl),
+      'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': JSON.stringify(supabaseKey),
     },
     server: {
       host: "::",
@@ -75,6 +80,20 @@ export default defineConfig(({ mode }) => {
         },
       }),
     ].filter(Boolean),
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-ui': ['framer-motion', '@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-tooltip'],
+            'vendor-query': ['@tanstack/react-query', 'zustand'],
+            'vendor-mapbox': ['mapbox-gl', 'supercluster'],
+            'vendor-charts': ['recharts'],
+            'vendor-supabase': ['@supabase/supabase-js'],
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

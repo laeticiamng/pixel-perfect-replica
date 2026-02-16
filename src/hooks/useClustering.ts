@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import Supercluster from 'supercluster';
+import { logger } from '@/lib/logger';
 
 export interface ClusterPoint {
   id: string;
@@ -77,7 +78,7 @@ export function useClustering({
       const rawClusters = supercluster.getClusters(bounds, Math.floor(zoom));
       return rawClusters as ClusterFeature[];
     } catch (e) {
-      console.error('Clustering error:', e);
+      logger.ui.error('useClustering', String(e));
       return [];
     }
   }, [supercluster, bounds, zoom]);

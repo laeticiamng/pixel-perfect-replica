@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEventFavorites } from "@/hooks/useEventFavorites";
 import { useTranslation } from "@/lib/i18n";
+import { logger } from "@/lib/logger";
 import { PageLayout } from "@/components/PageLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,7 +56,7 @@ export default function FavoriteEventsPage() {
 
         setEvents(favoriteEvents);
       } catch (err) {
-        console.error("Error fetching favorite events:", err);
+        logger.api.error('event_favorites', 'fetch', String(err));
       } finally {
         setIsLoading(false);
       }

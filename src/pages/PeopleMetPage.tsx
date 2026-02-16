@@ -154,7 +154,7 @@ export default function PeopleMetPage() {
             {filteredPeople.map((person) => {
               const activityData = getActivityData(person.activity);
               return (
-                <button key={person.id} onClick={() => toast(t('peopleMet.ephemeralToast'), { icon: '👻' })} className="w-full glass rounded-xl p-4 flex items-center gap-4 text-left hover:bg-muted/30 transition-colors" aria-label={person.firstName}>
+                <div key={person.id} className="w-full glass rounded-xl p-4 flex items-center gap-4 text-left" aria-label={person.firstName}>
                   <div className="w-12 h-12 rounded-full bg-coral flex items-center justify-center">
                     <span className="text-lg font-bold text-primary-foreground">{person.firstName.charAt(0)}</span>
                   </div>
@@ -167,7 +167,7 @@ export default function PeopleMetPage() {
                     </div>
                   </div>
                   <span className="text-2xl">{person.positive === true ? '😊' : person.positive === false ? '😕' : '❓'}</span>
-                </button>
+                </div>
               );
             })}
           </div>

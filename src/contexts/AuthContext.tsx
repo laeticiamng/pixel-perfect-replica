@@ -1,24 +1,7 @@
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, useMemo, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
-
-interface Profile {
-  id: string;
-  email: string;
-  first_name: string;
-  avatar_url: string | null;
-  university: string | null;
-  is_premium: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-interface UserStats {
-  interactions: number;
-  hours_active: number;
-  rating: number;
-  total_ratings: number;
-}
+import type { Profile, UserStats } from '@/types/auth';
 
 interface AuthContextType {
   user: User | null;
@@ -41,8 +24,24 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const auth = useSupabaseAuth();
 
+  const value = useMemo(() => auth, [
+    auth.user,
+    auth.session,
+    auth.profile,
+    auth.stats,
+    auth.isLoading,
+    auth.isAuthenticated,
+    auth.signUp,
+    auth.signIn,
+    auth.signInWithMagicLink,
+    auth.signInWithOAuthSupabase,
+    auth.signOut,
+    auth.updateProfile,
+    auth.refreshProfile,
+  ]);
+
   return (
-    <AuthContext.Provider value={auth}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

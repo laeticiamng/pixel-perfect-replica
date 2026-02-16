@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 export function useEventFavorites() {
   const { user } = useAuth();
@@ -22,7 +23,7 @@ export function useEventFavorites() {
       if (error) throw error;
       setFavorites(data?.map(f => f.event_id) || []);
     } catch (err) {
-      console.error('Error fetching favorites:', err);
+      logger.api.error('event_favorites', 'fetch', String(err));
     }
   }, [user]);
 
@@ -60,7 +61,7 @@ export function useEventFavorites() {
       }
       return { error: null };
     } catch (err: any) {
-      console.error('Error toggling favorite:', err);
+      logger.api.error('event_favorites', 'toggle', String(err));
       return { error: err.message };
     } finally {
       setIsLoading(false);

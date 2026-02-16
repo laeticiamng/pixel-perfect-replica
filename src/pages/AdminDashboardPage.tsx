@@ -15,6 +15,7 @@ import { useSystemStats } from '@/hooks/useSystemStats';
 import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { logger } from '@/lib/logger';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -254,7 +255,7 @@ export default function AdminDashboardPage() {
       }
 
     } catch (error) {
-      console.error('Error loading analytics:', error);
+      logger.api.error('analytics', 'fetch', String(error));
     }
     
     setIsLoading(false);

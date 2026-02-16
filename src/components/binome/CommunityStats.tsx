@@ -4,6 +4,7 @@ import { Users, Calendar, CheckCircle2, TrendingUp } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from '@/lib/i18n';
+import { logger } from '@/lib/logger';
 
 interface CommunityStatsData {
   activeUsersNow: number;
@@ -29,7 +30,7 @@ export function CommunityStats() {
   const fetchStats = async () => {
     try {
       const { data, error } = await supabase.rpc('get_community_stats');
-      if (error) { console.error('Error fetching community stats:', error); return; }
+      if (error) { logger.api.error('community_stats', 'fetch', String(error)); return; }
       if (data && data.length > 0) {
         setStats({
           activeUsersNow: Number(data[0].active_users_now) || 0,
@@ -37,7 +38,7 @@ export function CommunityStats() {
           completedSessions: Number(data[0].completed_sessions) || 0
         });
       }
-    } catch (err) { console.error('Error fetching stats:', err); }
+    } catch (err) { logger.api.error('community_stats', 'fetch', String(err)); }
     finally { setIsLoading(false); }
   };
 

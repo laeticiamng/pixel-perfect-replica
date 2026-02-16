@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { logger } from '@/lib/logger';
 
 interface QRCodeScannerProps {
   onScan: (data: string) => Promise<void>;
@@ -58,7 +59,7 @@ export function QRCodeScanner({ onScan, onClose, isOpen }: QRCodeScannerProps) {
   };
 
   const handleError = (error: Error) => {
-    console.error('QR Scanner error:', error);
+    logger.ui.error('QRCodeScanner', String(error));
     setErrorMessage(error.message || t('qrScanner.cameraErrorGeneric'));
     setHasCamera(false);
   };

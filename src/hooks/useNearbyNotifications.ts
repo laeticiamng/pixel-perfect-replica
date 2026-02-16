@@ -18,7 +18,7 @@ const showNativeNotification = (title: string, body: string, icon?: string) => {
       };
       new Notification(title, options);
     } catch (err) {
-      console.log('Native notification not available');
+      // Native notification API unavailable in this context
     }
   }
 };

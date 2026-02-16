@@ -1,35 +1,42 @@
 import { z } from 'zod';
+import { translations, getCurrentLocale } from '@/lib/i18n/translations';
+
+// Helper to get translated validation message at runtime
+function tv(key: keyof typeof translations.validation): string {
+  const locale = getCurrentLocale();
+  return translations.validation[key][locale];
+}
 
 export const emailSchema = z
   .string()
   .trim()
-  .email({ message: "Email invalide" })
-  .max(255, { message: "Email trop long (max 255 caractères)" });
+  .email({ message: tv('emailInvalid') })
+  .max(255, { message: tv('emailTooLong') });
 
 export const passwordSchema = z
   .string()
-  .min(6, { message: "Mot de passe trop court (min 6 caractères)" })
-  .max(100, { message: "Mot de passe trop long (max 100 caractères)" })
-  .regex(/[a-z]/, { message: "Doit contenir au moins une minuscule" })
-  .regex(/[A-Z]/, { message: "Doit contenir au moins une majuscule" })
-  .regex(/[0-9]/, { message: "Doit contenir au moins un chiffre" });
+  .min(6, { message: tv('passwordTooShort') })
+  .max(100, { message: tv('passwordTooLong') })
+  .regex(/[a-z]/, { message: tv('passwordNeedsLower') })
+  .regex(/[A-Z]/, { message: tv('passwordNeedsUpper') })
+  .regex(/[0-9]/, { message: tv('passwordNeedsNumber') });
 
 export const firstNameSchema = z
   .string()
   .trim()
-  .min(1, { message: "Prénom requis" })
-  .max(50, { message: "Prénom trop long (max 50 caractères)" })
-  .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, { message: "Caractères invalides dans le prénom" });
+  .min(1, { message: tv('firstNameRequired') })
+  .max(50, { message: tv('firstNameTooLong') })
+  .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, { message: tv('firstNameInvalidChars') });
 
 export const universitySchema = z
   .string()
   .trim()
-  .max(100, { message: "Nom d'université trop long" })
+  .max(100, { message: tv('universityTooLong') })
   .optional();
 
 export const loginSchema = z.object({
-  email: z.string().trim().email({ message: "Email invalide" }),
-  password: z.string().min(4, { message: "Mot de passe requis" }),
+  email: z.string().trim().email({ message: tv('emailInvalid') }),
+  password: z.string().min(6, { message: tv('passwordRequired') }),
 });
 
 export const registerSchema = z.object({
@@ -51,7 +58,7 @@ export function getPasswordStrength(password: string): {
   color: string;
 } {
   let score = 0;
-  
+
   if (password.length >= 6) score++;
   if (password.length >= 10) score++;
   if (/[a-z]/.test(password)) score++;
@@ -59,9 +66,9 @@ export function getPasswordStrength(password: string): {
   if (/[0-9]/.test(password)) score++;
   if (/[^a-zA-Z0-9]/.test(password)) score++;
 
-  if (score <= 2) return { score, label: 'weak', color: 'bg-signal-red' };
-  if (score <= 4) return { score, label: 'medium', color: 'bg-signal-yellow' };
-  return { score, label: 'strong', color: 'bg-signal-green' };
+  if (score <= 2) return { score, label: tv('weak'), color: 'bg-signal-red' };
+  if (score <= 4) return { score, label: tv('medium'), color: 'bg-signal-yellow' };
+  return { score, label: tv('strong'), color: 'bg-signal-green' };
 }
 
 // Alias for signupSchema

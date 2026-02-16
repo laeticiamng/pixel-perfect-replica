@@ -3,10 +3,8 @@ import { sanitizeText, stripHtml, sanitizeInput, sanitizeEmail, sanitizeUrl, san
 
 describe('Sanitization utilities', () => {
   describe('sanitizeText', () => {
-    it('should encode HTML entities', () => {
-      expect(sanitizeText('<script>alert("xss")</script>')).toBe(
-        '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;'
-      );
+    it('should strip script tags and their content', () => {
+      expect(sanitizeText('<script>alert("xss")</script>')).toBe('');
     });
 
     it('should handle empty string', () => {
@@ -30,7 +28,7 @@ describe('Sanitization utilities', () => {
 
   describe('sanitizeInput', () => {
     it('should strip HTML and trim', () => {
-      expect(sanitizeInput('  <script>evil</script>Hello  ')).toBe('evilHello');
+      expect(sanitizeInput('  <script>evil</script>Hello  ')).toBe('Hello');
     });
 
     it('should limit length', () => {
@@ -73,7 +71,7 @@ describe('Sanitization utilities', () => {
 
   describe('sanitizeDbText', () => {
     it('should strip HTML and null bytes', () => {
-      expect(sanitizeDbText('<script>test</script>\0evil')).toBe('testevil');
+      expect(sanitizeDbText('<script>test</script>\0evil')).toBe('evil');
     });
 
     it('should limit length', () => {

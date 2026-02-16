@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Database } from '@/integrations/supabase/types';
+import { logger } from '@/lib/logger';
 
 type ActivityType = Database["public"]["Enums"]["activity_type"];
 type ConnectionStatus = Database["public"]["Enums"]["connection_status"];
@@ -38,7 +39,7 @@ export function useConnections() {
       if (error) throw error;
       setConnections((data as Connection[]) || []);
     } catch (error) {
-      console.error('[useConnections] Error fetching connections:', error);
+      logger.api.error('connections', 'select', String(error));
     }
   }, [user]);
 
@@ -57,7 +58,7 @@ export function useConnections() {
       if (error) throw error;
       setPendingRequests((data as Connection[]) || []);
     } catch (error) {
-      console.error('[useConnections] Error fetching pending requests:', error);
+      logger.api.error('connections', 'select-pending', String(error));
     }
   }, [user]);
 
@@ -97,7 +98,7 @@ export function useConnections() {
         if (error) throw error;
         return { success: true, data: data as Connection };
       } catch (error) {
-        console.error('[useConnections] Error requesting connection:', error);
+        logger.api.error('connections', 'insert', String(error));
         return { success: false, error };
       }
     },
@@ -123,7 +124,7 @@ export function useConnections() {
         if (error) throw error;
         return { success: true, data: data as Connection };
       } catch (error) {
-        console.error('[useConnections] Error accepting connection:', error);
+        logger.api.error('connections', 'accept', String(error));
         return { success: false, error };
       }
     },
@@ -148,7 +149,7 @@ export function useConnections() {
         if (error) throw error;
         return { success: true, data: data as Connection };
       } catch (error) {
-        console.error('[useConnections] Error declining connection:', error);
+        logger.api.error('connections', 'decline', String(error));
         return { success: false, error };
       }
     },
@@ -205,8 +206,7 @@ export function useConnections() {
       supabase.removeChannel(channelA);
       supabase.removeChannel(channelB);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+  }, [user?.id, refreshConnections]);
 
   return {
     connections,

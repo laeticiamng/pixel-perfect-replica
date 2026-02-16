@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 
 interface UserSettings {
   ghost_mode: boolean;
@@ -37,7 +38,7 @@ export function useUserSettings() {
       .maybeSingle();
 
     if (error) {
-      console.error('Error fetching settings:', error);
+      logger.api.error('user_settings', 'fetch', String(error));
       setIsLoading(false);
       return;
     }

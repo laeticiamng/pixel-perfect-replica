@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
 import toast from 'react-hot-toast';
 import { translations, getCurrentLocale } from '@/lib/i18n/translations';
 
@@ -45,7 +46,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
           setIsSubscribed(true);
         }
       } catch (err) {
-        console.error('Error checking subscription:', err);
+        logger.api.error('push_subscriptions', 'check', String(err));
       }
     };
     checkSubscription();
@@ -80,7 +81,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         .upsert(subscriptionData, { onConflict: 'user_id,endpoint' } as any);
 
       if (error) {
-        console.error('Error saving subscription:', error);
+        logger.api.error('push_subscriptions', 'save', String(error));
         toast.error(t('notificationActivationError'));
         return false;
       }
@@ -89,7 +90,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       toast.success(t('notificationsEnabled'));
       return true;
     } catch (err) {
-      console.error('Error subscribing to push:', err);
+      logger.api.error('push_subscriptions', 'subscribe', String(err));
       toast.error(t('notificationActivationFailed'));
       return false;
     }
@@ -105,7 +106,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         .eq('user_id', user.id);
 
       if (error) {
-        console.error('Error removing subscription:', error);
+        logger.api.error('push_subscriptions', 'remove', String(error));
         return false;
       }
 
@@ -113,7 +114,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       toast.success(t('notificationsDisabled'));
       return true;
     } catch (err) {
-      console.error('Error unsubscribing:', err);
+      logger.api.error('push_subscriptions', 'unsubscribe', String(err));
       return false;
     }
   }, [user]);
@@ -127,7 +128,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         ...options,
       });
     } catch (err) {
-      console.log('Notification:', title, options);
+      // Notification API not available, silently ignored
     }
   }, [isSupported, permission]);
 

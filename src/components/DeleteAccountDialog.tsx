@@ -18,6 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@/lib/i18n';
+import { logger } from '@/lib/logger';
 
 export function DeleteAccountDialog() {
   const { user, signOut } = useAuth();
@@ -50,7 +51,7 @@ export function DeleteAccountDialog() {
       toast.success(t('deleteAccount.success'));
       navigate('/');
     } catch (error) {
-      console.error('Delete account error:', error);
+      logger.api.error('auth', 'delete-account', String(error));
       toast.error(t('deleteAccount.error'));
     } finally {
       setIsLoading(false);

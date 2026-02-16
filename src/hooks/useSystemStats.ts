@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 interface DailyActiveUsers {
   date: string;
@@ -94,7 +95,7 @@ export function useSystemStats(autoFetch = true): UseSystemStatsReturn {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch system stats';
       setError(message);
-      console.error('[useSystemStats] Error:', err);
+      logger.api.error('system_stats', 'fetch', String(err));
     } finally {
       setIsLoading(false);
     }
@@ -116,7 +117,7 @@ export function useSystemStats(autoFetch = true): UseSystemStatsReturn {
 
       return null;
     } catch (err) {
-      console.error('[useSystemStats] Error fetching user quota:', err);
+      logger.api.error('system_stats', 'fetch-quota', String(err));
       return null;
     }
   }, []);
@@ -129,7 +130,7 @@ export function useSystemStats(autoFetch = true): UseSystemStatsReturn {
 
       return response.data?.success ?? false;
     } catch (err) {
-      console.error('[useSystemStats] Error triggering cleanup:', err);
+      logger.api.error('system_stats', 'cleanup', String(err));
       return false;
     }
   }, []);

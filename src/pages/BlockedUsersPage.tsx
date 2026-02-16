@@ -111,7 +111,12 @@ export default function BlockedUsersPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('blockedUsers.unblockConfirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>{t('blockedUsers.unblockConfirmDesc')}</AlertDialogDescription>
+            <AlertDialogDescription>
+              {t('blockedUsers.unblockConfirmDesc')}{' '}
+              <span className="font-semibold text-foreground">
+                {blockedUsers.find(u => u.blocked_id === userToUnblock)?.profile?.first_name || t('blockedUsers.unknownUser')}
+              </span>
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isUnblocking}>{t('cancel')}</AlertDialogCancel>

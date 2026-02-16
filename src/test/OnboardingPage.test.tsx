@@ -54,7 +54,7 @@ describe("OnboardingPage", () => {
     );
 
     expect(getByText("Créons ton compte")).toBeInTheDocument();
-    expect(getByPlaceholderText("ton.email@universite.fr")).toBeInTheDocument();
+    expect(getByPlaceholderText("ton.email@exemple.fr")).toBeInTheDocument();
     expect(getByPlaceholderText("Mot de passe")).toBeInTheDocument();
   });
 

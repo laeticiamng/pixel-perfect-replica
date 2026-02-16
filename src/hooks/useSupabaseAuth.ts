@@ -2,24 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
-
-interface Profile {
-  id: string;
-  email: string;
-  first_name: string;
-  avatar_url: string | null;
-  university: string | null;
-  is_premium: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-interface UserStats {
-  interactions: number;
-  hours_active: number;
-  rating: number;
-  total_ratings: number;
-}
+import type { Profile, UserStats } from '@/types/auth';
 
 interface AuthState {
   user: User | null;
@@ -49,7 +32,7 @@ export function useSupabaseAuth() {
         .maybeSingle();
 
       if (profileError) {
-        console.error('Error fetching profile:', profileError);
+        logger.api.error('profiles', 'select', profileError.message);
         return null;
       }
 
@@ -60,12 +43,12 @@ export function useSupabaseAuth() {
         .maybeSingle();
 
       if (statsError) {
-        console.error('Error fetching stats:', statsError);
+        logger.api.error('user_stats', 'select', statsError.message);
       }
 
       return { profile, stats };
     } catch (error) {
-      console.error('Error in fetchProfile:', error);
+      logger.api.error('profiles', 'fetchProfile', String(error));
       return null;
     }
   }, []);
@@ -74,7 +57,7 @@ export function useSupabaseAuth() {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
+        logger.auth.sessionRefresh(session?.user?.id || 'anonymous');
         
         if (event === 'SIGNED_IN' && session?.user) {
           logger.auth.login(session.user.id, 'email');
@@ -155,7 +138,6 @@ export function useSupabaseAuth() {
     });
 
     if (error) {
-      console.error('Signup error:', error);
       logger.auth.signupFailed(error.message);
       return { error };
     }
@@ -178,7 +160,7 @@ export function useSupabaseAuth() {
 
           if (!updateError) return;
           
-          console.warn(`Profile update attempt ${i + 1} failed:`, updateError.message);
+          logger.ui.warning(`Profile update attempt ${i + 1} failed: ${updateError.message}`);
           if (i < retries - 1) {
             await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
           }
@@ -187,7 +169,7 @@ export function useSupabaseAuth() {
       
       // Don't block signup on profile update - fire and forget with retries
       updateProfileWithRetry(data.user.id).catch(err => {
-        console.error('All profile update retries failed:', err);
+        logger.api.error('profiles', 'update-retry', String(err));
       });
     }
 
@@ -201,7 +183,6 @@ export function useSupabaseAuth() {
     });
 
     if (error) {
-      console.error('Signin error:', error);
       logger.auth.loginFailed(error.message);
       return { error };
     }
@@ -221,7 +202,7 @@ export function useSupabaseAuth() {
     });
 
     if (error) {
-      console.error('Magic link error:', error);
+      logger.api.error('auth', 'magic-link', error.message);
       return { error };
     }
 
@@ -238,7 +219,7 @@ export function useSupabaseAuth() {
     });
 
     if (error) {
-      console.error(`${provider} OAuth error:`, error);
+      logger.api.error('auth', `oauth-${provider}`, error.message);
       return { error };
     }
 
@@ -248,7 +229,7 @@ export function useSupabaseAuth() {
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.error('Signout error:', error);
+      logger.api.error('auth', 'signout', error.message);
     }
     return { error };
   };

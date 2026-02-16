@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 interface Participant { id: string; name: string; }
 
@@ -60,12 +61,12 @@ export function SessionFeedbackForm({ sessionId, participants, onComplete }: Ses
       toast.success(t('sessionFeedback.thanksFeedback'));
       onComplete();
     } catch (error) {
-      console.error('[SessionFeedback] Error:', error);
+      logger.api.error('session_feedback', 'submit', String(error));
       toast.error(t('sessionFeedback.feedbackError'));
     } finally { setIsSubmitting(false); }
   };
 
-  const handleNext = () => { currentIndex < participants.length - 1 ? setCurrentIndex(currentIndex + 1) : handleSubmit(); };
+  const handleNext = () => { if (currentIndex < participants.length - 1) { setCurrentIndex(currentIndex + 1); } else { handleSubmit(); } };
   const handlePrevious = () => { if (currentIndex > 0) setCurrentIndex(currentIndex - 1); };
 
   if (participants.length === 0) return null;
