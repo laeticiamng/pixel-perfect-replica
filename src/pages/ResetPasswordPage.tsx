@@ -78,10 +78,10 @@ export default function ResetPasswordPage() {
     setIsSuccess(true);
     toast.success(t('auth.passwordUpdated'));
     
-    // Redirect after delay
+    // Give user time to read success message before redirect
     setTimeout(() => {
       navigate('/map');
-    }, 2000);
+    }, 4000);
   };
 
   if (!isValidSession) {
@@ -155,6 +155,7 @@ export default function ResetPasswordPage() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>

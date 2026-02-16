@@ -55,7 +55,6 @@ export function getCachedRecommendations(
     // Check if expired
     if (Date.now() > parsed.expiresAt) {
       localStorage.removeItem(key);
-      localStorage.removeItem(key);
       return null;
     }
 

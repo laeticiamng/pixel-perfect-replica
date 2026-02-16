@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 interface RadarUser {
   id: string;
@@ -22,6 +23,7 @@ const signalClassMap: Record<RadarUser['signal'], string> = {
 };
 
 export function RadarSonarView({ users, maxDistance, className, onUserClick }: RadarSonarViewProps) {
+  const { t } = useTranslation();
   const plottedUsers = useMemo(
     () => users.slice(0, 20).map((user, index) => {
       const safeDistance = Math.max(0, user.distance ?? maxDistance / 2);
@@ -74,7 +76,7 @@ export function RadarSonarView({ users, maxDistance, className, onUserClick }: R
 
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <div className="h-14 w-14 rounded-full bg-coral border-4 border-white shadow-xl flex items-center justify-center text-white font-bold">
-            ME
+            {t('map.me')}
           </div>
         </div>
       </div>

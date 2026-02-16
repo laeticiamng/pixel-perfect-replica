@@ -51,7 +51,6 @@ export function useAnalytics() {
           session_id: sessionId.current,
         });
     } catch (error) {
-      // Silently fail - analytics should not break the app
       // Silently swallowed — analytics must never break the app
     }
   }, [user, location.pathname]);

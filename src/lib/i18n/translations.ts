@@ -6,6 +6,16 @@ export const setCurrentLocale = (locale: Locale) => { currentLocale = locale; };
 export const getCurrentLocale = (): Locale => currentLocale;
 
 export const translations = {
+  // Common shared strings
+  common: {
+    cancel: { en: 'Cancel', fr: 'Annuler' },
+    confirm: { en: 'Confirm', fr: 'Confirmer' },
+    save: { en: 'Save', fr: 'Enregistrer' },
+    close: { en: 'Close', fr: 'Fermer' },
+    back: { en: 'Back', fr: 'Retour' },
+    retry: { en: 'Retry', fr: 'Réessayer' },
+  },
+
   // Common
   loading: { en: 'Loading...', fr: 'Chargement...' },
   continue: { en: 'Continue', fr: 'Continuer' },
@@ -80,8 +90,8 @@ export const translations = {
     accountExists: { en: 'An account already exists with this email', fr: 'Un compte existe déjà avec cet email' },
     googleError: { en: 'Google sign-in error', fr: 'Erreur de connexion Google' },
     appleError: { en: 'Apple sign-in error', fr: 'Erreur de connexion Apple' },
-    tooManyAttempts: { en: 'Too many attempts', fr: 'Trop de tentatives' },
-    emailPlaceholder: { en: 'your.email@university.edu', fr: 'ton.email@universite.fr' },
+    tooManyAttempts: { en: 'Too many attempts. Please wait a moment.', fr: 'Trop de tentatives. Patiente un instant.' },
+    emailPlaceholder: { en: 'your.email@example.com', fr: 'ton.email@exemple.fr' },
     invalidEmail: { en: 'Invalid email', fr: 'Email invalide' },
     emailRequired: { en: 'Email required', fr: 'Email requis' },
     passwordTooShort: { en: 'Password too short (min 6 characters)', fr: 'Mot de passe trop court (min 6 caractères)' },
@@ -301,6 +311,7 @@ export const translations = {
     demoModeDesc: { en: 'Show fake signals to discover the app', fr: 'Afficher de faux signaux pour découvrir l\'app' },
     sessionExpired: { en: 'Session expired, please log in again', fr: 'Session expirée, veuillez vous reconnecter' },
     mapLoadError: { en: 'Unable to load the map', fr: 'Impossible de charger la carte' },
+    me: { en: 'ME', fr: 'MOI' },
   },
 
   // Post-signup onboarding
@@ -346,6 +357,7 @@ export const translations = {
     reportProblem: { en: 'Report a problem', fr: 'Signaler un problème' },
     user: { en: 'User', fr: 'Utilisateur' },
     seeYouSoon: { en: 'See you soon!', fr: 'À bientôt !' },
+    logoutConfirm: { en: 'Are you sure you want to log out?', fr: 'Tu es sûr(e) de vouloir te déconnecter ?' },
   },
 
   // Events
@@ -1304,7 +1316,7 @@ export const translations = {
     updateHistory: { en: 'Update history', fr: 'Historique des mises à jour' },
     tagline: { en: 'NEARVITY — The first 100% real social network', fr: 'NEARVITY — Le premier réseau social 100% réel' },
     madeWith: { en: 'Made with love in France by EmotionsCare Sasu', fr: 'Made with love in France par EmotionsCare Sasu' },
-    frenchOnly: { en: 'Changelog items are currently available in French only.', fr: '' },
+    frenchOnly: { en: 'Changelog items are currently available in French only.', fr: 'Les éléments du changelog sont actuellement disponibles en français uniquement.' },
   },
 
   // Diagnostics (dev only)

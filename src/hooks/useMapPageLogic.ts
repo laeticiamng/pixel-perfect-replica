@@ -152,7 +152,13 @@ export function useMapPageLogic() {
       setIsActivating(false);
       
       if (error) {
-        toast.error(t('errors.activationError'));
+        if (error.message?.includes('Rate limit')) {
+          toast.error(t('mapToasts.rateLimitExceeded').replace('{seconds}', '60'));
+        } else if (error.message?.includes('Missing user or position')) {
+          toast.error(t('map.locationNeeded'));
+        } else {
+          toast.error(t('errors.activationError'));
+        }
       } else {
         setShowActivityModal(false);
         setLocationDescription('');
