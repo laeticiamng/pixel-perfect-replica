@@ -5,7 +5,7 @@ import { Database } from '@/integrations/supabase/types';
 import { logger } from '@/lib/logger';
 
 type ActivityType = Database["public"]["Enums"]["activity_type"];
-type ConnectionStatus = Database["public"]["Enums"]["connection_status"];
+type ConnectionStatus = 'pending' | 'accepted' | 'declined';
 
 interface Connection {
   id: string;
@@ -30,14 +30,14 @@ export function useConnections() {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('connections')
         .select('*')
         .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
         .order('updated_at', { ascending: false });
 
       if (error) throw error;
-      setConnections((data as Connection[]) || []);
+      setConnections((data as unknown as Connection[]) || []);
     } catch (error) {
       logger.api.error('connections', 'select', String(error));
     }
@@ -47,7 +47,7 @@ export function useConnections() {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('connections')
         .select('*')
         .or(`user_a.eq.${user.id},user_b.eq.${user.id}`)
@@ -56,7 +56,7 @@ export function useConnections() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPendingRequests((data as Connection[]) || []);
+      setPendingRequests((data as unknown as Connection[]) || []);
     } catch (error) {
       logger.api.error('connections', 'select-pending', String(error));
     }
@@ -82,7 +82,7 @@ export function useConnections() {
           : [targetUserId, user.id];
 
       try {
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from('connections')
           .insert({
             user_a: userA,
@@ -96,7 +96,7 @@ export function useConnections() {
           .single();
 
         if (error) throw error;
-        return { success: true, data: data as Connection };
+        return { success: true, data: data as unknown as Connection };
       } catch (error) {
         logger.api.error('connections', 'insert', String(error));
         return { success: false, error };
@@ -110,7 +110,7 @@ export function useConnections() {
       if (!user) return { success: false, error: 'Not authenticated' };
 
       try {
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from('connections')
           .update({
             status: 'accepted' as ConnectionStatus,
@@ -122,7 +122,7 @@ export function useConnections() {
           .single();
 
         if (error) throw error;
-        return { success: true, data: data as Connection };
+        return { success: true, data: data as unknown as Connection };
       } catch (error) {
         logger.api.error('connections', 'accept', String(error));
         return { success: false, error };
@@ -136,7 +136,7 @@ export function useConnections() {
       if (!user) return { success: false, error: 'Not authenticated' };
 
       try {
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from('connections')
           .update({
             status: 'declined' as ConnectionStatus,
@@ -147,7 +147,7 @@ export function useConnections() {
           .single();
 
         if (error) throw error;
-        return { success: true, data: data as Connection };
+        return { success: true, data: data as unknown as Connection };
       } catch (error) {
         logger.api.error('connections', 'decline', String(error));
         return { success: false, error };

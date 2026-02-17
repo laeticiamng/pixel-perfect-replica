@@ -64,7 +64,7 @@ export function ProfileQRCode({ userId, firstName, avatarUrl, className, trigger
       ctx?.drawImage(img, 0, 0);
       const pngFile = canvas.toDataURL('image/png');
       const downloadLink = document.createElement('a');
-      downloadLink.download = `easy-profile-${firstName}.png`;
+      downloadLink.download = `nearvity-profile-${firstName}.png`;
       downloadLink.href = pngFile;
       downloadLink.click();
       toast.success(t('profileQR.downloaded'));

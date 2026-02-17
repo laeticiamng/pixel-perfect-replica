@@ -108,7 +108,7 @@ export function useBinomeSessions() {
         });
 
         if (rpcError) throw rpcError;
-        rows = (data || []) as SessionRow[];
+        rows = (data || []) as unknown as SessionRow[];
       } else {
         const nowIso = new Date().toISOString();
         const { data, error: queryError } = await supabase
