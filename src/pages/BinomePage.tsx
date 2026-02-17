@@ -31,7 +31,7 @@ export default function BinomePage() {
   const isJoinedSession = (sessionId: string) => myParticipations.some(p => p.id === sessionId);
 
   const handleCreate = async (data: CreateSessionInput) => {
-    if (!canCreate) { toast.error(t('binome.quotaReached')); return false; }
+    if (!canCreate) { toast.error(t('binome.quotaReached')); navigate('/premium'); return false; }
     setIsCreating(true);
     const success = await createSession(data);
     setIsCreating(false);
@@ -40,7 +40,7 @@ export default function BinomePage() {
   };
   
   const handleOpenCreate = () => {
-    if (!canCreate) { toast.error(t('binome.quotaReachedCreate')); return; }
+    if (!canCreate) { toast.error(t('binome.quotaReachedCreate')); navigate('/premium'); return; }
     setShowCreateSheet(true);
   };
 
