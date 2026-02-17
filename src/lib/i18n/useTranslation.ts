@@ -25,7 +25,7 @@ export const useI18nStore = create<I18nStore>()(
       setHydrated: () => set({ isHydrated: true }),
     }),
     {
-      name: 'easy-i18n',
+      name: 'nearvity-i18n',
       onRehydrateStorage: () => (state) => {
         state?.setHydrated();
       },

@@ -28,7 +28,7 @@ export const useThemeStore = create<ThemeState>()(
       },
     }),
     {
-      name: 'easy-theme-storage',
+      name: 'nearvity-theme-storage',
     }
   )
 );

@@ -12,7 +12,6 @@ interface Message {
   sender_id: string;
   content: string;
   created_at: string;
-  expires_at: string | null;
 }
 
 export function useMessages(interactionId: string | null) {
@@ -38,12 +37,12 @@ export function useMessages(interactionId: string | null) {
     if (fetchError) {
       setError(fetchError.message);
     } else {
-      // Filter out expired messages (24h ephemeral)
-      const now = new Date().toISOString();
+      // Filter out expired messages (24h ephemeral) based on created_at
+      const cutoff = new Date(Date.now() - MESSAGE_TTL_HOURS * 60 * 60 * 1000).toISOString();
       const validMessages = (data || []).filter(
-        (m: Message) => !m.expires_at || m.expires_at > now
+        (m: any) => m.created_at > cutoff
       );
-      setMessages(validMessages);
+      setMessages(validMessages as Message[]);
     }
     
     setIsLoading(false);
@@ -60,7 +59,7 @@ export function useMessages(interactionId: string | null) {
       return { error: new Error(`Limite de ${MAX_MESSAGES} messages atteinte`) };
     }
 
-    const expiresAt = new Date(Date.now() + MESSAGE_TTL_HOURS * 60 * 60 * 1000).toISOString();
+
 
     const { data, error: sendError } = await supabase
       .from('messages')
@@ -68,7 +67,6 @@ export function useMessages(interactionId: string | null) {
         interaction_id: interactionId,
         sender_id: user.id,
         content: content.trim().slice(0, 500),
-        expires_at: expiresAt,
       })
       .select()
       .single();
@@ -77,7 +75,7 @@ export function useMessages(interactionId: string | null) {
       return { error: sendError };
     }
 
-    setMessages(prev => [...prev, data]);
+    setMessages(prev => [...prev, data as unknown as Message]);
     return { data };
   }, [interactionId, user, messages.length]);
 

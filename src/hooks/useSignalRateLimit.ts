@@ -32,7 +32,7 @@ export function useSignalRateLimit() {
 
     try {
       // Server-side check via Supabase function
-      const { data: serverAllowed, error: rpcError } = await supabase.rpc(
+      const { data: serverAllowed, error: rpcError } = await (supabase as any).rpc(
         'check_signal_rate_limit',
         { p_user_id: user.id }
       );
@@ -45,7 +45,7 @@ export function useSignalRateLimit() {
         if (allowed) {
           const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-          const { count, error: countError } = await supabase
+          const { count, error: countError } = await (supabase as any)
             .from('signal_rate_limits')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', user.id)
@@ -68,7 +68,7 @@ export function useSignalRateLimit() {
       // Fallback: direct query if RPC is unavailable
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-      const { count, error: countError } = await supabase
+      const { count, error: countError } = await (supabase as any)
         .from('signal_rate_limits')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id)
@@ -107,7 +107,7 @@ export function useSignalRateLimit() {
     if (!user) return false;
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('signal_rate_limits')
         .insert({ user_id: user.id });
 
