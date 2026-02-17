@@ -1,4 +1,4 @@
-import { Radio, Share2, Sparkles } from 'lucide-react';
+import { Radio, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
@@ -6,11 +6,9 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface EmptyRadarStateProps {
   onActivateSignal: () => void;
-  isDemoMode?: boolean;
-  onEnableDemo?: () => void;
 }
 
-export function EmptyRadarState({ onActivateSignal, isDemoMode, onEnableDemo }: EmptyRadarStateProps) {
+export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const handleShare = async () => {
@@ -126,17 +124,6 @@ export function EmptyRadarState({ onActivateSignal, isDemoMode, onEnableDemo }: 
           <Share2 className="h-4 w-4 mr-2" />
           {t('map.inviteFriends')}
         </Button>
-        
-        {!isDemoMode && onEnableDemo && (
-          <Button
-            onClick={onEnableDemo}
-            variant="ghost"
-            className="text-muted-foreground hover:text-foreground text-sm"
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            {t('map.seeDemo')}
-          </Button>
-        )}
       </motion.div>
     </div>
   );
