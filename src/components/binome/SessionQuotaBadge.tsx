@@ -1,4 +1,5 @@
 import { Crown, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ export function SessionQuotaBadge({
   sessionsCreated, sessionsLimit, isPremium, canCreate, className, showUpgrade = true,
 }: SessionQuotaBadgeProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isUnlimited = sessionsLimit === -1;
   const remaining = isUnlimited ? Infinity : Math.max(0, sessionsLimit - sessionsCreated);
   const percentage = isUnlimited ? 0 : (sessionsCreated / sessionsLimit) * 100;
@@ -48,7 +50,7 @@ export function SessionQuotaBadge({
           </div>
         </div>
         {showUpgrade && !isPremium && (
-          <Button variant="ghost" size="sm" className="h-7 text-xs text-coral hover:text-coral hover:bg-coral/10 gap-1">
+          <Button variant="ghost" size="sm" className="h-7 text-xs text-coral hover:text-coral hover:bg-coral/10 gap-1" onClick={() => navigate('/premium')}>
             <Sparkles className="h-3 w-3" />
             {t('sessionQuota.goPremium')}
           </Button>
