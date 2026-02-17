@@ -1,92 +1,40 @@
 
-# Renommage EASY --> NEARVITY
 
-Renommage complet de l'application de "EASY" en "NEARVITY" (near + activity) et de "Easy+" en "Nearvity+" sur l'ensemble du projet.
+## Beta Test Final - Corrections avant production
 
-## Fichiers a modifier
+### 3 erreurs de build a corriger
 
-### 1. Constante globale
-- **`src/lib/constants.ts`** : `APP_NAME = 'NEARVITY'`
+**1. `CreateSessionForm.tsx` - `formSchema` utilise avant d'etre defini (ligne 33)**
 
-### 2. index.html (meta tags)
-- apple-mobile-web-app-title : "NEARVITY"
-- application-name : "NEARVITY"
-- title : "NEARVITY - Le premier reseau social 100% reel"
-- og:title, og:image:alt, og:site_name : remplacer EASY par NEARVITY
-- twitter:card title, description, image:alt : idem
+Le type `FormData` est derive de `formSchema` au niveau du module, mais `formSchema` est cree dynamiquement dans le composant (car il depend de `t()` pour l'i18n). La solution : remplacer le type `FormData` par une inference basee sur `ReturnType` du schema factory, ou definir le type manuellement.
 
-### 3. vite.config.ts (PWA manifest)
-- name : "NEARVITY - Le premier reseau social 100% reel"
-- short_name : "NEARVITY"
+**2. `useBinomeSessions.ts` - Type `SessionRow` incompatible (ligne 111)**
 
-### 4. UI Components
-- **`src/components/landing/LandingHeader.tsx`** : texte "EASY" --> "NEARVITY", lettre "E" --> "N" dans le logo
-- **`src/components/landing/LandingFooter.tsx`** : texte "EASY" --> "NEARVITY", lettre "E" --> "N", email support@easy-app.fr --> support@nearvity.fr (ou garder l'ancien si le domaine n'existe pas encore)
-- **`src/components/navigation/DesktopSidebar.tsx`** : alt="EASY" --> alt="NEARVITY", references a easy-logo.png
-- **`src/pages/InstallPage.tsx`** : alt="EASY Logo" --> alt="NEARVITY Logo", lettre fallback "E" --> "N"
-- **`src/pages/ProfilePage.tsx`** : "EASY v{APP_VERSION}" --> "NEARVITY v{APP_VERSION}"
+Le RPC `get_available_sessions` retourne des colonnes differentes de `SessionRow` (pas de `created_at`, mais a `creator_name`, `creator_avatar`, etc.). La solution : caster via `unknown` ou creer un type intermediaire `RpcSessionRow` separe.
 
-### 5. Traductions (src/lib/i18n/translations.ts)
-Toutes les occurrences de "EASY" dans les textes traduits :
-- `wantsToBeApproached` : "EASY shows you who is." --> "NEARVITY shows you who is."
-- `beTheFirst` : "Invite your friends to join EASY" --> "...NEARVITY"
-- `howDoesEasyWork` --> renommer la cle en `howDoesNearvityWork` + texte mis a jour
-- `howDoesEasyWorkAnswer` --> idem
-- `isEasyFree` --> `isNearvityFree` + texte
-- `isEasyFreeAnswer` --> `isNearvityFreeAnswer` + texte
-- `howToContactSupportAnswer` : emails easy-app.fr
-- `easyPlusTitle` : "Easy+" --> "Nearvity+"
-- `subscribe` : "Upgrade to Easy+" --> "Upgrade to Nearvity+"
-- `welcomeEasyPlus` : "You are Easy+!" --> "You are Nearvity+!"
-- Toutes les cles `whyEasy.*` : renommer en `whyNearvity.*`
+**3. `usePushSubscription.ts` - `pushManager` non reconnu (lignes 30, 73, 116)**
 
-### 6. Pages
-- **`src/pages/HelpPage.tsx`** : mettre a jour les cles FAQ renommees
-- **`src/pages/PremiumPage.tsx`** : `EASY_PLUS_FEATURES` --> `NEARVITY_PLUS_FEATURES`, `handleEasyPlusSubscribe` --> `handleNearvityPlusSubscribe`
-- **`src/pages/AboutPage.tsx`** : email support@easy-app.fr
-- **`src/pages/TermsPage.tsx`** : email legal@easy-app.fr
-- **`src/pages/PrivacyPage.tsx`** : email dpo@easy-app.fr
+TypeScript ne reconnait pas `pushManager` sur `ServiceWorkerRegistration`. La solution : ajouter un cast `as any` ou declarer le type globalement dans `vite-env.d.ts`.
 
-### 7. Hooks et stores
-- **`src/hooks/useSubscription.ts`** : `createEasyPlusCheckout` --> `createNearvityPlusCheckout`, type `'easyplus'` --> `'nearvityplus'`
-- **`src/components/binome/BinomeOnboarding.tsx`** : `WhyEasySection` --> `WhyNearvitySection`, cles `whyEasy.*`
+### 4 references residuelles "EASY" a renommer en "NEARVITY"
 
-### 8. Edge Functions
-- **`supabase/functions/notifications/index.ts`** : "EASY Alerts" --> "NEARVITY Alerts", "[EASY]" --> "[NEARVITY]"
-- **`supabase/functions/create-checkout/index.ts`** : commentaires "Easy+" --> "Nearvity+"
+| Fichier | Ancien | Nouveau |
+|---|---|---|
+| `useGdprExport.ts` | `easy-data-export-` | `nearvity-data-export-` |
+| `useTheme.ts` | `easy-theme-storage` | `nearvity-theme-storage` |
+| `useTranslation.ts` | `easy-i18n` | `nearvity-i18n` |
+| `ProfileQRCode.tsx` | `easy-profile-` | `nearvity-profile-` |
 
-### 9. Cookie consent
-- **`src/components/CookieConsent.tsx`** : `CONSENT_KEY = 'easy-cookie-consent'` --> `'nearvity-cookie-consent'`
+### Plan d'execution
 
-### 10. Assets
-- Le fichier `public/easy-logo.png` sera renomme en `public/nearvity-logo.png` (avec mise a jour de toutes les references)
+1. Corriger `CreateSessionForm.tsx` : deplacer le type `FormData` pour utiliser `z.infer` avec le schema factory via un type generique
+2. Corriger `useBinomeSessions.ts` : caster le resultat RPC via `unknown` avant `SessionRow[]`
+3. Corriger `usePushSubscription.ts` : ajouter un cast `(registration as any).pushManager` aux 3 endroits
+4. Renommer les 4 references "easy" restantes en "nearvity"
+5. Verifier que le build passe sans erreur
 
-### 11. Documentation
-- **`README.md`** : EASY --> NEARVITY partout
-- **`CHANGELOG.md`** : EASY --> NEARVITY partout
+### Details techniques
 
-### 12. Tests
-- **`src/test/premium-pricing.test.ts`** : "Easy+" --> "Nearvity+", `easyplus` --> `nearvityplus`
-- **`src/test/e2e-critical-paths.test.tsx`** : idem
-- **`src/test/components.test.tsx`** : `cookie-consent` key
+- Le storage key change (`easy-theme-storage` vers `nearvity-theme-storage`) reinitialise les preferences theme/langue des utilisateurs existants au prochain chargement -- c'est acceptable pour un rebranding
+- Le cast `as any` pour `pushManager` est la solution standard car les types DOM de TypeScript ne l'incluent pas toujours selon la version de `lib` dans tsconfig
 
----
-
-## Section technique
-
-### Emails
-Les adresses `support@easy-app.fr`, `legal@easy-app.fr`, `dpo@easy-app.fr` seront remplacees par `support@nearvity.fr`, `legal@nearvity.fr`, `dpo@nearvity.fr`. Si le domaine n'est pas encore configure, ces emails seront tout de meme mis a jour pour coherence de marque.
-
-### Retrocompatibilite cookie
-Le changement de `CONSENT_KEY` signifie que les utilisateurs existants reverront le bandeau cookie. C'est acceptable puisque c'est un rebranding complet.
-
-### Stripe
-Les references internes `'easyplus'` dans le body envoye a l'edge function `create-checkout` seront renommees en `'nearvityplus'`. L'edge function devra accepter les deux valeurs temporairement, ou etre mise a jour en meme temps.
-
-### Ordre d'execution
-1. Constante + index.html + vite.config.ts (fondations)
-2. Traductions (toutes les cles i18n)
-3. Composants UI (header, footer, sidebar, pages)
-4. Hooks et logique metier
-5. Edge functions
-6. Tests et documentation
