@@ -19,13 +19,12 @@ export function useMapPageLogic() {
   const { position, startWatching, lastUpdated } = useLocationStore();
   const { settings } = useUserSettings();
   const { 
-    isActive, 
+    isActive,
     mySignal,
-    activity: myActivity, 
+    activity: myActivity,
     signalType,
-    nearbyUsers, 
-    isDemoMode,
-    activateSignal, 
+    nearbyUsers,
+    activateSignal,
     deactivateSignal,
     extendSignal,
     updateSignalState,
@@ -197,9 +196,7 @@ export function useMapPageLogic() {
   }, [myActivity]);
 
   const handleUserClick = useCallback((userId: string, distance?: number) => {
-    const maxRevealDistance = isDemoMode ? Infinity : settings.visibility_distance;
-    
-    if (distance && distance > maxRevealDistance) {
+    if (distance && distance > settings.visibility_distance) {
       toast(t('mapToasts.getCLoser'), { icon: '👀' });
     } else {
       if (settings.proximity_vibration && 'vibrate' in navigator) {
@@ -207,7 +204,7 @@ export function useMapPageLogic() {
       }
       navigate(`/reveal/${userId}`);
     }
-  }, [isDemoMode, settings.visibility_distance, settings.proximity_vibration, navigate, t]);
+  }, [settings.visibility_distance, settings.proximity_vibration, navigate, t]);
 
   const toggleActivityFilter = useCallback((activity: ActivityType) => {
     setActivityFilters(prev => 
@@ -247,7 +244,6 @@ export function useMapPageLogic() {
     myActivity,
     signalType,
     nearbyUsers,
-    isDemoMode,
     showActivityModal,
     setShowActivityModal,
     selectedActivity,

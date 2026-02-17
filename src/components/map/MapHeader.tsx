@@ -10,7 +10,6 @@ interface MapHeaderProps {
   mySignal?: { expires_at: string } | null;
   myActivity: ActivityType | null;
   openUsersCount: number;
-  isDemoMode: boolean;
   isRefreshing: boolean;
   showLegend: boolean;
   showFilters: boolean;
@@ -26,7 +25,7 @@ interface MapHeaderProps {
 }
 
 export function MapHeader({
-  isActive, mySignal, myActivity, openUsersCount, isDemoMode, isRefreshing,
+  isActive, mySignal, myActivity, openUsersCount, isRefreshing,
   showLegend, showFilters, activityFilters, onRefresh, onToggleLegend,
   onToggleFilters, onChangeActivity, onSignalExpired, onExtendSignal,
   onToggleActivityFilter, onClearFilters,
@@ -121,11 +120,6 @@ export function MapHeader({
             <p className="text-muted-foreground text-sm flex items-center gap-2">
               <span className="text-signal-green font-bold">{openUsersCount}</span> 
               {openUsersCount === 1 ? t('mapHeader.personOpen') : t('mapHeader.peopleOpen')}
-              {isDemoMode && (
-                <span className="px-2 py-0.5 rounded-full bg-signal-yellow/20 text-signal-yellow text-xs font-medium border border-signal-yellow/30">
-                  {t('mapHeader.demo')}
-                </span>
-              )}
             </p>
           </div>
           <button

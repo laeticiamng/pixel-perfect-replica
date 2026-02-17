@@ -32,7 +32,7 @@ export default function MapPage() {
   const { t } = useTranslation();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { position, error: locationError, isWatching } = useLocationStore();
-  const { hasSeenLocationPrompt, setHasSeenLocationPrompt, showDemoSignals, setShowDemoSignals } = useSettingsStore();
+  const { hasSeenLocationPrompt, setHasSeenLocationPrompt } = useSettingsStore();
   const [locationBannerDismissed, setLocationBannerDismissed] = useState(false);
   const {
     profile,
@@ -41,7 +41,6 @@ export default function MapPage() {
     mySignal,
     myActivity,
     signalType,
-    isDemoMode,
     showActivityModal,
     setShowActivityModal,
     selectedActivity,
@@ -87,11 +86,6 @@ export default function MapPage() {
 
   const handleSkipLocation = () => {
     setHasSeenLocationPrompt(true);
-    setShowDemoSignals(true);
-  };
-
-  const handleEnableDemo = () => {
-    setShowDemoSignals(true);
   };
 
   // Show location permission screen
@@ -233,11 +227,6 @@ export default function MapPage() {
                 <p className="text-muted-foreground text-sm flex items-center gap-2">
                   <span className="text-signal-green font-bold">{openUsersCount}</span> 
                   {openUsersCount === 1 ? t('mapUI.personOpen') : t('mapUI.peopleOpen')}
-                  {isDemoMode && (
-                    <span className="px-2 py-0.5 rounded-full bg-signal-yellow/20 text-signal-yellow text-xs font-medium border border-signal-yellow/30">
-                      {t('mapUI.demo')}
-                    </span>
-                  )}
                 </p>
               </div>
               <button
@@ -339,11 +328,9 @@ export default function MapPage() {
 
         {/* Interactive Map / Radar */}
         <div className="flex-1 min-h-0 px-4 sm:px-6">
-          {filteredNearbyUsers.length === 0 && !isActive && !isDemoMode ? (
-            <EmptyRadarState 
+          {filteredNearbyUsers.length === 0 && !isActive ? (
+            <EmptyRadarState
               onActivateSignal={handleSignalToggle}
-              isDemoMode={isDemoMode}
-              onEnableDemo={showDemoSignals ? undefined : handleEnableDemo}
             />
           ) : mapMode === 'map' ? (
             <InteractiveMap

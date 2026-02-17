@@ -3,7 +3,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { logger } from '@/lib/logger';
-import { generateMockUsers } from '@/utils/mockData';
 import { useTranslation } from '@/lib/i18n';
 
 type SignalType = 'green' | 'yellow' | 'red';
@@ -38,7 +37,6 @@ export function useActiveSignal() {
   const [mySignal, setMySignal] = useState<ActiveSignal | null>(null);
   const [nearbyUsers, setNearbyUsers] = useState<NearbyUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDemoMode, setIsDemoMode] = useState(false);
 
   // Fetch my current signal
   const fetchMySignal = useCallback(async () => {
@@ -247,7 +245,6 @@ export function useActiveSignal() {
           .sort((a, b) => a.distance - b.distance);
 
         if (nearby.length > 0) {
-          setIsDemoMode(false);
           setNearbyUsers(nearby);
           return;
         }
@@ -275,14 +272,6 @@ export function useActiveSignal() {
 
       if (!fallbackSignals || fallbackSignals.length === 0) {
         setNearbyUsers([]);
-        // Show demo users if no real users
-        const mockUsers = generateMockUsers(position.latitude, position.longitude, 8);
-        const mocksWithDistance = mockUsers.map(u => ({
-          ...u,
-          distance: calculateDistance(position.latitude, position.longitude, u.position.latitude, u.position.longitude),
-        })).filter(u => u.distance <= maxDistance).sort((a, b) => (a.distance || 0) - (b.distance || 0));
-        setNearbyUsers(mocksWithDistance);
-        setIsDemoMode(true);
         return;
       }
 
@@ -321,19 +310,6 @@ export function useActiveSignal() {
         .filter(u => u.distance <= maxDistance)
         .sort((a, b) => a.distance - b.distance);
 
-      // If no real users found, add demo users so the map isn't empty
-      if (nearbyFiltered.length === 0) {
-        const mockUsers = generateMockUsers(position.latitude, position.longitude, 8);
-        const mocksWithDistance = mockUsers.map(u => ({
-          ...u,
-          distance: calculateDistance(position.latitude, position.longitude, u.position.latitude, u.position.longitude),
-        })).filter(u => u.distance <= maxDistance).sort((a, b) => (a.distance || 0) - (b.distance || 0));
-        setNearbyUsers(mocksWithDistance);
-        setIsDemoMode(true);
-        return;
-      }
-
-      setIsDemoMode(false);
       setNearbyUsers(nearbyFiltered);
     } catch (err) {
       logger.api.error('active_signals', 'fetchNearbyUsers', String(err));
@@ -435,7 +411,6 @@ export function useActiveSignal() {
     mySignal,
     nearbyUsers,
     isLoading,
-    isDemoMode,
     isActive: !!mySignal,
     activity: mySignal?.activity as ActivityType | null,
     activateSignal,
