@@ -1,15 +1,16 @@
+import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
 
-export function FinalCTASection() {
+export const FinalCTASection = forwardRef<HTMLElement>(function FinalCTASection(_props, ref) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   return (
-    <section className="py-20 px-6 relative z-10 bg-gradient-to-b from-coral/5 to-coral/15 border-t border-coral/10">
+    <section ref={ref} className="py-20 px-6 relative z-10 bg-gradient-to-b from-coral/5 to-coral/15 border-t border-coral/10">
       <div className="max-w-3xl mx-auto text-center">
         <RevealText>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
@@ -41,4 +42,4 @@ export function FinalCTASection() {
       </div>
     </section>
   );
-}
+});

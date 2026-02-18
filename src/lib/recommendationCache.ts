@@ -23,7 +23,7 @@ interface LocationRecommendation {
   best_for: string[];
 }
 
-const CACHE_KEY_PREFIX = 'easy_location_cache_';
+const CACHE_KEY_PREFIX = 'nearvity_location_cache_';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 /**
