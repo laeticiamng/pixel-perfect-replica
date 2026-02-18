@@ -26,17 +26,18 @@ export function EmptyState({
   className,
   children,
 }: EmptyStateProps) {
-  // Check if icon is a Lucide component (function) or a ReactNode
-  const isLucideIcon = typeof Icon === 'function';
+  // Cast to component type for rendering - handles both regular components and forwardRef
+  const IconComponent = Icon as ComponentType<LucideProps>;
+  const isComponent = typeof Icon === 'function' || (typeof Icon === 'object' && Icon !== null && '$$typeof' in Icon);
   
   return (
     <div className={cn("text-center py-12", className)}>
       <div className="text-muted-foreground mx-auto mb-4">
-        {isLucideIcon ? (
-          <Icon className="h-12 w-12 mx-auto" />
+        {isComponent ? (
+          <IconComponent className="h-12 w-12 mx-auto" />
         ) : (
           <div className="[&>svg]:h-12 [&>svg]:w-12 [&>svg]:mx-auto">
-            {Icon}
+            {Icon as ReactNode}
           </div>
         )}
       </div>
