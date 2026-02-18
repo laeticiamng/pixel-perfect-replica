@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Calendar, Users, Clock, History } from 'lucide-react';
+import { Plus, Calendar, Users, Clock, History, Crown } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
 import { PageHeader, EmptyState } from '@/components/shared';
@@ -76,6 +76,21 @@ export default function BinomePage() {
         
       <div className="px-6 space-y-4">
         {usage && <SessionQuotaBadge sessionsCreated={usage.sessionsCreated} sessionsLimit={usage.sessionsLimit} isPremium={usage.isPremium} canCreate={usage.canCreate} />}
+        
+        {!canCreate && (
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-coral/10 border border-coral/20">
+            <Crown className="h-5 w-5 text-coral shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">{t('binome.quotaReached')}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{t('binome.unlockMoreSessions') || 'Passez Premium pour créer des sessions illimitées'}</p>
+            </div>
+            <Button size="sm" variant="outline" className="border-coral text-coral hover:bg-coral/10 shrink-0" onClick={() => navigate('/premium')}>
+              <Crown className="h-3.5 w-3.5 mr-1" />
+              Premium
+            </Button>
+          </div>
+        )}
+        
         <AIRecommendationsWidget />
         <BinomeDescriptionCard />
         <CommunityStats />

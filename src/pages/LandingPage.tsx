@@ -157,7 +157,7 @@ export default function LandingPage() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
       <FloatingOrbs />
       <LandingHeader />
       <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />

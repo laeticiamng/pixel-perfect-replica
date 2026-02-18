@@ -1,8 +1,9 @@
+import { forwardRef } from 'react';
 import { Ban, CheckCircle, Shield } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
 
-export function GuaranteeSection() {
+export const GuaranteeSection = forwardRef<HTMLElement>(function GuaranteeSection(_props, ref) {
   const { t } = useTranslation();
 
   const guarantees = [
@@ -12,7 +13,7 @@ export function GuaranteeSection() {
   ];
 
   return (
-    <section className="py-16 px-6 relative z-10 bg-gradient-to-b from-transparent to-coral/5">
+    <section ref={ref} className="py-16 px-6 relative z-10 bg-gradient-to-b from-transparent to-coral/5">
       <div className="max-w-4xl mx-auto">
         <RevealText>
           <div className="text-center mb-12">
@@ -45,4 +46,4 @@ export function GuaranteeSection() {
       </div>
     </section>
   );
-}
+});
