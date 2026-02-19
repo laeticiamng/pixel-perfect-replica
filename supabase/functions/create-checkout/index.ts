@@ -9,7 +9,7 @@ const corsHeaders = {
 };
 
 // Nearvity+ Premium - 9.90€/mois
-const NEARVITY_PLUS_PRICE_ID = "price_1SvGdpDFa5Y9NR1I1qP73OYs";
+const NEARVITY_PLUS_PRICE_ID = "price_1T2TExDFa5Y9NR1Id27rDAA8";
 
 // Legacy prices (kept for existing subscribers)
 const LEGACY_PRICES = {
