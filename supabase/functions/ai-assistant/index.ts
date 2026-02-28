@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -101,24 +101,32 @@ serve(async (req) => {
       }
     }
 
-    // Apply rate limiting if user is authenticated
-    if (userId) {
-      const rateLimitResult = checkInMemoryRateLimit(userId, action);
-      
-      if (!rateLimitResult.allowed) {
-        console.log(`[ai-assistant] Rate limit exceeded for user ${userId}, action: ${action}`);
-        return new Response(JSON.stringify({ 
-          error: 'Rate limit exceeded',
-          retry_after: rateLimitResult.retryAfter 
-        }), {
-          status: 429,
-          headers: { 
-            ...corsHeaders, 
-            'Content-Type': 'application/json',
-            'Retry-After': String(rateLimitResult.retryAfter || 60)
-          },
-        });
-      }
+    // Require authentication to prevent unauthenticated abuse
+    if (!userId) {
+      return new Response(JSON.stringify({ 
+        error: 'Authentication required' 
+      }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Apply rate limiting
+    const rateLimitResult = checkInMemoryRateLimit(userId, action);
+    
+    if (!rateLimitResult.allowed) {
+      console.log(`[ai-assistant] Rate limit exceeded for user ${userId}, action: ${action}`);
+      return new Response(JSON.stringify({ 
+        error: 'Rate limit exceeded',
+        retry_after: rateLimitResult.retryAfter 
+      }), {
+        status: 429,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+          'Retry-After': String(rateLimitResult.retryAfter || 60)
+        },
+      });
     }
 
     if (action === 'icebreaker') {

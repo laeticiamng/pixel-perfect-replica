@@ -47,14 +47,46 @@ serve(async (req) => {
     
     logStep("User authenticated", { userId });
 
-    const { sessions_purchased } = await req.json();
+    const { sessions_purchased, checkout_session_id } = await req.json();
     const count = parseInt(sessions_purchased, 10);
     
     if (isNaN(count) || count < 1 || count > 10) {
       throw new Error("Invalid sessions count");
     }
+
+    if (!checkout_session_id || typeof checkout_session_id !== 'string') {
+      throw new Error("Missing or invalid checkout_session_id");
+    }
     
-    logStep("Adding sessions", { count });
+    logStep("Verifying Stripe checkout session", { checkout_session_id });
+
+    // Verify the Stripe checkout session is valid and paid
+    const Stripe = (await import("https://esm.sh/stripe@18.5.0")).default;
+    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
+    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
+
+    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    const checkoutSession = await stripe.checkout.sessions.retrieve(checkout_session_id);
+
+    if (checkoutSession.payment_status !== 'paid') {
+      logStep("Payment not completed", { status: checkoutSession.payment_status });
+      throw new Error("Payment not completed");
+    }
+
+    // Verify the session metadata matches the requesting user
+    if (checkoutSession.metadata?.user_id !== userId) {
+      logStep("User ID mismatch", { expected: userId, got: checkoutSession.metadata?.user_id });
+      throw new Error("Unauthorized: checkout session does not belong to this user");
+    }
+
+    // Verify the purchased quantity matches
+    const metaCount = parseInt(checkoutSession.metadata?.sessions_purchased || '0', 10);
+    if (metaCount !== count) {
+      logStep("Count mismatch", { expected: count, got: metaCount });
+      throw new Error("Sessions count does not match checkout session");
+    }
+
+    logStep("Stripe verification passed, adding sessions", { count });
 
     // Add purchased sessions to user profile
     const { data: newTotal, error: addError } = await supabaseClient

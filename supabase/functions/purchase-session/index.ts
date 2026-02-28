@@ -10,6 +10,20 @@ const corsHeaders = {
 // Session unitaire - 0.99€
 const SESSION_PRICE_ID = "price_1SvGdqDFa5Y9NR1IrL2P71Ms";
 
+// Rate limiting: 5 purchase attempts per minute per user
+const rateLimitCache = new Map<string, { count: number; resetTime: number }>();
+function checkRateLimit(userId: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitCache.get(userId);
+  if (!entry || now > entry.resetTime) {
+    rateLimitCache.set(userId, { count: 1, resetTime: now + 60000 });
+    return true;
+  }
+  if (entry.count >= 5) return false;
+  entry.count++;
+  return true;
+}
+
 const logStep = (step: string, details?: Record<string, unknown>) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[PURCHASE-SESSION] ${step}${detailsStr}`);
@@ -53,6 +67,13 @@ serve(async (req) => {
     
     logStep("User authenticated", { userId, email: userEmail });
 
+    if (!checkRateLimit(userId)) {
+      return new Response(
+        JSON.stringify({ error: "Trop de tentatives, réessaie dans 1 minute" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 429 }
+      );
+    }
+
     const { quantity = 1 } = await req.json().catch(() => ({ quantity: 1 }));
     const sessionQuantity = Math.min(Math.max(1, quantity), 10); // Limit 1-10 sessions per purchase
     logStep("Quantity", { quantity: sessionQuantity });
@@ -83,7 +104,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${origin}/premium?session_purchased=${sessionQuantity}`,
+      success_url: `${origin}/premium?session_purchased=${sessionQuantity}&checkout_session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/premium?canceled=true`,
       metadata: {
         user_id: userId,

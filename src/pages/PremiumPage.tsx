@@ -78,6 +78,7 @@ export default function PremiumPage() {
     const success = searchParams.get('success');
     const canceled = searchParams.get('canceled');
     const sessionPurchased = searchParams.get('session_purchased');
+    const checkoutSessionId = searchParams.get('checkout_session_id');
 
     if (success === 'true') {
       setShowSuccessBanner(true);
@@ -86,10 +87,10 @@ export default function PremiumPage() {
       toast.success(t('premium.welcomeNearvityPlus'));
       checkSubscription();
       navigate('/premium', { replace: true });
-    } else if (sessionPurchased) {
+    } else if (sessionPurchased && checkoutSessionId) {
       const count = parseInt(sessionPurchased, 10);
       if (!isNaN(count) && count > 0) {
-        confirmSessionPurchase(count)
+        confirmSessionPurchase(count, checkoutSessionId)
           .then(() => {
             const message = count > 1 
               ? t('premium.sessionsAddedPlural', { count }) 
