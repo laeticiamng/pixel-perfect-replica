@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Map, { Marker, NavigationControl, GeolocateControl, Source, Layer, Popup } from 'react-map-gl/mapbox';
 import type { MapRef, ViewStateChangeEvent } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { AnimatePresence } from 'framer-motion';
+
 import { Map as MapIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocationStore } from '@/stores/locationStore';
@@ -395,8 +395,8 @@ export function InteractiveMap({
           </AnimatedMarker>
         )}
 
-        {/* Clustered nearby users markers with AnimatePresence for smooth filtering */}
-        <AnimatePresence mode="popLayout">
+        {/* Clustered nearby users markers */}
+        <>
           {clusters.map((cluster) => {
             const [longitude, latitude] = cluster.geometry.coordinates;
             const { cluster: isCluster, point_count, cluster_id, user } = cluster.properties;
@@ -471,7 +471,7 @@ export function InteractiveMap({
               </AnimatedMarker>
             );
           })}
-        </AnimatePresence>
+        </>
 
         {/* User popup card */}
         {selectedUser && (
