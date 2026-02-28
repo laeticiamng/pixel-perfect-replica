@@ -1,58 +1,87 @@
 
 
-## Audit final et corrections pre-production NEARVITY
+# Audit Complet NEARVITY - Rapport et Plan de Corrections
 
-### Problemes identifies
+## Resultats de l'Audit
 
-**1. Erreurs console : forwardRef manquant sur GuaranteeSection et FinalCTASection**
-La `LandingPage` passe un `ref` (via `useScroll` / framer-motion) a `GuaranteeSection` et `FinalCTASection` qui sont des function components sans `forwardRef`. Ces warnings polluent la console.
+### 1. CRITIQUE - Fonctions Edge utilisant `getUser()` au lieu de `getClaims()`
 
-- **Correction** : Verifier dans `LandingPage.tsx` -- ces composants ne recoivent pas de `ref` directement (lignes 171-172 le confirment). Le warning vient de framer-motion qui tente de passer un ref via `AnimatePresence`. Ce n'est pas un bug bloquant mais on va quand meme wrapper les deux composants avec `forwardRef` pour supprimer le warning.
+6 fonctions backend utilisent encore `getUser()` pour l'authentification, ce qui provoque des erreurs **401 Invalid JWT** avec Lovable Cloud. Seules 3 fonctions sont correctement migrées (`check-subscription`, `create-checkout`, `get-mapbox-token`).
 
-**2. Derniere reference "easy" residuelle dans le code**
-- `src/lib/recommendationCache.ts` ligne 26 : `easy_location_cache_` doit devenir `nearvity_location_cache_`
+**Fonctions en erreur :**
 
-**3. Premium et Reservation : clarifier le lien UX**
-- La page Premium est deja complete avec les 3 tiers (Free, Pay-per-use, Nearvity+)
-- Le `SessionQuotaBadge` redirige deja vers `/premium`
-- Le `BinomePage` redirige deja vers `/premium` quand le quota est atteint
-- **Amelioration** : Ajouter un bandeau explicatif en haut de BinomePage quand le quota est epuise, avec un message clair "Debloquez plus de sessions" pointant vers Premium, pour que l'utilisateur comprenne immediatement
+| Fonction | Methode actuelle | Impact |
+|---|---|---|
+| `customer-portal` | `getUser(token)` | Gestion abonnement cassee |
+| `purchase-session` | `getUser(token)` | Achat de sessions casse |
+| `confirm-session-purchase` | `getUser(token)` | Confirmation achat cassee |
+| `notifications` | `getUser()` (via `validateAuth`) | Alertes admin, push, rappels casses |
+| `system` | `getUser()` (via `validateAuth`) | Dashboard admin, cleanup casses |
+| `ai-assistant` | `getUser()` | Icebreakers IA casses |
+| `voice-icebreaker` | `getUser()` | Generation vocale cassee |
+| `scrape-events` | `getUser()` | Scraping evenements casse |
+| `recommend-locations` | `getUser()` | Recommandations cassees |
 
-**4. Responsive : verification des composants cles**
-- `SessionCard`, `CreateSessionForm`, `PremiumPage` utilisent des classes Tailwind responsive (grid, flex-wrap, etc.) -- ils sont deja responsive
-- La `BottomNav` est presente sur `BinomePage` pour mobile
-- Le `Sheet` de creation utilise `side="bottom"` avec `h-[90vh]` -- fonctionne sur mobile et desktop
+### 2. MINEUR - Branding residuel "Signal" dans les emails
 
-**5. Connexion A-Z : flux complet**
-- Signup email/password fonctionne (avec validation Zod, retry profile, confirmation email)
-- Login email/password fonctionne (avec rate limiting, gestion "Email not confirmed")
-- Magic Link fonctionne
-- Google OAuth fonctionne (avec fallback Lovable -> Supabase)
-- Forgot password -> Reset password fonctionne
-- Le trigger `handle_new_user` cree automatiquement le profil, les stats et les settings
+Dans `notifications/index.ts` (ligne 245) : `"Cet email a ete envoye automatiquement par Signal."` doit etre remplace par `"Cet email a ete envoye automatiquement par NEARVITY."`.
 
-**6. Reservation A-Z : flux complet**
-- Creation de session via `CreateSessionForm` -> `useBinomeSessions.createSession` -> insert dans `scheduled_sessions`
-- Quota verifie via `useSessionQuota` -> RPC `get_current_month_usage`
-- Join session via RPC `join_session` (verifie capacite, statut)
-- Leave session via RPC `leave_session` (penalite fiabilite si <2h)
-- Cancel session (creator only)
-- Detail session, chat, check-in, feedback -- tous les composants existent
+### 3. MINEUR - Ancien prix ID pour sessions unitaires
 
-### Plan d'execution (7 corrections)
+Le fichier `purchase-session/index.ts` utilise `price_1SvGdqDFa5Y9NR1IrL2P71Ms` (ancien produit "EASY+ Session Unit"). Ce prix est fonctionnel mais porte l'ancien branding dans Stripe.
 
-1. **`GuaranteeSection.tsx`** : Wrapper avec `forwardRef` pour supprimer le warning console
-2. **`FinalCTASection.tsx`** : Wrapper avec `forwardRef` pour supprimer le warning console
-3. **`src/lib/recommendationCache.ts`** : Renommer `easy_location_cache_` en `nearvity_location_cache_`
-4. **`BinomePage.tsx`** : Ajouter un bandeau d'alerte visible quand `!canCreate` avec bouton "Debloquer plus de sessions" pointant vers `/premium`, pour rendre le lien Premium/Reservation explicite
-5. **`LandingPage.tsx`** : Ajouter `position: relative` au container pour corriger le warning framer-motion sur le scroll offset
-6. **Verification finale** : S'assurer qu'il n'y a plus d'erreur console, de reference "easy", et que le build passe
+---
 
-### Impact utilisateur
+## Plan de Corrections
 
-- **Connexion** : Fonctionne deja de A a Z (email, Google, Magic Link, reset password)
-- **Reservation** : Fonctionne deja de A a Z avec quota, redirection Premium, et bandeau explicatif ameliore
-- **Premium** : Les 3 tiers sont clairs (Free 2 sessions/mois, 0.99EUR/session, 9.90EUR/mois illimite)
-- **Responsive** : Mobile-first avec BottomNav, Sheet bottom, grilles adaptatives
-- **Pas de breaking change** : Seuls des warnings console et un cache key sont corriges
+### Etape 1 - Migrer `customer-portal` vers `getClaims()`
+- Remplacer `getUser(token)` par `getClaims(token)`
+- Extraire `userId` et `email` depuis `claimsData.claims`
+- Ajouter la validation du header Bearer
+
+### Etape 2 - Migrer `purchase-session` vers `getClaims()`
+- Meme pattern que customer-portal
+- Utiliser `SUPABASE_ANON_KEY` avec `getClaims()` au lieu de `getUser()`
+
+### Etape 3 - Migrer `confirm-session-purchase` vers `getClaims()`
+- Remplacer `getUser(token)` par `getClaims(token)` avec le service role client
+- Extraire le `userId` depuis les claims
+
+### Etape 4 - Migrer `notifications` (validateAuth) vers `getClaims()`
+- Remplacer la fonction `validateAuth` pour utiliser `getClaims(token)` au lieu de `getUser()`
+- Corriger le branding "Signal" en "NEARVITY" dans le footer email (ligne 245)
+
+### Etape 5 - Migrer `system` (validateAuth) vers `getClaims()`
+- Meme correction que notifications dans la fonction `validateAuth`
+
+### Etape 6 - Migrer `ai-assistant` vers `getClaims()`
+- Remplacer `getUser()` par `getClaims(token)` pour l'extraction du userId
+
+### Etape 7 - Migrer `voice-icebreaker` vers `getClaims()`
+- Meme pattern de migration
+
+### Etape 8 - Migrer `scrape-events` vers `getClaims()`
+- Remplacer `getUser()` par `getClaims(token)`
+
+### Etape 9 - Migrer `recommend-locations` vers `getClaims()`
+- Remplacer `getUser()` par `getClaims(token)`
+
+---
+
+## Details Techniques
+
+Chaque migration suit le meme pattern :
+
+```text
+AVANT:
+  const { data: userData, error } = await supabase.auth.getUser(token);
+  const user = userData.user;
+
+APRES:
+  const { data: claimsData, error } = await supabase.auth.getClaims(token);
+  const userId = claimsData.claims.sub;
+  const userEmail = claimsData.claims.email;
+```
+
+**9 fichiers modifies, 0 migration de base de donnees necessaire.**
 
