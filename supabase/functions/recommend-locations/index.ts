@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
 interface LocationRecommendation {
   name: string;
@@ -11,6 +12,12 @@ interface LocationRecommendation {
   tips: string[];
   best_for: string[];
 }
+
+const recommendSchema = z.object({
+  activity: z.string().min(1).max(50),
+  city: z.string().min(1).max(100),
+  context: z.string().max(500).optional(),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -30,14 +37,11 @@ serve(async (req) => {
     const PERPLEXITY_API_KEY = Deno.env.get("PERPLEXITY_API_KEY");
     if (!PERPLEXITY_API_KEY) throw new Error("PERPLEXITY_API_KEY is not configured");
 
-    const { activity, city, context } = await req.json();
+    const rawBody = await req.json();
+    const parsed = validateBody(rawBody, recommendSchema);
+    if (isValidationError(parsed)) return parsed;
 
-    if (!activity || !city) {
-      return new Response(
-        JSON.stringify({ error: "activity and city are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const { activity, city, context } = parsed;
 
     console.log("[recommend-locations] Getting recommendations for:", activity, "in", city);
 

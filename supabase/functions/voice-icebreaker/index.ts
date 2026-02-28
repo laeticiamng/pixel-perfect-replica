@@ -1,6 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
+
+const voiceSchema = z.object({
+  text: z.string().min(1, "text is required").max(500, "Text too long. Maximum 500 characters."),
+  voice_id: z.string().max(100).optional(),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -21,21 +27,11 @@ serve(async (req) => {
       return rateLimitResponse(rl.retryAfter!);
     }
 
-    const { text, voice_id } = await req.json();
+    const rawBody = await req.json();
+    const parsed = validateBody(rawBody, voiceSchema);
+    if (isValidationError(parsed)) return parsed;
 
-    if (!text) {
-      return new Response(
-        JSON.stringify({ success: false, error: "text is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (text.length > 500) {
-      return new Response(
-        JSON.stringify({ success: false, error: "Text too long. Maximum 500 characters." }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const { text, voice_id } = parsed;
 
     console.log("[voice-icebreaker] Generating audio for:", text.slice(0, 50), `(user: ${auth.userId})`);
 

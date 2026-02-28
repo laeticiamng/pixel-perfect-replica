@@ -2,9 +2,14 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
 // Session unitaire - 0.99€
 const SESSION_PRICE_ID = "price_1SvGdqDFa5Y9NR1IrL2P71Ms";
+
+const purchaseSchema = z.object({
+  quantity: z.number().int().min(1).max(10).optional().default(1),
+});
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
   const d = details ? ` - ${JSON.stringify(details)}` : "";
@@ -30,8 +35,11 @@ serve(async (req) => {
     const rl = checkRateLimit(`purchase-session:${userId}`, { maxRequests: 5, windowMs: 60_000 });
     if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
 
-    const { quantity = 1 } = await req.json().catch(() => ({ quantity: 1 }));
-    const sessionQuantity = Math.min(Math.max(1, quantity), 10);
+    const rawBody = await req.json().catch(() => ({}));
+    const parsed = validateBody(rawBody, purchaseSchema);
+    if (isValidationError(parsed)) return parsed;
+
+    const sessionQuantity = parsed.quantity;
     logStep("Quantity", { quantity: sessionQuantity });
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
