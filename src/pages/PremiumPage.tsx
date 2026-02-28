@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Crown, Check, Zap, Shield, Infinity as InfinityIcon, Loader2, ExternalLink, Ticket, Sparkles, Radio } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowLeft, Crown, Check, Zap, Shield, Infinity as InfinityIcon, Loader2, ExternalLink, Ticket, Sparkles, Radio, PartyPopper } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { logger } from '@/lib/logger';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useTranslation } from '@/lib/i18n';
+import { celebrationBurst } from '@/components/binome';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import { fr, enUS } from 'date-fns/locale';
@@ -32,6 +33,8 @@ export default function PremiumPage() {
   const { usage, refetch: refetchQuota, purchasedSessions, freeRemaining } = useSessionQuota();
   const [isLoading, setIsLoading] = useState<'nearvityplus' | 'session' | 'portal' | null>(null);
   const [sessionQuantity, setSessionQuantity] = useState(1);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
+  const [successType, setSuccessType] = useState<'subscription' | 'session' | null>(null);
 
   const isPremium = profile?.is_premium || status?.subscribed;
   const dateLocale = locale === 'fr' ? fr : enUS;
@@ -70,26 +73,31 @@ export default function PremiumPage() {
     t('premium.freeCommunity'),
   ];
 
-  // Handle success/cancel URL params
+  // Handle success/cancel URL params — F9: persistent banner + confetti
   useEffect(() => {
     const success = searchParams.get('success');
     const canceled = searchParams.get('canceled');
     const sessionPurchased = searchParams.get('session_purchased');
 
     if (success === 'true') {
+      setShowSuccessBanner(true);
+      setSuccessType('subscription');
+      celebrationBurst();
       toast.success(t('premium.welcomeNearvityPlus'));
       checkSubscription();
       navigate('/premium', { replace: true });
     } else if (sessionPurchased) {
       const count = parseInt(sessionPurchased, 10);
       if (!isNaN(count) && count > 0) {
-        // Confirm the session purchase
         confirmSessionPurchase(count)
           .then(() => {
             const message = count > 1 
               ? t('premium.sessionsAddedPlural', { count }) 
               : t('premium.sessionsAdded', { count });
             toast.success(`🎫 ${message}`);
+            setShowSuccessBanner(true);
+            setSuccessType('session');
+            celebrationBurst();
             refetchQuota();
           })
           .catch((err) => {
@@ -104,6 +112,7 @@ export default function PremiumPage() {
     }
   }, [searchParams, navigate, checkSubscription, confirmSessionPurchase, refetchQuota, t]);
 
+  // F7: Use redirect instead of new tab
   const handleNearvityPlusSubscribe = async () => {
     if (!user) {
       toast.error(t('premium.loginFirst'));
@@ -116,7 +125,7 @@ export default function PremiumPage() {
     try {
       const checkoutUrl = await createNearvityPlusCheckout();
       if (checkoutUrl) {
-        window.open(checkoutUrl, '_blank');
+        window.location.href = checkoutUrl;
       }
     } catch (error) {
       logger.api.error('subscriptions', 'subscribe', String(error));
@@ -138,7 +147,7 @@ export default function PremiumPage() {
     try {
       const checkoutUrl = await purchaseSession(sessionQuantity);
       if (checkoutUrl) {
-        window.open(checkoutUrl, '_blank');
+        window.location.href = checkoutUrl;
       }
     } catch (error) {
       logger.api.error('subscriptions', 'purchase-session', String(error));
@@ -168,10 +177,7 @@ export default function PremiumPage() {
     return (
       <PageLayout className="pb-8 safe-bottom">
         <header className="safe-top px-6 py-4 flex items-center gap-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
-          >
+          <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
           <h1 className="text-xl font-bold text-foreground">{t('premium.nearvityPlusTitle')}</h1>
@@ -181,12 +187,8 @@ export default function PremiumPage() {
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-coral to-signal-yellow flex items-center justify-center mx-auto mb-6 shadow-lg glow-coral">
             <Crown className="h-10 w-10 text-white" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">
-            {t('premium.welcomeNearvityPlus')}
-          </h2>
-          <p className="text-muted-foreground mb-2">
-            {t('premium.thanksForSupport')}
-          </p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">{t('premium.welcomeNearvityPlus')}</h2>
+          <p className="text-muted-foreground mb-2">{t('premium.thanksForSupport')}</p>
           
           {status?.subscriptionEnd && (
             <p className="text-sm text-muted-foreground mb-8">
@@ -198,9 +200,7 @@ export default function PremiumPage() {
             <CardContent className="py-6 space-y-4">
               {NEARVITY_PLUS_FEATURES.map((feature, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-coral/20 flex items-center justify-center text-coral">
-                    {feature.icon}
-                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-coral/20 flex items-center justify-center text-coral">{feature.icon}</div>
                   <div>
                     <p className="font-medium text-foreground">{feature.title}</p>
                     <p className="text-sm text-muted-foreground">{feature.description}</p>
@@ -211,19 +211,9 @@ export default function PremiumPage() {
             </CardContent>
           </Card>
 
-          <Button
-            onClick={handleManageSubscription}
-            disabled={isLoading === 'portal'}
-            variant="outline"
-            className="w-full"
-          >
-            {isLoading === 'portal' ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <>
-                <ExternalLink className="h-4 w-4 mr-2" />
-                {t('premium.manageSubscription')}
-              </>
+          <Button onClick={handleManageSubscription} disabled={isLoading === 'portal'} variant="outline" className="w-full">
+            {isLoading === 'portal' ? <Loader2 className="h-4 w-4 animate-spin" /> : (
+              <><ExternalLink className="h-4 w-4 mr-2" />{t('premium.manageSubscription')}</>
             )}
           </Button>
         </div>
@@ -234,10 +224,7 @@ export default function PremiumPage() {
   return (
     <PageLayout className="pb-8 safe-bottom">
       <header className="safe-top px-6 py-4 flex items-center gap-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
-        >
+        <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
         <h1 className="text-xl font-bold text-foreground">{t('premium.title')}</h1>
@@ -249,6 +236,27 @@ export default function PremiumPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        {/* F9: Persistent success banner */}
+        <AnimatePresence>
+          {showSuccessBanner && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="flex items-center gap-3 p-4 rounded-xl bg-signal-green/10 border border-signal-green/30"
+            >
+              <PartyPopper className="h-5 w-5 text-signal-green shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">
+                  {successType === 'subscription' ? t('premium.welcomeNearvityPlus') : t('premium.sessionsPurchasedSuccess')}
+                </p>
+                <p className="text-xs text-muted-foreground">{t('premium.enjoyFeatures')}</p>
+              </div>
+              <button onClick={() => setShowSuccessBanner(false)} className="text-muted-foreground hover:text-foreground text-xs">✕</button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Current status */}
         {usage && (
           <Card className="glass border-border/50">
@@ -271,7 +279,117 @@ export default function PremiumPage() {
           </Card>
         )}
 
-        {/* FREE Tier */}
+        {/* F3: Nearvity+ FIRST (recommended, hero position) */}
+        <Card className="glass border-coral/30 bg-coral/5 relative overflow-hidden">
+          <div className="absolute top-0 right-0 bg-gradient-to-l from-coral to-coral-light text-white text-xs font-bold px-4 py-1 rounded-bl-xl">
+            {t('premium.recommended')}
+          </div>
+          <CardContent className="py-6 pt-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-coral/20 flex items-center justify-center">
+                <Crown className="h-5 w-5 text-coral" />
+              </div>
+              <div>
+                <h3 className="font-bold text-foreground">{t('premium.nearvityPlusTitle')}</h3>
+                <p className="text-2xl font-bold text-foreground">
+                  9,90€ <span className="text-sm font-normal text-muted-foreground">{t('premium.perMonth')}</span>
+                </p>
+              </div>
+            </div>
+            
+            {/* F8: ROI anchor line */}
+            <p className="text-xs text-coral font-medium mb-4 flex items-center gap-1">
+              <Sparkles className="h-3 w-3" />
+              {t('premium.roiAnchor')}
+            </p>
+
+            <div className="space-y-3 mb-6">
+              {NEARVITY_PLUS_FEATURES.map((feature, i) => (
+                <motion.div 
+                  key={i}
+                  className="flex items-center gap-3"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <div className="w-8 h-8 rounded-lg bg-coral/20 flex items-center justify-center text-coral">{feature.icon}</div>
+                  <div>
+                    <p className="font-medium text-foreground text-sm">{feature.title}</p>
+                    <p className="text-xs text-muted-foreground">{feature.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <Button
+              onClick={handleNearvityPlusSubscribe}
+              disabled={isLoading === 'nearvityplus'}
+              size="lg"
+              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral glow-coral"
+            >
+              {isLoading === 'nearvityplus' ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <><Crown className="h-5 w-5 mr-2" />{t('premium.subscribe')}</>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Pay-per-use (second) */}
+        <Card className="glass border-signal-yellow/30 bg-signal-yellow/5">
+          <CardContent className="py-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-signal-yellow/20 flex items-center justify-center">
+                <Ticket className="h-5 w-5 text-signal-yellow" />
+              </div>
+              <div>
+                <h3 className="font-bold text-foreground">{t('premium.sessionUnit')}</h3>
+                <p className="text-2xl font-bold text-foreground">
+                  0,99€ <span className="text-sm font-normal text-muted-foreground">{t('premium.perSession')}</span>
+                </p>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">{t('premium.buyMore')}</p>
+            
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center bg-muted rounded-xl">
+                <button
+                  onClick={() => setSessionQuantity(Math.max(1, sessionQuantity - 1))}
+                  className="px-3 py-2 text-foreground hover:bg-muted-foreground/10 rounded-l-xl transition-colors"
+                  disabled={sessionQuantity <= 1}
+                >-</button>
+                <span className="px-4 py-2 font-bold text-foreground min-w-[40px] text-center">{sessionQuantity}</span>
+                <button
+                  onClick={() => setSessionQuantity(Math.min(10, sessionQuantity + 1))}
+                  className="px-3 py-2 text-foreground hover:bg-muted-foreground/10 rounded-r-xl transition-colors"
+                  disabled={sessionQuantity >= 10}
+                >+</button>
+              </div>
+              <span className="text-muted-foreground">= {(sessionQuantity * 0.99).toFixed(2)}€</span>
+            </div>
+
+            <Button
+              onClick={handleBuySession}
+              disabled={isLoading === 'session'}
+              variant="outline"
+              className="w-full border-signal-yellow/50 hover:bg-signal-yellow/10"
+            >
+              {isLoading === 'session' ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <Ticket className="h-4 w-4 mr-2" />
+                  {sessionQuantity > 1 
+                    ? t('premium.buySessionsPlural', { count: sessionQuantity })
+                    : t('premium.buySessions', { count: sessionQuantity })}
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* FREE Tier (last) */}
         <Card className="glass border-border/50">
           <CardContent className="py-6">
             <div className="flex items-center gap-3 mb-4">
@@ -299,134 +417,12 @@ export default function PremiumPage() {
           </CardContent>
         </Card>
 
-        {/* Pay-per-use */}
-        <Card className="glass border-signal-yellow/30 bg-signal-yellow/5">
-          <CardContent className="py-6">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-signal-yellow/20 flex items-center justify-center">
-                <Ticket className="h-5 w-5 text-signal-yellow" />
-              </div>
-              <div>
-                <h3 className="font-bold text-foreground">{t('premium.sessionUnit')}</h3>
-                <p className="text-2xl font-bold text-foreground">
-                  0,99€ <span className="text-sm font-normal text-muted-foreground">{t('premium.perSession')}</span>
-                </p>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground mb-4">
-              {t('premium.buyMore')}
-            </p>
-            
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center bg-muted rounded-xl">
-                <button
-                  onClick={() => setSessionQuantity(Math.max(1, sessionQuantity - 1))}
-                  className="px-3 py-2 text-foreground hover:bg-muted-foreground/10 rounded-l-xl transition-colors"
-                  disabled={sessionQuantity <= 1}
-                >
-                  -
-                </button>
-                <span className="px-4 py-2 font-bold text-foreground min-w-[40px] text-center">
-                  {sessionQuantity}
-                </span>
-                <button
-                  onClick={() => setSessionQuantity(Math.min(10, sessionQuantity + 1))}
-                  className="px-3 py-2 text-foreground hover:bg-muted-foreground/10 rounded-r-xl transition-colors"
-                  disabled={sessionQuantity >= 10}
-                >
-                  +
-                </button>
-              </div>
-              <span className="text-muted-foreground">
-                = {(sessionQuantity * 0.99).toFixed(2)}€
-              </span>
-            </div>
-
-            <Button
-              onClick={handleBuySession}
-              disabled={isLoading === 'session'}
-              variant="outline"
-              className="w-full border-signal-yellow/50 hover:bg-signal-yellow/10"
-            >
-              {isLoading === 'session' ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  <Ticket className="h-4 w-4 mr-2" />
-                  {sessionQuantity > 1 
-                    ? t('premium.buySessionsPlural', { count: sessionQuantity })
-                    : t('premium.buySessions', { count: sessionQuantity })}
-                </>
-              )}
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Nearvity+ */}
-        <Card className="glass border-coral/30 bg-coral/5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 bg-gradient-to-l from-coral to-coral-light text-white text-xs font-bold px-4 py-1 rounded-bl-xl">
-            {t('premium.recommended')}
-          </div>
-          <CardContent className="py-6 pt-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-coral/20 flex items-center justify-center">
-                <Crown className="h-5 w-5 text-coral" />
-              </div>
-              <div>
-                <h3 className="font-bold text-foreground">{t('premium.nearvityPlusTitle')}</h3>
-                <p className="text-2xl font-bold text-foreground">
-                  9,90€ <span className="text-sm font-normal text-muted-foreground">{t('premium.perMonth')}</span>
-                </p>
-              </div>
-            </div>
-            
-            <div className="space-y-3 mb-6">
-              {NEARVITY_PLUS_FEATURES.map((feature, i) => (
-                <motion.div 
-                  key={i}
-                  className="flex items-center gap-3"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <div className="w-8 h-8 rounded-lg bg-coral/20 flex items-center justify-center text-coral">
-                    {feature.icon}
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground text-sm">{feature.title}</p>
-                    <p className="text-xs text-muted-foreground">{feature.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <Button
-              onClick={handleNearvityPlusSubscribe}
-              disabled={isLoading === 'nearvityplus'}
-              size="lg"
-              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral glow-coral"
-            >
-              {isLoading === 'nearvityplus' ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <>
-                  <Crown className="h-5 w-5 mr-2" />
-                  {t('premium.subscribe')}
-                </>
-              )}
-            </Button>
-          </CardContent>
-        </Card>
-
         {/* Terms */}
         <p className="text-xs text-muted-foreground text-center pb-4">
           {t('premium.termsNote')}
           <br />
           {t('premium.bySubscribing')}{' '}
-          <button 
-            onClick={() => navigate('/terms')}
-            className="text-coral hover:underline"
-          >
+          <button onClick={() => navigate('/terms')} className="text-coral hover:underline">
             {t('premium.termsOfUse')}
           </button>.
         </p>
