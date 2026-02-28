@@ -6,11 +6,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
+const LANGUAGE_CACHE_TTL = 60_000; // 60 seconds
+
 interface I18nStore {
   locale: Locale;
   isHydrated: boolean;
+  lastLanguageFetchAt: number;
   setLocale: (locale: Locale) => void;
   setHydrated: () => void;
+  setLastLanguageFetch: () => void;
 }
 
 export const useI18nStore = create<I18nStore>()(
@@ -18,11 +22,13 @@ export const useI18nStore = create<I18nStore>()(
     (set) => ({
       locale: 'en', // Default to English
       isHydrated: false,
+      lastLanguageFetchAt: 0,
       setLocale: (locale) => {
         setCurrentLocale(locale);
         set({ locale });
       },
       setHydrated: () => set({ isHydrated: true }),
+      setLastLanguageFetch: () => set({ lastLanguageFetchAt: Date.now() }),
     }),
     {
       name: 'nearvity-i18n',
@@ -50,14 +56,18 @@ function getNestedValue(obj: any, path: string): { en: string; fr: string } | un
 }
 
 export function useTranslation() {
-  const { locale, setLocale, isHydrated } = useI18nStore();
+  const { locale, setLocale, isHydrated, lastLanguageFetchAt, setLastLanguageFetch } = useI18nStore();
   const { user, isAuthenticated } = useAuth();
 
-  // Sync locale from database on mount (when authenticated)
+  // Sync locale from database on mount (when authenticated) — cached to avoid spam
   useEffect(() => {
     if (!isAuthenticated || !user || !isHydrated) return;
 
+    // Skip if we fetched recently (within LANGUAGE_CACHE_TTL)
+    if (Date.now() - lastLanguageFetchAt < LANGUAGE_CACHE_TTL) return;
+
     const fetchLanguagePreference = async () => {
+      setLastLanguageFetch();
       const { data, error } = await supabase
         .from('user_settings')
         .select('language_preference')
