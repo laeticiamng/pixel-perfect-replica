@@ -1,87 +1,70 @@
 
 
-# Audit Complet NEARVITY - Rapport et Plan de Corrections
+# Plan: Corrections restantes (2 fichiers) + QA
 
-## Resultats de l'Audit
+## Etat des lieux
 
-### 1. CRITIQUE - Fonctions Edge utilisant `getUser()` au lieu de `getClaims()`
+Sur les 8 tickets, **6 sont deja resolus** dans le code actuel. Seuls 2 fichiers necessitent encore une modification, plus un passage QA.
 
-6 fonctions backend utilisent encore `getUser()` pour l'authentification, ce qui provoque des erreurs **401 Invalid JWT** avec Lovable Cloud. Seules 3 fonctions sont correctement migrées (`check-subscription`, `create-checkout`, `get-mapbox-token`).
-
-**Fonctions en erreur :**
-
-| Fonction | Methode actuelle | Impact |
-|---|---|---|
-| `customer-portal` | `getUser(token)` | Gestion abonnement cassee |
-| `purchase-session` | `getUser(token)` | Achat de sessions casse |
-| `confirm-session-purchase` | `getUser(token)` | Confirmation achat cassee |
-| `notifications` | `getUser()` (via `validateAuth`) | Alertes admin, push, rappels casses |
-| `system` | `getUser()` (via `validateAuth`) | Dashboard admin, cleanup casses |
-| `ai-assistant` | `getUser()` | Icebreakers IA casses |
-| `voice-icebreaker` | `getUser()` | Generation vocale cassee |
-| `scrape-events` | `getUser()` | Scraping evenements casse |
-| `recommend-locations` | `getUser()` | Recommandations cassees |
-
-### 2. MINEUR - Branding residuel "Signal" dans les emails
-
-Dans `notifications/index.ts` (ligne 245) : `"Cet email a ete envoye automatiquement par Signal."` doit etre remplace par `"Cet email a ete envoye automatiquement par NEARVITY."`.
-
-### 3. MINEUR - Ancien prix ID pour sessions unitaires
-
-Le fichier `purchase-session/index.ts` utilise `price_1SvGdqDFa5Y9NR1IrL2P71Ms` (ancien produit "EASY+ Session Unit"). Ce prix est fonctionnel mais porte l'ancien branding dans Stripe.
+| Ticket | Statut |
+|--------|--------|
+| 1 - CreateSessionForm FormData | Deja fait |
+| 2 - pushManager typing | Deja fait (cast `as any`) |
+| 3 - forwardRef landing | Deja fait |
+| 4 - Rebranding EASY -> NEARVITY | Deja fait (0 occurrence) |
+| 5 - Stripe Nearvity+ | Deja fait |
+| 6 - getUser -> getClaims | **2 fichiers restants** |
+| 7 - verify_jwt config | Deja fait |
+| 8 - QA end-to-end | A executer |
 
 ---
 
-## Plan de Corrections
+## Etape 1 - Migrer firecrawl-map vers getClaims()
 
-### Etape 1 - Migrer `customer-portal` vers `getClaims()`
-- Remplacer `getUser(token)` par `getClaims(token)`
-- Extraire `userId` et `email` depuis `claimsData.claims`
-- Ajouter la validation du header Bearer
+**Fichier** : `supabase/functions/firecrawl-map/index.ts`
 
-### Etape 2 - Migrer `purchase-session` vers `getClaims()`
-- Meme pattern que customer-portal
-- Utiliser `SUPABASE_ANON_KEY` avec `getClaims()` au lieu de `getUser()`
+Remplacer le bloc `getUser()` (lignes 29-35) par le pattern `getClaims()` :
+- Extraire le token du header Authorization
+- Appeler `supabase.auth.getClaims(token)` 
+- Utiliser `claimsData.claims.sub` comme userId pour la verification admin
+- Adapter la requete profile pour utiliser le service role client (necessaire pour verifier le role admin)
 
-### Etape 3 - Migrer `confirm-session-purchase` vers `getClaims()`
-- Remplacer `getUser(token)` par `getClaims(token)` avec le service role client
-- Extraire le `userId` depuis les claims
+## Etape 2 - Migrer firecrawl-scrape vers getClaims()
 
-### Etape 4 - Migrer `notifications` (validateAuth) vers `getClaims()`
-- Remplacer la fonction `validateAuth` pour utiliser `getClaims(token)` au lieu de `getUser()`
-- Corriger le branding "Signal" en "NEARVITY" dans le footer email (ligne 245)
+**Fichier** : `supabase/functions/firecrawl-scrape/index.ts`
 
-### Etape 5 - Migrer `system` (validateAuth) vers `getClaims()`
-- Meme correction que notifications dans la fonction `validateAuth`
+Meme migration identique que firecrawl-map (meme structure de code).
 
-### Etape 6 - Migrer `ai-assistant` vers `getClaims()`
-- Remplacer `getUser()` par `getClaims(token)` pour l'extraction du userId
+## Etape 3 - Ajouter firecrawl au config.toml
 
-### Etape 7 - Migrer `voice-icebreaker` vers `getClaims()`
-- Meme pattern de migration
+Verifier que `firecrawl-map` et `firecrawl-scrape` sont declares avec `verify_jwt = false` dans `supabase/config.toml`. S'ils manquent, les ajouter.
 
-### Etape 8 - Migrer `scrape-events` vers `getClaims()`
-- Remplacer `getUser()` par `getClaims(token)`
+## Etape 4 - Test QA rapide
 
-### Etape 9 - Migrer `recommend-locations` vers `getClaims()`
-- Remplacer `getUser()` par `getClaims(token)`
+Verifier via la console et le preview que :
+- Pas d'erreur 401 sur les flux principaux
+- Landing page propre (pas de warning ref)
+- Le checkout Stripe pointe sur le bon prix Nearvity+
 
 ---
 
-## Details Techniques
+## Details techniques
 
-Chaque migration suit le meme pattern :
+Pattern de migration applique aux 2 fichiers firecrawl :
 
 ```text
 AVANT:
-  const { data: userData, error } = await supabase.auth.getUser(token);
-  const user = userData.user;
+  const { data: { user }, error } = await supabase.auth.getUser();
+  // use user.id
 
 APRES:
+  const token = authHeader.replace('Bearer ', '');
   const { data: claimsData, error } = await supabase.auth.getClaims(token);
   const userId = claimsData.claims.sub;
-  const userEmail = claimsData.claims.email;
+  // use userId
 ```
 
-**9 fichiers modifies, 0 migration de base de donnees necessaire.**
+Pour les fonctions admin (firecrawl), un second client Supabase avec `SUPABASE_SERVICE_ROLE_KEY` sera utilise pour la verification du role dans la table profiles, car le client anon ne peut pas lire le champ `role` via RLS.
+
+**2 fichiers modifies, 0 migration de base de donnees.**
 
