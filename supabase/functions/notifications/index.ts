@@ -517,19 +517,25 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       case "send-session-reminders": {
-        // Requires admin role (for CRON jobs, use service role key in headers)
-        const authResult = await validateAuth(req, supabase, true);
-        if (!authResult.authenticated) {
-          return new Response(
-            JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
-        }
-        if (!authResult.isAdmin) {
-          return new Response(
-            JSON.stringify({ error: "Admin role required" }),
-            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
+        // Allow service role key (for CRON jobs) or admin users
+        const authHeader = req.headers.get("Authorization");
+        const token = authHeader?.replace("Bearer ", "") || "";
+        const isServiceRole = token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+        
+        if (!isServiceRole) {
+          const authResult = await validateAuth(req, supabase, true);
+          if (!authResult.authenticated) {
+            return new Response(
+              JSON.stringify({ error: authResult.error || "Unauthorized" }),
+              { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            );
+          }
+          if (!authResult.isAdmin) {
+            return new Response(
+              JSON.stringify({ error: "Admin role required" }),
+              { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            );
+          }
         }
         response = await handleSessionReminders(supabase);
         break;
