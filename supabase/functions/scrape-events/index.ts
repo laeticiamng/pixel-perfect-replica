@@ -40,36 +40,40 @@ serve(async (req) => {
     const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     
+    const token = authHeader.replace('Bearer ', '');
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: authHeader } },
     });
 
-    // Validate JWT using getUser
-    const { data: userData, error: authError } = await supabase.auth.getUser();
+    // Validate JWT using getClaims
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
     
-    if (authError || !userData?.user) {
-      console.log('[scrape-events] JWT validation failed:', authError?.message || 'No user');
+    if (claimsError || !claimsData?.claims?.sub) {
+      console.log('[scrape-events] JWT validation failed:', claimsError?.message || 'No claims');
       return new Response(
         JSON.stringify({ error: 'Invalid or expired token' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
       );
     }
 
+    const userId = claimsData.claims.sub as string;
+
     // Check if user is admin (expensive operation requires admin privileges)
-    const { data: isAdmin, error: roleError } = await supabase.rpc('has_role', {
-      _user_id: userData.user.id,
+    const serviceSupabaseForRole = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: isAdmin, error: roleError } = await serviceSupabaseForRole.rpc('has_role', {
+      _user_id: userId,
       _role: 'admin'
     });
 
     if (roleError || !isAdmin) {
-      console.log('[scrape-events] User is not admin:', userData.user.id);
+      console.log('[scrape-events] User is not admin:', userId);
       return new Response(
         JSON.stringify({ error: 'Admin privileges required' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
       );
     }
 
-    console.log('[scrape-events] Authenticated admin:', userData.user.id);
+    console.log('[scrape-events] Authenticated admin:', userId);
 
     const FIRECRAWL_API_KEY = Deno.env.get('FIRECRAWL_API_KEY');
 
