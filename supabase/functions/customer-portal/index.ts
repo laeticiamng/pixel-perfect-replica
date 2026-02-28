@@ -1,15 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
+import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CUSTOMER-PORTAL] ${step}${detailsStr}`);
+  const d = details ? ` - ${JSON.stringify(details)}` : "";
+  console.log(`[CUSTOMER-PORTAL] ${step}${d}`);
 };
 
 serve(async (req) => {
@@ -20,57 +16,37 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
+    const auth = await authenticateRequest(req);
+    if (isAuthError(auth)) return auth;
+
+    const { userId, email: userEmail } = auth;
+    if (!userEmail) throw new Error("Email not available in token");
+    logStep("User authenticated", { userId, email: userEmail });
+
+    // Rate limit: 5 portal sessions per minute
+    const rl = checkRateLimit(`customer-portal:${userId}`, { maxRequests: 5, windowMs: 60_000 });
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
+
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
 
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { auth: { persistSession: false } }
-    );
-
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(
-        JSON.stringify({ error: "No authorization header provided" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
-      );
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
-    
-    if (claimsError || !claimsData?.claims?.sub) {
-      logStep("JWT validation failed", { error: claimsError?.message });
-      return new Response(
-        JSON.stringify({ error: "Invalid authentication token" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
-      );
-    }
-
-    const userId = claimsData.claims.sub as string;
-    const userEmail = claimsData.claims.email as string;
-    if (!userEmail) throw new Error("Email not available in token");
-    
-    logStep("User authenticated", { userId, email: userEmail });
-
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
-    
+
     if (customers.data.length === 0) {
       throw new Error("Aucun compte Stripe trouvé pour cet utilisateur");
     }
-    
+
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
     const origin = req.headers.get("origin") || "https://nearvity.fr";
-    
+
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: `${origin}/premium`,
     });
-    
+
     logStep("Portal session created", { sessionId: portalSession.id, url: portalSession.url });
 
     return new Response(
@@ -78,10 +54,10 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
+    const msg = error instanceof Error ? error.message : String(error);
+    logStep("ERROR", { message: msg });
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: msg }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
     );
   }

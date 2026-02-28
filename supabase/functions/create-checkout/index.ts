@@ -1,12 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
+import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 import { normalizeCheckoutPlan } from "./plan.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
 
 // Nearvity+ Premium - 9.90€/mois
 const NEARVITY_PLUS_PRICE_ID = "price_1T2TExDFa5Y9NR1Id27rDAA8";
@@ -17,23 +13,9 @@ const LEGACY_PRICES = {
   yearly: "price_1SvEe5DFa5Y9NR1IQGnbirFh",
 };
 
-// Rate limiting: 5 checkout creations per minute per user
-const rateLimitCache = new Map<string, { count: number; resetTime: number }>();
-function checkRateLimit(userId: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitCache.get(userId);
-  if (!entry || now > entry.resetTime) {
-    rateLimitCache.set(userId, { count: 1, resetTime: now + 60000 });
-    return true;
-  }
-  if (entry.count >= 5) return false;
-  entry.count++;
-  return true;
-}
-
 const logStep = (step: string, details?: Record<string, unknown>) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
+  const d = details ? ` - ${JSON.stringify(details)}` : "";
+  console.log(`[CREATE-CHECKOUT] ${step}${d}`);
 };
 
 serve(async (req) => {
@@ -41,42 +23,19 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-  );
-
   try {
     logStep("Function started");
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      throw new Error("No authorization header provided");
-    }
-    
-    const token = authHeader.replace("Bearer ", "");
-    
-    // Use getClaims for JWT validation without server round-trip
-    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
-    
-    if (claimsError || !claimsData?.claims?.sub) {
-      logStep("JWT validation failed", { error: claimsError?.message });
-      throw new Error("Session expirée, veuillez vous reconnecter");
-    }
-    
-    const userId = claimsData.claims.sub;
-    const userEmail = claimsData.claims.email as string;
-    
+    const auth = await authenticateRequest(req);
+    if (isAuthError(auth)) return auth;
+
+    const { userId, email: userEmail } = auth;
     if (!userEmail) throw new Error("Email not available in token");
-    
     logStep("User authenticated via claims", { userId, email: userEmail });
 
-    if (!checkRateLimit(userId as string)) {
-      return new Response(
-        JSON.stringify({ error: "Trop de tentatives, réessaie dans 1 minute" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 429 }
-      );
-    }
+    // Rate limit: 5 checkout creations per minute
+    const rl = checkRateLimit(`create-checkout:${userId}`, { maxRequests: 5, windowMs: 60_000 });
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
 
     const { plan } = await req.json();
     const normalizedPlan = normalizeCheckoutPlan(plan);
@@ -85,7 +44,6 @@ serve(async (req) => {
       logStep("Legacy plan alias mapped", { from: plan, to: normalizedPlan });
     }
 
-    // Use Nearvity+ price by default, fall back to legacy for existing plans
     let priceId = NEARVITY_PLUS_PRICE_ID;
     if (normalizedPlan === "yearly") {
       priceId = LEGACY_PRICES.yearly;
@@ -98,22 +56,20 @@ serve(async (req) => {
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    
-    // Check if customer already exists
+
     const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
     let customerId: string | undefined;
-    
+
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
       logStep("Existing customer found", { customerId });
-      
-      // Check if already has active subscription
+
       const subscriptions = await stripe.subscriptions.list({
         customer: customerId,
         status: "active",
         limit: 1,
       });
-      
+
       if (subscriptions.data.length > 0) {
         logStep("User already has active subscription");
         return new Response(
@@ -124,22 +80,15 @@ serve(async (req) => {
     }
 
     const origin = req.headers.get("origin") || "https://nearvity.fr";
-    
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       mode: "subscription",
       success_url: `${origin}/premium?success=true`,
       cancel_url: `${origin}/premium?canceled=true`,
-      metadata: {
-        user_id: userId,
-      },
+      metadata: { user_id: userId },
     });
 
     logStep("Checkout session created", { sessionId: session.id, url: session.url });
@@ -149,10 +98,10 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
+    const msg = error instanceof Error ? error.message : String(error);
+    logStep("ERROR", { message: msg });
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: msg }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
     );
   }
