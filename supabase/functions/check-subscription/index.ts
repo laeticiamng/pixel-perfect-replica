@@ -1,15 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CHECK-SUBSCRIPTION] ${step}${detailsStr}`);
+  const d = details ? ` - ${JSON.stringify(details)}` : "";
+  console.log(`[CHECK-SUBSCRIPTION] ${step}${d}`);
 };
 
 serve(async (req) => {
@@ -26,46 +22,22 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
+    const auth = await authenticateRequest(req);
+    if (isAuthError(auth)) return auth;
+
+    const { userId, email: userEmail } = auth;
+    if (!userEmail) throw new Error("Email not available in token");
+    logStep("User authenticated", { userId, email: userEmail });
+
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(
-        JSON.stringify({ error: "No authorization header provided" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
-      );
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
-    
-    if (claimsError || !claimsData?.claims?.sub) {
-      logStep("JWT validation failed", { error: claimsError?.message });
-      return new Response(
-        JSON.stringify({ error: "Invalid authentication token" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
-      );
-    }
-
-    const userId = claimsData.claims.sub as string;
-    const userEmail = claimsData.claims.email as string;
-    if (!userEmail) throw new Error("Email not available in token");
-    
-    logStep("User authenticated", { userId, email: userEmail });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
 
     if (customers.data.length === 0) {
       logStep("No customer found, user is not subscribed");
-      
-      // Update profile to not premium
-      await supabaseClient
-        .from("profiles")
-        .update({ is_premium: false })
-        .eq("id", userId);
-      
+      await supabaseClient.from("profiles").update({ is_premium: false }).eq("id", userId);
       return new Response(
         JSON.stringify({ subscribed: false }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
@@ -90,47 +62,24 @@ serve(async (req) => {
       const subscription = subscriptions.data[0];
       subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
       productId = subscription.items.data[0].price.product as string;
-      
-      // Determine plan type based on billing interval
       const interval = subscription.items.data[0].price.recurring?.interval;
       plan = interval === "year" ? "yearly" : "monthly";
-      
-      logStep("Active subscription found", { 
-        subscriptionId: subscription.id, 
-        endDate: subscriptionEnd,
-        productId,
-        plan 
-      });
-
-      // Update profile to premium
-      await supabaseClient
-        .from("profiles")
-        .update({ is_premium: true })
-        .eq("id", userId);
+      logStep("Active subscription found", { subscriptionId: subscription.id, endDate: subscriptionEnd, productId, plan });
+      await supabaseClient.from("profiles").update({ is_premium: true }).eq("id", userId);
     } else {
       logStep("No active subscription found");
-      
-      // Update profile to not premium
-      await supabaseClient
-        .from("profiles")
-        .update({ is_premium: false })
-        .eq("id", userId);
+      await supabaseClient.from("profiles").update({ is_premium: false }).eq("id", userId);
     }
 
     return new Response(
-      JSON.stringify({
-        subscribed: hasActiveSub,
-        product_id: productId,
-        subscription_end: subscriptionEnd,
-        plan,
-      }),
+      JSON.stringify({ subscribed: hasActiveSub, product_id: productId, subscription_end: subscriptionEnd, plan }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR", { message: errorMessage });
+    const msg = error instanceof Error ? error.message : String(error);
+    logStep("ERROR", { message: msg });
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: msg }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
     );
   }
