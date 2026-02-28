@@ -226,6 +226,45 @@ export type Database = {
         }
         Relationships: []
       }
+      connections: {
+        Row: {
+          accepted_at: string | null
+          activity: Database["public"]["Enums"]["activity_type"]
+          created_at: string
+          id: string
+          initiated_by: string
+          signal_id: string | null
+          status: string
+          updated_at: string
+          user_a: string
+          user_b: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          activity: Database["public"]["Enums"]["activity_type"]
+          created_at?: string
+          id?: string
+          initiated_by: string
+          signal_id?: string | null
+          status?: string
+          updated_at?: string
+          user_a: string
+          user_b: string
+        }
+        Update: {
+          accepted_at?: string | null
+          activity?: Database["public"]["Enums"]["activity_type"]
+          created_at?: string
+          id?: string
+          initiated_by?: string
+          signal_id?: string | null
+          status?: string
+          updated_at?: string
+          user_a?: string
+          user_b?: string
+        }
+        Relationships: []
+      }
       cron_job_executions: {
         Row: {
           completed_at: string | null
