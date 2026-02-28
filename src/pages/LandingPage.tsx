@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, forwardRef } from 'react';
 import { useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
 import { Users, Sparkles, MapPin } from 'lucide-react';
@@ -116,11 +116,11 @@ function FeaturesSection() {
 }
 
 // Comparison Wrapper Section
-function ComparisonWrapper() {
+const ComparisonWrapper = forwardRef<HTMLElement>(function ComparisonWrapper(_props, ref) {
   const { t } = useTranslation();
   
   return (
-    <section className="py-12 px-6 relative z-10 bg-card/30">
+    <section ref={ref} className="py-12 px-6 relative z-10 bg-card/30">
       <div className="max-w-2xl mx-auto">
         <RevealText>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
@@ -135,7 +135,7 @@ function ComparisonWrapper() {
       </div>
     </section>
   );
-}
+});
 
 export default function LandingPage() {
   const navigate = useNavigate();
