@@ -230,7 +230,7 @@ Si aucun événement n'est trouvé, retourne [].`,
         longitude,
         starts_at: event.starts_at || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
         ends_at: event.ends_at || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 + 3 * 60 * 60 * 1000).toISOString(),
-        organizer_id: '00000000-0000-0000-0000-000000000000', // System organizer
+        organizer_id: userId, // Admin who triggered the scraping
         is_active: true,
       }).select().single();
 

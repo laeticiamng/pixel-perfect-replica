@@ -36,33 +36,23 @@ Deno.serve(async (req) => {
 
     const userId = claimsData.claims.sub as string;
 
-    // Check admin role using service role client
+    // Check admin role using has_role RPC via service role client
     const serviceClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
       { auth: { persistSession: false } }
     );
 
-    const { data: profile } = await serviceClient
-      .from('profiles')
-      .select('role')
-      .eq('id', userId)
-      .single();
+    const { data: isAdmin, error: roleError } = await serviceClient.rpc('has_role', {
+      _user_id: userId,
+      _role: 'admin'
+    });
 
-    if (profile?.role !== 'admin') {
-      const { data: roleData } = await serviceClient
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      if (!roleData) {
-        return new Response(
-          JSON.stringify({ success: false, error: 'Admin access required' }),
-          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+    if (roleError || !isAdmin) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Admin access required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const { url, options } = await req.json();

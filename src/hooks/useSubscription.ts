@@ -85,11 +85,11 @@ export function useSubscription() {
   };
 
   // Confirm session purchase after Stripe redirect
-  const confirmSessionPurchase = async (sessionsPurchased: number) => {
+  const confirmSessionPurchase = async (sessionsPurchased: number, checkoutSessionId: string) => {
     if (!user) throw new Error('Not authenticated');
 
     const { data, error: fnError } = await supabase.functions.invoke('confirm-session-purchase', {
-      body: { sessions_purchased: sessionsPurchased },
+      body: { sessions_purchased: sessionsPurchased, checkout_session_id: checkoutSessionId },
     });
 
     if (fnError) throw fnError;

@@ -17,6 +17,19 @@ const LEGACY_PRICES = {
   yearly: "price_1SvEe5DFa5Y9NR1IQGnbirFh",
 };
 
+// Rate limiting: 5 checkout creations per minute per user
+const rateLimitCache = new Map<string, { count: number; resetTime: number }>();
+function checkRateLimit(userId: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitCache.get(userId);
+  if (!entry || now > entry.resetTime) {
+    rateLimitCache.set(userId, { count: 1, resetTime: now + 60000 });
+    return true;
+  }
+  if (entry.count >= 5) return false;
+  entry.count++;
+  return true;
+}
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -57,6 +70,13 @@ serve(async (req) => {
     if (!userEmail) throw new Error("Email not available in token");
     
     logStep("User authenticated via claims", { userId, email: userEmail });
+
+    if (!checkRateLimit(userId as string)) {
+      return new Response(
+        JSON.stringify({ error: "Trop de tentatives, réessaie dans 1 minute" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 429 }
+      );
+    }
 
     const { plan } = await req.json();
     const normalizedPlan = normalizeCheckoutPlan(plan);
