@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
@@ -17,6 +17,12 @@ export function useSubscription() {
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Use a ref for refreshProfile to avoid circular dependency
+  const refreshProfileRef = useRef(refreshProfile);
+  useEffect(() => {
+    refreshProfileRef.current = refreshProfile;
+  }, [refreshProfile]);
 
   const checkSubscription = useCallback(async () => {
     if (!user) {
@@ -40,14 +46,14 @@ export function useSubscription() {
       });
 
       // Refresh profile to get updated is_premium status
-      await refreshProfile();
+      await refreshProfileRef.current();
     } catch (err) {
       logger.api.error('subscriptions', 'fetch', String(err));
       setError(err instanceof Error ? err.message : 'Verification error');
     } finally {
       setIsLoading(false);
     }
-  }, [user, refreshProfile]);
+  }, [user]);
 
   // Nearvity+ subscription checkout (9.90€/mois)
   const createNearvityPlusCheckout = async () => {
