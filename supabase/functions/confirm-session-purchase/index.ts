@@ -2,6 +2,12 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
+
+const confirmSchema = z.object({
+  sessions_purchased: z.number().int().min(1).max(10),
+  checkout_session_id: z.string().min(1).max(200),
+});
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
   const d = details ? ` - ${JSON.stringify(details)}` : "";
@@ -31,16 +37,11 @@ serve(async (req) => {
     const rl = checkRateLimit(`confirm-session:${userId}`, { maxRequests: 5, windowMs: 60_000 });
     if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
 
-    const { sessions_purchased, checkout_session_id } = await req.json();
-    const count = parseInt(sessions_purchased, 10);
+    const rawBody = await req.json();
+    const parsed = validateBody(rawBody, confirmSchema);
+    if (isValidationError(parsed)) return parsed;
 
-    if (isNaN(count) || count < 1 || count > 10) {
-      throw new Error("Invalid sessions count");
-    }
-
-    if (!checkout_session_id || typeof checkout_session_id !== "string") {
-      throw new Error("Missing or invalid checkout_session_id");
-    }
+    const { sessions_purchased: count, checkout_session_id } = parsed;
 
     logStep("Verifying Stripe checkout session", { checkout_session_id });
 

@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.93.2";
 import { authenticateRequest, isAuthError, requireAdmin, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
 interface FirecrawlResponse {
   success: boolean;
@@ -13,6 +14,11 @@ interface FirecrawlResponse {
   }[];
   error?: string;
 }
+
+const scrapeEventsSchema = z.object({
+  university_url: z.string().url().max(2000),
+  city: z.string().min(1).max(100),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -35,14 +41,11 @@ serve(async (req) => {
     const FIRECRAWL_API_KEY = Deno.env.get("FIRECRAWL_API_KEY");
     if (!FIRECRAWL_API_KEY) throw new Error("FIRECRAWL_API_KEY is not configured");
 
-    const { university_url, city } = await req.json();
+    const rawBody = await req.json();
+    const parsed = validateBody(rawBody, scrapeEventsSchema);
+    if (isValidationError(parsed)) return parsed;
 
-    if (!university_url || !city) {
-      return new Response(
-        JSON.stringify({ error: "university_url and city are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const { university_url, city } = parsed;
 
     console.log("[scrape-events] Scraping events from:", university_url);
 

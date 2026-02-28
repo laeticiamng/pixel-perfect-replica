@@ -1,5 +1,19 @@
 import { authenticateRequest, isAuthError, requireAdmin, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
+
+const scrapeSchema = z.object({
+  url: z.string().min(1).max(2000),
+  options: z.object({
+    formats: z.array(z.string().max(50)).max(5).optional(),
+    onlyMainContent: z.boolean().optional(),
+    waitFor: z.number().int().min(0).max(30000).optional(),
+    location: z.object({
+      country: z.string().max(10).optional(),
+      languages: z.array(z.string().max(10)).max(5).optional(),
+    }).optional(),
+  }).optional(),
+});
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -17,14 +31,11 @@ Deno.serve(async (req) => {
     const rl = checkRateLimit(`firecrawl-scrape:${auth.userId}`, { maxRequests: 10, windowMs: 60_000 });
     if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
 
-    const { url, options } = await req.json();
+    const rawBody = await req.json();
+    const parsed = validateBody(rawBody, scrapeSchema);
+    if (isValidationError(parsed)) return parsed;
 
-    if (!url) {
-      return new Response(
-        JSON.stringify({ success: false, error: "URL is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const { url, options } = parsed;
 
     const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
     if (!apiKey) {

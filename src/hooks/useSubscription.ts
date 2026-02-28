@@ -12,21 +12,41 @@ interface SubscriptionStatus {
 
 export type PricingPlan = 'free' | 'session' | 'nearvityplus';
 
+// Cache & backoff constants
+const MIN_POLL_INTERVAL = 5 * 60_000; // 5 minutes
+const MAX_BACKOFF = 10 * 60_000; // 10 minutes max
+const CACHE_TTL = 60_000; // Don't re-fetch if last fetch < 60s ago
+
 export function useSubscription() {
   const { user, refreshProfile } = useAuth();
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Use a ref for refreshProfile to avoid circular dependency
+  // Refs for stable references & cache control
   const refreshProfileRef = useRef(refreshProfile);
+  const lastFetchedAt = useRef<number>(0);
+  const consecutiveErrors = useRef(0);
+  const isMountedRef = useRef(true);
+
   useEffect(() => {
     refreshProfileRef.current = refreshProfile;
   }, [refreshProfile]);
 
-  const checkSubscription = useCallback(async () => {
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => { isMountedRef.current = false; };
+  }, []);
+
+  const checkSubscription = useCallback(async (force = false) => {
     if (!user) {
       setStatus(null);
+      return;
+    }
+
+    // Skip if recently fetched (unless forced)
+    const now = Date.now();
+    if (!force && now - lastFetchedAt.current < CACHE_TTL) {
       return;
     }
 
@@ -38,6 +58,8 @@ export function useSubscription() {
       
       if (fnError) throw fnError;
       
+      if (!isMountedRef.current) return;
+
       setStatus({
         subscribed: data.subscribed,
         productId: data.product_id,
@@ -45,13 +67,20 @@ export function useSubscription() {
         plan: data.plan,
       });
 
+      lastFetchedAt.current = Date.now();
+      consecutiveErrors.current = 0;
+
       // Refresh profile to get updated is_premium status
       await refreshProfileRef.current();
     } catch (err) {
+      if (!isMountedRef.current) return;
       logger.api.error('subscriptions', 'fetch', String(err));
       setError(err instanceof Error ? err.message : 'Verification error');
+      consecutiveErrors.current += 1;
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   }, [user]);
 
@@ -129,23 +158,41 @@ export function useSubscription() {
     return data.url;
   };
 
+  // Initial fetch on mount
   useEffect(() => {
     checkSubscription();
   }, [checkSubscription]);
 
-  // Auto-refresh every 60 seconds
+  // Polling with exponential backoff on errors
   useEffect(() => {
     if (!user) return;
 
-    const interval = setInterval(checkSubscription, 60000);
-    return () => clearInterval(interval);
+    const getInterval = () => {
+      if (consecutiveErrors.current > 0) {
+        // Backoff: double interval per consecutive error, cap at MAX_BACKOFF
+        return Math.min(MIN_POLL_INTERVAL * Math.pow(2, consecutiveErrors.current), MAX_BACKOFF);
+      }
+      return MIN_POLL_INTERVAL;
+    };
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const scheduleNext = () => {
+      timeoutId = setTimeout(() => {
+        checkSubscription();
+        scheduleNext();
+      }, getInterval());
+    };
+
+    scheduleNext();
+    return () => clearTimeout(timeoutId);
   }, [user, checkSubscription]);
 
   return {
     status,
     isLoading,
     error,
-    checkSubscription,
+    checkSubscription: () => checkSubscription(true), // Public API always forces
     createCheckout,
     createNearvityPlusCheckout,
     purchaseSession,

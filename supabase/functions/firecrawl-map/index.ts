@@ -1,5 +1,15 @@
 import { authenticateRequest, isAuthError, requireAdmin, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
+
+const mapSchema = z.object({
+  url: z.string().min(1).max(2000),
+  options: z.object({
+    search: z.string().max(500).optional(),
+    limit: z.number().int().min(1).max(10000).optional(),
+    includeSubdomains: z.boolean().optional(),
+  }).optional(),
+});
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -17,14 +27,11 @@ Deno.serve(async (req) => {
     const rl = checkRateLimit(`firecrawl-map:${auth.userId}`, { maxRequests: 10, windowMs: 60_000 });
     if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
 
-    const { url, options } = await req.json();
+    const rawBody = await req.json();
+    const parsed = validateBody(rawBody, mapSchema);
+    if (isValidationError(parsed)) return parsed;
 
-    if (!url) {
-      return new Response(
-        JSON.stringify({ success: false, error: "URL is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const { url, options } = parsed;
 
     const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
     if (!apiKey) {

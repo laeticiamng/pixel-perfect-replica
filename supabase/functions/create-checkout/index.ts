@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 import { normalizeCheckoutPlan } from "./plan.ts";
 
 // Nearvity+ Premium - 9.90€/mois
@@ -12,6 +13,10 @@ const LEGACY_PRICES = {
   monthly: "price_1SvEe4DFa5Y9NR1ImEz1QUFQ",
   yearly: "price_1SvEe5DFa5Y9NR1IQGnbirFh",
 };
+
+const checkoutSchema = z.object({
+  plan: z.string().max(50).optional(),
+});
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
   const d = details ? ` - ${JSON.stringify(details)}` : "";
@@ -37,7 +42,11 @@ serve(async (req) => {
     const rl = checkRateLimit(`create-checkout:${userId}`, { maxRequests: 5, windowMs: 60_000 });
     if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
 
-    const { plan } = await req.json();
+    const rawBody = await req.json().catch(() => ({}));
+    const parsed = validateBody(rawBody, checkoutSchema);
+    if (isValidationError(parsed)) return parsed;
+
+    const { plan } = parsed;
     const normalizedPlan = normalizeCheckoutPlan(plan);
 
     if (plan !== normalizedPlan) {

@@ -1,30 +1,31 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
+import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
-interface IcebreakerRequest {
-  activity: string;
-  context?: {
-    time_of_day?: string;
-    location_type?: string;
-    user_interests?: string[];
-    other_user_name?: string;
-  };
-  language?: string;
-}
+const icebreakerSchema = z.object({
+  activity: z.string().min(1).max(50),
+  context: z.object({
+    time_of_day: z.string().max(50).optional(),
+    location_type: z.string().max(100).optional(),
+    user_interests: z.array(z.string().max(100)).max(20).optional(),
+    other_user_name: z.string().max(100).optional(),
+  }).optional(),
+  language: z.enum(["fr", "en"]).optional(),
+});
 
-interface SessionRecommendationRequest {
-  user_id: string;
-  preferences?: {
-    favorite_activities?: string[];
-    preferred_times?: string[];
-    city?: string;
-  };
-  history?: {
-    past_activities?: string[];
-    successful_sessions?: number;
-  };
-}
+const sessionRecommendationSchema = z.object({
+  user_id: z.string().uuid(),
+  preferences: z.object({
+    favorite_activities: z.array(z.string().max(50)).max(10).optional(),
+    preferred_times: z.array(z.string().max(50)).max(10).optional(),
+    city: z.string().max(100).optional(),
+  }).optional(),
+  history: z.object({
+    past_activities: z.array(z.string().max(50)).max(20).optional(),
+    successful_sessions: z.number().int().min(0).max(10000).optional(),
+  }).optional(),
+});
 
 // Rate limit config per action
 const RATE_LIMITS: Record<string, { maxRequests: number; windowMs: number }> = {
@@ -46,9 +47,15 @@ serve(async (req) => {
 
     const url = new URL(req.url);
     const action = url.searchParams.get("action") || "icebreaker";
-    const body = await req.json();
 
-    console.log(`[ai-assistant] Action: ${action}`, JSON.stringify(body, null, 2));
+    if (action !== "icebreaker" && action !== "session-recommendations") {
+      return new Response(
+        JSON.stringify({ error: "Unknown action" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const rawBody = await req.json();
 
     // Apply rate limiting per action
     const config = RATE_LIMITS[action] || { maxRequests: 10, windowMs: 60_000 };
@@ -59,14 +66,13 @@ serve(async (req) => {
     }
 
     if (action === "icebreaker") {
-      return await handleIcebreaker(body as IcebreakerRequest, LOVABLE_API_KEY);
-    } else if (action === "session-recommendations") {
-      return await handleSessionRecommendations(body as SessionRecommendationRequest, LOVABLE_API_KEY);
+      const parsed = validateBody(rawBody, icebreakerSchema);
+      if (isValidationError(parsed)) return parsed;
+      return await handleIcebreaker(parsed, LOVABLE_API_KEY);
     } else {
-      return new Response(
-        JSON.stringify({ error: "Unknown action" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      const parsed = validateBody(rawBody, sessionRecommendationSchema);
+      if (isValidationError(parsed)) return parsed;
+      return await handleSessionRecommendations(parsed, LOVABLE_API_KEY);
     }
   } catch (error) {
     console.error("[ai-assistant] Error:", error);
@@ -77,7 +83,31 @@ serve(async (req) => {
   }
 });
 
-async function handleIcebreaker(request: IcebreakerRequest, apiKey: string): Promise<Response> {
+interface IcebreakerInput {
+  activity: string;
+  context?: {
+    time_of_day?: string;
+    location_type?: string;
+    user_interests?: string[];
+    other_user_name?: string;
+  };
+  language?: string;
+}
+
+interface SessionRecommendationInput {
+  user_id: string;
+  preferences?: {
+    favorite_activities?: string[];
+    preferred_times?: string[];
+    city?: string;
+  };
+  history?: {
+    past_activities?: string[];
+    successful_sessions?: number;
+  };
+}
+
+async function handleIcebreaker(request: IcebreakerInput, apiKey: string): Promise<Response> {
   const { activity, context, language = "fr" } = request;
 
   const activityLabels: Record<string, string> = {
@@ -169,7 +199,7 @@ Réponds uniquement avec un JSON array de 3 strings, rien d'autre.`;
 }
 
 async function handleSessionRecommendations(
-  request: SessionRecommendationRequest,
+  request: SessionRecommendationInput,
   apiKey: string
 ): Promise<Response> {
   const { preferences, history } = request;
