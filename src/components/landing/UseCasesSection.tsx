@@ -1,9 +1,10 @@
+import { forwardRef } from 'react';
 import { BookOpen, Dumbbell, Coffee, Laptop } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
 import { type LucideIcon } from 'lucide-react';
 
-export function UseCasesSection() {
+export const UseCasesSection = forwardRef<HTMLElement>(function UseCasesSection(_props, ref) {
   const { t } = useTranslation();
 
   const useCases: { icon: LucideIcon; place: string; action: string }[] = [
@@ -14,7 +15,7 @@ export function UseCasesSection() {
   ];
 
   return (
-    <section className="py-12 px-6 relative z-10 overflow-hidden">
+    <section ref={ref} className="py-12 px-6 relative z-10 overflow-hidden">
       <div className="max-w-5xl mx-auto">
         <RevealText>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
@@ -38,4 +39,4 @@ export function UseCasesSection() {
       </div>
     </section>
   );
-}
+});
