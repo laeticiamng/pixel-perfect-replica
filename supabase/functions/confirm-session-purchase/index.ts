@@ -25,16 +25,27 @@ serve(async (req) => {
     logStep("Function started");
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "No authorization header provided" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
     
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
     
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    const user = userData.user;
-    if (!user) throw new Error("User not authenticated");
+    if (claimsError || !claimsData?.claims?.sub) {
+      logStep("JWT validation failed", { error: claimsError?.message });
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication token" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
+
+    const userId = claimsData.claims.sub as string;
     
-    logStep("User authenticated", { userId: user.id });
+    logStep("User authenticated", { userId });
 
     const { sessions_purchased } = await req.json();
     const count = parseInt(sessions_purchased, 10);
@@ -48,7 +59,7 @@ serve(async (req) => {
     // Add purchased sessions to user profile
     const { data: newTotal, error: addError } = await supabaseClient
       .rpc('add_purchased_sessions', { 
-        p_user_id: user.id, 
+        p_user_id: userId, 
         p_count: count 
       });
 

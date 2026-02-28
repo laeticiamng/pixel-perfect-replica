@@ -112,37 +112,36 @@ async function validateAuth(
   }
 
   try {
-    // Create a client with the user's token to get their identity
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: `Bearer ${token}` } }
     });
 
-    const { data: { user }, error: userError } = await userClient.auth.getUser();
+    const { data: claimsData, error: claimsError } = await userClient.auth.getClaims(token);
     
-    if (userError || !user) {
-      console.error("[system/auth] Token validation failed:", userError);
+    if (claimsError || !claimsData?.claims?.sub) {
+      console.error("[system/auth] Token validation failed:", claimsError);
       return { authenticated: false, error: "Invalid or expired token" };
     }
 
+    const userId = claimsData.claims.sub as string;
     let isAdmin = false;
     
     if (requireAdmin) {
-      // Check if user has admin role using service role client
       const { data: hasRole } = await supabase.rpc('has_role', {
-        _user_id: user.id,
+        _user_id: userId,
         _role: 'admin'
       });
       
       isAdmin = hasRole === true;
       
       if (!isAdmin) {
-        return { authenticated: true, userId: user.id, isAdmin: false, error: "Admin role required" };
+        return { authenticated: true, userId, isAdmin: false, error: "Admin role required" };
       }
     }
 
-    return { authenticated: true, userId: user.id, isAdmin };
+    return { authenticated: true, userId, isAdmin };
   } catch (error) {
     console.error("[system/auth] Error validating token:", error);
     return { authenticated: false, error: "Token validation failed" };
