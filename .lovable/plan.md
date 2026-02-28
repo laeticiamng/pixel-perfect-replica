@@ -1,44 +1,79 @@
 
 
-## Plan : 8 Tickets Securite - Sprint "Prod Safe" + "Hardening"
+## Plan : Tickets restants (5 + 8)
 
-Ce plan couvre les 8 tickets de securite identifies, organises en 2 sprints logiques.
+### Ticket 5 : Stripe Webhook securise
 
----
+**Statut** : Bloque sur le secret `STRIPE_WEBHOOK_SECRET`
 
-### Sprint 1 : Prod Safe (P0 - Tickets 1, 2, 3, 4) ✅ DONE
+**Prerequis utilisateur** :
+1. Aller dans le Dashboard Stripe > Developers > Webhooks
+2. Creer un webhook pointant vers : `https://afvssugntxjolqqeyffn.supabase.co/functions/v1/stripe-webhook`
+3. Selectionner les events : `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
+4. Copier le "Signing secret" (commence par `whsec_...`)
+5. Ajouter ce secret dans Lovable Cloud
 
-#### Ticket 1 : RLS Hardening table `connections` ✅
-- UNIQUE constraint sur (user_a, user_b)
-- Index composite pour performance
-- Trigger canonical order (user_a < user_b)
+**Implementation** :
+- Creer `supabase/functions/stripe-webhook/index.ts`
+- Verifier signature Stripe via `stripe.webhooks.constructEvent(body, sig, secret)`
+- Gerer les events :
+  - `checkout.session.completed` : marquer `profiles.is_premium = true`
+  - `customer.subscription.deleted` : marquer `profiles.is_premium = false`
+  - `customer.subscription.updated` : mettre a jour selon status
+  - `invoice.payment_failed` : log evenement
+- Pas de JWT requis (webhook public, signature = auth)
+- `verify_jwt = false` dans config.toml (deja le cas pour toutes les functions)
 
-#### Ticket 2 : Auth centralisee `_shared/auth.ts` ✅
-- Helper `authenticateRequest()` centralise dans `supabase/functions/_shared/auth.ts`
-- 12 Edge Functions refactorees pour utiliser le helper
-- Reponses 401/403 uniformes
-
-#### Ticket 3 : Compensating controls pour `verify_jwt=false` ✅
-- Verification presence claims obligatoires (sub, exp)
-- Verification expiration token (exp vs Date.now())
-- Logs securises (prefix 8 chars du token uniquement)
-- Integre dans `_shared/auth.ts`
-
-#### Ticket 4 : Rate limiting endpoints sensibles ✅
-- Helper generique `_shared/ratelimit.ts` (in-memory)
-- Rate limits ajoutes sur: customer-portal (5/min), confirm-session-purchase (5/min), firecrawl-map (10/min), firecrawl-scrape (10/min), scrape-events (5/min), recommend-locations (10/min)
-- Rate limits existants standardises: create-checkout, purchase-session, ai-assistant, voice-icebreaker
-- Reponse 429 avec header Retry-After
+**Fichiers** :
+- Nouveau : `supabase/functions/stripe-webhook/index.ts`
 
 ---
 
-### Sprint 2 : Hardening + DX (P1-P2 - Tickets 5, 6, 7, 8) — TODO
+### Ticket 8 : Audit final securite + Smoke Test
 
-#### Ticket 5 : Validation Zod dans Edge Functions
-#### Ticket 6 : Stripe Webhook source of truth
-#### Ticket 7 : Anti-polling check-subscription
-#### Ticket 8 : Nettoyage forwardRef warnings
+**Implementation** :
+- Mettre a jour `.lovable/plan.md` avec le statut final de tous les tickets
+- Verifier que toutes les Edge Functions utilisent bien :
+  - `authenticateRequest()` (sauf webhook et endpoints publics)
+  - `checkRateLimit()` sur endpoints sensibles
+  - `validateBody()` avec schema Zod
+- Lister les verifications manuelles a effectuer (checklist)
 
-### Notes
-- `notifications` et `system` conservent leur validateAuth interne (deja robuste, pattern similaire)
-- Sprint 2 a implementer dans une prochaine session
+**Checklist E2E a valider manuellement** :
+
+Auth :
+- `/map` non connecte redirige vers login
+- Signup / login / logout fonctionnels
+- Reset password fonctionne
+- 0 erreur 401 inattendue
+
+Stripe :
+- Bouton upgrade ouvre checkout
+- `check-subscription` retourne donnees coherentes
+- Pas de boucle reseau sur `/premium`
+
+Sessions binome :
+- Creation session respecte quota
+- RLS protege les donnees
+
+Console :
+- 0 erreur bloquante
+- 0 boucle reseau
+- 0 fuite token dans les logs
+
+**Fichiers** :
+- Mise a jour : `.lovable/plan.md` (statut final)
+
+---
+
+### Ordre
+
+1. Demander a l'utilisateur de configurer le webhook Stripe + fournir le secret
+2. Implementer `stripe-webhook/index.ts`
+3. Mettre a jour le plan avec statut final
+4. Recommander les tests manuels E2E
+
+### Note importante
+
+Le Ticket 5 ne peut pas avancer tant que le `STRIPE_WEBHOOK_SECRET` n'est pas configure. Si vous preferez, on peut finaliser le Ticket 8 (audit + plan) maintenant et revenir au webhook quand le secret sera pret.
+
