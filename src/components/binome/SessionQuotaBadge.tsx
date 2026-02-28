@@ -1,4 +1,4 @@
-import { Crown, Sparkles } from 'lucide-react';
+import { Crown, Sparkles, Ticket } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
@@ -10,12 +10,13 @@ interface SessionQuotaBadgeProps {
   sessionsLimit: number;
   isPremium: boolean;
   canCreate: boolean;
+  purchasedSessions?: number;
   className?: string;
   showUpgrade?: boolean;
 }
 
 export function SessionQuotaBadge({
-  sessionsCreated, sessionsLimit, isPremium, canCreate, className, showUpgrade = true,
+  sessionsCreated, sessionsLimit, isPremium, canCreate, purchasedSessions = 0, className, showUpgrade = true,
 }: SessionQuotaBadgeProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -57,8 +58,25 @@ export function SessionQuotaBadge({
         )}
       </div>
       <Progress value={percentage} className={cn("h-1.5", isAtLimit && "[&>div]:bg-destructive", isNearLimit && !isAtLimit && "[&>div]:bg-amber-500")} />
+      
+      {/* F4: Show purchased sessions count */}
+      {purchasedSessions > 0 && (
+        <p className="text-xs text-muted-foreground flex items-center gap-1">
+          <Ticket className="h-3 w-3 text-signal-yellow" />
+          {t('sessionQuota.includingPurchased', { count: purchasedSessions })}
+        </p>
+      )}
+      
+      {/* F5: Enriched messages with pricing context */}
       {isAtLimit && <p className="text-xs text-destructive">{t('sessionQuota.limitReached')}</p>}
-      {isNearLimit && !isAtLimit && <p className="text-xs text-amber-500">{t('sessionQuota.oneLeft')}</p>}
+      {isNearLimit && !isAtLimit && (
+        <p className="text-xs text-amber-500">
+          {t('sessionQuota.oneLeftEnriched')}{' '}
+          <button onClick={() => navigate('/premium?from=quota')} className="underline hover:no-underline font-medium">
+            {t('sessionQuota.getMore')}
+          </button>
+        </p>
+      )}
     </div>
   );
 }
