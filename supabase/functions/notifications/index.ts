@@ -517,12 +517,13 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       case "send-session-reminders": {
-        // Allow service role key (for CRON jobs) or admin users
+        // Allow service role key or anon key (for CRON jobs), or admin users
         const authHeader = req.headers.get("Authorization");
         const token = authHeader?.replace("Bearer ", "") || "";
         const isServiceRole = token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+        const isAnonKey = token === Deno.env.get("SUPABASE_ANON_KEY");
         
-        if (!isServiceRole) {
+        if (!isServiceRole && !isAnonKey) {
           const authResult = await validateAuth(req, supabase, true);
           if (!authResult.authenticated) {
             return new Response(
