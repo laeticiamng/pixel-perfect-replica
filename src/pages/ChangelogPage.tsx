@@ -12,7 +12,7 @@ interface ChangelogEntry {
   date: string;
   sections: {
     type: 'new' | 'improved' | 'fixed' | 'security';
-    items: string[];
+    items: { fr: string; en: string }[];
   }[];
 }
 
@@ -24,43 +24,43 @@ const changelog: ChangelogEntry[] = [
       {
         type: 'new',
         items: [
-          'Système de connexions mutuelles (matching par activité + proximité)',
-          'Messagerie éphémère 24h (auto-suppression RGPD)',
-          'Routes /signup et /login dédiées',
-          'Table connections avec confirmation mutuelle',
-          'Rate limiting serveur sur les signaux (max 10/heure)',
-          'Hook useConnections pour le flux de matching',
-          'Hook useSignalRateLimit pour la limitation côté client',
-          'Migration SQL complète : connections, signal_rate_limits, expires_at',
+          { fr: 'Système de connexions mutuelles (matching par activité + proximité)', en: 'Mutual connections system (activity + proximity matching)' },
+          { fr: 'Messagerie éphémère 24h (auto-suppression RGPD)', en: 'Ephemeral 24h messaging (GDPR auto-deletion)' },
+          { fr: 'Routes /signup et /login dédiées', en: 'Dedicated /signup and /login routes' },
+          { fr: 'Table connections avec confirmation mutuelle', en: 'Connections table with mutual confirmation' },
+          { fr: 'Rate limiting serveur sur les signaux (max 10/heure)', en: 'Server-side rate limiting on signals (max 10/hour)' },
+          { fr: 'Hook useConnections pour le flux de matching', en: 'useConnections hook for matching flow' },
+          { fr: 'Hook useSignalRateLimit pour la limitation côté client', en: 'useSignalRateLimit hook for client-side rate limiting' },
+          { fr: 'Migration SQL complète : connections, signal_rate_limits, expires_at', en: 'Full SQL migration: connections, signal_rate_limits, expires_at' },
         ],
       },
       {
         type: 'improved',
         items: [
-          'SEO : alignement domaine canonical/OG/sitemap/robots.txt',
-          'Pages légales enrichies (CGU RGPD, Politique de confidentialité)',
-          'Changelog complet justifiant la version 2.0.0',
-          'Hreflang x-default ajouté dans le sitemap',
-          'Types TypeScript mis à jour pour toutes les nouvelles tables',
+          { fr: 'SEO : alignement domaine canonical/OG/sitemap/robots.txt', en: 'SEO: canonical/OG/sitemap/robots.txt domain alignment' },
+          { fr: 'Pages légales enrichies (CGU RGPD, Politique de confidentialité)', en: 'Enhanced legal pages (GDPR ToS, Privacy Policy)' },
+          { fr: 'Changelog complet justifiant la version 2.0.0', en: 'Full changelog justifying version 2.0.0' },
+          { fr: 'Hreflang x-default ajouté dans le sitemap', en: 'Hreflang x-default added to sitemap' },
+          { fr: 'Types TypeScript mis à jour pour toutes les nouvelles tables', en: 'TypeScript types updated for all new tables' },
         ],
       },
       {
         type: 'fixed',
         items: [
-          'Domaine incohérent entre sitemap (nearvity.fr) et hébergement (lovable.app)',
-          'Canonical URL pointant vers le mauvais domaine',
-          'OG tags et JSON-LD avec URLs mixtes',
-          'Version 2.0.0 affichée sans changelog correspondant',
+          { fr: 'Domaine incohérent entre sitemap (nearvity.fr) et hébergement (lovable.app)', en: 'Inconsistent domain between sitemap (nearvity.fr) and hosting (lovable.app)' },
+          { fr: 'Canonical URL pointant vers le mauvais domaine', en: 'Canonical URL pointing to wrong domain' },
+          { fr: 'OG tags et JSON-LD avec URLs mixtes', en: 'OG tags and JSON-LD with mixed URLs' },
+          { fr: 'Version 2.0.0 affichée sans changelog correspondant', en: 'Version 2.0.0 displayed without matching changelog' },
         ],
       },
       {
         type: 'security',
         items: [
-          'RLS activé sur la table connections',
-          'Rate limiting serveur (check_signal_rate_limit) côté PostgreSQL',
-          'Nettoyage automatique des messages expirés (cleanup_expired_messages)',
-          'Nettoyage automatique des connexions pendantes après 48h',
-          'Politique de suppression éphémère (expires_at) sur les messages',
+          { fr: 'RLS activé sur la table connections', en: 'RLS enabled on connections table' },
+          { fr: 'Rate limiting serveur (check_signal_rate_limit) côté PostgreSQL', en: 'Server-side rate limiting (check_signal_rate_limit) in PostgreSQL' },
+          { fr: 'Nettoyage automatique des messages expirés (cleanup_expired_messages)', en: 'Automatic cleanup of expired messages (cleanup_expired_messages)' },
+          { fr: 'Nettoyage automatique des connexions pendantes après 48h', en: 'Automatic cleanup of pending connections after 48h' },
+          { fr: 'Politique de suppression éphémère (expires_at) sur les messages', en: 'Ephemeral deletion policy (expires_at) on messages' },
         ],
       },
     ],
@@ -72,25 +72,25 @@ const changelog: ChangelogEntry[] = [
       {
         type: 'new',
         items: [
-          'Connexion Apple Sign-In',
-          'Refactorisation complète du code (composants modulaires)',
-          'Audit UX et corrections de bugs',
+          { fr: 'Connexion Apple Sign-In', en: 'Apple Sign-In authentication' },
+          { fr: 'Refactorisation complète du code (composants modulaires)', en: 'Full code refactoring (modular components)' },
+          { fr: 'Audit UX et corrections de bugs', en: 'UX audit and bug fixes' },
         ],
       },
       {
         type: 'improved',
         items: [
-          'Landing page refactorisée en 12 composants',
-          'SessionChat optimisé avec hook dédié',
-          'Traductions FR/EN complètes (bannière cookies, Apple)',
+          { fr: 'Landing page refactorisée en 12 composants', en: 'Landing page refactored into 12 components' },
+          { fr: 'SessionChat optimisé avec hook dédié', en: 'SessionChat optimized with dedicated hook' },
+          { fr: 'Traductions FR/EN complètes (bannière cookies, Apple)', en: 'Full FR/EN translations (cookie banner, Apple)' },
         ],
       },
       {
         type: 'fixed',
         items: [
-          'Bouton Apple affichait une clé de traduction',
-          'Incohérence de numéro de version',
-          'Bannière cookies non traduite',
+          { fr: 'Bouton Apple affichait une clé de traduction', en: 'Apple button displayed a translation key' },
+          { fr: 'Incohérence de numéro de version', en: 'Version number inconsistency' },
+          { fr: 'Bannière cookies non traduite', en: 'Cookie banner not translated' },
         ],
       },
     ],
@@ -102,8 +102,8 @@ const changelog: ChangelogEntry[] = [
       {
         type: 'improved',
         items: [
-          'Optimisations de performance',
-          'Amélioration de la stabilité',
+          { fr: 'Optimisations de performance', en: 'Performance optimizations' },
+          { fr: 'Amélioration de la stabilité', en: 'Stability improvements' },
         ],
       },
     ],
@@ -115,39 +115,39 @@ const changelog: ChangelogEntry[] = [
       {
         type: 'new',
         items: [
-          'Mode Binôme amélioré avec onboarding interactif en 5 étapes',
-          'Stats communautaires en temps réel',
-          'Témoignages utilisateurs post-session',
-          'Badge "New" pour les nouveaux utilisateurs',
-          'Section "Pourquoi NEARVITY ?" sur la page Binôme',
-          'Sélecteur de styles de carte (Satellite, Rues, Navigation, Plein air)',
-          'Mode démo sur la carte avec utilisateurs fictifs',
-          'Dashboard admin pour monitorer les cron jobs',
+          { fr: 'Mode Binôme amélioré avec onboarding interactif en 5 étapes', en: 'Enhanced Buddy Mode with 5-step interactive onboarding' },
+          { fr: 'Stats communautaires en temps réel', en: 'Real-time community stats' },
+          { fr: 'Témoignages utilisateurs post-session', en: 'Post-session user testimonials' },
+          { fr: 'Badge "New" pour les nouveaux utilisateurs', en: '"New" badge for new users' },
+          { fr: 'Section "Pourquoi NEARVITY ?" sur la page Binôme', en: '"Why NEARVITY?" section on Buddy page' },
+          { fr: 'Sélecteur de styles de carte (Satellite, Rues, Navigation, Plein air)', en: 'Map style selector (Satellite, Streets, Navigation, Outdoors)' },
+          { fr: 'Mode démo sur la carte avec utilisateurs fictifs', en: 'Demo mode on map with mock users' },
+          { fr: 'Dashboard admin pour monitorer les cron jobs', en: 'Admin dashboard to monitor cron jobs' },
         ],
       },
       {
         type: 'improved',
         items: [
-          'Animations fluides sur la carte et les filtres',
-          'Navigation bottom cohérente sur toutes les pages',
-          'Traductions FR/EN complètes',
-          'Footer avec version et crédit EmotionsCare',
+          { fr: 'Animations fluides sur la carte et les filtres', en: 'Smooth animations on map and filters' },
+          { fr: 'Navigation bottom cohérente sur toutes les pages', en: 'Consistent bottom navigation across all pages' },
+          { fr: 'Traductions FR/EN complètes', en: 'Full FR/EN translations' },
+          { fr: 'Footer avec version et crédit EmotionsCare', en: 'Footer with version and EmotionsCare credit' },
         ],
       },
       {
         type: 'fixed',
         items: [
-          'OfflineBanner avec forwardRef pour compatibilité React',
-          'Mode démo activé uniquement sans utilisateur réel',
-          'Traductions manquantes en anglais',
+          { fr: 'OfflineBanner avec forwardRef pour compatibilité React', en: 'OfflineBanner with forwardRef for React compatibility' },
+          { fr: 'Mode démo activé uniquement sans utilisateur réel', en: 'Demo mode enabled only without real user' },
+          { fr: 'Traductions manquantes en anglais', en: 'Missing English translations' },
         ],
       },
       {
         type: 'security',
         items: [
-          'RLS sur user_reliability (scores non-modifiables)',
-          'Validation JWT sur toutes les Edge Functions',
-          'Cron job hourly pour nettoyage shadow-bans',
+          { fr: 'RLS sur user_reliability (scores non-modifiables)', en: 'RLS on user_reliability (non-editable scores)' },
+          { fr: 'Validation JWT sur toutes les Edge Functions', en: 'JWT validation on all Edge Functions' },
+          { fr: 'Cron job hourly pour nettoyage shadow-bans', en: 'Hourly cron job for shadow-ban cleanup' },
         ],
       },
     ],
@@ -159,22 +159,22 @@ const changelog: ChangelogEntry[] = [
       {
         type: 'new',
         items: [
-          'Mode Binôme : sessions planifiées',
-          'Système de check-in/check-out GPS',
-          'Chat de groupe en temps réel',
-          'Feedback post-session avec 3 critères',
-          'Score de fiabilité utilisateur',
-          'Quota mensuel (2 sessions gratuites)',
-          'Mode Événement avec QR Code check-in',
-          'Page Premium avec intégration Stripe',
+          { fr: 'Mode Binôme : sessions planifiées', en: 'Buddy Mode: scheduled sessions' },
+          { fr: 'Système de check-in/check-out GPS', en: 'GPS check-in/check-out system' },
+          { fr: 'Chat de groupe en temps réel', en: 'Real-time group chat' },
+          { fr: 'Feedback post-session avec 3 critères', en: 'Post-session feedback with 3 criteria' },
+          { fr: 'Score de fiabilité utilisateur', en: 'User reliability score' },
+          { fr: 'Quota mensuel (2 sessions gratuites)', en: 'Monthly quota (2 free sessions)' },
+          { fr: 'Mode Événement avec QR Code check-in', en: 'Event Mode with QR Code check-in' },
+          { fr: 'Page Premium avec intégration Stripe', en: 'Premium page with Stripe integration' },
         ],
       },
       {
         type: 'improved',
         items: [
-          'Rappels automatiques de session',
-          'Notifications push améliorées',
-          'Performance des requêtes optimisée',
+          { fr: 'Rappels automatiques de session', en: 'Automatic session reminders' },
+          { fr: 'Notifications push améliorées', en: 'Improved push notifications' },
+          { fr: 'Performance des requêtes optimisée', en: 'Optimized query performance' },
         ],
       },
     ],
@@ -186,20 +186,20 @@ const changelog: ChangelogEntry[] = [
       {
         type: 'new',
         items: [
-          'Radar temps réel avec carte Mapbox',
-          '3 états de signal : Ouvert, Conditionnel, Occupé',
-          '6 activités : Réviser, Manger, Bosser, Parler, Sport, Autre',
-          'Révélation progressive (profil complet à -50m)',
-          'Ghost Mode pour invisibilité',
-          'Bouton d\'urgence avec contacts préenregistrés',
+          { fr: 'Radar temps réel avec carte Mapbox', en: 'Real-time radar with Mapbox map' },
+          { fr: '3 états de signal : Ouvert, Conditionnel, Occupé', en: '3 signal states: Open, Conditional, Busy' },
+          { fr: '6 activités : Réviser, Manger, Bosser, Parler, Sport, Autre', en: '6 activities: Study, Eat, Work, Talk, Sport, Other' },
+          { fr: 'Révélation progressive (profil complet à -50m)', en: 'Progressive reveal (full profile at <50m)' },
+          { fr: 'Ghost Mode pour invisibilité', en: 'Ghost Mode for invisibility' },
+          { fr: "Bouton d'urgence avec contacts préenregistrés", en: 'Emergency button with pre-saved contacts' },
         ],
       },
       {
         type: 'security',
         items: [
-          'GPS Fuzzing (~100m de précision)',
-          'Rate limiting : 10 reveals/heure, 5 reports/heure',
-          'Shadow-ban automatique après 3 signalements',
+          { fr: 'GPS Fuzzing (~100m de précision)', en: 'GPS Fuzzing (~100m precision)' },
+          { fr: 'Rate limiting : 10 reveals/heure, 5 reports/heure', en: 'Rate limiting: 10 reveals/hour, 5 reports/hour' },
+          { fr: 'Shadow-ban automatique après 3 signalements', en: 'Automatic shadow-ban after 3 reports' },
         ],
       },
     ],
@@ -211,18 +211,17 @@ const changelog: ChangelogEntry[] = [
       {
         type: 'new',
         items: [
-          'PWA installable (iOS + Android)',
-          'Authentification email/password',
-          'Profil utilisateur avec avatar',
-          'Paramètres : thème, notifications, confidentialité',
-          'Export GDPR des données personnelles',
-          'Suppression de compte avec cascade',
+          { fr: 'PWA installable (iOS + Android)', en: 'Installable PWA (iOS + Android)' },
+          { fr: 'Authentification email/password', en: 'Email/password authentication' },
+          { fr: 'Profil utilisateur avec avatar', en: 'User profile with avatar' },
+          { fr: 'Paramètres : thème, notifications, confidentialité', en: 'Settings: theme, notifications, privacy' },
+          { fr: 'Export GDPR des données personnelles', en: 'GDPR personal data export' },
+          { fr: 'Suppression de compte avec cascade', en: 'Account deletion with cascade' },
         ],
       },
     ],
   },
 ];
-
 const sectionConfig = {
   new: {
     icon: Sparkles,
@@ -311,14 +310,11 @@ export default function ChangelogPage() {
                         <Icon className="h-4 w-4" />
                         {locale === 'fr' ? config.label : (config.labelEn || config.label)}
                       </div>
-                      {locale !== 'fr' && (
-                        <p className="text-xs text-muted-foreground italic mb-1">{t('changelog.frenchOnly')}</p>
-                      )}
                       <ul className="space-y-1.5 pl-4">
                         {section.items.map((item, i) => (
                           <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
                             <span className="text-coral mt-1.5">•</span>
-                            <span>{item}</span>
+                            <span>{locale === 'fr' ? item.fr : item.en}</span>
                           </li>
                         ))}
                       </ul>
