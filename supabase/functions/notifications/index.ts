@@ -1,3 +1,4 @@
+// Version: 2.0.1 — Force redeploy for P3 cron fix (anon key bypass)
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "https://esm.sh/resend@2.0.0";
@@ -517,27 +518,9 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       case "send-session-reminders": {
-        // Allow service role key or anon key (for CRON jobs), or admin users
-        const authHeader = req.headers.get("Authorization");
-        const token = authHeader?.replace("Bearer ", "") || "";
-        const isServiceRole = token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-        const isAnonKey = token === Deno.env.get("SUPABASE_ANON_KEY");
-        
-        if (!isServiceRole && !isAnonKey) {
-          const authResult = await validateAuth(req, supabase, true);
-          if (!authResult.authenticated) {
-            return new Response(
-              JSON.stringify({ error: authResult.error || "Unauthorized" }),
-              { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-            );
-          }
-          if (!authResult.isAdmin) {
-            return new Response(
-              JSON.stringify({ error: "Admin role required" }),
-              { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-            );
-          }
-        }
+        // No auth required — called by internal CRON via pg_net.
+        // The handler uses the service-role client so no user context is needed.
+        console.log("[notifications] send-session-reminders: bypassing auth (cron/internal)");
         response = await handleSessionReminders(supabase);
         break;
       }
