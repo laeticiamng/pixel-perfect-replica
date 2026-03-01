@@ -1,0 +1,67 @@
+# NEARVITY — llms.txt
+# The first IRL (In Real Life) social network
+# https://nearvity.fr
+
+## What is NEARVITY?
+
+NEARVITY is the first social network built entirely around real-life, in-person interactions. Unlike traditional social networks that trap users behind screens, NEARVITY uses geolocation to show who around you is genuinely open to meeting — right now, in the real world.
+
+## How it works
+
+Users activate a geolocated signal with:
+- A color: green (available), yellow (busy but open), red (unavailable)
+- An activity: studying, eating, talking, working, sports, or other
+
+Nearby users see these signals on a real-time map and can approach knowing the interaction is welcome. No swiping, no algorithmic matching, no endless scrolling.
+
+## Who it's for
+
+- University students fighting social isolation
+- Freelancers and remote workers seeking human contact
+- Digital nomads looking for study/work buddies
+- Anyone who wants to meet people IRL without the awkwardness of cold approaches
+
+## What NEARVITY is NOT
+
+- NOT a dating app (this is explicitly stated and enforced)
+- NOT a content platform (no feed, no posts, no likes)
+- NOT selling user data or showing ads
+
+## Key differentiators
+
+1. **Consent-first**: The signal system means both parties know the interaction is welcome before it happens
+2. **Activity-based**: People connect around shared activities (studying, eating, sports), not profiles or photos
+3. **Ephemeral by design**: Signals expire after 2 hours, no permanent digital footprint
+4. **Safety-first**: Ghost mode, bidirectional blocking, GPS fuzzing (~100m), SOS emergency button
+5. **Anti-loneliness mission**: Built to combat the student loneliness epidemic, not to monetize attention
+
+## Features
+
+- Real-time proximity radar with geolocated availability signals
+- Traffic light system (green/yellow/red) for interaction readiness
+- Session booking for group activities (study, sports, meals)
+- Contextual icebreakers based on shared activity
+- Community events with QR check-in
+- Privacy controls: ghost mode, coordinate fuzzing, auto-expiration
+- Available in French and English
+- Free to use, optional premium tier
+
+## Company
+
+- **Product**: NEARVITY
+- **Company**: EmotionsCare SASU
+- **Country**: France
+- **Founded**: 2025
+- **Website**: https://nearvity.fr
+- **Contact**: contact@emotionscare.com
+
+## Pages
+
+- Landing: https://nearvity.fr/
+- Sign up: https://nearvity.fr/onboarding
+- About: https://nearvity.fr/about
+- Help/FAQ: https://nearvity.fr/help
+- Privacy policy: https://nearvity.fr/privacy
+- Terms of service: https://nearvity.fr/terms
+- Changelog: https://nearvity.fr/changelog
+- Premium: https://nearvity.fr/premium

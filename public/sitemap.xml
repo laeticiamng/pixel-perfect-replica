@@ -18,6 +18,30 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://nearvity.fr/help</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/help" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/help" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/help" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://nearvity.fr/premium</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/premium" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/premium" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/premium" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://nearvity.fr/onboarding</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/onboarding" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/onboarding" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/onboarding" />
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://nearvity.fr/terms</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/terms" />
     <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/terms" />
@@ -32,22 +56,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/privacy" />
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://nearvity.fr/help</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/help" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/help" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/help" />
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://nearvity.fr/signup</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/signup" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/signup" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/signup" />
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://nearvity.fr/changelog</loc>
