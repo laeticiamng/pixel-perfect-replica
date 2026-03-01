@@ -1,11 +1,14 @@
 import { forwardRef } from 'react';
-import { BookOpen, Dumbbell, Coffee, Laptop } from 'lucide-react';
+import { BookOpen, Dumbbell, Coffee, Laptop, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
+import { Button } from '@/components/ui/button';
 import { type LucideIcon } from 'lucide-react';
 
 export const UseCasesSection = forwardRef<HTMLElement>(function UseCasesSection(_props, ref) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const useCases: { icon: LucideIcon; place: string; action: string }[] = [
     { icon: BookOpen, place: t('landing.library'), action: t('landing.studyTogether') },
@@ -36,6 +39,19 @@ export const UseCasesSection = forwardRef<HTMLElement>(function UseCasesSection(
             </RevealText>
           ))}
         </div>
+
+        <RevealText delay={0.5}>
+          <div className="mt-12 text-center">
+            <Button
+              size="lg"
+              onClick={() => navigate('/onboarding')}
+              className="bg-gradient-to-r from-coral to-coral-light text-white font-bold px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-coral/25 transition-all duration-300"
+            >
+              {t('landing.tryCTA')}
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+        </RevealText>
       </div>
     </section>
   );

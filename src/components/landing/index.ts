@@ -10,3 +10,4 @@ export { UseCasesSection } from './UseCasesSection';
 export { GuaranteeSection } from './GuaranteeSection';
 export { FinalCTASection } from './FinalCTASection';
 export { LandingFooter } from './LandingFooter';
+export { SocialProofBar } from './SocialProofBar';

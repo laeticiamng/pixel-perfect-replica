@@ -16,6 +16,7 @@ import {
   GuaranteeSection,
   FinalCTASection,
   LandingFooter,
+  SocialProofBar,
 } from '@/components/landing';
 
 // Problem Section
@@ -163,6 +164,7 @@ export default function LandingPage() {
       <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
       
       <AppPreviewSection />
+      <SocialProofBar />
       <ProblemSection />
       <SignalExplanationSection />
       <FeaturesSection />

@@ -259,6 +259,7 @@ export const translations = {
     chat: { en: 'Chat', fr: 'Discuter' },
     coworking: { en: 'Coworking', fr: 'Coworking' },
     brainstorm: { en: 'Brainstorm', fr: 'Brainstormer' },
+    tryCTA: { en: 'Try it free — no strings attached', fr: 'Essaie gratuitement — sans engagement' },
     readyToConnect: { en: 'Ready to', fr: 'Prêt·e à' },
     connect: { en: 'connect?', fr: 'te connecter ?' },
     joinRevolution: { en: 'Join the intentional meetings revolution.', fr: 'Rejoins la révolution des rencontres intentionnelles.' },
