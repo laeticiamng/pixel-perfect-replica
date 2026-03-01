@@ -211,11 +211,7 @@ function AnimatedRoutes() {
                 <DataExportPage />
               </ProtectedRoute>
             } />
-            <Route path="/premium" element={
-              <ProtectedRoute>
-                <PremiumPage />
-              </ProtectedRoute>
-            } />
+            <Route path="/premium" element={<PremiumPage />} />
             <Route path="/events" element={
               <ProtectedRoute>
                 <EventsPage />
