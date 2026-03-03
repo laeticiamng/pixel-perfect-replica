@@ -12,6 +12,8 @@ import { useTranslation } from '@/lib/i18n';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import { logger } from '@/lib/logger';
+import { InviteFriendCTA } from './InviteFriendCTA';
+import { ConfettiCelebration, celebrationBurst } from './ConfettiCelebration';
 
 interface Participant { id: string; name: string; }
 
@@ -28,6 +30,8 @@ export function SessionFeedbackForm({ sessionId, participants, onComplete }: Ses
   const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showInviteCTA, setShowInviteCTA] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [feedbacks, setFeedbacks] = useState<Record<string, FeedbackData>>(
     Object.fromEntries(participants.map(p => [p.id, { punctual: true, pleasant: true, would_recommend: true, comment: '' }]))
   );
@@ -58,8 +62,21 @@ export function SessionFeedbackForm({ sessionId, participants, onComplete }: Ses
         await supabase.rpc('update_reliability_from_feedback', { p_user_id: participant.id, p_positive: positiveCount >= 2 });
       }
 
+      // Check if overall feedback was positive (majority positive toggles)
+      const allFeedbacks = Object.values(feedbacks);
+      const totalPositive = allFeedbacks.reduce((sum, fb) => {
+        return sum + [fb.punctual, fb.pleasant, fb.would_recommend].filter(Boolean).length;
+      }, 0);
+      const isOverallPositive = totalPositive >= allFeedbacks.length * 2;
+
       toast.success(t('sessionFeedback.thanksFeedback'));
-      onComplete();
+
+      if (isOverallPositive) {
+        celebrationBurst();
+        setShowInviteCTA(true);
+      } else {
+        onComplete();
+      }
     } catch (error) {
       logger.api.error('session_feedback', 'submit', String(error));
       toast.error(t('sessionFeedback.feedbackError'));
@@ -71,6 +88,13 @@ export function SessionFeedbackForm({ sessionId, participants, onComplete }: Ses
 
   if (participants.length === 0) return null;
 
+  if (showInviteCTA) {
+    return (
+      <div className="space-y-4">
+        <InviteFriendCTA onDismiss={onComplete} />
+      </div>
+    );
+  }
   return (
     <Card className="glass border-2 border-coral/30">
       <CardHeader className="pb-4">
