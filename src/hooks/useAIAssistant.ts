@@ -93,23 +93,20 @@ export function useAIAssistant() {
     setError(null);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-assistant?action=session-recommendations`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({ user_id: userId, preferences, history }),
-        }
-      );
+      const { data, error: fnError } = await supabase.functions.invoke('ai-assistant', {
+        body: {
+          action: 'session-recommendations',
+          user_id: userId,
+          preferences,
+          history,
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+      if (fnError) {
+        logger.api.error('ai_assistant', 'recommendations', String(fnError));
+        throw new Error(fnError.message);
       }
 
-      const data = await response.json();
       return data;
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown error';
