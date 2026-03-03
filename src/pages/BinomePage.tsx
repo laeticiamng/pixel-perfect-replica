@@ -13,6 +13,7 @@ import {
   BinomeOnboarding, BinomeDescriptionCard, WhyNearvitySection, WhyNearvityCondensed, 
   TestimonialsSection, CommunityStats, AIRecommendationsWidget 
 } from '@/components/binome';
+import { PremiumNudge } from '@/components/landing/PremiumNudge';
 import { useBinomeSessions, type SessionFilters as Filters, type CreateSessionInput } from '@/hooks/useBinomeSessions';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useAuth } from '@/contexts/AuthContext';
@@ -82,6 +83,8 @@ export default function BinomePage() {
         
       <div className="px-6 space-y-4">
         {usage && <SessionQuotaBadge sessionsCreated={usage.sessionsCreated} sessionsLimit={usage.sessionsLimit} isPremium={usage.isPremium} canCreate={usage.canCreate} purchasedSessions={usage.purchasedSessions} />}
+        
+        {!canCreate && !isPremium && <PremiumNudge />}
         
         {!canCreate && (
           <div className="flex flex-col gap-3 p-4 rounded-xl bg-coral/10 border border-coral/20">

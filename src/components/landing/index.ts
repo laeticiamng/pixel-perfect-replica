@@ -11,3 +11,5 @@ export { GuaranteeSection } from './GuaranteeSection';
 export { FinalCTASection } from './FinalCTASection';
 export { LandingFooter } from './LandingFooter';
 export { SocialProofBar } from './SocialProofBar';
+export { PricingPreviewSection } from './PricingPreviewSection';
+export { LandingTestimonialsSection } from './TestimonialsSection';

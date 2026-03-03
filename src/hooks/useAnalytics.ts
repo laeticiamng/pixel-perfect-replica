@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
+import { getStoredUTM } from '@/hooks/useUTM';
 import React from 'react';
 
 // Generate a simple session ID
@@ -65,6 +66,7 @@ export function useAnalytics() {
         data: {
           path: location.pathname,
           referrer: document.referrer,
+          ...getStoredUTM(),
         },
       });
     }
@@ -73,7 +75,7 @@ export function useAnalytics() {
   // Predefined tracking functions for common events
   const track = {
     // Auth events
-    signup: () => trackEvent({ name: 'signup', category: 'auth' }),
+    signup: () => trackEvent({ name: 'signup', category: 'auth', data: { ...getStoredUTM() } }),
     login: () => trackEvent({ name: 'login', category: 'auth' }),
     logout: () => trackEvent({ name: 'logout', category: 'auth' }),
     
