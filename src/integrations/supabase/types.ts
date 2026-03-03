@@ -1641,6 +1641,10 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: undefined
       }
+      is_session_participant: {
+        Args: { p_session_id: string; p_user_id: string }
+        Returns: boolean
+      }
       is_user_blocked: {
         Args: { p_target_id: string; p_user_id: string }
         Returns: boolean
