@@ -22,11 +22,11 @@
     <link rel="alternate" hreflang="en" href="https://nearvity.fr/" />
     <link rel="alternate" hreflang="x-default" href="https://nearvity.fr/" />
 
-    <!-- JSON-LD: WebApplication (GEO-optimized) -->
+    <!-- JSON-LD: SoftwareApplication with pricing -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
+      "@type": "SoftwareApplication",
       "name": "NEARVITY",
       "alternateName": "Nearvity",
       "applicationCategory": "SocialNetworkingApplication",
@@ -43,12 +43,30 @@
         "Icebreakers contextuels selon l'activité",
         "100% gratuit, pas de publicité, pas de vente de données"
       ],
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR",
-        "description": "Gratuit — version premium optionnelle pour fonctionnalités avancées"
-      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Free",
+          "price": "0",
+          "priceCurrency": "EUR",
+          "description": "2 sessions par mois, signal & radar, chat & icebreakers"
+        },
+        {
+          "@type": "Offer",
+          "name": "Session à l'unité",
+          "price": "0.99",
+          "priceCurrency": "EUR",
+          "description": "1 session supplémentaire sans engagement"
+        },
+        {
+          "@type": "Offer",
+          "name": "Nearvity+ Premium",
+          "price": "9.90",
+          "priceCurrency": "EUR",
+          "billingIncrement": "P1M",
+          "description": "Sessions illimitées, portée radar étendue, matching prioritaire"
+        }
+      ],
       "author": {
         "@type": "Organization",
         "name": "EmotionsCare SASU",

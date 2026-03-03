@@ -17,6 +17,8 @@ import {
   FinalCTASection,
   LandingFooter,
   SocialProofBar,
+  PricingPreviewSection,
+  LandingTestimonialsSection,
 } from '@/components/landing';
 
 // Problem Section
@@ -170,6 +172,8 @@ export default function LandingPage() {
       <FeaturesSection />
       <ComparisonWrapper />
       <UseCasesSection />
+      <PricingPreviewSection />
+      <LandingTestimonialsSection />
       <GuaranteeSection />
       <FinalCTASection />
       <LandingFooter />

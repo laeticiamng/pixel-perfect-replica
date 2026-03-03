@@ -287,9 +287,35 @@ export const translations = {
     appPreviewTitle: { en: 'See the radar in action', fr: 'Découvre le radar en action' },
     appPreviewDesc: { en: 'Real-time signals around you', fr: 'Les signaux en temps réel autour de toi' },
     liveDemo: { en: 'Live demo', fr: 'Démo live' },
-    socialProofUsers: { en: 'active users', fr: 'utilisateurs actifs' },
-    socialProofSessions: { en: 'sessions created', fr: 'sessions créées' },
+    socialProofUsers: { en: 'active now', fr: 'actifs maintenant' },
+    socialProofSessions: { en: 'sessions this month', fr: 'sessions ce mois' },
     socialProofCities: { en: 'cities', fr: 'villes' },
+    socialProofCompleted: { en: 'completed', fr: 'terminées' },
+    // Pricing section
+    pricingTitle: { en: 'Simple, transparent pricing', fr: 'Tarifs simples et transparents' },
+    pricingSubtitle: { en: 'Start free. Upgrade when you need more.', fr: 'Commence gratuitement. Passe premium quand tu veux.' },
+    pricingFree: { en: 'Free', fr: 'Gratuit' },
+    pricingFreeDesc: { en: 'Perfect to get started', fr: 'Parfait pour commencer' },
+    pricingFreeF1: { en: '2 sessions per month', fr: '2 sessions par mois' },
+    pricingFreeF2: { en: 'Signal & radar access', fr: 'Accès signal & radar' },
+    pricingFreeF3: { en: 'Chat & icebreakers', fr: 'Chat & icebreakers' },
+    pricingFreeCTA: { en: 'Get started free', fr: 'Commencer gratuitement' },
+    pricingPerMonth: { en: '/month', fr: '/mois' },
+    pricingPlusDesc: { en: 'For the most active', fr: 'Pour les plus actifs' },
+    pricingPlusF1: { en: 'Unlimited sessions', fr: 'Sessions illimitées' },
+    pricingPlusF2: { en: 'Extended radar range', fr: 'Portée radar étendue' },
+    pricingPlusF3: { en: 'Priority matching', fr: 'Matching prioritaire' },
+    pricingPlusF4: { en: 'Profitable from 10 sessions', fr: 'Rentable dès 10 sessions' },
+    pricingPlusCTA: { en: 'Go Premium', fr: 'Passer Premium' },
+    pricingRecommended: { en: 'Recommended', fr: 'Recommandé' },
+    pricingUnit: { en: 'Session Unit', fr: 'Session à l\'unité' },
+    pricingPerSession: { en: '/session', fr: '/session' },
+    pricingUnitDesc: { en: 'Pay as you go', fr: 'Paie à l\'usage' },
+    pricingUnitF1: { en: 'No commitment', fr: 'Sans engagement' },
+    pricingUnitF2: { en: 'Buy 1 to 10 sessions', fr: 'Achète 1 à 10 sessions' },
+    pricingUnitCTA: { en: 'Buy sessions', fr: 'Acheter des sessions' },
+    // Testimonials
+    testimonialsTitle: { en: 'What users say', fr: 'Ce que disent les utilisateurs' },
   },
 
   // Map page
@@ -1976,6 +2002,13 @@ export const translations = {
   ephemeral: {
     expiresIn: { en: 'Messages expire in {time}', fr: 'Les messages expirent dans {time}' },
     expired: { en: 'This conversation has expired', fr: 'Cette conversation a expiré' },
+  },
+
+  // Premium Nudge
+  premiumNudge: {
+    title: { en: 'Unlock unlimited sessions', fr: 'Débloque les sessions illimitées' },
+    description: { en: 'You\'ve used all your free sessions this month. Go Premium to keep connecting!', fr: 'Tu as utilisé toutes tes sessions gratuites ce mois-ci. Passe Premium pour continuer !' },
+    cta: { en: 'See plans', fr: 'Voir les offres' },
   },
 
 } as const;
