@@ -4,6 +4,7 @@ export { SessionCard } from './SessionCard';
 export { SessionChat } from './SessionChat';
 export { SessionCheckin } from './SessionCheckin';
 export { SessionFeedbackForm } from './SessionFeedbackForm';
+export { InviteFriendCTA } from './InviteFriendCTA';
 export { SessionFilters } from './SessionFilters';
 export { SessionQuotaBadge } from './SessionQuotaBadge';
 export { BinomeOnboarding, BinomeDescriptionCard, WhyNearvitySection, WhyNearvityCondensed, TestimonialsSection } from './BinomeOnboarding';

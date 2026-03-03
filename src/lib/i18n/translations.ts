@@ -2011,6 +2011,14 @@ export const translations = {
     cta: { en: 'See plans', fr: 'Voir les offres' },
   },
 
+  // Invite CTA (post-feedback)
+  inviteCTA: {
+    title: { en: 'Loved your session? 🎉', fr: 'Session réussie ? 🎉' },
+    subtitle: { en: 'Invite a friend and get a free session!', fr: 'Invite un ami et gagne une session gratuite !' },
+    shareText: { en: 'I just had a great session on NEARVITY! Join me and let\'s meet IRL 🤝', fr: 'Je viens de vivre une super session sur NEARVITY ! Rejoins-moi et rencontrons-nous IRL 🤝' },
+    maybeLater: { en: 'Maybe later', fr: 'Peut-être plus tard' },
+  },
+
   // Referral
   referral: {
     inviteFriends: { en: 'Invite friends', fr: 'Inviter des amis' },
