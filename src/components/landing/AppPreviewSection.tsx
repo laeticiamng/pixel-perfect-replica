@@ -53,11 +53,11 @@ export function AppPreviewSection() {
             </div>
             
             {/* Floating label */}
-            <motion.div
+             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1, duration: 0.5 }}
-              className="absolute -right-4 top-1/3 bg-coral text-white px-3 py-1.5 rounded-full text-sm font-medium shadow-lg"
+              className="absolute right-0 sm:-right-4 top-1/3 bg-coral text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-lg"
             >
               {t('landing.liveDemo')}
             </motion.div>

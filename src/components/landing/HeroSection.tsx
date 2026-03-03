@@ -23,7 +23,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="text-4xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-6"
+        className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-6"
       >
         <span className="bg-gradient-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent">
           {t('landing.seeWhoIsOpen')}
@@ -67,7 +67,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         <Button
           onClick={() => navigate('/onboarding')}
           size="lg"
-          className="h-16 px-10 text-xl font-black bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl shadow-coral/30 hover:shadow-coral/40 transition-all duration-300 hover:scale-105"
+          className="h-14 sm:h-16 px-8 sm:px-10 text-lg sm:text-xl font-black bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl shadow-coral/30 hover:shadow-coral/40 transition-all duration-300 hover:scale-105"
         >
           {t('landing.createMyAccount')}
           <ArrowRight className="ml-2 h-6 w-6" />
