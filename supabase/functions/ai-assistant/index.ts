@@ -45,8 +45,9 @@ serve(async (req) => {
     const auth = await authenticateRequest(req);
     if (isAuthError(auth)) return auth;
 
+    const rawBody = await req.json();
     const url = new URL(req.url);
-    const action = url.searchParams.get("action") || "icebreaker";
+    const action = url.searchParams.get("action") || rawBody.action || "icebreaker";
 
     if (action !== "icebreaker" && action !== "session-recommendations") {
       return new Response(
@@ -54,8 +55,6 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
-    const rawBody = await req.json();
 
     // Apply rate limiting per action
     const config = RATE_LIMITS[action] || { maxRequests: 10, windowMs: 60_000 };
