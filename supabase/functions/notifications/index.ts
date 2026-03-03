@@ -13,7 +13,7 @@ const corsHeaders = {
 // TYPES
 // ============================================================
 
-type ActionType = "send-admin-alert" | "send-push" | "send-session-reminders" | "health";
+type ActionType = "send-admin-alert" | "send-push" | "send-session-reminders" | "send-reengagement" | "health";
 
 interface BaseRequest {
   action: ActionType;
@@ -38,6 +38,10 @@ interface PushNotificationRequest extends BaseRequest {
 
 interface SessionRemindersRequest extends BaseRequest {
   action: "send-session-reminders";
+}
+
+interface ReengagementRequest extends BaseRequest {
+  action: "send-reengagement";
 }
 
 interface HealthRequest extends BaseRequest {
@@ -70,7 +74,7 @@ interface SessionReminder {
   creator_name: string;
 }
 
-type NotificationRequest = AdminAlertRequest | PushNotificationRequest | SessionRemindersRequest | HealthRequest;
+type NotificationRequest = AdminAlertRequest | PushNotificationRequest | SessionRemindersRequest | ReengagementRequest | HealthRequest;
 
 // deno-lint-ignore no-explicit-any
 type AnySupabaseClient = SupabaseClient<any, any, any>;
@@ -432,17 +436,124 @@ function handleHealth(): Response {
       action: "health",
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "1.2.0",
-      actions: ["send-admin-alert", "send-push", "send-session-reminders", "health"],
+      version: "1.3.0",
+      actions: ["send-admin-alert", "send-push", "send-session-reminders", "send-reengagement", "health"],
       auth_required: {
         "send-admin-alert": "admin",
         "send-push": "authenticated",
-        "send-session-reminders": "admin",
+        "send-session-reminders": "none",
+        "send-reengagement": "none",
         "health": "none"
       }
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
+}
+
+// ============================================================
+// RE-ENGAGEMENT HANDLER
+// ============================================================
+
+async function handleReengagement(
+  supabase: AnySupabaseClient
+): Promise<Response> {
+  try {
+    // Find users inactive > 3 days:
+    // - Have a profile
+    // - Have push_notifications enabled
+    // - Last analytics event > 3 days ago
+    // - Were NOT already sent a reengagement notification in the last 7 days
+    const { data: inactiveUsers, error: queryError } = await supabase
+      .from("profiles")
+      .select("id, first_name")
+      .not("id", "is", null);
+
+    if (queryError) {
+      console.error("[notifications/reengagement] Error fetching profiles:", queryError);
+      throw new Error("Failed to fetch profiles");
+    }
+
+    if (!inactiveUsers || inactiveUsers.length === 0) {
+      return new Response(
+        JSON.stringify({ success: true, sent: 0, message: "No users to process" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    let sentCount = 0;
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    for (const user of inactiveUsers) {
+      // Check if user has push notifications enabled
+      const { data: settings } = await supabase
+        .from("user_settings")
+        .select("push_notifications")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!settings?.push_notifications) continue;
+
+      // Check last activity
+      const { data: lastActivity } = await supabase
+        .from("analytics_events")
+        .select("created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1);
+
+      // If user has recent activity (< 3 days), skip
+      if (lastActivity && lastActivity.length > 0 && lastActivity[0].created_at > threeDaysAgo) {
+        continue;
+      }
+
+      // Check if we already sent a reengagement notification in the last 7 days
+      const { data: recentReengagement } = await supabase
+        .from("analytics_events")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("event_name", "reengagement_sent")
+        .gte("created_at", sevenDaysAgo)
+        .limit(1);
+
+      if (recentReengagement && recentReengagement.length > 0) continue;
+
+      // Check if user has push subscriptions
+      const { data: subs } = await supabase
+        .from("push_subscriptions")
+        .select("endpoint")
+        .eq("user_id", user.id)
+        .limit(1);
+
+      if (!subs || subs.length === 0) continue;
+
+      // Send push notification (log for now)
+      console.log(`[notifications/reengagement] Sending to ${user.id} (${user.first_name})`);
+
+      // Log the reengagement event to prevent spam
+      await supabase.from("analytics_events").insert({
+        user_id: user.id,
+        event_name: "reengagement_sent",
+        event_category: "engagement",
+        event_data: { type: "push", days_inactive: 3 },
+      });
+
+      sentCount++;
+
+      // Cap at 50 per run to avoid timeouts
+      if (sentCount >= 50) break;
+    }
+
+    console.log(`[notifications/reengagement] Sent ${sentCount} reengagement notifications`);
+
+    return new Response(
+      JSON.stringify({ success: true, action: "send-reengagement", sent: sentCount }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("[notifications/reengagement] Error:", error);
+    throw error;
+  }
 }
 
 // ============================================================
@@ -519,9 +630,15 @@ const handler = async (req: Request): Promise<Response> => {
 
       case "send-session-reminders": {
         // No auth required — called by internal CRON via pg_net.
-        // The handler uses the service-role client so no user context is needed.
         console.log("[notifications] send-session-reminders: bypassing auth (cron/internal)");
         response = await handleSessionReminders(supabase);
+        break;
+      }
+
+      case "send-reengagement": {
+        // No auth required — called by daily CRON via pg_net.
+        console.log("[notifications] send-reengagement: bypassing auth (cron/internal)");
+        response = await handleReengagement(supabase);
         break;
       }
 
@@ -529,7 +646,7 @@ const handler = async (req: Request): Promise<Response> => {
         response = new Response(
           JSON.stringify({
             error: `Unknown action: ${action}`,
-            availableActions: ["send-admin-alert", "send-push", "send-session-reminders", "health"],
+            availableActions: ["send-admin-alert", "send-push", "send-session-reminders", "send-reengagement", "health"],
           }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );

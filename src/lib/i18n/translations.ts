@@ -2011,6 +2011,22 @@ export const translations = {
     cta: { en: 'See plans', fr: 'Voir les offres' },
   },
 
+  // Referral
+  referral: {
+    inviteFriends: { en: 'Invite friends', fr: 'Inviter des amis' },
+    shareTitle: { en: 'Share your invite link', fr: 'Partage ton lien d\'invitation' },
+    shareDesc: { en: 'Each friend who signs up earns you 1 free session!', fr: 'Chaque ami inscrit te rapporte 1 session gratuite !' },
+    yourCode: { en: 'Your code', fr: 'Ton code' },
+    copied: { en: 'Link copied!', fr: 'Lien copié !' },
+    copyLink: { en: 'Copy invite link', fr: 'Copier le lien' },
+    shareNative: { en: 'Share', fr: 'Partager' },
+    referralsCount: { en: 'Friends invited', fr: 'Amis invités' },
+    enterCode: { en: 'Enter a referral code', fr: 'Entrer un code de parrainage' },
+    applyCode: { en: 'Apply', fr: 'Appliquer' },
+    codeApplied: { en: 'Code applied! Your friend earned a free session.', fr: 'Code appliqué ! Ton ami a gagné une session gratuite.' },
+    codeInvalid: { en: 'Invalid or already used code.', fr: 'Code invalide ou déjà utilisé.' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;

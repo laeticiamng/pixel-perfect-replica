@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap } from 'lucide-react';
+import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap, Gift, Copy, Share2 } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -11,6 +11,7 @@ import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { APP_VERSION } from '@/lib/constants';
+import { useReferral } from '@/hooks/useReferral';
 import toast from 'react-hot-toast';
 
 interface MenuItem {
@@ -31,6 +32,19 @@ export default function ProfilePage() {
   const { profile, stats, signOut } = useAuth();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { t } = useTranslation();
+  const { referralCode, referralsCount, shareLink } = useReferral();
+
+  const handleCopyReferralLink = async () => {
+    if (!shareLink) return;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'NEARVITY', text: t('referral.shareDesc'), url: shareLink });
+      } catch { /* cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(shareLink);
+      toast.success(t('referral.copied'));
+    }
+  };
 
   const handleLogout = async () => {
     const { error } = await signOut();
@@ -210,8 +224,40 @@ export default function ProfilePage() {
           </AlertDialogContent>
         </AlertDialog>
 
+        {/* Referral Section */}
+        {referralCode && (
+          <div className="animate-slide-up" style={{ animationDelay: '0.45s' }}>
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 px-1">
+              {t('referral.inviteFriends')}
+            </h2>
+            <div className="glass rounded-2xl p-5 shadow-soft space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-coral/20">
+                  <Gift className="h-5 w-5 text-coral" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-foreground">{t('referral.shareTitle')}</p>
+                  <p className="text-xs text-muted-foreground">{t('referral.shareDesc')}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-muted/50 rounded-xl px-4 py-2.5">
+                <span className="text-xs text-muted-foreground">{t('referral.yourCode')}:</span>
+                <span className="font-mono font-bold text-coral text-sm flex-1">{referralCode}</span>
+                <span className="text-xs text-muted-foreground">{referralsCount} {t('referral.referralsCount')}</span>
+              </div>
+              <button
+                onClick={handleCopyReferralLink}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-coral/10 text-coral hover:bg-coral/20 active:scale-[0.98] transition-all font-medium text-sm"
+              >
+                {navigator.share ? <Share2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {navigator.share ? t('referral.shareNative') : t('referral.copyLink')}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Version */}
-        <Link 
+        <Link
           to="/changelog" 
           className="block text-center text-xs text-muted-foreground py-4 font-medium hover:text-coral transition-colors"
         >

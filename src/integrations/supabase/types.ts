@@ -634,6 +634,7 @@ export type Database = {
           id: string
           is_premium: boolean
           purchased_sessions: number | null
+          referral_code: string | null
           shadow_ban_reason: string | null
           shadow_banned: boolean
           shadow_banned_until: string | null
@@ -651,6 +652,7 @@ export type Database = {
           id: string
           is_premium?: boolean
           purchased_sessions?: number | null
+          referral_code?: string | null
           shadow_ban_reason?: string | null
           shadow_banned?: boolean
           shadow_banned_until?: string | null
@@ -668,6 +670,7 @@ export type Database = {
           id?: string
           is_premium?: boolean
           purchased_sessions?: number | null
+          referral_code?: string | null
           shadow_ban_reason?: string | null
           shadow_banned?: boolean
           shadow_banned_until?: string | null
@@ -734,6 +737,51 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      referrals: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          referred_id: string
+          referrer_id: string
+          rewarded: boolean
+          status: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          referred_id: string
+          referrer_id: string
+          rewarded?: boolean
+          status?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          referred_id?: string
+          referrer_id?: string
+          rewarded?: boolean
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reports: {
         Row: {
@@ -1286,6 +1334,10 @@ export type Database = {
       add_purchased_sessions: {
         Args: { p_count?: number; p_user_id: string }
         Returns: number
+      }
+      apply_referral: {
+        Args: { p_referred_id: string; p_referrer_code: string }
+        Returns: boolean
       }
       can_create_session: { Args: { p_user_id: string }; Returns: boolean }
       check_edge_function_rate_limit: {
