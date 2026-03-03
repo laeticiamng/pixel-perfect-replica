@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useRef, forwardRef } from 'react';
 import { useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
+import { Helmet } from 'react-helmet-async';
 import { Users, Sparkles, MapPin } from 'lucide-react';
 import {
   FloatingOrbs,
@@ -143,6 +144,7 @@ const ComparisonWrapper = forwardRef<HTMLElement>(function ComparisonWrapper(_pr
 export default function LandingPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { t, locale } = useTranslation();
   const containerRef = useRef(null);
   
   const { scrollYProgress } = useScroll({
@@ -159,8 +161,39 @@ export default function LandingPage() {
     }
   }, [isAuthenticated, navigate]);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'NEARVITY',
+    url: 'https://nearvity.lovable.app',
+    applicationCategory: 'SocialNetworkingApplication',
+    operatingSystem: 'Web',
+    description: locale === 'fr'
+      ? 'Le premier réseau social 100% IRL. Active ton signal, trouve des étudiants qui veulent aussi se rencontrer.'
+      : 'The first 100% IRL social network. Activate your signal, find students who also want to meet.',
+    offers: [
+      { '@type': 'Offer', price: '0', priceCurrency: 'EUR', name: 'Free' },
+      { '@type': 'Offer', price: '0.99', priceCurrency: 'EUR', name: 'Session unitaire' },
+      { '@type': 'Offer', price: '9.90', priceCurrency: 'EUR', name: 'Nearvity+' },
+    ],
+    publisher: {
+      '@type': 'Organization',
+      name: 'EmotionsCare SASU',
+      url: 'https://nearvity.lovable.app/about',
+    },
+  };
+
   return (
     <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
+      <Helmet>
+        <title>{locale === 'fr' ? 'NEARVITY — Le réseau social 100% IRL pour étudiants' : 'NEARVITY — The 100% IRL social network for students'}</title>
+        <meta name="description" content={locale === 'fr'
+          ? 'Active ton signal, trouve des étudiants qui veulent aussi se rencontrer. Gratuit.'
+          : 'Activate your signal, find students who also want to meet. Free.'
+        } />
+        <link rel="canonical" href="https://nearvity.lovable.app" />
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+      </Helmet>
       <FloatingOrbs />
       <LandingHeader />
       <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
