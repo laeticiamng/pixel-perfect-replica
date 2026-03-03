@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
@@ -22,6 +22,11 @@ export function useSupabaseAuth() {
     isLoading: true,
     isAuthenticated: false,
   });
+
+  // Prevent duplicate profile fetches from getSession + onAuthStateChange racing
+  const profileFetchInFlight = useRef<string | null>(null);
+  const lastProfileFetchedAt = useRef<number>(0);
+  const PROFILE_CACHE_TTL = 5_000; // 5s dedup window
 
   const fetchProfile = useCallback(async (userId: string) => {
     try {
@@ -53,6 +58,30 @@ export function useSupabaseAuth() {
     }
   }, []);
 
+  // Deduplicated profile fetch: skips if same user fetch is in-flight or recently completed
+  const fetchProfileDeduped = useCallback(async (userId: string) => {
+    const now = Date.now();
+    if (
+      profileFetchInFlight.current === userId ||
+      (now - lastProfileFetchedAt.current < PROFILE_CACHE_TTL)
+    ) {
+      return; // skip duplicate
+    }
+
+    profileFetchInFlight.current = userId;
+    const data = await fetchProfile(userId);
+    profileFetchInFlight.current = null;
+    lastProfileFetchedAt.current = Date.now();
+
+    if (data) {
+      setAuthState(prev => ({
+        ...prev,
+        profile: data.profile,
+        stats: data.stats,
+      }));
+    }
+  }, [fetchProfile]);
+
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -73,19 +102,9 @@ export function useSupabaseAuth() {
           isLoading: false,
         }));
 
-        // Defer profile fetch to avoid deadlock
         if (session?.user) {
-          setTimeout(() => {
-            fetchProfile(session.user.id).then(data => {
-              if (data) {
-                setAuthState(prev => ({
-                  ...prev,
-                  profile: data.profile,
-                  stats: data.stats,
-                }));
-              }
-            });
-          }, 0);
+          // Defer to avoid deadlock, deduplicated
+          setTimeout(() => fetchProfileDeduped(session.user.id), 0);
         } else {
           setAuthState(prev => ({
             ...prev,
@@ -107,20 +126,12 @@ export function useSupabaseAuth() {
       }));
 
       if (session?.user) {
-        fetchProfile(session.user.id).then(data => {
-          if (data) {
-            setAuthState(prev => ({
-              ...prev,
-              profile: data.profile,
-              stats: data.stats,
-            }));
-          }
-        });
+        fetchProfileDeduped(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [fetchProfile]);
+  }, [fetchProfile, fetchProfileDeduped]);
 
   const signUp = async (email: string, password: string, firstName: string, university?: string) => {
     const redirectUrl = `${window.location.origin}/`;
