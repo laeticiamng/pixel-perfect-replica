@@ -11,6 +11,7 @@ export interface Conversation {
   last_message_at: string;
   activity: string;
   message_count: number;
+  unread_count: number;
 }
 
 export function useConversations() {
@@ -22,62 +23,26 @@ export function useConversations() {
     if (!user) return;
     setIsLoading(true);
 
-    // Get all interactions where user is involved
-    const { data: interactions, error } = await supabase
-      .from('interactions')
-      .select('*')
-      .or(`user_id.eq.${user.id},target_user_id.eq.${user.id}`)
-      .order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .rpc('get_conversations_with_unread', { p_user_id: user.id });
 
-    if (error || !interactions) {
+    if (error) {
+      console.error('Failed to fetch conversations:', error.message);
       setIsLoading(false);
       return;
     }
 
-    // For each interaction, get the last message and other user's profile
-    const convos: Conversation[] = [];
-    
-    for (const interaction of interactions) {
-      const otherUserId = interaction.user_id === user.id 
-        ? interaction.target_user_id 
-        : interaction.user_id;
-
-      // Get last message
-      const { data: messages } = await supabase
-        .from('messages')
-        .select('content, created_at')
-        .eq('interaction_id', interaction.id)
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      // Get profile via RPC
-      const { data: profileData } = await supabase
-        .rpc('get_profile_for_display', { p_user_id: otherUserId });
-
-      const profile = profileData?.[0];
-      const lastMsg = messages?.[0];
-
-      // Get message count
-      const { count } = await supabase
-        .from('messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('interaction_id', interaction.id);
-
-      convos.push({
-        interaction_id: interaction.id,
-        other_user_id: otherUserId,
-        other_user_name: profile?.first_name || 'Utilisateur',
-        other_user_avatar: profile?.avatar_url || null,
-        last_message: lastMsg?.content || interaction.icebreaker || '',
-        last_message_at: lastMsg?.created_at || interaction.created_at,
-        activity: interaction.activity,
-        message_count: count || 0,
-      });
-    }
-
-    // Sort by most recent message
-    convos.sort((a, b) => new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime());
-    setConversations(convos);
+    setConversations((data || []).map((c: any) => ({
+      interaction_id: c.interaction_id,
+      other_user_id: c.other_user_id,
+      other_user_name: c.other_user_name || 'User',
+      other_user_avatar: c.other_user_avatar || null,
+      last_message: c.last_message || c.icebreaker || '',
+      last_message_at: c.last_message_at,
+      activity: c.activity,
+      message_count: Number(c.message_count) || 0,
+      unread_count: Number(c.unread_count) || 0,
+    })));
     setIsLoading(false);
   }, [user]);
 
@@ -85,9 +50,32 @@ export function useConversations() {
     fetchConversations();
   }, [fetchConversations]);
 
+  // Listen for new messages to refresh conversations list
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('conversations-refresh')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'messages' },
+        () => {
+          fetchConversations();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, fetchConversations]);
+
+  const totalUnread = conversations.reduce((sum, c) => sum + c.unread_count, 0);
+
   return {
     conversations,
     isLoading,
+    totalUnread,
     refetch: fetchConversations,
   };
 }

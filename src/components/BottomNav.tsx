@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { useShowNewBadge } from '@/components/binome/NewBadge';
 import { useTranslation } from '@/lib/i18n';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useUnreadMessages } from '@/hooks/useUnreadMessages';
 
 interface NavItem {
   to: string;
@@ -19,14 +20,15 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
     const location = useLocation();
     const showBinomeBadge = useShowNewBadge();
     const { t } = useTranslation();
-    const { unreadCount } = useNotifications();
+    const { unreadCount: notifUnread } = useNotifications();
+    const { unreadCount: msgUnread } = useUnreadMessages();
 
     const navItems: NavItem[] = [
       { to: '/map', icon: <MapPin className="h-6 w-6" />, labelKey: 'nav.map' },
-      { to: '/conversations', icon: <MessageCircle className="h-6 w-6" />, labelKey: 'navMessages' },
+      { to: '/conversations', icon: <MessageCircle className="h-6 w-6" />, labelKey: 'navMessages', badgeCount: msgUnread },
       { to: '/binome', icon: <Users2 className="h-6 w-6" />, labelKey: 'nav.book', showNewBadge: showBinomeBadge },
       { to: '/events', icon: <CalendarDays className="h-6 w-6" />, labelKey: 'nav.events' },
-      { to: '/notifications', icon: <Bell className="h-6 w-6" />, labelKey: 'nav.notifications', badgeCount: unreadCount },
+      { to: '/notifications', icon: <Bell className="h-6 w-6" />, labelKey: 'nav.notifications', badgeCount: notifUnread },
     ];
 
     return (

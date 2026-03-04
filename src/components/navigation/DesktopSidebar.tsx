@@ -27,6 +27,7 @@ import { useShowNewBadge } from '@/components/binome/NewBadge';
 import { useTranslation } from '@/lib/i18n';
 import { BrandLogo } from '@/components/shared';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useUnreadMessages } from '@/hooks/useUnreadMessages';
 
 interface NavItem {
   to: string;
@@ -60,7 +61,8 @@ export function DesktopSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const showBinomeBadge = useShowNewBadge();
   const { t } = useTranslation();
-  const { unreadCount } = useNotifications();
+  const { unreadCount: notifUnread } = useNotifications();
+  const { unreadCount: msgUnread } = useUnreadMessages();
   
   // Toggle sidebar with keyboard shortcut (Cmd+B or Ctrl+B)
   const toggleSidebar = useCallback(() => {
@@ -88,7 +90,7 @@ export function DesktopSidebar() {
   const renderNavItem = (item: NavItem) => {
     const isActive = location.pathname === item.to;
     const shouldShowBadge = item.showNewBadge && showBinomeBadge && !isActive;
-    const notifBadgeCount = item.to === '/notifications' ? unreadCount : 0;
+    const notifBadgeCount = item.to === '/notifications' ? notifUnread : item.to === '/conversations' ? msgUnread : 0;
     const label = t(item.labelKey);
     
     const linkContent = (

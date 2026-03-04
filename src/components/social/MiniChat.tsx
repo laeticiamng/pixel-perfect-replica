@@ -18,7 +18,7 @@ interface MiniChatProps {
 export function MiniChat({ interactionId, otherUserName, className }: MiniChatProps) {
   const { user } = useAuth();
   const { t, locale } = useTranslation();
-  const { messages, isLoading, sendMessage, canSendMessage, remainingMessages, maxMessages } = useMessages(interactionId);
+  const { messages, isLoading, sendMessage, markAsRead } = useMessages(interactionId);
   
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -26,12 +26,19 @@ export function MiniChat({ interactionId, otherUserName, className }: MiniChatPr
 
   const dateFnsLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
+  // Mark as read when opening chat and when new messages arrive
+  useEffect(() => {
+    if (messages.length > 0) {
+      markAsRead();
+    }
+  }, [messages.length, markAsRead]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const handleSend = async () => {
-    if (!newMessage.trim() || !canSendMessage || isSending) return;
+    if (!newMessage.trim() || isSending) return;
     setIsSending(true);
     const { error } = await sendMessage(newMessage);
     setIsSending(false);
@@ -59,22 +66,13 @@ export function MiniChat({ interactionId, otherUserName, className }: MiniChatPr
         <h3 className="font-semibold text-foreground">
           {t('miniChat.chatWith').replace('{name}', otherUserName)}
         </h3>
-        <span className={cn(
-          "text-xs font-medium px-2 py-1 rounded-full",
-          remainingMessages > 3 ? "bg-muted text-muted-foreground" 
-            : remainingMessages > 0 ? "bg-signal-yellow/20 text-signal-yellow"
-            : "bg-signal-red/20 text-signal-red"
-        )}>
-          {t('miniChat.remaining').replace('{remaining}', String(remainingMessages)).replace('{max}', String(maxMessages))}
-        </span>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[200px] max-h-[400px]">
         {messages.length === 0 ? (
           <div className="flex items-center justify-center h-full text-center">
             <p className="text-muted-foreground text-sm">
-              {t('miniChat.emptyPrompt')}<br />
-              <span className="text-xs">{t('miniChat.maxMessages').replace('{max}', String(maxMessages))}</span>
+              {t('miniChat.emptyPrompt')}
             </p>
           </div>
         ) : (
@@ -96,27 +94,20 @@ export function MiniChat({ interactionId, otherUserName, className }: MiniChatPr
       </div>
 
       <div className="p-4 border-t border-border">
-        {canSendMessage ? (
-          <div className="flex gap-2">
-            <Input
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value.slice(0, 500))}
-              onKeyPress={handleKeyPress}
-              placeholder={t('miniChat.placeholder')}
-              className="flex-1 bg-muted border-border rounded-xl"
-              disabled={isSending}
-              aria-label={t('miniChat.sendLabel')}
-            />
-            <Button onClick={handleSend} disabled={!newMessage.trim() || isSending} className="bg-coral hover:bg-coral-dark rounded-xl px-4" aria-label={t('miniChat.sendLabel')}>
-              {isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-            </Button>
-          </div>
-        ) : (
-          <div className="text-center py-2">
-            <p className="text-sm text-muted-foreground">{t('miniChat.limitReached')}</p>
-            <p className="text-xs text-muted-foreground mt-1">{t('miniChat.continueIrl')}</p>
-          </div>
-        )}
+        <div className="flex gap-2">
+          <Input
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value.slice(0, 500))}
+            onKeyPress={handleKeyPress}
+            placeholder={t('miniChat.placeholder')}
+            className="flex-1 bg-muted border-border rounded-xl"
+            disabled={isSending}
+            aria-label={t('miniChat.sendLabel')}
+          />
+          <Button onClick={handleSend} disabled={!newMessage.trim() || isSending} className="bg-coral hover:bg-coral-dark rounded-xl px-4" aria-label={t('miniChat.sendLabel')}>
+            {isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+          </Button>
+        </div>
       </div>
     </div>
   );
