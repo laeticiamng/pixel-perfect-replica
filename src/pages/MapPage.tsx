@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin } from 'lucide-react';
+import { useState, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
@@ -22,14 +23,18 @@ import { EmergencyButton } from '@/components/safety';
 import { ConnectionRequestsPanel } from '@/components/social';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useMapPageLogic } from '@/hooks/useMapPageLogic';
+import { useEvents } from '@/hooks/useEvents';
 import { useLocationStore } from '@/stores/locationStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useTranslation } from '@/lib/i18n';
 import { ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
+import { isEventHappeningNow } from '@/components/map/EventMapMarker';
+import toast from 'react-hot-toast';
 
 export default function MapPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { position, error: locationError, isWatching } = useLocationStore();
   const { hasSeenLocationPrompt, setHasSeenLocationPrompt } = useSettingsStore();
@@ -76,6 +81,49 @@ export default function MapPage() {
 
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
   const [mapMode, setMapMode] = useState<'map' | 'radar'>('map');
+  const [showEvents, setShowEvents] = useState(true);
+
+  // Events on map
+  const { events, joinEvent, leaveEvent, isParticipating, joinedEvents } = useEvents();
+
+  const mapEvents = useMemo(() =>
+    events.filter(e => e.is_active && new Date(e.ends_at) > new Date()),
+    [events]
+  );
+
+  const happeningNowCount = useMemo(() =>
+    mapEvents.filter(e => isEventHappeningNow(e)).length,
+    [mapEvents]
+  );
+
+  const joinedEventIds = useMemo(() =>
+    new Set(joinedEvents.map(j => j.event_id)),
+    [joinedEvents]
+  );
+
+  const [eventParticipantCounts, setEventParticipantCounts] = useState<Record<string, number>>({});
+
+  // Load participant counts (simple approach: count from joinedEvents we can see)
+  // In practice this is approximate; the popup will show the count
+  const handleEventJoin = useCallback(async (eventId: string) => {
+    const { error } = await joinEvent(eventId);
+    if (!error) {
+      toast.success(t('mapEvents.joined'));
+      setEventParticipantCounts(prev => ({ ...prev, [eventId]: (prev[eventId] || 0) + 1 }));
+    }
+  }, [joinEvent, t]);
+
+  const handleEventLeave = useCallback(async (eventId: string) => {
+    const { error } = await leaveEvent(eventId);
+    if (!error) {
+      toast.success(t('mapEvents.left'));
+      setEventParticipantCounts(prev => ({ ...prev, [eventId]: Math.max(0, (prev[eventId] || 1) - 1) }));
+    }
+  }, [leaveEvent, t]);
+
+  const handleEventClick = useCallback((eventId: string) => {
+    navigate(`/events/${eventId}`);
+  }, [navigate]);
 
   // Show location permission screen if not seen yet and no position
   const showLocationPrompt = !hasSeenLocationPrompt && !position && !locationError;
@@ -227,6 +275,24 @@ export default function MapPage() {
                 <p className="text-muted-foreground text-sm flex items-center gap-2">
                   <span className="text-signal-green font-bold">{openUsersCount}</span> 
                   {openUsersCount === 1 ? t('mapUI.personOpen') : t('mapUI.peopleOpen')}
+                  {mapEvents.length > 0 && (
+                    <>
+                      <span className="text-border">•</span>
+                      <button
+                        onClick={() => setShowEvents(!showEvents)}
+                        className={cn(
+                          "flex items-center gap-1 transition-colors",
+                          showEvents ? "text-signal-green" : "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarDays className="h-3.5 w-3.5" />
+                        <span className="font-bold">{mapEvents.length}</span>
+                        {happeningNowCount > 0 && (
+                          <span className="text-[10px] font-bold text-signal-green bg-signal-green/15 px-1 rounded">LIVE</span>
+                        )}
+                      </button>
+                    </>
+                  )}
                 </p>
               </div>
               <button
@@ -347,9 +413,15 @@ export default function MapPage() {
                 rating: u.rating,
                 activeSince: u.activeSince,
               }))}
+              events={showEvents ? mapEvents : []}
               isActive={isActive}
               myActivity={myActivity}
               onUserClick={handleUserClick}
+              onEventClick={handleEventClick}
+              onEventJoin={handleEventJoin}
+              onEventLeave={handleEventLeave}
+              joinedEventIds={joinedEventIds}
+              eventParticipantCounts={eventParticipantCounts}
               visibilityDistance={settings.visibility_distance}
               className="w-full h-full"
               userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
