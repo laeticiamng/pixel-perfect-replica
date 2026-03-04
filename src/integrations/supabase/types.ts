@@ -1129,6 +1129,35 @@ export type Database = {
           },
         ]
       }
+      user_achievements: {
+        Row: {
+          achievement_key: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_key: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_key?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_blocks: {
         Row: {
           blocked_id: string
@@ -1315,6 +1344,47 @@ export type Database = {
           },
         ]
       }
+      user_streaks: {
+        Row: {
+          current_streak: number
+          id: string
+          last_active_date: string | null
+          longest_streak: number
+          total_active_days: number
+          updated_at: string
+          user_id: string
+          week_activity: Json
+        }
+        Insert: {
+          current_streak?: number
+          id?: string
+          last_active_date?: string | null
+          longest_streak?: number
+          total_active_days?: number
+          updated_at?: string
+          user_id: string
+          week_activity?: Json
+        }
+        Update: {
+          current_streak?: number
+          id?: string
+          last_active_date?: string | null
+          longest_streak?: number
+          total_active_days?: number
+          updated_at?: string
+          user_id?: string
+          week_activity?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_streaks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_testimonials: {
         Row: {
           activity: string
@@ -1465,6 +1535,19 @@ export type Database = {
           note: string
           scheduled_date: string
           start_time: string
+        }[]
+      }
+      get_campus_leaderboard: {
+        Args: { p_limit?: number; p_university?: string }
+        Returns: {
+          avatar_url: string
+          current_streak: number
+          first_name: string
+          interactions: number
+          score: number
+          sessions_completed: number
+          university: string
+          user_id: string
         }[]
       }
       get_community_stats: {
@@ -1748,6 +1831,7 @@ export type Database = {
       join_session: { Args: { p_session_id: string }; Returns: boolean }
       leave_session: { Args: { p_session_id: string }; Returns: boolean }
       log_reveal: { Args: { p_revealed_user_id: string }; Returns: boolean }
+      record_daily_activity: { Args: { p_user_id: string }; Returns: Json }
       submit_rating: {
         Args: { p_rating: number; p_target_user_id: string }
         Returns: undefined
