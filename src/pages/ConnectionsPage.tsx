@@ -87,7 +87,7 @@ export default function ConnectionsPage() {
   const handleOpenChat = useCallback(async (otherUserId: string, name: string) => {
     setLoadingChatFor(otherUserId);
     try {
-      const { data, error } = await supabase.rpc('get_or_create_interaction' as any, {
+      const { data, error } = await supabase.rpc('get_or_create_interaction', {
         p_other_user_id: otherUserId,
       });
       if (error) throw error;
@@ -103,7 +103,7 @@ export default function ConnectionsPage() {
   const handleRemoveConnection = async () => {
     if (!removeTarget) return;
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('connections')
         .delete()
         .eq('id', removeTarget.id);
