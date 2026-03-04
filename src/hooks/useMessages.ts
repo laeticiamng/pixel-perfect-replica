@@ -3,9 +3,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePushNotifications } from './usePushNotifications';
 
-const MAX_MESSAGES = 10;
-const MESSAGE_TTL_HOURS = 24;
-
 interface Message {
   id: string;
   interaction_id: string;
@@ -21,10 +18,8 @@ export function useMessages(interactionId: string | null) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch messages for interaction
   const fetchMessages = useCallback(async () => {
     if (!interactionId) return;
-    
     setIsLoading(true);
     setError(null);
 
@@ -37,29 +32,15 @@ export function useMessages(interactionId: string | null) {
     if (fetchError) {
       setError(fetchError.message);
     } else {
-      // Filter out expired messages (24h ephemeral) based on created_at
-      const cutoff = new Date(Date.now() - MESSAGE_TTL_HOURS * 60 * 60 * 1000).toISOString();
-      const validMessages = (data || []).filter(
-        (m: any) => m.created_at > cutoff
-      );
-      setMessages(validMessages as Message[]);
+      setMessages((data || []) as Message[]);
     }
-    
     setIsLoading(false);
   }, [interactionId]);
 
-  // Send a message
   const sendMessage = useCallback(async (content: string) => {
     if (!interactionId || !user) {
       return { error: new Error('Not authenticated') };
     }
-
-    // Check message limit
-    if (messages.length >= MAX_MESSAGES) {
-      return { error: new Error(`Limite de ${MAX_MESSAGES} messages atteinte`) };
-    }
-
-
 
     const { data, error: sendError } = await supabase
       .from('messages')
@@ -77,7 +58,21 @@ export function useMessages(interactionId: string | null) {
 
     setMessages(prev => [...prev, data as unknown as Message]);
     return { data };
-  }, [interactionId, user, messages.length]);
+  }, [interactionId, user]);
+
+  // Mark conversation as read
+  const markAsRead = useCallback(async () => {
+    if (!interactionId || !user) return;
+    
+    const { error } = await supabase
+      .from('conversation_reads' as any)
+      .upsert(
+        { user_id: user.id, interaction_id: interactionId, last_read_at: new Date().toISOString() },
+        { onConflict: 'user_id,interaction_id' }
+      );
+    
+    if (error) console.warn('Failed to mark as read:', error.message);
+  }, [interactionId, user]);
 
   // Subscribe to realtime messages
   useEffect(() => {
@@ -98,12 +93,10 @@ export function useMessages(interactionId: string | null) {
         (payload) => {
           const newMessage = payload.new as Message;
           setMessages(prev => {
-            // Avoid duplicates
             if (prev.some(m => m.id === newMessage.id)) return prev;
             return [...prev, newMessage];
           });
           
-          // Show push notification for messages from other users
           if (newMessage.sender_id !== user?.id && isSubscribed) {
             showNotification('Nouveau message 💬', {
               body: newMessage.content.slice(0, 100),
@@ -119,17 +112,12 @@ export function useMessages(interactionId: string | null) {
     };
   }, [interactionId, fetchMessages]);
 
-  const canSendMessage = messages.length < MAX_MESSAGES;
-  const remainingMessages = MAX_MESSAGES - messages.length;
-
   return {
     messages,
     isLoading,
     error,
     sendMessage,
-    canSendMessage,
-    remainingMessages,
-    maxMessages: MAX_MESSAGES,
+    markAsRead,
     refetch: fetchMessages,
   };
 }

@@ -90,20 +90,33 @@ export default function ConversationsPage() {
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <p className="font-semibold text-foreground truncate">
+                    <p className={cn(
+                      "font-semibold text-foreground truncate",
+                      convo.unread_count > 0 && "font-bold"
+                    )}>
                       {convo.other_user_name}
                     </p>
                     <span className="text-xs text-muted-foreground flex-shrink-0">
                       {formatDistanceToNow(new Date(convo.last_message_at), { addSuffix: true, locale: dateFnsLocale })}
                     </span>
                   </div>
-                  <p className="text-sm text-muted-foreground truncate mt-0.5">
+                  <p className={cn(
+                    "text-sm truncate mt-0.5",
+                    convo.unread_count > 0 ? "text-foreground font-medium" : "text-muted-foreground"
+                  )}>
                     {convo.last_message || t('conversations.noMessages')}
                   </p>
                 </div>
-                <div className="flex-shrink-0 text-xs font-medium px-2 py-1 rounded-full bg-muted text-muted-foreground">
-                  {convo.message_count}
-                </div>
+                {/* Unread badge */}
+                {convo.unread_count > 0 ? (
+                  <span className="flex-shrink-0 flex items-center justify-center min-w-[24px] h-6 px-1.5 bg-coral text-white text-xs font-bold rounded-full">
+                    {convo.unread_count > 99 ? '99+' : convo.unread_count}
+                  </span>
+                ) : (
+                  <div className="flex-shrink-0 text-xs font-medium px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                    {convo.message_count}
+                  </div>
+                )}
               </button>
             ))}
           </div>

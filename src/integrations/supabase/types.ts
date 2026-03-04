@@ -265,6 +265,35 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation_reads: {
+        Row: {
+          id: string
+          interaction_id: string
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          interaction_id: string
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          interaction_id?: string
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_reads_interaction_id_fkey"
+            columns: ["interaction_id"]
+            isOneToOne: false
+            referencedRelation: "interactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cron_job_executions: {
         Row: {
           completed_at: string | null
@@ -1405,6 +1434,21 @@ export type Database = {
           sessions_this_month: number
         }[]
       }
+      get_conversations_with_unread: {
+        Args: { p_user_id: string }
+        Returns: {
+          activity: string
+          icebreaker: string
+          interaction_id: string
+          last_message: string
+          last_message_at: string
+          message_count: number
+          other_user_avatar: string
+          other_user_id: string
+          other_user_name: string
+          unread_count: number
+        }[]
+      }
       get_current_month_usage: {
         Args: { p_user_id: string }
         Returns: {
@@ -1623,6 +1667,10 @@ export type Database = {
           start_time: string
           user_id: string
         }[]
+      }
+      get_total_unread_messages: {
+        Args: { p_user_id: string }
+        Returns: number
       }
       get_user_reliability_public: {
         Args: { p_user_id: string }
