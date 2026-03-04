@@ -53,6 +53,7 @@ const ConversationsPage = lazy(() => import('./pages/ConversationsPage'));
 const ConnectionsPage = lazy(() => import('./pages/ConnectionsPage'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 const GamificationPage = lazy(() => import('./pages/GamificationPage'));
+const DiscoverPage = lazy(() => import('./pages/DiscoverPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -132,6 +133,11 @@ function AnimatedRoutes() {
             <Route path="/map" element={
               <ProtectedRoute>
                 <MapPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/discover" element={
+              <ProtectedRoute>
+                <DiscoverPage />
               </ProtectedRoute>
             } />
             <Route path="/reveal/:userId" element={

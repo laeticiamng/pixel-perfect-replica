@@ -1670,6 +1670,17 @@ export const translations = {
     completed: { en: 'completed', fr: 'terminées', de: 'abgeschlossen' },
   },
 
+  // Discover page
+  discover: {
+    title: { en: 'Discover', fr: 'Découvrir', de: 'Entdecken' },
+    subtitle: { en: 'Find people near your campus', fr: 'Trouve des gens près de ton campus', de: 'Finde Leute in der Nähe deines Campus' },
+    searchPlaceholder: { en: 'Search by name...', fr: 'Rechercher par nom...', de: 'Nach Name suchen...' },
+    onlineNow: { en: '{count} people online now', fr: '{count} personnes en ligne', de: '{count} Personen jetzt online' },
+    filterActivity: { en: 'Activity', fr: 'Activité', de: 'Aktivität' },
+    filterUniversity: { en: 'University', fr: 'Université', de: 'Universität' },
+    noResults: { en: 'No one found', fr: 'Personne trouvé', de: 'Niemand gefunden' },
+    noResultsDesc: { en: 'Try adjusting your filters or invite friends to join!', fr: 'Essaie d\'ajuster tes filtres ou invite tes amis !', de: 'Passe deine Filter an oder lade Freunde ein!' },
+  },
 
   // Notifications Page
   notificationsPage: {
