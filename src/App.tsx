@@ -52,6 +52,7 @@ const ReportPage = lazy(() => import('./pages/ReportPage'));
 const ConversationsPage = lazy(() => import('./pages/ConversationsPage'));
 const ConnectionsPage = lazy(() => import('./pages/ConnectionsPage'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
+const GamificationPage = lazy(() => import('./pages/GamificationPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -258,6 +259,11 @@ function AnimatedRoutes() {
             <Route path="/notifications" element={
               <ProtectedRoute>
                 <NotificationsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/achievements" element={
+              <ProtectedRoute>
+                <GamificationPage />
               </ProtectedRoute>
             } />
             <Route path="/binome/history" element={

@@ -15,7 +15,8 @@ import {
   ChevronLeft,
   ChevronRight,
   MessageCircle,
-  UserCheck
+  UserCheck,
+  Trophy
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -48,6 +49,7 @@ const mainNavItems: NavItem[] = [
 
 const secondaryNavItems: NavItem[] = [
   { to: '/notifications', icon: <Bell className="h-5 w-5" />, labelKey: 'nav.notifications', group: 'account' },
+  { to: '/achievements', icon: <Trophy className="h-5 w-5" />, labelKey: 'nav2.achievements', group: 'account' },
   { to: '/statistics', icon: <BarChart3 className="h-5 w-5" />, labelKey: 'nav.statistics', group: 'account' },
   { to: '/privacy-settings', icon: <Shield className="h-5 w-5" />, labelKey: 'nav.privacy', group: 'account' },
   { to: '/settings', icon: <Settings className="h-5 w-5" />, labelKey: 'nav.settings', group: 'account' },
