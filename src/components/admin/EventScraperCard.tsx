@@ -87,7 +87,7 @@ export function EventScraperCard() {
                         {event.description && (<p className="text-xs text-muted-foreground mt-1 line-clamp-2">{event.description}</p>)}
                         <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{event.location_name}</span>
-                          <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{new Date(event.starts_at).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US')}</span>
+                          <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{new Date(event.starts_at).toLocaleDateString(locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US')}</span>
                         </div>
                       </div>
                       <Badge variant="secondary" className="text-xs">{t('adminScraper.imported')}</Badge>

@@ -5,7 +5,7 @@ import {
   MessageCircle, Shield, Loader2, AlertTriangle,
 } from 'lucide-react';
 import { format } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
 import { logger } from '@/lib/logger';
@@ -204,7 +204,7 @@ export default function SessionDetailPage() {
   }
 
   const sessionDate = new Date(session.scheduled_date);
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
   const formattedDate = format(sessionDate, 'EEEE d MMMM yyyy', { locale: dateLocale });
   const isFull = participants.length >= session.max_participants;
   const canJoin = !isParticipant && !isCreator && !isFull && session.status === 'open';
@@ -218,10 +218,14 @@ export default function SessionDetailPage() {
     if (hoursUntil < 2) {
       return locale === 'fr'
         ? 'Attention : quitter moins de 2h avant le début impactera votre score de fiabilité (-5 points).'
+        : locale === 'de'
+        ? 'Achtung: Wenn Sie weniger als 2 Stunden vor Beginn verlassen, wird Ihr Zuverlässigkeitswert beeinflusst (-5 Punkte).'
         : 'Warning: leaving less than 2h before the session starts will impact your reliability score (-5 points).';
     }
     return locale === 'fr'
       ? 'Êtes-vous sûr de vouloir quitter cette session ?'
+      : locale === 'de'
+      ? 'Sind Sie sicher, dass Sie diese Sitzung verlassen möchten?'
       : 'Are you sure you want to leave this session?';
   };
 

@@ -70,7 +70,7 @@ export default function PeopleMetPage() {
     if (days === 0) return t('peopleMet.today');
     if (days === 1) return t('peopleMet.yesterday');
     if (days < 7) return t('peopleMet.daysAgo').replace('{days}', String(days));
-    return date.toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short' });
+    return date.toLocaleDateString(locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US', { day: 'numeric', month: 'short' });
   };
 
   const getActivityData = (activityId: string) => {

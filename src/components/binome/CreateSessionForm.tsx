@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -46,7 +46,7 @@ const timeSlots = Array.from({ length: 28 }, (_, i) => {
 
 export function CreateSessionForm({ onSubmit, onCancel, isLoading }: CreateSessionFormProps) {
   const { t, locale } = useTranslation();
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
   const [selectedActivity, setSelectedActivity] = useState<ActivityType | null>(null);
 
   const durationOptions: { value: DurationOption; label: string }[] = [

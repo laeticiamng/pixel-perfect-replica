@@ -14,7 +14,7 @@ import { useTranslation } from '@/lib/i18n';
 import { celebrationBurst } from '@/components/binome';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 
 export default function PremiumPage() {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function PremiumPage() {
   const [successType, setSuccessType] = useState<'subscription' | 'session' | null>(null);
 
   const isPremium = profile?.is_premium || status?.subscribed;
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   const NEARVITY_PLUS_FEATURES = [
     {

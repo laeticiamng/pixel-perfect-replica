@@ -18,7 +18,7 @@ import { useEventFavorites } from '@/hooks/useEventFavorites';
 import { useLocationStore } from '@/stores/locationStore';
 import { useTranslation } from '@/lib/i18n';
 import { format, addHours, addWeeks, addMonths } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 
 export default function EventsPage() {
@@ -43,7 +43,7 @@ export default function EventsPage() {
   const [categoryFilter, setCategoryFilter] = useState<EventCategory | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   const handleCreateEvent = async () => {
     if (!name.trim() || !locationName.trim() || !startsAt) {

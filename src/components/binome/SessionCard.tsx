@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
 import { Book, Laptop, Utensils, Dumbbell, MessageCircle, Star, MapPin, Clock, Users, Calendar, Shield, Download } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -40,7 +40,7 @@ const durationLabels: Record<number, string> = { 45: '45 min', 90: '1h30', 180: 
 export function SessionCard({ session, onJoin, onLeave, onCancel, isJoined = false, isOwner = false, isLoading = false }: SessionCardProps) {
   const navigate = useNavigate();
   const { t, locale } = useTranslation();
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
   const sessionDate = new Date(session.scheduled_date);
   const formattedDate = format(sessionDate, 'EEEE d MMMM', { locale: dateLocale });
   const isFull = (session.current_participants || 0) >= session.max_participants;

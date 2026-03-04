@@ -292,7 +292,7 @@ export default function ChangelogPage() {
                   </CardTitle>
                   <Badge variant="outline" className="gap-1.5">
                     <Calendar className="h-3.5 w-3.5" />
-                    {new Date(entry.date).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US', {
+                    {new Date(entry.date).toLocaleDateString(locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US', {
                       year: 'numeric',
                       month: 'short',
                       day: 'numeric',

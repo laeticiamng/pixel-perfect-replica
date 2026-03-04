@@ -9,7 +9,7 @@ interface LanguageToggleProps {
 }
 
 export function LanguageToggle({ compact = false, className }: LanguageToggleProps) {
-  const { locale, setLocale, isEnglish } = useTranslation();
+  const { locale, setLocale, toggleLocale } = useTranslation();
 
   const toggleContent = (
     <div className={cn(
@@ -17,30 +17,21 @@ export function LanguageToggle({ compact = false, className }: LanguageTogglePro
       className
     )}>
       <Globe className="h-4 w-4 text-muted-foreground ml-1" />
-      <button
-        onClick={() => setLocale('en')}
-        className={cn(
-          "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200",
-          isEnglish
-            ? "bg-coral text-primary-foreground shadow-sm"
-            : "text-muted-foreground hover:text-foreground hover:bg-muted"
-        )}
-        aria-label="English"
-      >
-        EN
-      </button>
-      <button
-        onClick={() => setLocale('fr')}
-        className={cn(
-          "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200",
-          !isEnglish
-            ? "bg-coral text-primary-foreground shadow-sm"
-            : "text-muted-foreground hover:text-foreground hover:bg-muted"
-        )}
-        aria-label="Français"
-      >
-        FR
-      </button>
+      {(['en', 'fr', 'de'] as const).map((lang) => (
+        <button
+          key={lang}
+          onClick={() => setLocale(lang)}
+          className={cn(
+            "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200",
+            locale === lang
+              ? "bg-coral text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted"
+          )}
+          aria-label={lang === 'en' ? 'English' : lang === 'fr' ? 'Français' : 'Deutsch'}
+        >
+          {lang.toUpperCase()}
+        </button>
+      ))}
     </div>
   );
 
@@ -49,18 +40,18 @@ export function LanguageToggle({ compact = false, className }: LanguageTogglePro
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <button
-            onClick={() => setLocale(isEnglish ? 'fr' : 'en')}
+            onClick={toggleLocale}
             className={cn(
               "p-2 rounded-lg bg-muted/50 border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-all",
               className
             )}
-            aria-label={isEnglish ? "Switch to French" : "Switch to English"}
+            aria-label="Switch language"
           >
             <Globe className="h-4 w-4" />
           </button>
         </TooltipTrigger>
         <TooltipContent side="right">
-          {isEnglish ? "Français" : "English"}
+          {locale === 'en' ? 'Français' : locale === 'fr' ? 'Deutsch' : 'English'}
         </TooltipContent>
       </Tooltip>
     );

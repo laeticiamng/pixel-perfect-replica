@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { ACTIVITIES, ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 
 interface UserPopupCardProps {
@@ -31,7 +31,7 @@ export function UserPopupCard({
   className,
 }: UserPopupCardProps) {
   const { t, locale } = useTranslation();
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
   const activity = ACTIVITIES.find(a => a.id === user.activity);
   
   const getSignalLabel = (signal: string) => {
