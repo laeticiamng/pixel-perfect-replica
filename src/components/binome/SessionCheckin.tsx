@@ -129,7 +129,7 @@ export function SessionCheckin({ sessionId, sessionLocation, scheduledDate, star
               <Check className="h-5 w-5 text-signal-green" />{t('sessionCheckin.checkinDone')}
             </CardTitle>
             <Badge variant="outline" className="bg-signal-green/10 text-signal-green border-signal-green/30">
-              {checkinTime?.toLocaleTimeString(locale === 'fr' ? 'fr-FR' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
+              {checkinTime?.toLocaleTimeString(locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US', { hour: '2-digit', minute: '2-digit' })}
             </Badge>
           </div>
         </CardHeader>

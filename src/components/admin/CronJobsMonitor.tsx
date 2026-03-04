@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow, format } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { logger } from '@/lib/logger';
 
@@ -28,7 +28,7 @@ export function CronJobsMonitor() {
   const [executionHistory, setExecutionHistory] = useState<CronExecution[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const { t, locale } = useTranslation();
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   const CONFIGURED_CRON_JOBS = [
     {

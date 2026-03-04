@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, MapPin, CheckCircle, XCircle, Filter, Download } from 'lucide-react';
 import { format } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { PageLayout } from '@/components/PageLayout';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { BottomNav } from '@/components/BottomNav';
@@ -42,7 +42,7 @@ export default function SessionHistoryPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t, locale } = useTranslation();
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
   const [sessions, setSessions] = useState<PastSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'created' | 'joined'>('all');

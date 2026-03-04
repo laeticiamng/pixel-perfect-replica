@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { History, Clock, MapPin, Radio } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -27,7 +27,7 @@ export function SignalHistoryPanel() {
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const { t, locale } = useTranslation();
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   useEffect(() => {
     if (open && user) {

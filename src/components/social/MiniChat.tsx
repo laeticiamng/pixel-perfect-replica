@@ -6,7 +6,7 @@ import { useMessages } from '@/hooks/useMessages';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { useTranslation } from '@/lib/i18n';
 
 interface MiniChatProps {
@@ -24,7 +24,7 @@ export function MiniChat({ interactionId, otherUserName, className }: MiniChatPr
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const dateFnsLocale = locale === 'fr' ? fr : enUS;
+  const dateFnsLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

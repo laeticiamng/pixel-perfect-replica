@@ -42,7 +42,7 @@ export function AlertHistoryCard() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat(locale === 'fr' ? 'fr-FR' : 'en-US', {
+    return new Intl.DateTimeFormat(locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US', {
       day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
     }).format(date);
   };

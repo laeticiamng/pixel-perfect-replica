@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
       
       if (dauData) {
         const formatted = dauData.map((d: DailyActiveUsers) => ({
-          date: new Date(d.date).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-US', { day: '2-digit', month: '2-digit' }),
+          date: new Date(d.date).toLocaleDateString(locale === 'fr' ? 'fr-FR' : locale === 'de' ? 'de-DE' : 'en-US', { day: '2-digit', month: '2-digit' }),
           active_users: Number(d.active_users),
         })).reverse();
         setDailyActiveUsers(formatted);

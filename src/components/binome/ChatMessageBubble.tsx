@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import type { Locale } from '@/lib/i18n/translations';
 
 interface ChatMessageBubbleProps {
@@ -16,7 +16,7 @@ interface ChatMessageBubbleProps {
 export function ChatMessageBubble({ 
   content, createdAt, senderName, senderAvatar, isOwn, locale = 'fr'
 }: ChatMessageBubbleProps) {
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   return (
     <div className={cn("flex gap-3", isOwn ? "flex-row-reverse" : "flex-row")}>

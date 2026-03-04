@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Heart, Calendar, MapPin, Clock } from "lucide-react";
 import { format } from "date-fns";
-import { fr, enUS } from "date-fns/locale";
+import { fr, enUS, de } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEventFavorites } from "@/hooks/useEventFavorites";
@@ -33,7 +33,7 @@ export default function FavoriteEventsPage() {
   const { favorites, isFavorite, toggleFavorite, isLoading: favLoading } = useEventFavorites();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   useEffect(() => {
     async function fetchFavoriteEvents() {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { Search, Calendar, Clock, Filter, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -28,7 +28,7 @@ const durationOptions: { value: DurationOption; label: string }[] = [
 export function SessionFilters({ filters, onFiltersChange, onSearch, isLoading }: SessionFiltersProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const { t, locale } = useTranslation();
-  const dateLocale = locale === 'fr' ? fr : enUS;
+  const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   const activeFiltersCount = [filters.activity, filters.date, filters.duration].filter(Boolean).length;
 

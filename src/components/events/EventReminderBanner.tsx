@@ -1,6 +1,6 @@
 import { Bell, Clock } from 'lucide-react';
 import { format, differenceInMinutes, differenceInHours } from 'date-fns';
-import { fr, enUS } from 'date-fns/locale';
+import { fr, enUS, de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Event } from '@/hooks/useEvents';
 import { useTranslation } from '@/lib/i18n/useTranslation';
@@ -12,7 +12,7 @@ interface EventReminderBannerProps {
 
 export function EventReminderBanner({ event, className }: EventReminderBannerProps) {
   const { t, locale } = useTranslation();
-  const dateFnsLocale = locale === 'fr' ? fr : enUS;
+  const dateFnsLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
   const now = new Date();
   const startDate = new Date(event.starts_at);
   const minutesUntilStart = differenceInMinutes(startDate, now);

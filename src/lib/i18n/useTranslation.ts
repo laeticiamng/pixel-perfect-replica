@@ -39,7 +39,7 @@ export const useI18nStore = create<I18nStore>()(
   )
 );
 
-function getNestedValue(obj: any, path: string): { en: string; fr: string } | undefined {
+function getNestedValue(obj: any, path: string): { en: string; fr: string; de: string } | undefined {
   const keys = path.split('.');
   let current = obj;
   
@@ -49,7 +49,7 @@ function getNestedValue(obj: any, path: string): { en: string; fr: string } | un
   }
   
   if (current && typeof current === 'object' && 'en' in current && 'fr' in current) {
-    return current as { en: string; fr: string };
+    return current as { en: string; fr: string; de: string };
   }
   
   return undefined;
@@ -118,7 +118,7 @@ export function useTranslation() {
   };
 
   const toggleLocale = () => {
-    updateLocale(locale === 'en' ? 'fr' : 'en');
+    updateLocale(locale === 'en' ? 'fr' : locale === 'fr' ? 'de' : 'en');
   };
 
   return {
@@ -128,5 +128,6 @@ export function useTranslation() {
     toggleLocale,
     isEnglish: locale === 'en',
     isFrench: locale === 'fr',
+    isGerman: locale === 'de',
   };
 }
