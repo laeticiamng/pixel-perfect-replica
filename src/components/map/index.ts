@@ -7,6 +7,8 @@ export { ActivityFilterBar } from './ActivityFilterBar';
 export { UserPopupCard } from './UserPopupCard';
 export { EventMapMarker, EventPopupCard, isEventHappeningNow } from './EventMapMarker';
 export type { MapEvent } from './EventMapMarker';
+export { GroupSignalMarker } from './GroupSignalMarker';
+export { GroupSignalPopup } from './GroupSignalPopup';
 export { SignalHistoryPanel } from './SignalHistoryPanel';
 export { EmptyRadarState } from './EmptyRadarState';
 export { LocationPermissionScreen } from './LocationPermissionScreen';

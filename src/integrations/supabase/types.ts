@@ -526,6 +526,137 @@ export type Database = {
           },
         ]
       }
+      group_signal_members: {
+        Row: {
+          group_signal_id: string
+          id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          group_signal_id: string
+          id?: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          group_signal_id?: string
+          id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_signal_members_group_signal_id_fkey"
+            columns: ["group_signal_id"]
+            isOneToOne: false
+            referencedRelation: "group_signals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_signal_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_signal_messages: {
+        Row: {
+          content: string
+          created_at: string
+          group_signal_id: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          group_signal_id: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          group_signal_id?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_signal_messages_group_signal_id_fkey"
+            columns: ["group_signal_id"]
+            isOneToOne: false
+            referencedRelation: "group_signals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_signal_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_signals: {
+        Row: {
+          activity: Database["public"]["Enums"]["activity_type"]
+          created_at: string
+          creator_id: string
+          description: string | null
+          expires_at: string
+          id: string
+          latitude: number
+          location_description: string | null
+          longitude: number
+          max_participants: number
+          started_at: string
+          status: string
+          title: string
+        }
+        Insert: {
+          activity: Database["public"]["Enums"]["activity_type"]
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          expires_at?: string
+          id?: string
+          latitude: number
+          location_description?: string | null
+          longitude: number
+          max_participants?: number
+          started_at?: string
+          status?: string
+          title?: string
+        }
+        Update: {
+          activity?: Database["public"]["Enums"]["activity_type"]
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          expires_at?: string
+          id?: string
+          latitude?: number
+          location_description?: string | null
+          longitude?: number
+          max_participants?: number
+          started_at?: string
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_signals_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       interactions: {
         Row: {
           activity: Database["public"]["Enums"]["activity_type"]
@@ -1686,6 +1817,32 @@ export type Database = {
           university: string
         }[]
       }
+      get_nearby_group_signals: {
+        Args: {
+          max_distance_meters?: number
+          user_lat: number
+          user_lon: number
+        }
+        Returns: {
+          activity: Database["public"]["Enums"]["activity_type"]
+          creator_avatar: string
+          creator_id: string
+          creator_name: string
+          current_members: number
+          description: string
+          expires_at: string
+          id: string
+          is_member: boolean
+          latitude: number
+          location_description: string
+          longitude: number
+          max_participants: number
+          member_names: string[]
+          started_at: string
+          status: string
+          title: string
+        }[]
+      }
       get_nearby_signals: {
         Args: {
           max_distance_meters?: number
@@ -1846,7 +2003,15 @@ export type Database = {
         Args: { p_target_id: string; p_user_id: string }
         Returns: boolean
       }
+      join_group_signal: {
+        Args: { p_group_signal_id: string }
+        Returns: boolean
+      }
       join_session: { Args: { p_session_id: string }; Returns: boolean }
+      leave_group_signal: {
+        Args: { p_group_signal_id: string }
+        Returns: boolean
+      }
       leave_session: { Args: { p_session_id: string }; Returns: boolean }
       log_reveal: { Args: { p_revealed_user_id: string }; Returns: boolean }
       record_daily_activity: { Args: { p_user_id: string }; Returns: Json }

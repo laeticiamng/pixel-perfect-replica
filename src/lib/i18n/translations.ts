@@ -1768,6 +1768,34 @@ export const translations = {
     left: { en: 'Left event', fr: 'Événement quitté', de: 'Event verlassen' },
   },
 
+  // Group Signals
+  groupSignal: {
+    group: { en: 'Group', fr: 'Groupe', de: 'Gruppe' },
+    createTitle: { en: 'Create Group Meetup', fr: 'Créer un meetup de groupe', de: 'Gruppentreff erstellen' },
+    createSubtitle: { en: 'Find 3+ people for a shared activity', fr: 'Trouve 3+ personnes pour une activité commune', de: 'Finde 3+ Leute für eine gemeinsame Aktivität' },
+    titleLabel: { en: 'Group name', fr: 'Nom du groupe', de: 'Gruppenname' },
+    titlePlaceholder: { en: 'e.g. Study session at the library', fr: 'ex. Révisions à la BU', de: 'z.B. Lerngruppe in der Bibliothek' },
+    activityLabel: { en: 'Activity', fr: 'Activité', de: 'Aktivität' },
+    maxParticipants: { en: 'Max participants', fr: 'Participants max', de: 'Max. Teilnehmer' },
+    descriptionLabel: { en: 'Description (optional)', fr: 'Description (optionnel)', de: 'Beschreibung (optional)' },
+    descriptionPlaceholder: { en: 'What are you planning?', fr: 'Qu\'est-ce que vous prévoyez ?', de: 'Was habt ihr vor?' },
+    create: { en: 'Create Group', fr: 'Créer le groupe', de: 'Gruppe erstellen' },
+    join: { en: 'Join', fr: 'Rejoindre', de: 'Beitreten' },
+    leave: { en: 'Leave', fr: 'Quitter', de: 'Verlassen' },
+    chat: { en: 'Chat', fr: 'Chat', de: 'Chat' },
+    full: { en: 'Full', fr: 'Complet', de: 'Voll' },
+    members: { en: 'members', fr: 'membres', de: 'Mitglieder' },
+    by: { en: 'by', fr: 'par', de: 'von' },
+    untitled: { en: 'Group meetup', fr: 'Meetup de groupe', de: 'Gruppentreff' },
+    chatEmpty: { en: 'No messages yet. Say hi! 👋', fr: 'Pas encore de messages. Dis bonjour ! 👋', de: 'Noch keine Nachrichten. Sag Hallo! 👋' },
+    typeMessage: { en: 'Type a message...', fr: 'Écris un message...', de: 'Nachricht schreiben...' },
+    joined: { en: 'Joined the group!', fr: 'Tu as rejoint le groupe !', de: 'Gruppe beigetreten!' },
+    left: { en: 'Left the group', fr: 'Groupe quitté', de: 'Gruppe verlassen' },
+    created: { en: 'Group created!', fr: 'Groupe créé !', de: 'Gruppe erstellt!' },
+    createError: { en: 'Could not create group', fr: 'Impossible de créer le groupe', de: 'Gruppe konnte nicht erstellt werden' },
+    joinError: { en: 'Could not join group', fr: 'Impossible de rejoindre le groupe', de: 'Konnte der Gruppe nicht beitreten' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;

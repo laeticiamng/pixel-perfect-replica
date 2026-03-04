@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays } from 'lucide-react';
+import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
@@ -21,15 +21,19 @@ import {
 } from '@/components/map';
 import { EmergencyButton } from '@/components/safety';
 import { ConnectionRequestsPanel } from '@/components/social';
+import { CreateGroupSignalModal } from '@/components/map/CreateGroupSignalModal';
+import { GroupChatPanel } from '@/components/map/GroupChatPanel';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useMapPageLogic } from '@/hooks/useMapPageLogic';
 import { useEvents } from '@/hooks/useEvents';
+import { useGroupSignals, GroupSignal } from '@/hooks/useGroupSignals';
 import { useLocationStore } from '@/stores/locationStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useTranslation } from '@/lib/i18n';
 import { ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import { isEventHappeningNow } from '@/components/map/EventMapMarker';
+import { AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 export default function MapPage() {
@@ -82,6 +86,17 @@ export default function MapPage() {
   const currentActivityData = ACTIVITIES.find(a => a.id === myActivity);
   const [mapMode, setMapMode] = useState<'map' | 'radar'>('map');
   const [showEvents, setShowEvents] = useState(true);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [chatGroup, setChatGroup] = useState<GroupSignal | null>(null);
+
+  // Group signals
+  const {
+    groupSignals,
+    isLoading: groupLoading,
+    createGroupSignal,
+    joinGroupSignal,
+    leaveGroupSignal,
+  } = useGroupSignals();
 
   // Events on map
   const { events, joinEvent, leaveEvent, isParticipating, joinedEvents } = useEvents();
@@ -124,6 +139,28 @@ export default function MapPage() {
   const handleEventClick = useCallback((eventId: string) => {
     navigate(`/events/${eventId}`);
   }, [navigate]);
+
+  // Group signal handlers
+  const handleGroupJoin = useCallback(async (groupId: string) => {
+    const { error } = await joinGroupSignal(groupId);
+    if (!error) toast.success(t('groupSignal.joined'));
+    else toast.error(t('groupSignal.joinError'));
+  }, [joinGroupSignal, t]);
+
+  const handleGroupLeave = useCallback(async (groupId: string) => {
+    const { error } = await leaveGroupSignal(groupId);
+    if (!error) toast.success(t('groupSignal.left'));
+  }, [leaveGroupSignal, t]);
+
+  const handleCreateGroupSubmit = useCallback(async (data: Parameters<typeof createGroupSignal>[0]) => {
+    const { error } = await createGroupSignal(data);
+    if (!error) {
+      setShowCreateGroup(false);
+      toast.success(t('groupSignal.created'));
+    } else {
+      toast.error(t('groupSignal.createError'));
+    }
+  }, [createGroupSignal, t]);
 
   // Show location permission screen if not seen yet and no position
   const showLocationPrompt = !hasSeenLocationPrompt && !position && !locationError;
@@ -414,12 +451,16 @@ export default function MapPage() {
                 activeSince: u.activeSince,
               }))}
               events={showEvents ? mapEvents : []}
+              groupSignals={groupSignals}
               isActive={isActive}
               myActivity={myActivity}
               onUserClick={handleUserClick}
               onEventClick={handleEventClick}
               onEventJoin={handleEventJoin}
               onEventLeave={handleEventLeave}
+              onGroupJoin={handleGroupJoin}
+              onGroupLeave={handleGroupLeave}
+              onGroupChat={(group) => setChatGroup(group)}
               joinedEventIds={joinedEventIds}
               eventParticipantCounts={eventParticipantCounts}
               visibilityDistance={settings.visibility_distance}
@@ -427,6 +468,7 @@ export default function MapPage() {
               userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
               activityFilters={activityFilters}
               onActivityFilterToggle={toggleActivityFilter}
+              groupSignalLoading={groupLoading}
             />
           ) : (
             <RadarSonarView
@@ -443,25 +485,35 @@ export default function MapPage() {
           <ConnectionRequestsPanel />
         </div>
 
-        {/* Signal Button */}
-        <div className="px-6 mb-4">
-          <button
-            onClick={handleSignalToggle}
-            aria-label={isActive ? t('mapUI.deactivateSignal') : t('mapUI.activateSignal')}
-            className={cn(
-              'w-full h-20 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-medium',
-              'font-bold text-lg',
-              isActive
-                ? 'bg-gradient-to-r from-signal-green/20 to-signal-green/10 border-2 border-signal-green text-signal-green glow-green'
-                : 'bg-gradient-to-r from-coral/20 to-coral/10 border-2 border-coral text-coral animate-glow-pulse hover:scale-[1.02]'
-            )}
-          >
-            <Radio className="h-6 w-6" />
-            {isActive ? t('mapUI.tapToDeactivate') : t('mapUI.tapToActivate')}
-          </button>
+        {/* Signal Buttons */}
+        <div className="px-6 mb-4 space-y-3">
+          <div className="flex gap-3">
+            <button
+              onClick={handleSignalToggle}
+              aria-label={isActive ? t('mapUI.deactivateSignal') : t('mapUI.activateSignal')}
+              className={cn(
+                'flex-1 h-16 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-medium',
+                'font-bold text-base',
+                isActive
+                  ? 'bg-gradient-to-r from-signal-green/20 to-signal-green/10 border-2 border-signal-green text-signal-green glow-green'
+                  : 'bg-gradient-to-r from-coral/20 to-coral/10 border-2 border-coral text-coral animate-glow-pulse hover:scale-[1.02]'
+              )}
+            >
+              <Radio className="h-5 w-5" />
+              {isActive ? t('mapUI.tapToDeactivate') : t('mapUI.tapToActivate')}
+            </button>
+            <button
+              onClick={() => setShowCreateGroup(true)}
+              className="h-16 px-4 rounded-2xl flex items-center justify-center gap-2 border-2 border-coral/50 text-coral hover:bg-coral/10 transition-all font-bold text-sm"
+              aria-label={t('groupSignal.createTitle')}
+            >
+              <Users className="h-5 w-5" />
+              {t('groupSignal.group')}
+            </button>
+          </div>
           
           {lastUpdated && (
-            <p className="text-center text-xs text-muted-foreground mt-3 font-medium">
+            <p className="text-center text-xs text-muted-foreground font-medium">
               {t('mapUI.lastUpdate', { time: getTimeSinceUpdate() || '' })}
             </p>
           )}
@@ -547,6 +599,25 @@ export default function MapPage() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Create Group Signal Modal */}
+        {showCreateGroup && (
+          <CreateGroupSignalModal
+            onClose={() => setShowCreateGroup(false)}
+            onSubmit={handleCreateGroupSubmit}
+            isLoading={groupLoading}
+          />
+        )}
+
+        {/* Group Chat Panel */}
+        <AnimatePresence>
+          {chatGroup && (
+            <GroupChatPanel
+              group={chatGroup}
+              onClose={() => setChatGroup(null)}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </PageLayout>
   );
