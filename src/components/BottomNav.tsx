@@ -1,15 +1,17 @@
 import { forwardRef } from 'react';
 import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
-import { MapPin, User, Settings, CalendarDays, Users2 } from 'lucide-react';
+import { MapPin, MessageCircle, CalendarDays, Users2, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useShowNewBadge } from '@/components/binome/NewBadge';
 import { useTranslation } from '@/lib/i18n';
+import { useNotifications } from '@/hooks/useNotifications';
 
 interface NavItem {
   to: string;
   icon: React.ReactNode;
   labelKey: string;
   showNewBadge?: boolean;
+  badgeCount?: number;
 }
 
 export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
@@ -17,13 +19,14 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
     const location = useLocation();
     const showBinomeBadge = useShowNewBadge();
     const { t } = useTranslation();
+    const { unreadCount } = useNotifications();
 
     const navItems: NavItem[] = [
       { to: '/map', icon: <MapPin className="h-6 w-6" />, labelKey: 'nav.map' },
+      { to: '/conversations', icon: <MessageCircle className="h-6 w-6" />, labelKey: 'navMessages' },
       { to: '/binome', icon: <Users2 className="h-6 w-6" />, labelKey: 'nav.book', showNewBadge: showBinomeBadge },
       { to: '/events', icon: <CalendarDays className="h-6 w-6" />, labelKey: 'nav.events' },
-      { to: '/profile', icon: <User className="h-6 w-6" />, labelKey: 'nav.profile' },
-      { to: '/settings', icon: <Settings className="h-5 w-5" />, labelKey: 'nav.settings' },
+      { to: '/notifications', icon: <Bell className="h-6 w-6" />, labelKey: 'nav.notifications', badgeCount: unreadCount },
     ];
 
     return (
@@ -58,6 +61,12 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
                       {/* New badge */}
                       {item.showNewBadge && !isActive && (
                         <span className="absolute -top-1 -right-1 flex items-center justify-center w-2 h-2 bg-coral rounded-full animate-pulse" />
+                      )}
+                      {/* Unread count badge */}
+                      {item.badgeCount && item.badgeCount > 0 && (
+                        <span className="absolute -top-1.5 -right-2 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-coral text-white text-[10px] font-bold rounded-full">
+                          {item.badgeCount > 99 ? '99+' : item.badgeCount}
+                        </span>
                       )}
                     </div>
                     <span className={cn(

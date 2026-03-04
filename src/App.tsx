@@ -49,6 +49,9 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const HelpPage = lazy(() => import('./pages/HelpPage'));
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage'));
 const ReportPage = lazy(() => import('./pages/ReportPage'));
+const ConversationsPage = lazy(() => import('./pages/ConversationsPage'));
+const ConnectionsPage = lazy(() => import('./pages/ConnectionsPage'));
+const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -240,6 +243,21 @@ function AnimatedRoutes() {
             <Route path="/binome/:sessionId" element={
               <ProtectedRoute>
                 <SessionDetailPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/conversations" element={
+              <ProtectedRoute>
+                <ConversationsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/connections" element={
+              <ProtectedRoute>
+                <ConnectionsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/notifications" element={
+              <ProtectedRoute>
+                <NotificationsPage />
               </ProtectedRoute>
             } />
             <Route path="/binome/history" element={
