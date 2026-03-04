@@ -1563,6 +1563,13 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_or_create_interaction: {
+        Args: {
+          p_activity?: Database["public"]["Enums"]["activity_type"]
+          p_other_user_id: string
+        }
+        Returns: string
+      }
       get_own_admin_email: { Args: never; Returns: string }
       get_own_profile: {
         Args: never
