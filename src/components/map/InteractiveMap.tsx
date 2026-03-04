@@ -16,8 +16,11 @@ import { ClusterMarker } from './ClusterMarker';
 import { ActivityFilterBar } from './ActivityFilterBar';
 import { UserPopupCard } from './UserPopupCard';
 import { EventMapMarker, EventPopupCard, isEventHappeningNow, type MapEvent } from './EventMapMarker';
+import { GroupSignalMarker } from './GroupSignalMarker';
+import { GroupSignalPopup } from './GroupSignalPopup';
 import { useClustering, ClusterPoint } from '@/hooks/useClustering';
 import { logger } from '@/lib/logger';
+import type { GroupSignal } from '@/hooks/useGroupSignals';
 
 interface NearbyUser {
   id: string;
@@ -36,12 +39,16 @@ interface NearbyUser {
 interface InteractiveMapProps {
   nearbyUsers: NearbyUser[];
   events?: MapEvent[];
+  groupSignals?: GroupSignal[];
   isActive: boolean;
   myActivity?: string | null;
   onUserClick: (userId: string, distance?: number) => void;
   onEventClick?: (eventId: string) => void;
   onEventJoin?: (eventId: string) => void;
   onEventLeave?: (eventId: string) => void;
+  onGroupJoin?: (groupId: string) => void;
+  onGroupLeave?: (groupId: string) => void;
+  onGroupChat?: (group: GroupSignal) => void;
   joinedEventIds?: Set<string>;
   eventParticipantCounts?: Record<string, number>;
   visibilityDistance: number;
@@ -49,17 +56,22 @@ interface InteractiveMapProps {
   userInitial?: string;
   activityFilters?: ActivityType[];
   onActivityFilterToggle?: (activity: ActivityType) => void;
+  groupSignalLoading?: boolean;
 }
 
 export function InteractiveMap({
   nearbyUsers,
   events = [],
+  groupSignals = [],
   isActive,
   myActivity,
   onUserClick,
   onEventClick,
   onEventJoin,
   onEventLeave,
+  onGroupJoin,
+  onGroupLeave,
+  onGroupChat,
   joinedEventIds = new Set(),
   eventParticipantCounts = {},
   visibilityDistance,
@@ -67,6 +79,7 @@ export function InteractiveMap({
   userInitial = '?',
   activityFilters = [],
   onActivityFilterToggle,
+  groupSignalLoading,
 }: InteractiveMapProps) {
   const mapRef = useRef<MapRef>(null);
   const { position } = useLocationStore();
@@ -79,6 +92,7 @@ export function InteractiveMap({
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
   const [selectedUser, setSelectedUser] = useState<NearbyUser | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<MapEvent | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<GroupSignal | null>(null);
   const [currentZoom, setCurrentZoom] = useState(15);
   const [mapReady, setMapReady] = useState(false);
   const hasInitialCentered = useRef(false);
@@ -534,6 +548,53 @@ export function InteractiveMap({
               onLeave={() => { onEventLeave?.(selectedEvent.id); setSelectedEvent(null); }}
               onViewDetails={() => { onEventClick?.(selectedEvent.id); setSelectedEvent(null); }}
               onClose={() => setSelectedEvent(null)}
+            />
+          </Popup>
+        )}
+
+        {/* Group signal markers */}
+        {groupSignals.map((group) => (
+          <AnimatedMarker
+            key={`group-${group.id}`}
+            markerKey={`group-${group.id}`}
+            latitude={group.latitude}
+            longitude={group.longitude}
+            onClick={() => {
+              setSelectedUser(null);
+              setSelectedEvent(null);
+              setSelectedGroup(group);
+            }}
+          >
+            <GroupSignalMarker
+              group={group}
+              onClick={() => {
+                setSelectedUser(null);
+                setSelectedEvent(null);
+                setSelectedGroup(group);
+              }}
+            />
+          </AnimatedMarker>
+        ))}
+
+        {/* Group signal popup */}
+        {selectedGroup && (
+          <Popup
+            latitude={selectedGroup.latitude}
+            longitude={selectedGroup.longitude}
+            anchor="bottom"
+            onClose={() => setSelectedGroup(null)}
+            closeButton={false}
+            closeOnClick={false}
+            offset={35}
+            className="!p-0 !bg-transparent [&_.mapboxgl-popup-content]:!p-0 [&_.mapboxgl-popup-content]:!bg-transparent [&_.mapboxgl-popup-content]:!shadow-none [&_.mapboxgl-popup-tip]:!border-t-transparent"
+          >
+            <GroupSignalPopup
+              group={selectedGroup}
+              onClose={() => setSelectedGroup(null)}
+              onJoin={() => { onGroupJoin?.(selectedGroup.id); setSelectedGroup(null); }}
+              onLeave={() => { onGroupLeave?.(selectedGroup.id); setSelectedGroup(null); }}
+              onOpenChat={() => { onGroupChat?.(selectedGroup); setSelectedGroup(null); }}
+              isLoading={groupSignalLoading}
             />
           </Popup>
         )}
