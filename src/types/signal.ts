@@ -41,17 +41,17 @@ export interface ActivityOption {
 }
 
 // Activity labels for each locale
-export const ACTIVITY_LABELS: Record<ActivityType, { en: string; fr: string }> = {
-  studying: { en: 'Study', fr: 'Réviser' },
-  eating: { en: 'Eat', fr: 'Manger' },
-  working: { en: 'Work', fr: 'Bosser' },
-  talking: { en: 'Talk', fr: 'Parler' },
-  sport: { en: 'Sport', fr: 'Sport' },
-  other: { en: 'Other', fr: 'Autre' },
+export const ACTIVITY_LABELS: Record<ActivityType, { en: string; fr: string; de: string }> = {
+  studying: { en: 'Study', fr: 'Réviser', de: 'Lernen' },
+  eating: { en: 'Eat', fr: 'Manger', de: 'Essen' },
+  working: { en: 'Work', fr: 'Bosser', de: 'Arbeiten' },
+  talking: { en: 'Talk', fr: 'Parler', de: 'Reden' },
+  sport: { en: 'Sport', fr: 'Sport', de: 'Sport' },
+  other: { en: 'Other', fr: 'Autre', de: 'Sonstiges' },
 };
 
 // Get activity label for current locale
-export const getActivityLabel = (id: ActivityType, locale: 'en' | 'fr' = 'en'): string => {
+export const getActivityLabel = (id: ActivityType, locale: 'en' | 'fr' | 'de' = 'en'): string => {
   return ACTIVITY_LABELS[id]?.[locale] || ACTIVITY_LABELS[id]?.en || id;
 };
 
@@ -104,7 +104,7 @@ export const ICEBREAKERS: Record<ActivityType, string[]> = {
 };
 
 // Icebreakers with locale support
-export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[] }> = {
+export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[]; de: string[] }> = {
   studying: {
     en: [
       "What exam are you preparing for?",
@@ -116,6 +116,11 @@ export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[]
       "C'est quoi ta matière préférée ?",
       "Tu utilises quelle méthode pour réviser ?",
     ],
+    de: [
+      "Auf welche Prüfung bereitest du dich vor?",
+      "Was ist dein Lieblingsfach?",
+      "Welche Lernmethode nutzt du?",
+    ],
   },
   eating: {
     en: [
@@ -125,6 +130,10 @@ export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[]
     fr: [
       "C'est bon ce que tu manges ?",
       "Tu connais un bon resto dans le coin ?",
+    ],
+    de: [
+      "Schmeckt das gut, was du isst?",
+      "Kennst du ein gutes Restaurant hier in der Nähe?",
     ],
   },
   working: {
@@ -136,6 +145,10 @@ export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[]
       "Tu bosses sur quoi ?",
       "C'est pour le taf ou un projet perso ?",
     ],
+    de: [
+      "Woran arbeitest du gerade?",
+      "Ist das für die Arbeit oder ein persönliches Projekt?",
+    ],
   },
   talking: {
     en: [
@@ -145,6 +158,10 @@ export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[]
     fr: [
       "Alors, quoi de neuf ?",
       "Tu fais quoi dans la vie ?",
+    ],
+    de: [
+      "Was gibt's Neues?",
+      "Was machst du beruflich?",
     ],
   },
   sport: {
@@ -156,6 +173,10 @@ export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[]
       "Tu fais quoi comme sport ?",
       "Tu viens souvent ici ?",
     ],
+    de: [
+      "Welchen Sport machst du?",
+      "Kommst du oft hierher?",
+    ],
   },
   other: {
     en: [
@@ -166,11 +187,15 @@ export const ICEBREAKERS_I18N: Record<ActivityType, { en: string[]; fr: string[]
       "Qu'est-ce qui t'amène ici ?",
       "Tu fais quoi de beau ?",
     ],
+    de: [
+      "Was führt dich hierher?",
+      "Was machst du Schönes?",
+    ],
   },
 };
 
 // Get icebreaker for current locale
-export const getIcebreaker = (activity: ActivityType, locale: 'en' | 'fr' = 'en'): string => {
+export const getIcebreaker = (activity: ActivityType, locale: 'en' | 'fr' | 'de' = 'en'): string => {
   const icebreakers = ICEBREAKERS_I18N[activity]?.[locale] || ICEBREAKERS_I18N[activity]?.en || [];
   return icebreakers[Math.floor(Math.random() * icebreakers.length)] || '';
 };
