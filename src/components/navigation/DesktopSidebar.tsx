@@ -13,7 +13,9 @@ import {
   LogOut,
   Search,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  MessageCircle,
+  UserCheck
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,6 +26,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useShowNewBadge } from '@/components/binome/NewBadge';
 import { useTranslation } from '@/lib/i18n';
 import { BrandLogo } from '@/components/shared';
+import { useNotifications } from '@/hooks/useNotifications';
 
 interface NavItem {
   to: string;
@@ -35,14 +38,16 @@ interface NavItem {
 
 const mainNavItems: NavItem[] = [
   { to: '/map', icon: <MapPin className="h-5 w-5" />, labelKey: 'nav.map', group: 'main' },
+  { to: '/conversations', icon: <MessageCircle className="h-5 w-5" />, labelKey: 'navMessages', group: 'main' },
+  { to: '/connections', icon: <UserCheck className="h-5 w-5" />, labelKey: 'navConnections', group: 'main' },
   { to: '/binome', icon: <Users2 className="h-5 w-5" />, labelKey: 'nav.book', group: 'main', showNewBadge: true },
   { to: '/events', icon: <CalendarDays className="h-5 w-5" />, labelKey: 'nav.events', group: 'main' },
   { to: '/profile', icon: <User className="h-5 w-5" />, labelKey: 'nav.profile', group: 'main' },
 ];
 
 const secondaryNavItems: NavItem[] = [
+  { to: '/notifications', icon: <Bell className="h-5 w-5" />, labelKey: 'nav.notifications', group: 'account' },
   { to: '/statistics', icon: <BarChart3 className="h-5 w-5" />, labelKey: 'nav.statistics', group: 'account' },
-  { to: '/notifications-settings', icon: <Bell className="h-5 w-5" />, labelKey: 'nav.notifications', group: 'account' },
   { to: '/privacy-settings', icon: <Shield className="h-5 w-5" />, labelKey: 'nav.privacy', group: 'account' },
   { to: '/settings', icon: <Settings className="h-5 w-5" />, labelKey: 'nav.settings', group: 'account' },
   { to: '/help', icon: <HelpCircle className="h-5 w-5" />, labelKey: 'nav.help', group: 'support' },
@@ -55,6 +60,7 @@ export function DesktopSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const showBinomeBadge = useShowNewBadge();
   const { t } = useTranslation();
+  const { unreadCount } = useNotifications();
   
   // Toggle sidebar with keyboard shortcut (Cmd+B or Ctrl+B)
   const toggleSidebar = useCallback(() => {
@@ -82,6 +88,7 @@ export function DesktopSidebar() {
   const renderNavItem = (item: NavItem) => {
     const isActive = location.pathname === item.to;
     const shouldShowBadge = item.showNewBadge && showBinomeBadge && !isActive;
+    const notifBadgeCount = item.to === '/notifications' ? unreadCount : 0;
     const label = t(item.labelKey);
     
     const linkContent = (
@@ -109,6 +116,12 @@ export function DesktopSidebar() {
           {/* New badge indicator */}
           {shouldShowBadge && (
             <span className="absolute -top-1 -right-1 flex items-center justify-center w-2 h-2 bg-coral rounded-full animate-pulse" />
+          )}
+          {/* Notification count badge */}
+          {notifBadgeCount > 0 && (
+            <span className="absolute -top-1.5 -right-2 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-coral text-white text-[10px] font-bold rounded-full">
+              {notifBadgeCount > 99 ? '99+' : notifBadgeCount}
+            </span>
           )}
         </span>
         {!collapsed && (

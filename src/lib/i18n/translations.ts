@@ -1559,14 +1559,21 @@ export const translations = {
 
   // Connections
   connections: {
-    title: { en: 'Connection Requests', fr: 'Demandes de connexion', de: 'Verbindungsanfragen' },
+    title: { en: 'Connections', fr: 'Connexions', de: 'Verbindungen' },
+    subtitle: { en: 'People you\'ve met', fr: 'Les personnes que vous avez rencontrées', de: 'Menschen, die Sie getroffen haben' },
+    friends: { en: 'Friends', fr: 'Amis', de: 'Freunde' },
+    requests: { en: 'Requests', fr: 'Demandes', de: 'Anfragen' },
     pendingRequests: { en: 'Pending requests', fr: 'Demandes en attente', de: 'Ausstehende Anfragen' },
+    noFriends: { en: 'No connections yet', fr: 'Aucune connexion', de: 'Noch keine Verbindungen' },
+    noFriendsDesc: { en: 'Connect with people you meet nearby!', fr: 'Connectez-vous avec les personnes rencontrées !', de: 'Verbinden Sie sich mit Menschen, die Sie treffen!' },
     noPending: { en: 'No pending requests', fr: 'Aucune demande en attente', de: 'Keine ausstehenden Anfragen' },
-    noPendingDesc: { en: 'When someone nearby wants to connect, it will appear here.', fr: 'Quand quelqu\'un à proximité veut se connecter, ça apparaîtra ici.', de: 'Wenn jemand in der Nähe sich verbinden möchte, erscheint es hier.' },
+    noPendingDesc: { en: 'Connection requests will appear here.', fr: 'Les demandes de connexion apparaîtront ici.', de: 'Verbindungsanfragen erscheinen hier.' },
     accept: { en: 'Accept', fr: 'Accepter', de: 'Annehmen' },
-    decline: { en: 'Decline', fr: 'Décliner', de: 'Ablehnen' },
-    accepted: { en: 'Connection accepted!', fr: 'Connexion acceptée !', de: 'Verbindung angenommen!' },
-    declined: { en: 'Request declined', fr: 'Demande déclinée', de: 'Anfrage abgelehnt' },
+    decline: { en: 'Decline', fr: 'Refuser', de: 'Ablehnen' },
+    accepted: { en: 'Connection accepted!', fr: 'Connexion acceptée !', de: 'Verbindung akzeptiert!' },
+    declined: { en: 'Connection declined', fr: 'Connexion refusée', de: 'Verbindung abgelehnt' },
+    pending: { en: 'Pending', fr: 'En attente', de: 'Ausstehend' },
+    unknown: { en: 'Unknown user', fr: 'Utilisateur inconnu', de: 'Unbekannter Benutzer' },
     requestSent: { en: 'Connection request sent!', fr: 'Demande de connexion envoyée !', de: 'Verbindungsanfrage gesendet!' },
     requestError: { en: 'Could not send request', fr: 'Impossible d\'envoyer la demande', de: 'Anfrage konnte nicht gesendet werden' },
     connect: { en: 'Connect', fr: 'Se connecter', de: 'Verbinden' },
@@ -1635,6 +1642,31 @@ export const translations = {
     revealLimitReached: { en: 'Reveal limit reached', fr: 'Limite de révélations atteinte', de: 'Aufdeckungslimit erreicht' },
     revealLimitMessage: { en: 'You have reached the maximum number of reveals per hour.', fr: 'Vous avez atteint le nombre maximum de révélations par heure.', de: 'Sie haben die maximale Anzahl an Aufdeckungen pro Stunde erreicht.' },
   },
+
+  // Conversations
+  conversations: {
+    title: { en: 'Messages', fr: 'Messages', de: 'Nachrichten' },
+    subtitle: { en: 'Your conversations', fr: 'Vos conversations', de: 'Ihre Unterhaltungen' },
+    search: { en: 'Search conversations...', fr: 'Rechercher des conversations...', de: 'Unterhaltungen suchen...' },
+    empty: { en: 'No conversations yet', fr: 'Aucune conversation', de: 'Noch keine Unterhaltungen' },
+    emptyDesc: { en: 'Start by meeting people nearby!', fr: 'Commencez par rencontrer des gens à proximité !', de: 'Beginnen Sie damit, Menschen in der Nähe zu treffen!' },
+    noMessages: { en: 'No messages yet', fr: 'Pas encore de messages', de: 'Noch keine Nachrichten' },
+  },
+
+
+
+  // Notifications Page
+  notificationsPage: {
+    title: { en: 'Notifications', fr: 'Notifications', de: 'Benachrichtigungen' },
+    subtitle: { en: 'Stay updated', fr: 'Restez informé', de: 'Bleiben Sie auf dem Laufenden' },
+    markAllRead: { en: 'Mark all read', fr: 'Tout marquer lu', de: 'Alle als gelesen markieren' },
+    empty: { en: 'No notifications', fr: 'Aucune notification', de: 'Keine Benachrichtigungen' },
+    emptyDesc: { en: 'You\'re all caught up!', fr: 'Vous êtes à jour !', de: 'Sie sind auf dem neuesten Stand!' },
+  },
+
+  // Nav additions
+  navMessages: { en: 'Messages', fr: 'Messages', de: 'Nachrichten' },
+  navConnections: { en: 'Connections', fr: 'Connexions', de: 'Verbindungen' },
 
 } as const;
 
