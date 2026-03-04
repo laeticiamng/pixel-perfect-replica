@@ -1,144 +1,120 @@
 
 
-# Audit NEARVITY — What's Missing to Be Unique & Revolutionary
+# Audit NEARVITY -- Ce qui manque pour être unique et révolutionnaire
 
-## What's Already Strong
-- Signal system (green/yellow/red) with real-time geolocation
-- Binome session scheduling with quota management & Stripe monetization
-- Events with QR check-in, favorites, categories, recurrence
-- Real-time connections with Supabase Realtime
-- AI icebreakers & session recommendations
-- Full i18n (EN/FR/DE), dark/light theme, PWA
-- Security: RLS, rate limiting, shadow banning, HIBP password check
-- Stats dashboard with charts (recharts)
-- Referral system, admin dashboard, reliability scoring
-- Desktop sidebar + mobile bottom nav, command palette
+## Etat actuel : ce qui a été implémenté
 
----
-
-## Critical Gaps (Functional)
-
-### 1. No Real Messaging System
-The MiniChat is limited to 10 messages per interaction. There's no persistent chat, no conversation list, no message notifications. For a social platform, this is the biggest gap. Users meet IRL but have no way to stay in touch digitally.
-
-**Missing:** Conversations page, unread badges, push notifications for messages, message search.
-
-### 2. No User Discovery Beyond Proximity
-Users can only find others via the live map radar. There's no way to browse profiles, search by activity/university/interests, or see who's regularly active nearby. The platform is empty when nobody has their signal on.
-
-**Missing:** User directory/discovery feed, "people near your campus" section, activity-based matching.
-
-### 3. No Notification Center
-Push subscription exists but there's no in-app notification inbox. Users miss connection requests, session reminders, new messages. The `NotificationsSettingsPage` only configures preferences — there's no notification list.
-
-**Missing:** `/notifications` page with unread count, real-time badge on nav, notification grouping.
-
-### 4. Events Are Isolated from the Map
-Events exist on their own page but are invisible on the map. There's no event pin on the interactive map, no "happening now" indicator, no event-signal link.
-
-**Missing:** Event markers on map, "Join nearby event" flow, event proximity alerts.
-
-### 5. No Social Graph / Friend List
-Connections exist in the DB but there's no `/connections` or `/friends` page. Users can request connections but can't browse accepted connections, view connection profiles, or initiate chats from the friend list.
-
-**Missing:** Connections list page, mutual activity tracking, "see when friends are active".
+Les éléments suivants sont opérationnels :
+- Système de signaux (green/yellow/red) avec géolocalisation temps réel
+- Sessions binôme avec quota, Stripe, feedback, fiabilité
+- Événements avec QR check-in, favoris, catégories
+- Messagerie complète (conversations, unread badges, Realtime)
+- Page Connexions/Amis avec chat intégré
+- Centre de notifications avec badges temps réel
+- Gamification (streaks, achievements, leaderboard campus)
+- Événements sur la carte avec indicateur "Happening Now"
+- i18n (EN/FR/DE), dark/light, PWA, RLS, rate limiting, shadow banning
+- Referral, admin dashboard, reliability scoring, command palette
 
 ---
 
-## UX Gaps
+## Lacunes critiques restantes
 
-### 6. No Onboarding Tutorial for Core Features
-`PostSignupOnboardingPage` exists but the main map features (signal activation, radar vs map view, icebreakers) have no guided tour. First-time users see an empty map with no guidance.
+### 1. Pas de découverte d'utilisateurs hors proximité
+Les utilisateurs ne peuvent trouver d'autres personnes que via le radar live. Aucun annuaire, aucune recherche par activité/université/intérêts. La plateforme est vide quand personne n'a son signal activé.
 
-**Missing:** Interactive walkthrough (tooltips/coach marks) on first map visit.
+**Manquant :** Page de découverte / feed, section "gens près de ton campus", matching par activité favorite.
 
-### 7. No Haptic/Audio Feedback for Key Actions
-Signal activation, receiving a connection request, nearby user detection — none of these trigger haptic feedback (despite `proximity_vibration` setting existing) or sound.
+### 2. Pas de formation de groupe / meetup spontané
+La plateforme connecte uniquement en 1-to-1. Si 4 personnes étudient à proximité, impossible de "former un groupe".
 
-**Missing:** Vibration API integration, audio cues for proximity alerts.
+**Manquant :** Signal de groupe ("je cherche 3+ personnes"), chat de groupe, carte d'activité de groupe.
 
-### 8. Empty States Need More Engagement
-When no users are nearby (which is most of the time for a new platform), the empty radar state just shows "Activate your signal". It should show social proof, suggest activities, or encourage inviting friends.
+### 3. Pas de suggestions intelligentes de timing
+L'IA fait des recommandations basiques. Aucune analyse "Ton campus est le plus actif le mardi à midi" ni "3 personnes étudient ici habituellement à 14h".
 
-**Missing:** Rich empty states with invite CTA, "be the first" gamification, scheduled session suggestions.
+**Manquant :** Heatmap campus par horaire, suggestion "meilleur moment pour activer", patterns d'activité historiques.
 
-### 9. No Profile Badges Visibility on Map
-Verification badges (student verified) exist in DB but aren't shown on map markers or user popup cards.
+### 4. Pas de hub campus / communauté
+La plateforme est générique -- pas de contenu spécifique par campus, pas de tableau d'affichage, pas de feed communautaire.
 
-**Missing:** Badge icons on map markers, trust indicators in UserPopupCard.
-
----
-
-## Missing Differentiators (to be "revolutionary")
-
-### 10. No Group Formation / Spontaneous Meetup
-The platform connects 1-to-1 but has no concept of group activities. If 4 people are studying nearby, there's no "form a group" feature.
-
-**Missing:** Group signal ("I'm looking for 3+ people"), group chat, group activity card.
-
-### 11. No Activity Streaks / Gamification
-There's basic stats (interactions, hours active) but no engagement hooks: no streaks, no achievements, no levels, no leaderboards.
-
-**Missing:** Weekly streaks, achievement badges ("Met 10 people", "5-day streak"), campus leaderboard.
-
-### 12. No Smart Time Suggestions
-AI recommendations exist but are basic. There's no analysis of "Your campus is most active on Tuesdays at noon" or "3 people usually study here at 2pm".
-
-**Missing:** Campus heatmap by time, "best time to activate" suggestions, historical activity patterns.
-
-### 13. No Campus/Community Hub
-The platform is generic — there's no campus-specific content, bulletin board, or community feed. Universities should have their own space.
-
-**Missing:** Campus page, community feed, campus-specific events, university admin tools.
-
-### 14. No Offline Mode / PWA Robustness
-PWA is configured but there's no offline data caching, no service worker for background sync, no offline indicator beyond `OfflineBanner`.
-
-**Missing:** Offline-first architecture with cached sessions, queued actions, background sync.
-
-### 15. No Voice/Video Integration
-`VoiceIcebreakerButton` exists but appears to only generate audio icebreakers. No voice note capability, no quick audio message.
-
-**Missing:** Voice notes in chat, audio icebreaker playback, walkie-talkie style proximity feature.
+**Manquant :** Page campus, feed communautaire, événements campus, outils admin université.
 
 ---
 
-## Technical Debt
+## Lacunes UX
 
-### 16. Type Casting Overuse
-`useConnections` uses `(supabase as any)` throughout — indicating the `connections` table may not be in the generated types, or there's a type mismatch.
+### 5. Pas de tutoriel onboarding pour les fonctionnalités clés
+`PostSignupOnboardingPage` existe mais les fonctionnalités de la carte (activation signal, radar vs map, icebreakers) n'ont aucun guide. Un nouvel utilisateur voit une carte vide sans aide.
 
-### 17. Mock Data Still Used in Signal Store
-`src/stores/signalStore.ts` uses `generateMockUsers` for nearby users. The real `useActiveSignal` hook exists but the store still references mocks.
+**Manquant :** Walkthrough interactif (tooltips/coach marks) à la première visite de la carte.
 
-### 18. No End-to-End Test Coverage for Core Flows
-Test files exist but are mostly unit tests. No real E2E test for: signup → activate signal → see nearby user → send icebreaker → chat.
+### 6. Pas de feedback haptique/audio pour les actions clés
+Activation du signal, réception d'une demande de connexion, détection d'un utilisateur proche -- rien de tout cela ne déclenche de vibration (malgré le setting `proximity_vibration`) ni de son.
+
+**Manquant :** Intégration API Vibration, signaux audio pour les alertes de proximité.
+
+### 7. Les empty states manquent d'engagement
+`EmptyRadarState` a un radar animé et un CTA d'invitation, ce qui est bien. Mais il manque du social proof, des suggestions d'activités, ou de la gamification "sois le premier".
+
+**Manquant :** Stats communautaires dans l'empty state, suggestion de sessions binôme programmées, countdown "prochaine activité à X".
+
+### 8. Pas de badges de vérification visibles sur la carte
+Les badges de vérification (étudiant vérifié) existent en DB mais ne sont affichés ni sur les marqueurs de carte ni dans `UserPopupCard`.
+
+**Manquant :** Icônes de badge sur les marqueurs, indicateurs de confiance dans UserPopupCard.
 
 ---
 
-## Priority Implementation Order
+## Différenciateurs manquants
+
+### 9. Pas de notes vocales / intégration audio
+`VoiceIcebreakerButton` génère des icebreakers audio. Mais pas de fonctionnalité de note vocale dans le chat, pas de message audio rapide.
+
+**Manquant :** Notes vocales dans le chat, playback d'icebreaker audio, feature walkie-talkie de proximité.
+
+### 10. Pas de mode offline robuste
+La PWA est configurée mais pas de cache de données offline, pas de service worker pour background sync, pas d'indicateur offline au-delà de `OfflineBanner`.
+
+**Manquant :** Architecture offline-first avec sessions en cache, actions en queue, sync en background.
+
+---
+
+## Dette technique
+
+### 11. `(supabase as any)` dans useConnections
+Le hook `useConnections` utilise `(supabase as any)` partout (lignes 33, 50, 85, 113, 139). La table `connections` n'est probablement pas dans les types générés. Cela casse la type-safety et masque les erreurs.
+
+### 12. Mock data toujours utilisée dans signalStore
+`src/stores/signalStore.ts` utilise `generateMockUsers` (ligne 55) pour les utilisateurs proches. Le vrai hook `useActiveSignal` existe et fonctionne, mais le store référence encore les mocks. Ce store semble d'ailleurs inutilisé vu que `useMapPageLogic` utilise directement `useActiveSignal`.
+
+### 13. Pas de couverture E2E pour les flux critiques
+Les fichiers de test existent mais sont principalement unitaires. Pas de vrai test E2E pour : signup → activer signal → voir utilisateur proche → envoyer icebreaker → chat.
+
+---
+
+## Ordre de priorité d'implémentation
 
 ```text
-Priority 1 (Core social loop):
-  [1] Full messaging system with conversations list
-  [5] Connections/friends page
-  [3] Notification center with unread count
+Priorité 1 (Différenciation) :
+  [1] Découverte d'utilisateurs hors proximité
+  [2] Formation de groupe / meetup spontané
+  [5] Tutoriel onboarding interactif
 
-Priority 2 (Engagement & retention):
-  [11] Gamification (streaks, achievements)
-  [8] Rich empty states with invite CTAs
-  [6] First-time user tutorial
+Priorité 2 (Engagement) :
+  [3] Suggestions intelligentes de timing
+  [7] Empty states enrichis (social proof, suggestions)
+  [8] Badges de vérification sur la carte
 
-Priority 3 (Differentiation):
-  [10] Group meetup formation
-  [4] Events on map integration
-  [2] User discovery beyond proximity
-  [12] Smart time/location suggestions
+Priorité 3 (Innovation) :
+  [9] Notes vocales dans le chat
+  [4] Hub campus / communauté
+  [6] Feedback haptique/audio
 
-Priority 4 (Polish):
-  [13] Campus community hub
-  [7] Haptic/audio feedback
-  [9] Badges on map markers
-  [14] Offline robustness
+Priorité 4 (Qualité) :
+  [11] Supprimer les `as any` dans useConnections
+  [12] Supprimer le signalStore mock inutilisé
+  [10] Robustesse offline
+  [13] Tests E2E
 ```
 
