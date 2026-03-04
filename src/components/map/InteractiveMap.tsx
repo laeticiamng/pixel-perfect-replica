@@ -19,7 +19,9 @@ import { EventMapMarker, EventPopupCard, isEventHappeningNow, type MapEvent } fr
 import { GroupSignalMarker } from './GroupSignalMarker';
 import { GroupSignalPopup } from './GroupSignalPopup';
 import { useClustering, ClusterPoint } from '@/hooks/useClustering';
+import { useBatchVerificationBadges } from '@/hooks/useBatchVerificationBadges';
 import { logger } from '@/lib/logger';
+import { ShieldCheck } from 'lucide-react';
 import type { GroupSignal } from '@/hooks/useGroupSignals';
 
 interface NearbyUser {
@@ -128,6 +130,10 @@ export function InteractiveMap({
     bounds,
     zoom: currentZoom,
   });
+
+  // Batch-fetch verification badges for all visible users
+  const visibleUserIds = useMemo(() => nearbyUsers.map(u => u.user_id), [nearbyUsers]);
+  const verifiedUserIds = useBatchVerificationBadges(visibleUserIds);
 
   // Fetch Mapbox token
   useEffect(() => {
@@ -488,6 +494,13 @@ export function InteractiveMap({
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-background border-2 border-white shadow-md flex items-center justify-center text-xs">
                     {getActivityEmoji(user.activity)}
                   </div>
+
+                  {/* Verified badge */}
+                  {verifiedUserIds.has(user.user_id) && (
+                    <div className="absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-signal-green border-2 border-white shadow-md flex items-center justify-center">
+                      <ShieldCheck className="h-3 w-3 text-white" />
+                    </div>
+                  )}
                   
                   {/* Distance badge */}
                   {user.distance && (
