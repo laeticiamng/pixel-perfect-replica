@@ -1600,6 +1600,28 @@ export const translations = {
     codeInvalid: { en: 'Invalid or already used code.', fr: 'Code invalide ou déjà utilisé.', de: 'Ungültiger oder bereits verwendeter Code.' },
   },
 
+  // Errors
+  errors: {
+    errorBoundaryTitle: { en: 'Something went wrong', fr: 'Une erreur est survenue', de: 'Etwas ist schiefgelaufen' },
+    errorBoundaryDesc: { en: 'An unexpected error occurred. Please try again.', fr: 'Une erreur inattendue s\'est produite. Veuillez réessayer.', de: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.' },
+    home: { en: 'Home', fr: 'Accueil', de: 'Startseite' },
+    reload: { en: 'Reload', fr: 'Recharger', de: 'Neu laden' },
+  },
+
+  // Hooks
+  hooks: {
+    connectionRestored: { en: 'Connection restored!', fr: 'Connexion rétablie !', de: 'Verbindung wiederhergestellt!' },
+    noInternetConnection: { en: 'No internet connection', fr: 'Pas de connexion internet', de: 'Keine Internetverbindung' },
+    notificationsNotSupported: { en: 'Notifications not supported', fr: 'Notifications non supportées', de: 'Benachrichtigungen nicht unterstützt' },
+    notificationPermissionDenied: { en: 'Permission denied', fr: 'Permission refusée', de: 'Berechtigung verweigert' },
+    notificationActivationError: { en: 'Activation error', fr: 'Erreur d\'activation', de: 'Aktivierungsfehler' },
+    notificationActivationFailed: { en: 'Activation failed', fr: 'Activation échouée', de: 'Aktivierung fehlgeschlagen' },
+    notificationsEnabled: { en: 'Notifications enabled!', fr: 'Notifications activées !', de: 'Benachrichtigungen aktiviert!' },
+    notificationsDisabled: { en: 'Notifications disabled', fr: 'Notifications désactivées', de: 'Benachrichtigungen deaktiviert' },
+    revealLimitReached: { en: 'Reveal limit reached', fr: 'Limite de révélations atteinte', de: 'Aufdeckungslimit erreicht' },
+    revealLimitMessage: { en: 'You have reached the maximum number of reveals per hour.', fr: 'Vous avez atteint le nombre maximum de révélations par heure.', de: 'Sie haben die maximale Anzahl an Aufdeckungen pro Stunde erreicht.' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
