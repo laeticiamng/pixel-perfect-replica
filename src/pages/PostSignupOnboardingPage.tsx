@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
 import { ActivitySelector } from '@/components/radar/ActivitySelector';
 import { useLocationStore } from '@/stores/locationStore';
-import { useSignalStore } from '@/stores/signalStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
@@ -25,7 +24,6 @@ export default function PostSignupOnboardingPage() {
   const [locationStatus, setLocationStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   
   const { startWatching, position, error: locationError } = useLocationStore();
-  const { activateSignal } = useSignalStore();
   const { setHasSeenLocationPrompt } = useSettingsStore();
 
   // Watch for position changes
@@ -79,7 +77,7 @@ export default function PostSignupOnboardingPage() {
     // Animate the activation
     await new Promise(resolve => setTimeout(resolve, 800));
     
-    activateSignal(selectedActivity);
+    // Signal will be activated on the map page via useActiveSignal
     toast.success(t('postOnboarding.signalActivated'));
     
     // Navigate to map after a brief celebration

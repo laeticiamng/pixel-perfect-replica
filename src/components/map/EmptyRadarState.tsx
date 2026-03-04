@@ -1,16 +1,32 @@
-import { Radio, Share2 } from 'lucide-react';
+import { Radio, Share2, Users, Calendar, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useState, useEffect } from 'react';
 
 interface EmptyRadarStateProps {
   onActivateSignal: () => void;
 }
 
+interface CommunityStats {
+  active_users_now: number;
+  sessions_this_month: number;
+  completed_sessions: number;
+}
+
 export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const [stats, setStats] = useState<CommunityStats | null>(null);
+
+  useEffect(() => {
+    supabase.rpc('get_community_stats').then(({ data }) => {
+      if (data && data.length > 0) setStats(data[0]);
+    });
+  }, []);
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -23,7 +39,6 @@ export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
         // Share dialog was cancelled by the user — no action needed
       }
     } else {
-      // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.origin);
     }
   };
@@ -91,7 +106,7 @@ export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="text-center mb-6"
+        className="text-center mb-4"
       >
         <h3 className="text-xl font-bold text-foreground mb-2">
           {t('map.noOneAround')}
@@ -100,6 +115,38 @@ export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
           {t('map.beTheFirst')}
         </p>
       </motion.div>
+
+      {/* Community stats - social proof */}
+      {stats && (stats.active_users_now > 0 || stats.sessions_this_month > 0) && (
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.45 }}
+          className="flex items-center gap-4 mb-6 px-4 py-2.5 rounded-xl bg-muted/50 border border-border/50"
+        >
+          {stats.active_users_now > 0 && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Users className="h-3.5 w-3.5 text-signal-green" />
+              <span className="font-semibold text-foreground">{stats.active_users_now}</span>
+              <span>{t('emptyState.activeNow')}</span>
+            </div>
+          )}
+          {stats.sessions_this_month > 0 && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Calendar className="h-3.5 w-3.5 text-coral" />
+              <span className="font-semibold text-foreground">{stats.sessions_this_month}</span>
+              <span>{t('emptyState.thisMonth')}</span>
+            </div>
+          )}
+          {stats.completed_sessions > 0 && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Trophy className="h-3.5 w-3.5 text-signal-yellow" />
+              <span className="font-semibold text-foreground">{stats.completed_sessions}</span>
+              <span>{t('emptyState.completed')}</span>
+            </div>
+          )}
+        </motion.div>
+      )}
       
       {/* Actions */}
       <motion.div

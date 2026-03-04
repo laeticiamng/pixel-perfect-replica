@@ -1663,6 +1663,12 @@ export const translations = {
     noMessages: { en: 'No messages yet', fr: 'Pas encore de messages', de: 'Noch keine Nachrichten' },
   },
 
+  // Empty state social proof
+  emptyState: {
+    activeNow: { en: 'active now', fr: 'actifs maintenant', de: 'jetzt aktiv' },
+    thisMonth: { en: 'sessions this month', fr: 'sessions ce mois', de: 'Sitzungen diesen Monat' },
+    completed: { en: 'completed', fr: 'terminées', de: 'abgeschlossen' },
+  },
 
 
   // Notifications Page
