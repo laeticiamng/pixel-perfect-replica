@@ -2,10 +2,20 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
+export type NotificationType = 'message' | 'connection_request' | 'session_reminder' | 'proximity_alert' | 'default';
+
+export const NOTIFICATION_GROUPS: { key: NotificationType | 'all'; labelKey: string }[] = [
+  { key: 'all', labelKey: 'notificationsPage.filterAll' },
+  { key: 'message', labelKey: 'notificationsPage.filterMessages' },
+  { key: 'connection_request', labelKey: 'notificationsPage.filterConnections' },
+  { key: 'session_reminder', labelKey: 'notificationsPage.filterSessions' },
+  { key: 'proximity_alert', labelKey: 'notificationsPage.filterNearby' },
+];
+
 export interface AppNotification {
   id: string;
   user_id: string;
-  type: string;
+  type: NotificationType;
   title: string;
   body: string | null;
   data: Record<string, unknown>;
@@ -23,7 +33,7 @@ export function useNotifications() {
     if (!user) return;
     setIsLoading(true);
 
-    const { data, error } = await (supabase as any)
+    const { data, error } = await supabase
       .from('notifications')
       .select('*')
       .eq('user_id', user.id)
@@ -31,7 +41,7 @@ export function useNotifications() {
       .limit(50);
 
     if (!error && data) {
-      const typed = data as AppNotification[];
+      const typed = data as unknown as AppNotification[];
       setNotifications(typed);
       setUnreadCount(typed.filter(n => !n.read_at).length);
     }
@@ -40,7 +50,7 @@ export function useNotifications() {
 
   const markAsRead = useCallback(async (notificationId: string) => {
     if (!user) return;
-    await (supabase as any)
+    await supabase
       .from('notifications')
       .update({ read_at: new Date().toISOString() })
       .eq('id', notificationId)
@@ -54,7 +64,7 @@ export function useNotifications() {
 
   const markAllAsRead = useCallback(async () => {
     if (!user) return;
-    await (supabase as any)
+    await supabase
       .from('notifications')
       .update({ read_at: new Date().toISOString() })
       .eq('user_id', user.id)
@@ -66,7 +76,7 @@ export function useNotifications() {
 
   const deleteNotification = useCallback(async (notificationId: string) => {
     if (!user) return;
-    await (supabase as any)
+    await supabase
       .from('notifications')
       .delete()
       .eq('id', notificationId)
@@ -100,7 +110,7 @@ export function useNotifications() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          const newNotif = payload.new as AppNotification;
+          const newNotif = payload.new as unknown as AppNotification;
           setNotifications(prev => {
             if (prev.some(n => n.id === newNotif.id)) return prev;
             return [newNotif, ...prev];
