@@ -1736,6 +1736,21 @@ export const translations = {
     achievements: { en: 'Achievements', fr: 'Succès', de: 'Erfolge' },
   },
 
+  // Map Events
+  mapEvents: {
+    happeningNow: { en: 'Live', fr: 'En cours', de: 'Live' },
+    startsIn: { en: 'Starts {time}', fr: 'Commence {time}', de: 'Startet {time}' },
+    endsIn: { en: 'Ends in {time}', fr: 'Se termine dans {time}', de: 'Endet in {time}' },
+    participants: { en: 'joined', fr: 'inscrits', de: 'dabei' },
+    viewDetails: { en: 'Details', fr: 'Détails', de: 'Details' },
+    join: { en: 'Join', fr: 'Rejoindre', de: 'Beitreten' },
+    leave: { en: 'Leave', fr: 'Quitter', de: 'Verlassen' },
+    full: { en: 'Full', fr: 'Complet', de: 'Voll' },
+    eventsOnMap: { en: 'events nearby', fr: 'événements à proximité', de: 'Events in der Nähe' },
+    joined: { en: 'Joined!', fr: 'Inscrit !', de: 'Beigetreten!' },
+    left: { en: 'Left event', fr: 'Événement quitté', de: 'Event verlassen' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;

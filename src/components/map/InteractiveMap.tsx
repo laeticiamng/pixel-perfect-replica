@@ -15,6 +15,7 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 import { ClusterMarker } from './ClusterMarker';
 import { ActivityFilterBar } from './ActivityFilterBar';
 import { UserPopupCard } from './UserPopupCard';
+import { EventMapMarker, EventPopupCard, isEventHappeningNow, type MapEvent } from './EventMapMarker';
 import { useClustering, ClusterPoint } from '@/hooks/useClustering';
 import { logger } from '@/lib/logger';
 
@@ -34,9 +35,15 @@ interface NearbyUser {
 
 interface InteractiveMapProps {
   nearbyUsers: NearbyUser[];
+  events?: MapEvent[];
   isActive: boolean;
   myActivity?: string | null;
   onUserClick: (userId: string, distance?: number) => void;
+  onEventClick?: (eventId: string) => void;
+  onEventJoin?: (eventId: string) => void;
+  onEventLeave?: (eventId: string) => void;
+  joinedEventIds?: Set<string>;
+  eventParticipantCounts?: Record<string, number>;
   visibilityDistance: number;
   className?: string;
   userInitial?: string;
@@ -46,9 +53,15 @@ interface InteractiveMapProps {
 
 export function InteractiveMap({
   nearbyUsers,
+  events = [],
   isActive,
   myActivity,
   onUserClick,
+  onEventClick,
+  onEventJoin,
+  onEventLeave,
+  joinedEventIds = new Set(),
+  eventParticipantCounts = {},
   visibilityDistance,
   className,
   userInitial = '?',
@@ -65,6 +78,7 @@ export function InteractiveMap({
   const [mapStyle, setMapStyle] = useState<MapStyleType>('streets');
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
   const [selectedUser, setSelectedUser] = useState<NearbyUser | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<MapEvent | null>(null);
   const [currentZoom, setCurrentZoom] = useState(15);
   const [mapReady, setMapReady] = useState(false);
   const hasInitialCentered = useRef(false);
@@ -472,6 +486,57 @@ export function InteractiveMap({
             );
           })}
         </>
+
+        {/* Event markers */}
+        {events.map((event) => {
+          const happeningNow = isEventHappeningNow(event);
+          return (
+            <AnimatedMarker
+              key={`event-${event.id}`}
+              markerKey={`event-${event.id}`}
+              latitude={event.latitude}
+              longitude={event.longitude}
+              onClick={() => {
+                setSelectedUser(null);
+                setSelectedEvent(event);
+              }}
+            >
+              <EventMapMarker
+                event={event}
+                isHappeningNow={happeningNow}
+                onClick={() => {
+                  setSelectedUser(null);
+                  setSelectedEvent(event);
+                }}
+              />
+            </AnimatedMarker>
+          );
+        })}
+
+        {/* Event popup */}
+        {selectedEvent && (
+          <Popup
+            latitude={selectedEvent.latitude}
+            longitude={selectedEvent.longitude}
+            anchor="bottom"
+            onClose={() => setSelectedEvent(null)}
+            closeButton={false}
+            closeOnClick={false}
+            offset={25}
+            className="!p-0 !bg-transparent [&_.mapboxgl-popup-content]:!p-0 [&_.mapboxgl-popup-content]:!bg-transparent [&_.mapboxgl-popup-content]:!shadow-none [&_.mapboxgl-popup-tip]:!border-t-transparent"
+          >
+            <EventPopupCard
+              event={selectedEvent}
+              isHappeningNow={isEventHappeningNow(selectedEvent)}
+              isJoined={joinedEventIds.has(selectedEvent.id)}
+              participantCount={eventParticipantCounts[selectedEvent.id] || 0}
+              onJoin={() => { onEventJoin?.(selectedEvent.id); setSelectedEvent(null); }}
+              onLeave={() => { onEventLeave?.(selectedEvent.id); setSelectedEvent(null); }}
+              onViewDetails={() => { onEventClick?.(selectedEvent.id); setSelectedEvent(null); }}
+              onClose={() => setSelectedEvent(null)}
+            />
+          </Popup>
+        )}
 
         {/* User popup card */}
         {selectedUser && (
