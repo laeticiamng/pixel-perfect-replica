@@ -22,6 +22,7 @@ import {
 import { EmergencyButton } from '@/components/safety';
 import { ConnectionRequestsPanel } from '@/components/social';
 import { CreateGroupSignalModal } from '@/components/map/CreateGroupSignalModal';
+import { MapOnboardingTutorial } from '@/components/map/MapOnboardingTutorial';
 import { GroupChatPanel } from '@/components/map/GroupChatPanel';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useMapPageLogic } from '@/hooks/useMapPageLogic';
@@ -396,7 +397,7 @@ export default function MapPage() {
         )}
 
         {/* View mode + Signal state */}
-        <div className="px-4 sm:px-6 mb-3 flex items-center justify-between gap-3">
+        <div className="px-4 sm:px-6 mb-3 flex items-center justify-between gap-3" data-tour="view-toggle">
           <div className="inline-flex rounded-xl bg-muted p-1">
             <button
               onClick={() => setMapMode('map')}
@@ -430,7 +431,7 @@ export default function MapPage() {
         </div>
 
         {/* Interactive Map / Radar */}
-        <div className="flex-1 min-h-0 px-4 sm:px-6">
+        <div className="flex-1 min-h-0 px-4 sm:px-6" data-tour="map-area">
           {filteredNearbyUsers.length === 0 && !isActive ? (
             <EmptyRadarState
               onActivateSignal={handleSignalToggle}
@@ -490,6 +491,7 @@ export default function MapPage() {
           <div className="flex gap-3">
             <button
               onClick={handleSignalToggle}
+              data-tour="signal-button"
               aria-label={isActive ? t('mapUI.deactivateSignal') : t('mapUI.activateSignal')}
               className={cn(
                 'flex-1 h-16 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-medium',
@@ -583,6 +585,9 @@ export default function MapPage() {
         </div>
 
         <BottomNav />
+
+        {/* Map Onboarding Tutorial */}
+        <MapOnboardingTutorial />
 
         {/* Signal deactivation confirmation */}
         <AlertDialog open={showDeactivateConfirm} onOpenChange={setShowDeactivateConfirm}>

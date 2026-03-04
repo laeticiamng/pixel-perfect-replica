@@ -13,6 +13,7 @@ export { SignalHistoryPanel } from './SignalHistoryPanel';
 export { EmptyRadarState } from './EmptyRadarState';
 export { LocationPermissionScreen } from './LocationPermissionScreen';
 export { RadarSonarView } from './RadarSonarView';
+export { MapOnboardingTutorial } from './MapOnboardingTutorial';
 
 // Re-export from new organized folders
 export { ActivityFilter } from '../radar';

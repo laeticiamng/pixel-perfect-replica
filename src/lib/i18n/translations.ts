@@ -1796,6 +1796,31 @@ export const translations = {
     joinError: { en: 'Could not join group', fr: 'Impossible de rejoindre le groupe', de: 'Konnte der Gruppe nicht beitreten' },
   },
 
+  // Map Onboarding Tutorial
+  mapTutorial: {
+    step1Title: { en: 'Activate your signal', fr: 'Active ton signal', de: 'Signal aktivieren' },
+    step1Desc: {
+      en: 'Tap here to broadcast your availability. Choose an activity and become visible to students nearby — they\'ll see your signal on their map!',
+      fr: 'Appuie ici pour diffuser ta disponibilité. Choisis une activité et deviens visible pour les étudiants autour — ils verront ton signal sur leur carte !',
+      de: 'Tippe hier, um deine Verfügbarkeit zu senden. Wähle eine Aktivität und werde für Studenten in der Nähe sichtbar!',
+    },
+    step2Title: { en: 'Switch views', fr: 'Change de vue', de: 'Ansicht wechseln' },
+    step2Desc: {
+      en: 'Toggle between Map view to see everyone on the map, and Radar view for a cool sonar-style display showing nearby users by distance.',
+      fr: 'Alterne entre la vue Carte pour voir tout le monde, et la vue Radar pour un affichage sonar stylé montrant les utilisateurs par distance.',
+      de: 'Wechsle zwischen Kartenansicht und Radar-Ansicht für eine Sonar-Darstellung der Nutzer nach Entfernung.',
+    },
+    step3Title: { en: 'Connect & break the ice', fr: 'Connecte-toi et brise la glace', de: 'Verbinde dich & brich das Eis' },
+    step3Desc: {
+      en: 'Tap on any user on the map to reveal their profile, send a connection request, or start a conversation with an icebreaker!',
+      fr: 'Appuie sur un utilisateur sur la carte pour découvrir son profil, envoyer une demande de connexion ou lancer une conversation !',
+      de: 'Tippe auf einen Nutzer auf der Karte, um sein Profil zu sehen, eine Verbindungsanfrage zu senden oder ein Gespräch zu starten!',
+    },
+    next: { en: 'Next', fr: 'Suivant', de: 'Weiter' },
+    skip: { en: 'Skip tutorial', fr: 'Passer le tutoriel', de: 'Tutorial überspringen' },
+    done: { en: 'Got it!', fr: 'C\'est compris !', de: 'Verstanden!' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
