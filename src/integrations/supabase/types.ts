@@ -1511,6 +1511,24 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: boolean
       }
+      discover_users: {
+        Args: {
+          p_activity?: string
+          p_limit?: number
+          p_search?: string
+          p_university?: string
+        }
+        Returns: {
+          avatar_url: string
+          current_activity: string
+          favorite_activities: string[]
+          first_name: string
+          is_online_now: boolean
+          last_active_at: string
+          university: string
+          user_id: string
+        }[]
+      }
       fuzz_coordinates: { Args: { lat: number; lon: number }; Returns: Json }
       get_available_sessions: {
         Args: {
