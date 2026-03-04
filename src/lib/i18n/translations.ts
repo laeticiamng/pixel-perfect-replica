@@ -1672,6 +1672,11 @@ export const translations = {
     markAllRead: { en: 'Mark all read', fr: 'Tout marquer lu', de: 'Alle als gelesen markieren' },
     empty: { en: 'No notifications', fr: 'Aucune notification', de: 'Keine Benachrichtigungen' },
     emptyDesc: { en: 'You\'re all caught up!', fr: 'Vous êtes à jour !', de: 'Sie sind auf dem neuesten Stand!' },
+    filterAll: { en: 'All', fr: 'Tout', de: 'Alle' },
+    filterMessages: { en: 'Messages', fr: 'Messages', de: 'Nachrichten' },
+    filterConnections: { en: 'Connections', fr: 'Connexions', de: 'Verbindungen' },
+    filterSessions: { en: 'Sessions', fr: 'Sessions', de: 'Sitzungen' },
+    filterNearby: { en: 'Nearby', fr: 'Proximité', de: 'In der Nähe' },
   },
 
   // Nav additions
