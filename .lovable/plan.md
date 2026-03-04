@@ -1,26 +1,56 @@
 
 
-## Etat des 8 tickets — Tous deja implementes
+# Plan: Add German (DE) as Third Language Across the Platform
 
-Apres verification du code actuel, les 8 tickets sont **deja implementes** :
+## Scope
 
-| Ticket | Statut | Preuve |
-|--------|--------|--------|
-| 1 — SocialProofBar dynamique | Done | `SocialProofBar.tsx` appelle `get_community_stats()` RPC, `AnimatedCounter` avec `useInView`, tracking `social_proof_view` |
-| 2 — PricingPreviewSection | Done | `PricingPreviewSection.tsx` existe avec 3 tiers, integre dans `LandingPage.tsx`, traductions FR/EN |
-| 3 — Testimonials dynamiques | Done | `TestimonialsSection.tsx` charge `user_testimonials` (is_approved=true), masque si vide |
-| 4 — UTM + Attribution | Done | `useUTM.ts` capture/persiste UTM, injecte dans `useAnalytics.ts` (page_view + signup) |
-| 5 — PremiumNudge | Done | `PremiumNudge.tsx` integre dans `BinomePage.tsx`, dismiss via sessionStorage |
-| 6 — JSON-LD enrichi | Done | `index.html` contient SoftwareApplication + 3 offers (0€, 0.99€, 9.90€) |
-| 7 — Parrainage MVP | Done | Table `referrals` + RLS, `apply-referral` edge function, `useReferral.ts`, UI dans `ProfilePage.tsx` |
-| 8 — Re-engagement push | Done | `notifications/index.ts` handler `send-reengagement`, cron `daily-reengagement-push` |
+The platform currently supports English (EN) and French (FR) via a `{ en: string; fr: string }` pattern across ~2040 lines of translations. Adding German requires changes to:
 
-### Prochaines etapes possibles
+1. **Translation type & data** — extend every translation entry with `de: string`
+2. **Locale type** — add `'de'` to the `Locale` union
+3. **LanguageToggle** — add a DE button in both full and compact modes
+4. **useTranslation hook** — update the toggle logic for 3 languages
+5. **Signal types** — add `de` to `ACTIVITY_LABELS`, `ICEBREAKERS_I18N`
+6. **Date locale mapping** — add `de` locale from `date-fns/locale` where `fr`/`enUS` is used (~4 files)
+7. **Intl date formatting** — map `'de'` → `'de-DE'` in admin components
 
-Aucune implementation n'est requise. Les options sont :
+## Technical Details
 
-1. **QA E2E** — Tester les 8 tickets sur la preview pour valider les criteres d'acceptation
-2. **Audit UX** — Revue ecran par ecran (mobile 375px, desktop, flows Stripe)
-3. **Roadmap MRR 90j** — Projection revenue basee sur les mecaniques implementees
-4. **Plan Growth** — Strategie acquisition/retention adaptee au marche
+### 1. `src/lib/i18n/translations.ts` (major)
+- Line 1: `export type Locale = 'en' | 'fr' | 'de';`
+- Every translation entry (600+ keys) gets a `de: '...'` value added
+- This is the bulk of the work — all German strings need to be written
+
+### 2. `src/lib/i18n/useTranslation.ts`
+- `getNestedValue` return type: `{ en: string; fr: string; de: string }`
+- `toggleLocale`: change from binary toggle to cycle `en → fr → de → en`
+- Add `isGerman: locale === 'de'` to return value
+
+### 3. `src/components/LanguageToggle.tsx`
+- Full mode: add a third "DE" button alongside EN/FR
+- Compact mode: cycle through 3 locales instead of toggling between 2
+
+### 4. `src/types/signal.ts`
+- `ACTIVITY_LABELS`: add `de` to each entry (e.g. `studying: { en: 'Study', fr: 'Réviser', de: 'Lernen' }`)
+- `ICEBREAKERS_I18N`: add `de` arrays for each activity
+- `getActivityLabel` / `getIcebreaker`: update type signatures from `'en' | 'fr'` to `Locale`
+
+### 5. Date locale mapping (~4 files)
+- `EventDetailPage.tsx`, `SignalHistoryPanel.tsx`, etc.: add `import { de as deLocale } from 'date-fns/locale'` and extend the ternary to handle `'de'`
+- `AlertHistoryCard.tsx`, `EventScraperCard.tsx`: add `'de-DE'` mapping for `Intl.DateTimeFormat`
+
+### 6. `deleteAccount.confirmWord`
+- Add German confirmation word: `{ en: 'DELETE', fr: 'SUPPRIMER', de: 'LÖSCHEN' }`
+
+## Estimated Size
+- **translations.ts**: ~600 keys × add 1 German string each — largest file change
+- **6-8 other files**: small targeted edits
+- Total: ~10 files modified
+
+## Implementation Order
+1. Extend `Locale` type and translation structure with all German strings
+2. Update `useTranslation` hook and `LanguageToggle` component
+3. Update `signal.ts` types with German icebreakers & activity labels
+4. Fix date locale mappings across pages
+5. Verify the delete account confirmation word pattern
 
