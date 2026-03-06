@@ -28,7 +28,7 @@ export function useAdminAlerts() {
       return;
     }
 
-    setPreferences(data as unknown as AlertPreferences | null);
+    setPreferences(data as AlertPreferences | null);
     setIsLoading(false);
   }, [user, isAdmin]);
 
