@@ -43,14 +43,14 @@ export function useAnalytics() {
     try {
       await supabase
         .from('analytics_events')
-        .insert({
+        .insert([{
           user_id: user?.id || null,
           event_name: name,
           event_category: category,
           event_data: data,
           page_path: location.pathname,
           session_id: sessionId.current,
-        });
+        }]);
     } catch (error) {
       // Silently swallowed — analytics must never break the app
     }
