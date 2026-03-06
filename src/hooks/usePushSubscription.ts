@@ -69,10 +69,9 @@ export function usePushSubscription() {
       // Get service worker registration
       const registration = await navigator.serviceWorker.ready;
 
-      // Subscribe to push manager
-      // Note: In production, you'd use a VAPID public key here
-      const reg = registration as unknown as { pushManager: PushManager };
-      const subscription = await reg.pushManager.subscribe({
+      const registration = await navigator.serviceWorker.ready;
+
+      const subscription = await getPushManager(registration).subscribe({
         userVisibleOnly: true,
         // applicationServerKey: VAPID_PUBLIC_KEY
       });
