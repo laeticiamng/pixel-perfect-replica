@@ -51,11 +51,11 @@ const ProblemSection = forwardRef<HTMLElement>(function ProblemSection(_props, r
 });
 
 // Signal Explanation Section
-function SignalExplanationSection() {
+const SignalExplanationSection = forwardRef<HTMLElement>(function SignalExplanationSection(_props, ref) {
   const { t } = useTranslation();
   
   return (
-    <section className="py-12 px-6 relative z-10 bg-card/30">
+    <section ref={ref} className="py-12 px-6 relative z-10 bg-card/30">
       <div className="max-w-4xl mx-auto text-center">
         <RevealText>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
@@ -80,7 +80,7 @@ function SignalExplanationSection() {
       </div>
     </section>
   );
-}
+});
 
 // Features Grid Section
 function FeaturesSection() {
