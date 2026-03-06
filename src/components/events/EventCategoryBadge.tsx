@@ -31,7 +31,7 @@ const categoryConfig: Record<EventCategory, { Icon: LucideIcon; color: string }>
 export function EventCategoryBadge({ category, size = 'md', className }: EventCategoryBadgeProps) {
   const { t } = useTranslation();
   const config = categoryConfig[category] || categoryConfig.other;
-  const label = t(`eventCategories.${category}` as any);
+  const label = t(`eventCategories.${category}`);
   
   return (
     <span
