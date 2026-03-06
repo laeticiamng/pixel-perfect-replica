@@ -4,23 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useAdminCheck } from './useAdminCheck';
 import { logger } from '@/lib/logger';
 
-interface AlertPreferences {
-  id?: string;
-  user_id: string;
-  email: string;
-  alert_new_user: boolean;
-  alert_high_reports: boolean;
-  alert_error_spike: boolean;
-}
-
-interface AlertLog {
-  id: string;
-  alert_type: string;
-  recipient_email: string;
-  subject: string;
-  sent_at: string;
-  metadata: Record<string, unknown>;
-}
+import type { AlertPreferences, AlertLog } from '@/types/rpc';
 
 export function useAdminAlerts() {
   const { user } = useAuth();
@@ -44,7 +28,7 @@ export function useAdminAlerts() {
       return;
     }
 
-    setPreferences(data as unknown as AlertPreferences | null);
+    setPreferences(data as AlertPreferences | null);
     setIsLoading(false);
   }, [user, isAdmin]);
 
@@ -67,7 +51,7 @@ export function useAdminAlerts() {
       .single();
 
     if (!error && data) {
-      setPreferences(data as unknown as AlertPreferences);
+      setPreferences(data as AlertPreferences);
     }
 
     return { data, error };
@@ -88,7 +72,7 @@ export function useAdminAlerts() {
       return;
     }
 
-    setAlertLogs((data || []) as unknown as AlertLog[]);
+    setAlertLogs((data || []) as AlertLog[]);
   }, [isAdmin]);
 
   useEffect(() => {

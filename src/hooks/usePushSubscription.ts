@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { getPushManager } from '@/types/rpc';
 
 interface PushSubscription {
   endpoint: string;
@@ -27,8 +28,7 @@ export function usePushSubscription() {
 
     try {
       const registration = await navigator.serviceWorker.ready;
-      const reg = registration as unknown as { pushManager: PushManager };
-      const subscription = await reg.pushManager.getSubscription();
+      const subscription = await getPushManager(registration).getSubscription();
       
       if (subscription) {
         // Verify it's in our database
@@ -69,10 +69,7 @@ export function usePushSubscription() {
       // Get service worker registration
       const registration = await navigator.serviceWorker.ready;
 
-      // Subscribe to push manager
-      // Note: In production, you'd use a VAPID public key here
-      const reg = registration as unknown as { pushManager: PushManager };
-      const subscription = await reg.pushManager.subscribe({
+      const subscription = await getPushManager(registration).subscribe({
         userVisibleOnly: true,
         // applicationServerKey: VAPID_PUBLIC_KEY
       });
@@ -115,8 +112,7 @@ export function usePushSubscription() {
 
     try {
       const registration = await navigator.serviceWorker.ready;
-      const reg = registration as unknown as { pushManager: PushManager };
-      const subscription = await reg.pushManager.getSubscription();
+      const subscription = await getPushManager(registration).getSubscription();
 
       if (subscription) {
         // Unsubscribe from push manager

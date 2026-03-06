@@ -41,7 +41,7 @@ export function useNotifications() {
       .limit(50);
 
     if (!error && data) {
-      const typed = data as unknown as AppNotification[];
+      const typed = data as AppNotification[];
       setNotifications(typed);
       setUnreadCount(typed.filter(n => !n.read_at).length);
     }
@@ -110,7 +110,7 @@ export function useNotifications() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          const newNotif = payload.new as unknown as AppNotification;
+          const newNotif = payload.new as AppNotification;
           setNotifications(prev => {
             if (prev.some(n => n.id === newNotif.id)) return prev;
             return [newNotif, ...prev];
