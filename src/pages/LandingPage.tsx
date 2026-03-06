@@ -200,6 +200,7 @@ export default function LandingPage() {
       <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
       
       <AppPreviewSection />
+      <TrustedBySection />
       <SocialProofBar />
       <ProblemSection />
       <SignalExplanationSection />

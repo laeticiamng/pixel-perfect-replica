@@ -316,6 +316,9 @@ export const translations = {
     pricingUnitF2: { en: 'Buy 1 to 10 sessions', fr: 'Achète 1 à 10 sessions', de: 'Kaufe 1 bis 10 Sessions' },
     pricingUnitCTA: { en: 'Buy sessions', fr: 'Acheter des sessions', de: 'Sessions kaufen' },
     testimonialsTitle: { en: 'What users say', fr: 'Ce que disent les utilisateurs', de: 'Was Nutzer sagen' },
+    trustedStudents: { en: 'Built for students', fr: 'Conçu pour les étudiants', de: 'Für Studenten entwickelt' },
+    trustedPrivacy: { en: 'Privacy first', fr: 'Vie privée d\'abord', de: 'Datenschutz zuerst' },
+    trustedMadeInFrance: { en: 'Made in France 🇫🇷', fr: 'Made in France 🇫🇷', de: 'Made in France 🇫🇷' },
   },
 
   // Map page
