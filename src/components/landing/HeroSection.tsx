@@ -81,6 +81,18 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           {t('auth.signIn')}
         </Button>
       </motion.div>
+
+      {/* PWA Install hint - visible on mobile */}
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        onClick={() => navigate('/install')}
+        className="mt-4 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-coral transition-colors sm:hidden"
+      >
+        <Download className="h-3.5 w-3.5" />
+        {t('landing.install')}
+      </motion.button>
       
       {/* Scroll indicator */}
       <motion.div
