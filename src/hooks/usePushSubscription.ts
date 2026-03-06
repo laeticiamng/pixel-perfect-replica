@@ -28,8 +28,7 @@ export function usePushSubscription() {
 
     try {
       const registration = await navigator.serviceWorker.ready;
-      const reg = registration as unknown as { pushManager: PushManager };
-      const subscription = await reg.pushManager.getSubscription();
+      const subscription = await getPushManager(registration).getSubscription();
       
       if (subscription) {
         // Verify it's in our database
