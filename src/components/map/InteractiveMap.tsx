@@ -264,10 +264,10 @@ export function InteractiveMap({
     });
   }, [getClusterExpansionZoom]);
 
-  const handleMarkerClick = useCallback((user: NearbyUser) => {
+  const handleMarkerClick = useCallback((user: ClusterPoint) => {
     // Find the full user from nearbyUsers for activeSince
     const fullUser = nearbyUsers.find(u => u.id === user.id);
-    setSelectedUser(fullUser || user as NearbyUser);
+    setSelectedUser(fullUser || { ...user, activeSince: undefined });
   }, [nearbyUsers]);
 
   const handlePopupContact = useCallback((userId: string) => {

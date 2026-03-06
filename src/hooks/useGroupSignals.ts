@@ -52,7 +52,7 @@ export function useGroupSignals() {
 
       if (error) throw error;
 
-      const signals = (data as unknown as GroupSignal[]) || [];
+      const signals: GroupSignal[] = (data || []) as GroupSignal[];
       setGroupSignals(signals);
       setMyGroupSignal(signals.find(s => s.creator_id === user.id) || null);
     } catch (err) {
