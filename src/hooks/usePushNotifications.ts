@@ -38,11 +38,11 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       if (!user || !isSupported) return;
       try {
         const { data, error } = await supabase
-          .from('push_subscriptions' as any)
+          .from('push_subscriptions')
           .select('id')
           .eq('user_id', user.id)
           .limit(1);
-        if (!error && data && (data as any[]).length > 0) {
+        if (!error && data && data.length > 0) {
           setIsSubscribed(true);
         }
       } catch (err) {
