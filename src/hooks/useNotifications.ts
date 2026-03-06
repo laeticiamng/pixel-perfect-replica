@@ -41,7 +41,7 @@ export function useNotifications() {
       .limit(50);
 
     if (!error && data) {
-      const typed = data as unknown as AppNotification[];
+      const typed = data as AppNotification[];
       setNotifications(typed);
       setUnreadCount(typed.filter(n => !n.read_at).length);
     }
