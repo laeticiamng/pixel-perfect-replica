@@ -32,16 +32,8 @@ export interface StreakData {
   total_active_days: number;
 }
 
-export interface LeaderboardEntry {
-  user_id: string;
-  first_name: string;
-  avatar_url: string | null;
-  university: string | null;
-  interactions: number;
-  current_streak: number;
-  sessions_completed: number;
-  score: number;
-}
+export type { LeaderboardEntry };
+import type { LeaderboardEntry } from '@/types/rpc';
 
 export function useGamification() {
   const { user, stats } = useAuth();
