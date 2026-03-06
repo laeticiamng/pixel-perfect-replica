@@ -85,7 +85,7 @@ export function useGamification() {
 
     const { data } = await supabase.rpc('record_daily_activity', { p_user_id: user.id });
     if (data) {
-      const result = data as any;
+      const result = data as Record<string, number>;
       setStreak(prev => prev ? {
         ...prev,
         current_streak: result.current_streak,
