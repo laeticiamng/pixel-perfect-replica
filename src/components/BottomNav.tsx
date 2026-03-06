@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { NavLink as RouterNavLink, useLocation } from 'react-router-dom';
-import { MapPin, MessageCircle, CalendarDays, Users2, Bell } from 'lucide-react';
+import { MapPin, MessageCircle, CalendarDays, Users2, Bell, Compass } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useShowNewBadge } from '@/components/binome/NewBadge';
 import { useTranslation } from '@/lib/i18n';
