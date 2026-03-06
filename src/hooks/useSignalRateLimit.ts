@@ -32,7 +32,7 @@ export function useSignalRateLimit() {
 
     try {
       // Server-side check via Supabase function
-      const { data: serverAllowed, error: rpcError } = await (supabase as any).rpc(
+      const { data: serverAllowed, error: rpcError } = await supabase.rpc(
         'check_signal_rate_limit',
         { p_user_id: user.id }
       );
