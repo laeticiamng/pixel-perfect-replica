@@ -47,7 +47,7 @@ export function useAnalytics() {
           user_id: user?.id || null,
           event_name: name,
           event_category: category,
-          event_data: data,
+          event_data: data as Record<string, string | number | boolean | null>,
           page_path: location.pathname,
           session_id: sessionId.current,
         }]);
