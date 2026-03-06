@@ -44,7 +44,7 @@ export default function StatisticsPage() {
   const [topActivities, setTopActivities] = useState<InteractionData[]>([]);
   const dayKeys = ['dayMon', 'dayTue', 'dayWed', 'dayThu', 'dayFri', 'daySat', 'daySun'] as const;
   const [weeklyData, setWeeklyData] = useState<WeeklyData[]>(
-    dayKeys.map(k => ({ day: t(`statistics.${k}` as any), interactions: 0 }))
+    dayKeys.map(k => ({ day: t(`statistics.${k}`), interactions: 0 }))
   );
   const [hourlyData, setHourlyData] = useState<HourlyData[]>([]);
   const [pieData, setPieData] = useState<{ name: string; value: number; color: string }[]>([]);
