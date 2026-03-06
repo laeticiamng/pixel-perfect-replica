@@ -74,10 +74,15 @@ interface SessionRow {
   note?: string | null;
   max_participants: number;
   current_participants?: number;
-  created_at: string;
+  created_at?: string;
   status?: string;
   latitude?: number | null;
   longitude?: number | null;
+  // Fields from RPC get_available_sessions
+  creator_name?: string;
+  creator_avatar?: string;
+  creator_reliability?: number;
+  age_diff?: number;
 }
 
 export function useBinomeSessions() {
