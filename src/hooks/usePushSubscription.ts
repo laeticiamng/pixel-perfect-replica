@@ -115,7 +115,8 @@ export function usePushSubscription() {
 
     try {
       const registration = await navigator.serviceWorker.ready;
-      const subscription = await (registration as any).pushManager.getSubscription();
+      const reg = registration as unknown as { pushManager: PushManager };
+      const subscription = await reg.pushManager.getSubscription();
 
       if (subscription) {
         // Unsubscribe from push manager
