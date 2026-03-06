@@ -4,23 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useAdminCheck } from './useAdminCheck';
 import { logger } from '@/lib/logger';
 
-interface AlertPreferences {
-  id?: string;
-  user_id: string;
-  email: string;
-  alert_new_user: boolean;
-  alert_high_reports: boolean;
-  alert_error_spike: boolean;
-}
-
-interface AlertLog {
-  id: string;
-  alert_type: string;
-  recipient_email: string;
-  subject: string;
-  sent_at: string;
-  metadata: Record<string, unknown>;
-}
+import type { AlertPreferences, AlertLog } from '@/types/rpc';
 
 export function useAdminAlerts() {
   const { user } = useAuth();
