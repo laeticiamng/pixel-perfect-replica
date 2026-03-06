@@ -9,6 +9,10 @@ export interface Profile {
   is_premium: boolean;
   created_at: string;
   updated_at: string;
+  favorite_activities?: string[] | null;
+  bio?: string | null;
+  birth_year?: number | null;
+  purchased_sessions?: number | null;
 }
 
 export interface UserStats {
