@@ -460,7 +460,7 @@ export function InteractiveMap({
                 markerKey={user.id}
                 latitude={user.latitude}
                 longitude={user.longitude}
-                onClick={() => handleMarkerClick(user as unknown as NearbyUser)}
+                onClick={() => handleMarkerClick(user)}
               >
                 <button
                   className="relative cursor-pointer transform transition-transform hover:scale-110 active:scale-95"
