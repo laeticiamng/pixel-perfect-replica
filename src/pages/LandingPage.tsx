@@ -20,6 +20,7 @@ import {
   SocialProofBar,
   PricingPreviewSection,
   LandingTestimonialsSection,
+  TrustedBySection,
 } from '@/components/landing';
 
 // Problem Section
