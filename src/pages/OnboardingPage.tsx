@@ -177,6 +177,10 @@ export default function OnboardingPage() {
         setErrors(fieldErrors);
         return false;
       }
+      if (!acceptedTerms) {
+        setErrors({ terms: t('auth.mustAcceptTerms') });
+        return false;
+      }
       return true;
     }
   };
