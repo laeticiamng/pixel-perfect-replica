@@ -78,7 +78,7 @@ export function useAdminAlerts() {
     if (!isAdmin) return;
 
     const { data, error } = await supabase
-      .from('alert_logs' as any)
+      .from('alert_logs')
       .select('*')
       .order('sent_at', { ascending: false })
       .limit(limit);

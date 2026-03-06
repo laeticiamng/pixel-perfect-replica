@@ -101,7 +101,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
     try {
       const { error } = await supabase
-        .from('push_subscriptions' as any)
+        .from('push_subscriptions')
         .delete()
         .eq('user_id', user.id);
 

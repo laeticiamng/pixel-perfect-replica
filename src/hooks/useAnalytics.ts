@@ -42,7 +42,7 @@ export function useAnalytics() {
   const trackEvent = useCallback(async ({ name, category, data = {} }: TrackEventParams) => {
     try {
       await supabase
-        .from('analytics_events' as any)
+        .from('analytics_events')
         .insert({
           user_id: user?.id || null,
           event_name: name,

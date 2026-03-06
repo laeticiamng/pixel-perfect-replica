@@ -39,7 +39,7 @@ export function useReferral(): ReferralStats & {
 
         // Count referrals (as referrer)
         const { count } = await supabase
-          .from('referrals' as any)
+          .from('referrals')
           .select('*', { count: 'exact', head: true })
           .eq('referrer_id', user.id);
         setReferralsCount(count || 0);

@@ -65,7 +65,7 @@ export function useMessages(interactionId: string | null) {
     if (!interactionId || !user) return;
     
     const { error } = await supabase
-      .from('conversation_reads' as any)
+      .from('conversation_reads')
       .upsert(
         { user_id: user.id, interaction_id: interactionId, last_read_at: new Date().toISOString() },
         { onConflict: 'user_id,interaction_id' }

@@ -139,7 +139,7 @@ export function useGamification() {
   // Fetch leaderboard
   const fetchLeaderboard = useCallback(async (university?: string) => {
     setLeaderboardLoading(true);
-    const params: any = { p_limit: 20 };
+    const params: { p_limit: number; p_university?: string } = { p_limit: 20 };
     if (university) params.p_university = university;
 
     const { data } = await supabase.rpc('get_campus_leaderboard', params);
