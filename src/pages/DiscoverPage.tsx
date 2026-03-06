@@ -55,7 +55,7 @@ export default function DiscoverPage() {
         p_limit: 30,
       });
       if (error) throw error;
-      setUsers((data as unknown as DiscoveredUser[]) || []);
+      setUsers((data ?? []) as DiscoveredUser[]);
     } catch (err) {
       console.error('Error fetching users:', err);
     } finally {

@@ -113,7 +113,7 @@ export default function OnboardingPage() {
     } catch (err) {
       // Fallback to native Supabase OAuth
       try {
-        const { error } = await signInWithOAuthSupabase('google');
+        const { error } = await signInWithOAuthSupabase('apple');
         if (error) {
           toast.error(t('auth.appleError'));
         }

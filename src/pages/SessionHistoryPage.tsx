@@ -198,7 +198,7 @@ export default function SessionHistoryPage() {
                       <span className="text-2xl">{activityEmojis[session.activity]}</span>
                       <div>
                         <p className="font-medium text-foreground">
-                          {t(`activities.${session.activity}` as any)} {t('sessionHistory.atCity').replace('{city}', session.city)}
+                          {t(`activities.${session.activity}`)} {t('sessionHistory.atCity').replace('{city}', session.city)}
                         </p>
                         <p className="text-sm text-muted-foreground">
                           {format(new Date(session.scheduled_date), 'EEEE d MMMM yyyy', { locale: dateLocale })}

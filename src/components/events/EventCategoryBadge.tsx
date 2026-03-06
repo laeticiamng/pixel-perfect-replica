@@ -62,7 +62,7 @@ export function EventCategorySelector({
     <div className="flex flex-wrap gap-2">
       {categories.map((cat) => {
         const config = categoryConfig[cat];
-        const label = t(`eventCategories.${cat}` as any);
+        const label = t(`eventCategories.${cat}`);
         const isSelected = value === cat;
         
         return (

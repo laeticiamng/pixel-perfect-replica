@@ -52,10 +52,10 @@ export function SignalHistoryPanel() {
 
       const entries: SignalHistoryEntry[] = (data || []).map(event => ({
         id: event.id,
-        activity: (event.event_data as any)?.activity || 'other',
+        activity: (event.event_data as Record<string, string | null>)?.activity || 'other',
         started_at: event.created_at,
         expires_at: new Date(new Date(event.created_at).getTime() + 2 * 60 * 60 * 1000).toISOString(),
-        location_description: (event.event_data as any)?.location_description
+        location_description: (event.event_data as Record<string, string | null>)?.location_description
       }));
 
       setHistory(entries);

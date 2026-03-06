@@ -35,7 +35,7 @@ export function useUnreadMessages() {
         { event: 'INSERT', schema: 'public', table: 'messages' },
         (payload) => {
           // Only increment if message is from someone else
-          const msg = payload.new as any;
+          const msg = payload.new as { sender_id?: string };
           if (msg.sender_id !== user.id) {
             setUnreadCount(prev => prev + 1);
           }

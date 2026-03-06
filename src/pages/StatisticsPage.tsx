@@ -84,7 +84,7 @@ export default function StatisticsPage() {
           name: item.activity, value: item.count, color: CHART_COLORS[index % CHART_COLORS.length],
         })));
         
-        setWeeklyData(dayKeys.map((k, i) => ({ day: t(`statistics.${k}` as any), interactions: dayCounts[i] })));
+        setWeeklyData(dayKeys.map((k, i) => ({ day: t(`statistics.${k}`), interactions: dayCounts[i] })));
         setHourlyData(Object.entries(hourCounts).map(([hour, count]) => ({ hour: `${hour}h`, count })).sort((a, b) => parseInt(a.hour) - parseInt(b.hour)));
       }
       setIsLoading(false);

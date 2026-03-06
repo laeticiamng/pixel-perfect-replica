@@ -69,7 +69,7 @@ export function AIRecommendationsWidget() {
     }
     setIsFromCache(false);
     const result = await getSessionRecommendations(user.id, {
-      favorite_activities: (profile as any)?.favorite_activities || [],
+      favorite_activities: profile?.favorite_activities || [],
     });
     if (result) {
       const recs = result.recommendations || [];

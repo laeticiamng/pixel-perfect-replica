@@ -107,7 +107,7 @@ export function Breadcrumbs({ className, showHome = false }: BreadcrumbsProps) {
                 onClick={() => navigate(item.path)}
                 className="text-muted-foreground hover:text-coral transition-colors truncate max-w-[100px]"
               >
-                {t(item.labelKey as any)}
+                {t(item.labelKey)}
               </button>
             )}
           </div>

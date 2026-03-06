@@ -71,7 +71,8 @@ export function usePushSubscription() {
 
       // Subscribe to push manager
       // Note: In production, you'd use a VAPID public key here
-      const subscription = await (registration as any).pushManager.subscribe({
+      // @ts-expect-error: pushManager exists on ServiceWorkerRegistration but TS types may not include it
+      const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         // applicationServerKey: VAPID_PUBLIC_KEY
       });
