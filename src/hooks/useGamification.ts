@@ -62,18 +62,18 @@ export function useGamification() {
     ]);
 
     if (streakRes.data) {
-      const d = streakRes.data as any;
+      const d = streakRes.data;
       setStreak({
         current_streak: d.current_streak,
         longest_streak: d.longest_streak,
         last_active_date: d.last_active_date,
-        week_activity: Array.isArray(d.week_activity) ? d.week_activity : [false, false, false, false, false, false, false],
+        week_activity: Array.isArray(d.week_activity) ? (d.week_activity as boolean[]) : [false, false, false, false, false, false, false],
         total_active_days: d.total_active_days,
       });
     }
 
     if (achRes.data) {
-      setUnlockedKeys(new Set((achRes.data as any[]).map((a: any) => a.achievement_key)));
+      setUnlockedKeys(new Set(achRes.data.map((a) => a.achievement_key)));
     }
 
     setIsLoading(false);
