@@ -95,7 +95,7 @@ export function useActiveSignal() {
       return { data, error };
     } else {
       // Check rate limit before creating a new signal (max 10/hour)
-      const { data: rateLimitOk } = await (supabase as any)
+      const { data: rateLimitOk } = await supabase
         .rpc('check_signal_rate_limit', { p_user_id: user.id });
 
       if (rateLimitOk === false) {
