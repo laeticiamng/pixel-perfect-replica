@@ -1,0 +1,1 @@
+ALTER TABLE public.user_testimonials ALTER COLUMN session_id DROP NOT NULL;

@@ -56,7 +56,7 @@ export function useMessages(interactionId: string | null) {
       return { error: sendError };
     }
 
-    setMessages(prev => [...prev, data as unknown as Message]);
+    setMessages(prev => [...prev, data as Message]);
     return { data };
   }, [interactionId, user]);
 

@@ -74,10 +74,15 @@ interface SessionRow {
   note?: string | null;
   max_participants: number;
   current_participants?: number;
-  created_at: string;
+  created_at?: string;
   status?: string;
   latitude?: number | null;
   longitude?: number | null;
+  // Fields from RPC get_available_sessions
+  creator_name?: string;
+  creator_avatar?: string;
+  creator_reliability?: number;
+  age_diff?: number;
 }
 
 export function useBinomeSessions() {
@@ -108,7 +113,7 @@ export function useBinomeSessions() {
         });
 
         if (rpcError) throw rpcError;
-        rows = (data || []) as unknown as SessionRow[];
+        rows = (data || []) as SessionRow[];
       } else {
         const nowIso = new Date().toISOString();
         const { data, error: queryError } = await supabase
@@ -145,9 +150,9 @@ export function useBinomeSessions() {
         return {
           id: s.id,
           creator_id: s.creator_id,
-          creator_name: profile?.first_name || undefined,
-          creator_avatar: profile?.avatar_url || undefined,
-          creator_reliability: rel?.reliability_score,
+          creator_name: s.creator_name || profile?.first_name || undefined,
+          creator_avatar: s.creator_avatar || profile?.avatar_url || undefined,
+          creator_reliability: s.creator_reliability ?? rel?.reliability_score,
           scheduled_date: s.scheduled_date,
           start_time: s.start_time,
           duration_minutes: s.duration_minutes as DurationOption,
@@ -158,7 +163,7 @@ export function useBinomeSessions() {
           max_participants: Number(s.max_participants),
           current_participants: Number(s.current_participants || 0),
           status: 'open' as SessionStatus,
-          created_at: s.created_at,
+          created_at: s.created_at || new Date().toISOString(),
         };
       });
 

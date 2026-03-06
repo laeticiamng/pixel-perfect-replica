@@ -264,10 +264,10 @@ export function InteractiveMap({
     });
   }, [getClusterExpansionZoom]);
 
-  const handleMarkerClick = useCallback((user: NearbyUser) => {
+  const handleMarkerClick = useCallback((user: ClusterPoint) => {
     // Find the full user from nearbyUsers for activeSince
     const fullUser = nearbyUsers.find(u => u.id === user.id);
-    setSelectedUser(fullUser || user as NearbyUser);
+    setSelectedUser(fullUser || { ...user, activeSince: undefined });
   }, [nearbyUsers]);
 
   const handlePopupContact = useCallback((userId: string) => {
@@ -460,7 +460,7 @@ export function InteractiveMap({
                 markerKey={user.id}
                 latitude={user.latitude}
                 longitude={user.longitude}
-                onClick={() => handleMarkerClick(user as unknown as NearbyUser)}
+                onClick={() => handleMarkerClick(user)}
               >
                 <button
                   className="relative cursor-pointer transform transition-transform hover:scale-110 active:scale-95"
