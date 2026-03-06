@@ -1481,7 +1481,7 @@ export const translations = {
     home: { en: 'Home', fr: 'Accueil', de: 'Startseite' },
     mapRadar: { en: 'Map / Radar', fr: 'Carte / Radar', de: 'Karte / Radar' },
     myProfile: { en: 'My Profile', fr: 'Mon Profil', de: 'Mein Profil' },
-    binome: { en: 'Binôme', fr: 'Binôme', de: 'Binôme' },
+    binome: { en: 'Sessions', fr: 'Sessions', de: 'Sessions' },
     events: { en: 'Events', fr: 'Événements', de: 'Events' },
     statistics: { en: 'Statistics', fr: 'Statistiques', de: 'Statistiken' },
     peopleMet: { en: 'People met', fr: 'Personnes rencontrées', de: 'Getroffene Personen' },
