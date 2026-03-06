@@ -73,7 +73,7 @@ export default function ProximityRevealPage() {
 
   const generateIcebreaker = useCallback(() => {
     if (user) {
-      const ib = getIcebreakerFn(user.activity as any, locale);
+      const ib = getIcebreakerFn(user.activity as ActivityType, locale);
       setIcebreaker(ib);
     }
   }, [user, locale]);
