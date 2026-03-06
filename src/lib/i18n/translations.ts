@@ -608,6 +608,7 @@ export const translations = {
     activateSignal: { en: 'Activate your signal', fr: 'Activer ton signal', de: 'Dein Signal aktivieren' },
     loadingMap: { en: 'Loading map...', fr: 'Chargement de la carte...', de: 'Karte wird geladen...' },
     locationFallback: { en: 'Geolocation unavailable — showing demo position', fr: 'Géolocalisation indisponible — position de démo affichée', de: 'Geolokalisierung nicht verfügbar — Demo-Position wird angezeigt' },
+    discoverUsers: { en: 'Discover users nearby', fr: 'Découvre les utilisateurs', de: 'Benutzer entdecken' },
     locationDenied: { en: 'Location access denied — showing demo position', fr: 'Accès à la localisation refusé — position de démo affichée', de: 'Standortzugriff verweigert — Demo-Position wird angezeigt' },
   },
 
