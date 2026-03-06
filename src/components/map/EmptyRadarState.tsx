@@ -1,4 +1,5 @@
-import { Radio, Share2, Users, Calendar, Trophy } from 'lucide-react';
+import { Radio, Share2, Users, Calendar, Trophy, Compass } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
@@ -18,6 +19,7 @@ interface CommunityStats {
 
 export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { profile } = useAuth();
   const [stats, setStats] = useState<CommunityStats | null>(null);
 
@@ -170,6 +172,15 @@ export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
         >
           <Share2 className="h-4 w-4 mr-2" />
           {t('map.inviteFriends')}
+        </Button>
+
+        <Button
+          onClick={() => navigate('/discover')}
+          variant="outline"
+          className="h-12 rounded-xl border-2 border-coral/50 text-coral hover:bg-coral/10"
+        >
+          <Compass className="h-4 w-4 mr-2" />
+          {t('mapUI.discoverUsers')}
         </Button>
       </motion.div>
     </div>
