@@ -24,11 +24,11 @@ import {
 } from '@/components/landing';
 
 // Problem Section
-function ProblemSection() {
+const ProblemSection = forwardRef<HTMLElement>(function ProblemSection(_props, ref) {
   const { t } = useTranslation();
   
   return (
-    <section className="py-12 px-6 relative z-10">
+    <section ref={ref} className="py-12 px-6 relative z-10">
       <div className="max-w-4xl mx-auto">
         <RevealText>
           <p className="text-2xl md:text-3xl lg:text-4xl font-medium text-center leading-relaxed">
@@ -48,14 +48,14 @@ function ProblemSection() {
       </div>
     </section>
   );
-}
+});
 
 // Signal Explanation Section
-function SignalExplanationSection() {
+const SignalExplanationSection = forwardRef<HTMLElement>(function SignalExplanationSection(_props, ref) {
   const { t } = useTranslation();
   
   return (
-    <section className="py-12 px-6 relative z-10 bg-card/30">
+    <section ref={ref} className="py-12 px-6 relative z-10 bg-card/30">
       <div className="max-w-4xl mx-auto text-center">
         <RevealText>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
@@ -80,14 +80,14 @@ function SignalExplanationSection() {
       </div>
     </section>
   );
-}
+});
 
 // Features Grid Section
-function FeaturesSection() {
+const FeaturesSection = forwardRef<HTMLElement>(function FeaturesSection(_props, ref) {
   const { t } = useTranslation();
   
   return (
-    <section className="py-12 px-6 relative z-10">
+    <section ref={ref} className="py-12 px-6 relative z-10">
       <div className="max-w-5xl mx-auto">
         <RevealText>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
@@ -118,7 +118,7 @@ function FeaturesSection() {
       </div>
     </section>
   );
-}
+});
 
 // Comparison Wrapper Section
 const ComparisonWrapper = forwardRef<HTMLElement>(function ComparisonWrapper(_props, ref) {
