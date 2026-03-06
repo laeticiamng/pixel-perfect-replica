@@ -42,6 +42,7 @@ export const translations = {
   nav: {
     map: { en: 'Map', fr: 'Carte', de: 'Karte' },
     book: { en: 'Book', fr: 'Réserver', de: 'Buchen' },
+    discover: { en: 'Discover', fr: 'Découvrir', de: 'Entdecken' },
     events: { en: 'Events', fr: 'Événements', de: 'Events' },
     profile: { en: 'Profile', fr: 'Profil', de: 'Profil' },
     settings: { en: 'Settings', fr: 'Paramètres', de: 'Einstellungen' },
