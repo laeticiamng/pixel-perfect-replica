@@ -1,4 +1,5 @@
-import { Radio, Share2, Users, Calendar, Trophy } from 'lucide-react';
+import { Radio, Share2, Users, Calendar, Trophy, Compass } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
