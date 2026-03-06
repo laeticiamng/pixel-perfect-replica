@@ -72,7 +72,7 @@ export default function StatisticsPage() {
         
         const sortedActivities = Object.entries(activityCounts)
           .map(([activity, count]) => ({
-            activity: t(`activities.${activity}` as any) || activity,
+            activity: t(`activities.${activity}`) || activity,
             count,
             emoji: ACTIVITY_EMOJIS[activity] || '✨',
           }))
