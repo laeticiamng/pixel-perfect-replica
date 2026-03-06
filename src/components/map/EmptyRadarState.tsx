@@ -173,7 +173,15 @@ export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
           <Share2 className="h-4 w-4 mr-2" />
           {t('map.inviteFriends')}
         </Button>
-      </motion.div>
+
+        <Button
+          onClick={() => navigate('/discover')}
+          variant="outline"
+          className="h-12 rounded-xl border-2 border-coral/50 text-coral hover:bg-coral/10"
+        >
+          <Compass className="h-4 w-4 mr-2" />
+          {t('mapUI.discoverUsers')}
+        </Button>
     </div>
   );
 }
