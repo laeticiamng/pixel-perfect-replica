@@ -9,7 +9,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { useRevealRateLimit } from '@/hooks/useRevealRateLimit';
 import { useConnections } from '@/hooks/useConnections';
 import { useTranslation } from '@/lib/i18n';
-import { ACTIVITIES, getIcebreaker as getIcebreakerFn } from '@/types/signal';
+import { ACTIVITIES, getIcebreaker as getIcebreakerFn, type ActivityType } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
