@@ -146,7 +146,7 @@ export default function ProximityRevealPage() {
   const handleConnect = async () => {
     if (!userId || !user) return;
     setIsConnecting(true);
-    const result = await requestConnection(userId, null, user.activity as any);
+    const result = await requestConnection(userId, null, user.activity as ActivityType);
     setIsConnecting(false);
     if (result.success) {
       setConnectionSent(true);
