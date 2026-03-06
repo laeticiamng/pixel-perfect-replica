@@ -61,7 +61,7 @@ export function useAdminAlerts() {
     };
 
     const { data, error } = await supabase
-      .from('admin_alert_preferences' as any)
+      .from('admin_alert_preferences')
       .upsert(payload, { onConflict: 'user_id' })
       .select()
       .single();
