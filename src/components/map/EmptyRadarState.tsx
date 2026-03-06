@@ -19,6 +19,7 @@ interface CommunityStats {
 
 export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { profile } = useAuth();
   const [stats, setStats] = useState<CommunityStats | null>(null);
 
