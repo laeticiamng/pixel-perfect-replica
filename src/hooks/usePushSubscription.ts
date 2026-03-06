@@ -69,8 +69,6 @@ export function usePushSubscription() {
       // Get service worker registration
       const registration = await navigator.serviceWorker.ready;
 
-      const registration = await navigator.serviceWorker.ready;
-
       const subscription = await getPushManager(registration).subscribe({
         userVisibleOnly: true,
         // applicationServerKey: VAPID_PUBLIC_KEY
