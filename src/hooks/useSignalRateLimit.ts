@@ -107,7 +107,7 @@ export function useSignalRateLimit() {
     if (!user) return false;
 
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('signal_rate_limits')
         .insert({ user_id: user.id });
 

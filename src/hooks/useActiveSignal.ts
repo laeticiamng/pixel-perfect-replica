@@ -122,7 +122,7 @@ export function useActiveSignal() {
 
       // Record signal creation for rate limiting
       if (!error && data) {
-        await (supabase as any).from('signal_rate_limits').insert({ user_id: user.id });
+        await supabase.from('signal_rate_limits').insert({ user_id: user.id });
       }
 
       setIsLoading(false);
