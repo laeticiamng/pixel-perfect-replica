@@ -44,7 +44,7 @@ export default function StatisticsPage() {
   const [topActivities, setTopActivities] = useState<InteractionData[]>([]);
   const dayKeys = ['dayMon', 'dayTue', 'dayWed', 'dayThu', 'dayFri', 'daySat', 'daySun'] as const;
   const [weeklyData, setWeeklyData] = useState<WeeklyData[]>(
-    dayKeys.map(k => ({ day: t(`statistics.${k}` as any), interactions: 0 }))
+    dayKeys.map(k => ({ day: t(`statistics.${k}`), interactions: 0 }))
   );
   const [hourlyData, setHourlyData] = useState<HourlyData[]>([]);
   const [pieData, setPieData] = useState<{ name: string; value: number; color: string }[]>([]);
@@ -72,7 +72,7 @@ export default function StatisticsPage() {
         
         const sortedActivities = Object.entries(activityCounts)
           .map(([activity, count]) => ({
-            activity: t(`activities.${activity}` as any) || activity,
+            activity: t(`activities.${activity}`) || activity,
             count,
             emoji: ACTIVITY_EMOJIS[activity] || '✨',
           }))
@@ -84,7 +84,7 @@ export default function StatisticsPage() {
           name: item.activity, value: item.count, color: CHART_COLORS[index % CHART_COLORS.length],
         })));
         
-        setWeeklyData(dayKeys.map((k, i) => ({ day: t(`statistics.${k}` as any), interactions: dayCounts[i] })));
+        setWeeklyData(dayKeys.map((k, i) => ({ day: t(`statistics.${k}`), interactions: dayCounts[i] })));
         setHourlyData(Object.entries(hourCounts).map(([hour, count]) => ({ hour: `${hour}h`, count })).sort((a, b) => parseInt(a.hour) - parseInt(b.hour)));
       }
       setIsLoading(false);

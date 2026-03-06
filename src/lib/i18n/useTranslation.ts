@@ -97,6 +97,7 @@ export function useTranslation() {
     }
   }, [isAuthenticated, user, setLocale]);
 
+  /** Type-safe translation lookup. Use for dynamic keys too — gracefully returns key if not found. */
   const t = (key: string, replacements?: Record<string, string | number>): string => {
     const translation = getNestedValue(translations, key);
     

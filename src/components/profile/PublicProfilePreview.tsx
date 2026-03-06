@@ -130,7 +130,7 @@ export function PublicProfilePreview({ trigger }: PublicProfilePreviewProps) {
                 <div className="flex flex-wrap gap-1">
                   {extendedProfile.favorite_activities.map(activity => (
                     <Badge key={activity} variant="secondary" className="text-xs">
-                      {t(`activities.${activity}` as any)}
+                      {t(`activities.${activity}`)}
                     </Badge>
                   ))}
                 </div>

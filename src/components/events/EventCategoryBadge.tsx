@@ -31,7 +31,7 @@ const categoryConfig: Record<EventCategory, { Icon: LucideIcon; color: string }>
 export function EventCategoryBadge({ category, size = 'md', className }: EventCategoryBadgeProps) {
   const { t } = useTranslation();
   const config = categoryConfig[category] || categoryConfig.other;
-  const label = t(`eventCategories.${category}` as any);
+  const label = t(`eventCategories.${category}`);
   
   return (
     <span
@@ -62,7 +62,7 @@ export function EventCategorySelector({
     <div className="flex flex-wrap gap-2">
       {categories.map((cat) => {
         const config = categoryConfig[cat];
-        const label = t(`eventCategories.${cat}` as any);
+        const label = t(`eventCategories.${cat}`);
         const isSelected = value === cat;
         
         return (

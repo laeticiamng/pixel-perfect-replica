@@ -66,7 +66,8 @@ export function useClustering({
       },
     }));
 
-    cluster.load(features as any);
+    // @ts-expect-error: supercluster expects GeoJSON.Feature but our PointFeature is compatible
+    cluster.load(features);
     return cluster;
   }, [points, options]);
 

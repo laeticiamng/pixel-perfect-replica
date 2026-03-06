@@ -17,7 +17,7 @@ import {
   MessageCircle,
   UserCheck,
   Trophy,
-  Sparkles
+  Compass
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -41,7 +41,7 @@ interface NavItem {
 
 const mainNavItems: NavItem[] = [
   { to: '/map', icon: <MapPin className="h-5 w-5" />, labelKey: 'nav.map', group: 'main' },
-  { to: '/discover', icon: <Sparkles className="h-5 w-5" />, labelKey: 'discover.title', group: 'main' },
+  { to: '/discover', icon: <Compass className="h-5 w-5" />, labelKey: 'discover.title', group: 'main' },
   { to: '/conversations', icon: <MessageCircle className="h-5 w-5" />, labelKey: 'navMessages', group: 'main' },
   { to: '/connections', icon: <UserCheck className="h-5 w-5" />, labelKey: 'navConnections', group: 'main' },
   { to: '/binome', icon: <Users2 className="h-5 w-5" />, labelKey: 'nav.book', group: 'main', showNewBadge: true },

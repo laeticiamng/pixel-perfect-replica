@@ -220,7 +220,7 @@ export function useSupabaseAuth() {
     return { error: null };
   };
 
-  const signInWithOAuthSupabase = async (provider: 'google') => {
+  const signInWithOAuthSupabase = async (provider: 'google' | 'apple') => {
     const redirectUrl = `${window.location.origin}/map`;
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,

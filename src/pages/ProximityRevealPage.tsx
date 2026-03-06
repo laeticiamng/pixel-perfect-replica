@@ -9,7 +9,7 @@ import { useInteractions } from '@/hooks/useInteractions';
 import { useRevealRateLimit } from '@/hooks/useRevealRateLimit';
 import { useConnections } from '@/hooks/useConnections';
 import { useTranslation } from '@/lib/i18n';
-import { ACTIVITIES, getIcebreaker as getIcebreakerFn } from '@/types/signal';
+import { ACTIVITIES, getIcebreaker as getIcebreakerFn, type ActivityType } from '@/types/signal';
 import { formatDistance, formatTimeSince } from '@/utils/distance';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
@@ -73,7 +73,7 @@ export default function ProximityRevealPage() {
 
   const generateIcebreaker = useCallback(() => {
     if (user) {
-      const ib = getIcebreakerFn(user.activity as any, locale);
+      const ib = getIcebreakerFn(user.activity as ActivityType, locale);
       setIcebreaker(ib);
     }
   }, [user, locale]);
@@ -146,7 +146,7 @@ export default function ProximityRevealPage() {
   const handleConnect = async () => {
     if (!userId || !user) return;
     setIsConnecting(true);
-    const result = await requestConnection(userId, null, user.activity as any);
+    const result = await requestConnection(userId, null, user.activity as ActivityType);
     setIsConnecting(false);
     if (result.success) {
       setConnectionSent(true);

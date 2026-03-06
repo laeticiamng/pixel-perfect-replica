@@ -13,7 +13,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, firstName: string, university?: string) => Promise<{ data?: any; error: any }>;
   signIn: (email: string, password: string) => Promise<{ data?: any; error: any }>;
   signInWithMagicLink: (email: string) => Promise<{ error: any }>;
-  signInWithOAuthSupabase: (provider: 'google') => Promise<{ data?: any; error: any }>;
+  signInWithOAuthSupabase: (provider: 'google' | 'apple') => Promise<{ data?: any; error: any }>;
   signOut: () => Promise<{ error: any }>;
   updateProfile: (updates: Partial<Omit<Profile, 'id' | 'email' | 'created_at' | 'updated_at'>>) => Promise<{ data?: any; error: any }>;
   refreshProfile: () => Promise<{ error: string | null }>;
