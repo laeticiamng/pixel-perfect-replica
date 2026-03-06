@@ -42,6 +42,7 @@ export const translations = {
   nav: {
     map: { en: 'Map', fr: 'Carte', de: 'Karte' },
     book: { en: 'Book', fr: 'Réserver', de: 'Buchen' },
+    discover: { en: 'Discover', fr: 'Découvrir', de: 'Entdecken' },
     events: { en: 'Events', fr: 'Événements', de: 'Events' },
     profile: { en: 'Profile', fr: 'Profil', de: 'Profil' },
     settings: { en: 'Settings', fr: 'Paramètres', de: 'Einstellungen' },
@@ -76,6 +77,11 @@ export const translations = {
     fillInfo: { en: 'Fill in this info to get started', fr: 'Remplis ces infos pour commencer', de: 'Fülle diese Infos aus, um loszulegen' },
     continueWithGoogle: { en: 'Continue with Google', fr: 'Continuer avec Google', de: 'Weiter mit Google' },
     continueWithApple: { en: 'Continue with Apple', fr: 'Continuer avec Apple', de: 'Weiter mit Apple' },
+    acceptTermsPrefix: { en: 'I accept the', fr: 'J\'accepte les', de: 'Ich akzeptiere die' },
+    termsLink: { en: 'Terms of Service', fr: 'Conditions Générales', de: 'Nutzungsbedingungen' },
+    and: { en: 'and the', fr: 'et la', de: 'und die' },
+    privacyLink: { en: 'Privacy Policy', fr: 'Politique de confidentialité', de: 'Datenschutzerklärung' },
+    mustAcceptTerms: { en: 'You must accept the terms and privacy policy', fr: 'Vous devez accepter les CGU et la politique de confidentialité', de: 'Du musst die Nutzungsbedingungen und Datenschutzerklärung akzeptieren' },
     welcome: { en: 'Welcome!', fr: 'Bienvenue !', de: 'Willkommen!' },
     accountCreated: { en: 'Account created successfully!', fr: 'Compte créé avec succès !', de: 'Konto erfolgreich erstellt!' },
     invalidCredentials: { en: 'Invalid email or password', fr: 'Email ou mot de passe incorrect', de: 'Ungültige E-Mail oder Passwort' },
@@ -602,6 +608,7 @@ export const translations = {
     activateSignal: { en: 'Activate your signal', fr: 'Activer ton signal', de: 'Dein Signal aktivieren' },
     loadingMap: { en: 'Loading map...', fr: 'Chargement de la carte...', de: 'Karte wird geladen...' },
     locationFallback: { en: 'Geolocation unavailable — showing demo position', fr: 'Géolocalisation indisponible — position de démo affichée', de: 'Geolokalisierung nicht verfügbar — Demo-Position wird angezeigt' },
+    discoverUsers: { en: 'Discover users nearby', fr: 'Découvre les utilisateurs', de: 'Benutzer entdecken' },
     locationDenied: { en: 'Location access denied — showing demo position', fr: 'Accès à la localisation refusé — position de démo affichée', de: 'Standortzugriff verweigert — Demo-Position wird angezeigt' },
   },
 

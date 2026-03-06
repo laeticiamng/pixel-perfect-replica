@@ -55,11 +55,16 @@ export function SocialProofBar() {
     }
   }, [isInView, stats]);
 
+  // Don't render if all stats are zero (empty database = no social proof)
+  const allZero = !stats || (stats.active_users_now === 0 && stats.sessions_this_month === 0 && stats.completed_sessions === 0);
+
   const displayStats = [
     { icon: Users, value: stats?.active_users_now ?? 0, suffix: '', label: t('landing.socialProofUsers') },
     { icon: Zap, value: stats?.sessions_this_month ?? 0, suffix: '', label: t('landing.socialProofSessions') },
     { icon: MapPin, value: stats?.completed_sessions ?? 0, suffix: '+', label: t('landing.socialProofCompleted') },
   ];
+
+  if (allZero) return null;
 
   return (
     <motion.section

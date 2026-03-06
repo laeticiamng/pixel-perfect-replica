@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays, Users } from 'lucide-react';
+import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays, Users, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
@@ -433,9 +433,19 @@ export default function MapPage() {
         {/* Interactive Map / Radar */}
         <div className="flex-1 min-h-0 px-4 sm:px-6" data-tour="map-area">
           {filteredNearbyUsers.length === 0 && !isActive ? (
-            <EmptyRadarState
-              onActivateSignal={handleSignalToggle}
-            />
+            <div className="flex flex-col items-center justify-center h-full gap-4">
+              <EmptyRadarState
+                onActivateSignal={handleSignalToggle}
+              />
+              <Button
+                variant="outline"
+                onClick={() => navigate('/discover')}
+                className="rounded-xl gap-2 border-coral/50 text-coral hover:bg-coral/10"
+              >
+                <Compass className="h-4 w-4" />
+                {t('mapUI.discoverUsers')}
+              </Button>
+            </div>
           ) : mapMode === 'map' ? (
             <InteractiveMap
               nearbyUsers={filteredNearbyUsers.map(u => ({

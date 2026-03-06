@@ -1260,6 +1260,24 @@ export type Database = {
           },
         ]
       }
+      signal_rate_limits: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_key: string
@@ -1630,6 +1648,7 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: boolean
       }
+      check_signal_rate_limit: { Args: { p_user_id: string }; Returns: boolean }
       cleanup_edge_function_rate_limits: { Args: never; Returns: undefined }
       cleanup_expired_shadow_bans: { Args: never; Returns: undefined }
       cleanup_expired_signals: { Args: never; Returns: undefined }
@@ -1638,6 +1657,7 @@ export type Database = {
       cleanup_old_interaction_locations: { Args: never; Returns: undefined }
       cleanup_old_reveal_logs: { Args: never; Returns: undefined }
       cleanup_rate_limit_logs: { Args: never; Returns: undefined }
+      cleanup_signal_rate_limits: { Args: never; Returns: undefined }
       consume_purchased_session: {
         Args: { p_user_id: string }
         Returns: boolean
