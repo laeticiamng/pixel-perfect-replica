@@ -182,6 +182,7 @@ export function EmptyRadarState({ onActivateSignal }: EmptyRadarStateProps) {
           <Compass className="h-4 w-4 mr-2" />
           {t('mapUI.discoverUsers')}
         </Button>
+      </motion.div>
     </div>
   );
 }
