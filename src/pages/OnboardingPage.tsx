@@ -104,7 +104,7 @@ export default function OnboardingPage() {
       const result = await lovable.auth.signInWithOAuth('apple');
       if (result.error) {
         // Fallback to native Supabase OAuth
-        const { error } = await signInWithOAuthSupabase('google'); // Apple not supported as Supabase provider fallback, use Google
+        const { error } = await signInWithOAuthSupabase('apple');
         if (error) {
           toast.error(t('auth.appleError'));
           logger.api.error('auth', 'oauth-apple', String(result.error));
