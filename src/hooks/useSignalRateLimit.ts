@@ -45,7 +45,7 @@ export function useSignalRateLimit() {
         if (allowed) {
           const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-          const { count, error: countError } = await (supabase as any)
+          const { count, error: countError } = await supabase
             .from('signal_rate_limits')
             .select('*', { count: 'exact', head: true })
             .eq('user_id', user.id)
