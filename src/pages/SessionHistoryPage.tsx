@@ -165,7 +165,7 @@ export default function SessionHistoryPage() {
             <SelectContent>
               <SelectItem value="all">{t('sessionHistory.all')}</SelectItem>
               {activityKeys.map(key => (
-                <SelectItem key={key} value={key}>{activityEmojis[key]} {t(`activities.${key}` as any)}</SelectItem>
+                <SelectItem key={key} value={key}>{activityEmojis[key]} {t(`activities.${key}`)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
