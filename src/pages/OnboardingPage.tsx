@@ -40,6 +40,7 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isAppleLoading, setIsAppleLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   
   const { signIn, signUp, signInWithMagicLink, signInWithOAuthSupabase, isAuthenticated } = useAuth();
   const [useMagicLink, setUseMagicLink] = useState(false);

@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays, Users } from 'lucide-react';
+import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays, Users, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
