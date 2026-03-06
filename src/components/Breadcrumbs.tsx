@@ -100,7 +100,7 @@ export function Breadcrumbs({ className, showHome = false }: BreadcrumbsProps) {
             )}
             {isLast ? (
               <span className="text-foreground font-medium truncate max-w-[120px]">
-                {t(item.labelKey as any)}
+                {t(item.labelKey)}
               </span>
             ) : (
               <button
