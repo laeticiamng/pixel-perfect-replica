@@ -51,7 +51,7 @@ export function useAdminAlerts() {
       .single();
 
     if (!error && data) {
-      setPreferences(data as unknown as AlertPreferences);
+      setPreferences(data as AlertPreferences);
     }
 
     return { data, error };
