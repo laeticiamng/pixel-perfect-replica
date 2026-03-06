@@ -136,7 +136,7 @@ export function useGamification() {
 
     const { data } = await supabase.rpc('get_campus_leaderboard', params);
     if (data) {
-      setLeaderboard(data as unknown as LeaderboardEntry[]);
+      setLeaderboard((data || []) as LeaderboardEntry[]);
     }
     setLeaderboardLoading(false);
   }, []);

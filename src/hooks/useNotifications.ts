@@ -110,7 +110,7 @@ export function useNotifications() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          const newNotif = payload.new as unknown as AppNotification;
+          const newNotif = payload.new as AppNotification;
           setNotifications(prev => {
             if (prev.some(n => n.id === newNotif.id)) return prev;
             return [newNotif, ...prev];

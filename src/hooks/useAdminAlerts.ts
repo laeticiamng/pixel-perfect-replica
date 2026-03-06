@@ -72,7 +72,7 @@ export function useAdminAlerts() {
       return;
     }
 
-    setAlertLogs((data || []) as unknown as AlertLog[]);
+    setAlertLogs((data || []) as AlertLog[]);
   }, [isAdmin]);
 
   useEffect(() => {
