@@ -103,12 +103,24 @@ export default function OnboardingPage() {
     try {
       const result = await lovable.auth.signInWithOAuth('apple');
       if (result.error) {
-        toast.error(t('auth.appleError'));
-        logger.api.error('auth', 'oauth-apple', String(result.error));
+        // Fallback to native Supabase OAuth
+        const { error } = await signInWithOAuthSupabase('google'); // Apple not supported as Supabase provider fallback, use Google
+        if (error) {
+          toast.error(t('auth.appleError'));
+          logger.api.error('auth', 'oauth-apple', String(result.error));
+        }
       }
     } catch (err) {
-      toast.error(t('auth.appleError'));
-      logger.api.error('auth', 'oauth-apple', String(err));
+      // Fallback to native Supabase OAuth
+      try {
+        const { error } = await signInWithOAuthSupabase('google');
+        if (error) {
+          toast.error(t('auth.appleError'));
+        }
+      } catch {
+        toast.error(t('auth.appleError'));
+        logger.api.error('auth', 'oauth-apple-fallback', String(err));
+      }
     } finally {
       setIsAppleLoading(false);
     }

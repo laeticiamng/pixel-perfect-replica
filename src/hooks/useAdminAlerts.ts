@@ -34,7 +34,7 @@ export function useAdminAlerts() {
     if (!user || !isAdmin) return;
 
     const { data, error } = await supabase
-      .from('admin_alert_preferences' as any)
+      .from('admin_alert_preferences')
       .select('*')
       .eq('user_id', user.id)
       .maybeSingle();
@@ -61,7 +61,7 @@ export function useAdminAlerts() {
     };
 
     const { data, error } = await supabase
-      .from('admin_alert_preferences' as any)
+      .from('admin_alert_preferences')
       .upsert(payload, { onConflict: 'user_id' })
       .select()
       .single();
@@ -78,7 +78,7 @@ export function useAdminAlerts() {
     if (!isAdmin) return;
 
     const { data, error } = await supabase
-      .from('alert_logs' as any)
+      .from('alert_logs')
       .select('*')
       .order('sent_at', { ascending: false })
       .limit(limit);

@@ -45,7 +45,7 @@ export function SocialProofBar() {
   useEffect(() => {
     if (isInView && !hasTracked.current) {
       hasTracked.current = true;
-      supabase.from('analytics_events' as any).insert({
+      supabase.from('analytics_events').insert({
         event_name: 'social_proof_view',
         event_category: 'engagement',
         event_data: { stats },

@@ -38,11 +38,11 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       if (!user || !isSupported) return;
       try {
         const { data, error } = await supabase
-          .from('push_subscriptions' as any)
+          .from('push_subscriptions')
           .select('id')
           .eq('user_id', user.id)
           .limit(1);
-        if (!error && data && (data as any[]).length > 0) {
+        if (!error && data && data.length > 0) {
           setIsSubscribed(true);
         }
       } catch (err) {
@@ -77,8 +77,8 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       };
 
       const { error } = await supabase
-        .from('push_subscriptions' as any)
-        .upsert(subscriptionData, { onConflict: 'user_id,endpoint' } as any);
+        .from('push_subscriptions')
+        .upsert(subscriptionData);
 
       if (error) {
         logger.api.error('push_subscriptions', 'save', String(error));
@@ -101,7 +101,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
     try {
       const { error } = await supabase
-        .from('push_subscriptions' as any)
+        .from('push_subscriptions')
         .delete()
         .eq('user_id', user.id);
 

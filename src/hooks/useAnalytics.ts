@@ -42,15 +42,15 @@ export function useAnalytics() {
   const trackEvent = useCallback(async ({ name, category, data = {} }: TrackEventParams) => {
     try {
       await supabase
-        .from('analytics_events' as any)
-        .insert({
+        .from('analytics_events')
+        .insert([{
           user_id: user?.id || null,
           event_name: name,
           event_category: category,
-          event_data: data,
+          event_data: data as Record<string, string | number | boolean | null>,
           page_path: location.pathname,
           session_id: sessionId.current,
-        });
+        }]);
     } catch (error) {
       // Silently swallowed — analytics must never break the app
     }
