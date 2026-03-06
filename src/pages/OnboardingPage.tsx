@@ -360,6 +360,30 @@ export default function OnboardingPage() {
                     className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
                     autoComplete="organization"
                   />
+
+                  {/* CGU / Privacy checkbox */}
+                  <div className="space-y-2">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={acceptedTerms}
+                        onChange={(e) => {
+                          setAcceptedTerms(e.target.checked);
+                          if (e.target.checked) setErrors(prev => { const { terms, ...rest } = prev; return rest; });
+                        }}
+                        className="mt-1 h-4 w-4 rounded border-border accent-coral shrink-0"
+                      />
+                      <span className="text-sm text-muted-foreground leading-snug">
+                        {t('auth.acceptTermsPrefix')}{' '}
+                        <a href="/terms" target="_blank" className="text-coral hover:underline">{t('auth.termsLink')}</a>
+                        {' '}{t('auth.and')}{' '}
+                        <a href="/privacy" target="_blank" className="text-coral hover:underline">{t('auth.privacyLink')}</a>
+                      </span>
+                    </label>
+                    {errors.terms && (
+                      <p className="text-sm text-destructive">{errors.terms}</p>
+                    )}
+                  </div>
                 </>
               )}
               
