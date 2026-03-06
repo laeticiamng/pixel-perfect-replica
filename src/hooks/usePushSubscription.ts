@@ -27,7 +27,8 @@ export function usePushSubscription() {
 
     try {
       const registration = await navigator.serviceWorker.ready;
-      const subscription = await (registration as any).pushManager.getSubscription();
+      // @ts-expect-error: pushManager exists on ServiceWorkerRegistration but TS types may not include it
+      const subscription = await registration.pushManager.getSubscription();
       
       if (subscription) {
         // Verify it's in our database
