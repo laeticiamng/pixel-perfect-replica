@@ -77,8 +77,8 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       };
 
       const { error } = await supabase
-        .from('push_subscriptions' as any)
-        .upsert(subscriptionData, { onConflict: 'user_id,endpoint' } as any);
+        .from('push_subscriptions')
+        .upsert(subscriptionData);
 
       if (error) {
         logger.api.error('push_subscriptions', 'save', String(error));
