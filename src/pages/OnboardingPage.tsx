@@ -15,6 +15,8 @@ import { lovable } from '@/integrations/lovable';
 import { useTranslation } from '@/lib/i18n';
 import { getPasswordPolicyErrorMessage, isPwnedPasswordError, isWeakPasswordError } from '@/lib/authErrorMapper';
 import { supabase } from '@/integrations/supabase/client';
+import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '@/lib/constants';
 import toast from 'react-hot-toast';
 
 type Step = 1 | 2 | 3;
