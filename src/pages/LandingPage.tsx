@@ -212,24 +212,39 @@ export default function LandingPage() {
         } />
         <link rel="canonical" href={`${SITE_URL}/`} />
         <meta property="og:url" content={`${SITE_URL}/`} />
-        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <meta property="og:title" content={locale === 'fr' ? 'NEARVITY — Le réseau social 100% IRL pour étudiants' : 'NEARVITY — The 100% IRL social network for students'} />
+        <meta property="og:description" content={locale === 'fr'
+          ? 'Vois qui est ouvert à l\'interaction autour de toi. Rencontres spontanées IRL entre étudiants. Gratuit.'
+          : 'See who is open to interact around you. Spontaneous IRL student meetups. Free.'
+        } />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="NEARVITY" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={locale === 'fr' ? 'NEARVITY — Réseau social IRL' : 'NEARVITY — IRL Social Network'} />
+        <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
+        <script type="application/ld+json">{JSON.stringify(jsonLdApp)}</script>
+        <script type="application/ld+json">{JSON.stringify(jsonLdWebSite)}</script>
       </Helmet>
       <FloatingOrbs />
       <LandingHeader />
-      <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
-      
-      <AppPreviewSection />
-      <TrustedBySection />
-      <SocialProofBar />
-      <ProblemSection />
-      <SignalExplanationSection />
-      <FeaturesSection />
-      <ComparisonWrapper />
-      <UseCasesSection />
-      <PricingPreviewSection />
-      <LandingTestimonialsSection />
-      <GuaranteeSection />
-      <FinalCTASection />
+      <main>
+        <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
+        <AppPreviewSection />
+        <TrustedBySection />
+        <SocialProofBar />
+        <ProblemSection />
+        <SignalExplanationSection />
+        <FeaturesSection />
+        <ComparisonWrapper />
+        <UseCasesSection />
+        <PricingPreviewSection />
+        <LandingTestimonialsSection />
+        <GuaranteeSection />
+        <FinalCTASection />
+      </main>
       <LandingFooter />
     </div>
   );
