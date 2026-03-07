@@ -163,7 +163,7 @@ export default function LandingPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  const jsonLd = {
+  const jsonLdApp = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: 'NEARVITY',
@@ -182,6 +182,23 @@ export default function LandingPage() {
       '@type': 'Organization',
       name: 'EmotionsCare SASU',
       url: `${SITE_URL}/about`,
+    },
+  };
+
+  const jsonLdWebSite = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'NEARVITY',
+    alternateName: 'Nearvity',
+    url: SITE_URL,
+    description: locale === 'fr'
+      ? 'Le premier réseau social 100% IRL pour étudiants.'
+      : 'The first 100% IRL social network for students.',
+    inLanguage: [locale === 'fr' ? 'fr-FR' : 'en'],
+    publisher: {
+      '@type': 'Organization',
+      name: 'EmotionsCare SASU',
+      url: SITE_URL,
     },
   };
 
