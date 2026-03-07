@@ -29,7 +29,7 @@ export default function OnboardingPage() {
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
   const [confirmationEmail, setConfirmationEmail] = useState('');
   const [isResending, setIsResending] = useState(false);
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   
   const [step, setStep] = useState<Step>(1);
   const [email, setEmail] = useState('');
