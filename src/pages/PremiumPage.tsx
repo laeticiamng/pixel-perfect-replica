@@ -12,6 +12,8 @@ import { logger } from '@/lib/logger';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useTranslation } from '@/lib/i18n';
 import { celebrationBurst } from '@/components/binome';
+import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '@/lib/constants';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import { fr, enUS, de } from 'date-fns/locale';
