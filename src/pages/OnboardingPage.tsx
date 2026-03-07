@@ -15,6 +15,8 @@ import { lovable } from '@/integrations/lovable';
 import { useTranslation } from '@/lib/i18n';
 import { getPasswordPolicyErrorMessage, isPwnedPasswordError, isWeakPasswordError } from '@/lib/authErrorMapper';
 import { supabase } from '@/integrations/supabase/client';
+import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '@/lib/constants';
 import toast from 'react-hot-toast';
 
 type Step = 1 | 2 | 3;
@@ -27,7 +29,7 @@ export default function OnboardingPage() {
   const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
   const [confirmationEmail, setConfirmationEmail] = useState('');
   const [isResending, setIsResending] = useState(false);
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   
   const [step, setStep] = useState<Step>(1);
   const [email, setEmail] = useState('');
@@ -778,6 +780,22 @@ export default function OnboardingPage() {
 
   return (
     <PageLayout showSidebar={false} className="flex flex-col px-6 py-8 safe-top safe-bottom">
+      <Helmet>
+        <title>{isLogin
+          ? (locale === 'fr' ? 'Connexion — NEARVITY' : 'Sign In — NEARVITY')
+          : (locale === 'fr' ? 'Créer un compte — NEARVITY' : 'Sign Up — NEARVITY')
+        }</title>
+        <meta name="description" content={locale === 'fr'
+          ? 'Rejoins NEARVITY gratuitement. Crée ton compte en 30 secondes et commence à voir qui est ouvert à l\'interaction autour de toi.'
+          : 'Join NEARVITY for free. Create your account in 30 seconds and start seeing who is open to interact around you.'
+        } />
+        <link rel="canonical" href={`${SITE_URL}/onboarding`} />
+        <meta property="og:title" content={locale === 'fr' ? 'Rejoindre NEARVITY' : 'Join NEARVITY'} />
+        <meta property="og:url" content={`${SITE_URL}/onboarding`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       <div className="max-w-md mx-auto w-full flex-1 flex flex-col relative z-10">
         {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-8">

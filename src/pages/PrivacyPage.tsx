@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, User, Shield } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -18,15 +18,28 @@ export default function PrivacyPage() {
           : 'NEARVITY privacy policy. GPS fuzzing, minimal data, encryption, GDPR rights, account deletion. No data selling.'
         } />
         <link rel="canonical" href={`${SITE_URL}/privacy`} />
+        <meta property="og:title" content={locale === 'fr' ? 'Confidentialité — NEARVITY' : 'Privacy — NEARVITY'} />
+        <meta property="og:url" content={`${SITE_URL}/privacy`} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'Confidentialité' : 'Privacy', item: `${SITE_URL}/privacy` },
+          ],
+        })}</script>
       </Helmet>
 
       <header className="safe-top px-6 py-4 flex items-center gap-4">
-        <button
-          onClick={() => navigate(-1)}
+        <Link
+          to="/"
           className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label={t('help.backToHome')}
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
-        </button>
+        </Link>
         <h1 className="text-xl font-bold text-foreground">{t('privacy.title')}</h1>
       </header>
 

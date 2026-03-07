@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -18,15 +18,28 @@ export default function TermsPage() {
           : 'NEARVITY terms of service — the IRL social network. Usage rules, privacy policy, GDPR rights.'
         } />
         <link rel="canonical" href={`${SITE_URL}/terms`} />
+        <meta property="og:title" content={locale === 'fr' ? 'CGU — NEARVITY' : 'Terms — NEARVITY'} />
+        <meta property="og:url" content={`${SITE_URL}/terms`} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'CGU' : 'Terms', item: `${SITE_URL}/terms` },
+          ],
+        })}</script>
       </Helmet>
 
       <header className="safe-top px-6 py-4 flex items-center gap-4">
-        <button
-          onClick={() => navigate(-1)}
+        <Link
+          to="/"
           className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label={t('help.backToHome')}
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
-        </button>
+        </Link>
         <h1 className="text-xl font-bold text-foreground">{t('terms.title')}</h1>
       </header>
 

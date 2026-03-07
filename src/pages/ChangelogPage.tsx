@@ -263,6 +263,18 @@ export default function ChangelogPage() {
           : 'NEARVITY update history: new features, improvements, bug fixes and security updates.'
         } />
         <link rel="canonical" href={`${SITE_URL}/changelog`} />
+        <meta property="og:title" content={locale === 'fr' ? 'Changelog — NEARVITY' : 'Changelog — NEARVITY'} />
+        <meta property="og:url" content={`${SITE_URL}/changelog`} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: 'Changelog', item: `${SITE_URL}/changelog` },
+          ],
+        })}</script>
       </Helmet>
       <header className="sticky top-0 z-40 glass-strong border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
