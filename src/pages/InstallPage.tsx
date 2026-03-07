@@ -13,6 +13,8 @@ import { BrandLogo } from "@/components/shared";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
+import { Helmet } from "react-helmet-async";
+import { SITE_URL } from "@/lib/constants";
 
 // Animation variants
 const containerVariants = {
