@@ -12,7 +12,7 @@ import { Helmet } from 'react-helmet-async';
 export default function HelpPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const faqs = [
