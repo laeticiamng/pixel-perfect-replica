@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
-import { APP_VERSION, SUPPORT_EMAIL } from '@/lib/constants';
+import { APP_VERSION, SUPPORT_EMAIL, SITE_URL } from '@/lib/constants';
+import { Helmet } from 'react-helmet-async';
 
 export default function HelpPage() {
   const navigate = useNavigate();
