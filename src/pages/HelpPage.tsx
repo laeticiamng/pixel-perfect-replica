@@ -114,7 +114,24 @@ export default function HelpPage() {
           : 'Frequently asked questions about NEARVITY: how it works, safety, location, ghost mode, account deletion. Complete help center.'
         } />
         <link rel="canonical" href={`${SITE_URL}/help`} />
+        <meta property="og:title" content={locale === 'fr' ? 'Aide & FAQ — NEARVITY' : 'Help & FAQ — NEARVITY'} />
+        <meta property="og:description" content={locale === 'fr'
+          ? 'Réponses à toutes vos questions sur NEARVITY.'
+          : 'Answers to all your questions about NEARVITY.'
+        } />
+        <meta property="og:url" content={`${SITE_URL}/help`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'Aide & FAQ' : 'Help & FAQ', item: `${SITE_URL}/help` },
+          ],
+        })}</script>
       </Helmet>
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
@@ -222,9 +239,9 @@ export default function HelpPage() {
               }
               
               return (
-                <button
+                <Link
                   key={link.label}
-                  onClick={() => navigate(link.href)}
+                  to={link.href}
                   className={`w-full flex items-center gap-4 px-4 py-3.5 hover:bg-muted/50 transition-colors ${
                     index !== supportLinks.length - 1 ? 'border-b border-border' : ''
                   }`}
@@ -232,7 +249,7 @@ export default function HelpPage() {
                   <span className="text-muted-foreground">{link.icon}</span>
                   <span className="flex-1 text-left text-foreground">{link.label}</span>
                   <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </button>
+                </Link>
               );
             })}
           </div>

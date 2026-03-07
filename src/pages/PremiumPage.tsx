@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { ArrowLeft, Crown, Check, Zap, Shield, Infinity as InfinityIcon, Loader2, ExternalLink, Ticket, Sparkles, Radio, PartyPopper } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -248,7 +248,24 @@ export default function PremiumPage() {
           : 'NEARVITY is free. Nearvity+ at €9.90/month for unlimited sessions, ghost mode and priority support. Pay-per-session at €0.99.'
         } />
         <link rel="canonical" href={`${SITE_URL}/premium`} />
+        <meta property="og:title" content={locale === 'fr' ? 'Tarifs — NEARVITY' : 'Pricing — NEARVITY'} />
+        <meta property="og:description" content={locale === 'fr'
+          ? 'Gratuit, 0,99€/session ou 9,90€/mois avec Nearvity+.'
+          : 'Free, €0.99/session or €9.90/month with Nearvity+.'
+        } />
+        <meta property="og:url" content={`${SITE_URL}/premium`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json">{JSON.stringify(pricingJsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'Tarifs' : 'Pricing', item: `${SITE_URL}/premium` },
+          ],
+        })}</script>
       </Helmet>
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
@@ -449,9 +466,9 @@ export default function PremiumPage() {
           {t('premium.termsNote')}
           <br />
           {t('premium.bySubscribing')}{' '}
-          <button onClick={() => navigate('/terms')} className="text-coral hover:underline">
+          <Link to="/terms" className="text-coral hover:underline">
             {t('premium.termsOfUse')}
-          </button>.
+          </Link>.
         </p>
       </motion.div>
     </PageLayout>
