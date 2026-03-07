@@ -1,6 +1,6 @@
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
-import { SUPPORT_EMAIL } from '@/lib/constants';
+import { SUPPORT_EMAIL, SITE_URL } from '@/lib/constants';
 import {
   ArrowLeft, Users, Heart, Shield, Rocket, Mail, MessageCircle,
   MapPin, Zap, BookOpen, HandshakeIcon, Eye, Sparkles,
@@ -61,7 +61,7 @@ export default function AboutPage() {
       description: locale === 'fr'
         ? 'Le premier réseau social 100% réel. Connecte des intentions réelles pour des rencontres IRL basées sur les activités.'
         : 'The first 100% real social network. Connects real intentions for IRL activity-based meetings.',
-      url: 'https://nearvity.lovable.app',
+      url: SITE_URL,
       foundingDate: '2025',
       foundingLocation: { '@type': 'Place', name: 'France' },
       sameAs: [],
@@ -83,6 +83,7 @@ export default function AboutPage() {
           ? 'Découvrez la mission de NEARVITY, le premier réseau social 100% réel. Conçu en France par EmotionsCare SASU pour connecter les étudiants IRL.'
           : 'Discover NEARVITY\'s mission — the first 100% real social network. Built in France by EmotionsCare SASU to connect students IRL.'
         } />
+        <link rel="canonical" href={`${SITE_URL}/about`} />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 

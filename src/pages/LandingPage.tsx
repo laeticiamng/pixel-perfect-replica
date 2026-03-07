@@ -5,6 +5,7 @@ import { useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
 import { Helmet } from 'react-helmet-async';
 import { Users, Sparkles, MapPin } from 'lucide-react';
+import { SITE_URL } from '@/lib/constants';
 import {
   FloatingOrbs,
   LandingHeader,
@@ -166,7 +167,7 @@ export default function LandingPage() {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: 'NEARVITY',
-    url: 'https://nearvity.lovable.app',
+    url: SITE_URL,
     applicationCategory: 'SocialNetworkingApplication',
     operatingSystem: 'Web',
     description: locale === 'fr'
@@ -180,7 +181,7 @@ export default function LandingPage() {
     publisher: {
       '@type': 'Organization',
       name: 'EmotionsCare SASU',
-      url: 'https://nearvity.lovable.app/about',
+      url: `${SITE_URL}/about`,
     },
   };
 
@@ -189,10 +190,11 @@ export default function LandingPage() {
       <Helmet>
         <title>{locale === 'fr' ? 'NEARVITY — Le réseau social 100% IRL pour étudiants' : 'NEARVITY — The 100% IRL social network for students'}</title>
         <meta name="description" content={locale === 'fr'
-          ? 'Active ton signal, trouve des étudiants qui veulent aussi se rencontrer. Gratuit.'
-          : 'Activate your signal, find students who also want to meet. Free.'
+          ? 'NEARVITY est le premier réseau social IRL. Active ton signal, vois qui est ouvert à l\'interaction autour de toi. Rencontres spontanées entre étudiants. Gratuit.'
+          : 'NEARVITY is the first IRL social network. Activate your signal, see who is open to interact around you. Spontaneous student meetups. Free.'
         } />
-        <link rel="canonical" href="https://nearvity.lovable.app" />
+        <link rel="canonical" href={`${SITE_URL}/`} />
+        <meta property="og:url" content={`${SITE_URL}/`} />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
       <FloatingOrbs />

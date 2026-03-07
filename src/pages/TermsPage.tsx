@@ -2,14 +2,24 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
-import { LEGAL_EMAIL } from '@/lib/constants';
+import { LEGAL_EMAIL, SITE_URL } from '@/lib/constants';
+import { Helmet } from 'react-helmet-async';
 
 export default function TermsPage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <PageLayout showSidebar={false} className="pb-8 safe-bottom">
+      <Helmet>
+        <title>{locale === 'fr' ? 'Conditions Générales d\'Utilisation — NEARVITY' : 'Terms of Service — NEARVITY'}</title>
+        <meta name="description" content={locale === 'fr'
+          ? 'Conditions générales d\'utilisation de NEARVITY, le réseau social IRL. Règles d\'utilisation, politique de confidentialité, droits RGPD.'
+          : 'NEARVITY terms of service — the IRL social network. Usage rules, privacy policy, GDPR rights.'
+        } />
+        <link rel="canonical" href={`${SITE_URL}/terms`} />
+      </Helmet>
+
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
           onClick={() => navigate(-1)}
