@@ -33,12 +33,13 @@ export default function PrivacyPage() {
       </Helmet>
 
       <header className="safe-top px-6 py-4 flex items-center gap-4">
-        <button
-          onClick={() => navigate(-1)}
+        <Link
+          to="/"
           className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label={t('help.backToHome')}
         >
           <ArrowLeft className="h-6 w-6 text-foreground" />
-        </button>
+        </Link>
         <h1 className="text-xl font-bold text-foreground">{t('privacy.title')}</h1>
       </header>
 
