@@ -18,6 +18,18 @@ export default function TermsPage() {
           : 'NEARVITY terms of service — the IRL social network. Usage rules, privacy policy, GDPR rights.'
         } />
         <link rel="canonical" href={`${SITE_URL}/terms`} />
+        <meta property="og:title" content={locale === 'fr' ? 'CGU — NEARVITY' : 'Terms — NEARVITY'} />
+        <meta property="og:url" content={`${SITE_URL}/terms`} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'CGU' : 'Terms', item: `${SITE_URL}/terms` },
+          ],
+        })}</script>
       </Helmet>
 
       <header className="safe-top px-6 py-4 flex items-center gap-4">

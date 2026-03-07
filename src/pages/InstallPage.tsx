@@ -149,6 +149,18 @@ export default function InstallPage() {
           : 'Install NEARVITY on your phone in 30 seconds. Free PWA app.'
         } />
         <link rel="canonical" href={`${SITE_URL}/install`} />
+        <meta property="og:title" content={locale === 'fr' ? 'Installer NEARVITY' : 'Install NEARVITY'} />
+        <meta property="og:url" content={`${SITE_URL}/install`} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'Installer' : 'Install', item: `${SITE_URL}/install` },
+          ],
+        })}</script>
       </Helmet>
       <header className="safe-top sticky top-0 z-10 px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('install.backLabel')}>
