@@ -239,9 +239,9 @@ export default function HelpPage() {
               }
               
               return (
-                <button
+                <Link
                   key={link.label}
-                  onClick={() => navigate(link.href)}
+                  to={link.href}
                   className={`w-full flex items-center gap-4 px-4 py-3.5 hover:bg-muted/50 transition-colors ${
                     index !== supportLinks.length - 1 ? 'border-b border-border' : ''
                   }`}
@@ -249,7 +249,7 @@ export default function HelpPage() {
                   <span className="text-muted-foreground">{link.icon}</span>
                   <span className="flex-1 text-left text-foreground">{link.label}</span>
                   <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </button>
+                </Link>
               );
             })}
           </div>

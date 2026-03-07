@@ -466,9 +466,9 @@ export default function PremiumPage() {
           {t('premium.termsNote')}
           <br />
           {t('premium.bySubscribing')}{' '}
-          <button onClick={() => navigate('/terms')} className="text-coral hover:underline">
+          <Link to="/terms" className="text-coral hover:underline">
             {t('premium.termsOfUse')}
-          </button>.
+          </Link>.
         </p>
       </motion.div>
     </PageLayout>
