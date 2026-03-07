@@ -142,6 +142,14 @@ export default function InstallPage() {
 
   return (
     <PageLayout showSidebar={false} className="pb-8 safe-bottom">
+      <Helmet>
+        <title>{locale === 'fr' ? 'Installer NEARVITY — Application PWA' : 'Install NEARVITY — PWA App'}</title>
+        <meta name="description" content={locale === 'fr'
+          ? 'Installez NEARVITY sur votre téléphone en 30 secondes. Application PWA gratuite.'
+          : 'Install NEARVITY on your phone in 30 seconds. Free PWA app.'
+        } />
+        <link rel="canonical" href={`${SITE_URL}/install`} />
+      </Helmet>
       <header className="safe-top sticky top-0 z-10 px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('install.backLabel')}>
           <ArrowLeft className="h-6 w-6 text-foreground" />
