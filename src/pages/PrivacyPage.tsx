@@ -2,14 +2,24 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, User, Shield } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
-import { DPO_EMAIL } from '@/lib/constants';
+import { DPO_EMAIL, SITE_URL } from '@/lib/constants';
+import { Helmet } from 'react-helmet-async';
 
 export default function PrivacyPage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <PageLayout showSidebar={false} className="pb-8 safe-bottom">
+      <Helmet>
+        <title>{locale === 'fr' ? 'Politique de Confidentialité — NEARVITY' : 'Privacy Policy — NEARVITY'}</title>
+        <meta name="description" content={locale === 'fr'
+          ? 'Politique de confidentialité de NEARVITY. GPS flouté, données minimales, chiffrement, droits RGPD, suppression de compte. Aucune vente de données.'
+          : 'NEARVITY privacy policy. GPS fuzzing, minimal data, encryption, GDPR rights, account deletion. No data selling.'
+        } />
+        <link rel="canonical" href={`${SITE_URL}/privacy`} />
+      </Helmet>
+
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
           onClick={() => navigate(-1)}

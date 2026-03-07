@@ -23,7 +23,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/help" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/help" />
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://nearvity.fr/premium</loc>
@@ -31,7 +31,7 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/premium" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/premium" />
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://nearvity.fr/onboarding</loc>
@@ -58,19 +58,19 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://nearvity.fr/changelog</loc>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/changelog" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/changelog" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/changelog" />
-    <changefreq>weekly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
     <loc>https://nearvity.fr/install</loc>
     <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/install" />
     <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/install" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/install" />
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://nearvity.fr/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://nearvity.fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://nearvity.fr/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://nearvity.fr/changelog" />
+    <changefreq>weekly</changefreq>
+    <priority>0.4</priority>
   </url>
 </urlset>

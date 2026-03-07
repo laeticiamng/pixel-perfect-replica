@@ -26,6 +26,13 @@ Disallow: /admin
 User-agent: ChatGPT-User
 Allow: /
 
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /map
+Disallow: /profile
+Disallow: /settings
+Disallow: /admin
+
 User-agent: Claude-Web
 Allow: /
 Disallow: /map

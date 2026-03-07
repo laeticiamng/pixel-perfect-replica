@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BottomNav } from '@/components/BottomNav';
 import { useTranslation } from '@/lib/i18n';
-
+import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '@/lib/constants';
 interface ChangelogEntry {
   version: string;
   date: string;
@@ -255,7 +256,14 @@ export default function ChangelogPage() {
 
   return (
     <div className="min-h-screen bg-background pb-24 lg:pb-8">
-      {/* Header */}
+      <Helmet>
+        <title>{locale === 'fr' ? 'Journal des mises à jour — NEARVITY' : 'Changelog — NEARVITY'}</title>
+        <meta name="description" content={locale === 'fr'
+          ? 'Historique des mises à jour de NEARVITY : nouvelles fonctionnalités, améliorations, corrections de bugs et sécurité.'
+          : 'NEARVITY update history: new features, improvements, bug fixes and security updates.'
+        } />
+        <link rel="canonical" href={`${SITE_URL}/changelog`} />
+      </Helmet>
       <header className="sticky top-0 z-40 glass-strong border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
           <Button

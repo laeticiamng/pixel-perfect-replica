@@ -12,6 +12,8 @@ import { logger } from '@/lib/logger';
 import { useSessionQuota } from '@/hooks/useSessionQuota';
 import { useTranslation } from '@/lib/i18n';
 import { celebrationBurst } from '@/components/binome';
+import { Helmet } from 'react-helmet-async';
+import { SITE_URL } from '@/lib/constants';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import { fr, enUS, de } from 'date-fns/locale';
@@ -222,8 +224,32 @@ export default function PremiumPage() {
     );
   }
 
+  const pricingJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'NEARVITY',
+    description: locale === 'fr'
+      ? 'Réseau social IRL pour étudiants. Plans gratuit, session unitaire et premium.'
+      : 'IRL social network for students. Free, pay-per-session and premium plans.',
+    brand: { '@type': 'Brand', name: 'NEARVITY' },
+    offers: [
+      { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+      { '@type': 'Offer', name: 'Session', price: '0.99', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+      { '@type': 'Offer', name: 'Nearvity+', price: '9.90', priceCurrency: 'EUR', priceValidUntil: '2027-12-31', availability: 'https://schema.org/InStock' },
+    ],
+  };
+
   return (
     <PageLayout className="pb-8 safe-bottom">
+      <Helmet>
+        <title>{locale === 'fr' ? 'Tarifs & Premium — NEARVITY' : 'Pricing & Premium — NEARVITY'}</title>
+        <meta name="description" content={locale === 'fr'
+          ? 'NEARVITY est gratuit. Nearvity+ à 9,90€/mois pour sessions illimitées, mode fantôme et support prioritaire. Sessions à l\'unité à 0,99€.'
+          : 'NEARVITY is free. Nearvity+ at €9.90/month for unlimited sessions, ghost mode and priority support. Pay-per-session at €0.99.'
+        } />
+        <link rel="canonical" href={`${SITE_URL}/premium`} />
+        <script type="application/ld+json">{JSON.stringify(pricingJsonLd)}</script>
+      </Helmet>
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
           <ArrowLeft className="h-6 w-6 text-foreground" />

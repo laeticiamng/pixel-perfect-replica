@@ -6,12 +6,13 @@ import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
-import { APP_VERSION, SUPPORT_EMAIL } from '@/lib/constants';
+import { APP_VERSION, SUPPORT_EMAIL, SITE_URL } from '@/lib/constants';
+import { Helmet } from 'react-helmet-async';
 
 export default function HelpPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const faqs = [
@@ -90,9 +91,31 @@ export default function HelpPage() {
     { icon: <Shield className="h-5 w-5" />, label: t('help.privacyPolicy'), href: '/privacy' },
   ];
 
+  // Build FAQPage JSON-LD for GEO/SEO
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: translatedFaqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <PageLayout className="pb-8 safe-bottom">
-      {/* Header */}
+      <Helmet>
+        <title>{locale === 'fr' ? 'Aide & FAQ — NEARVITY' : 'Help & FAQ — NEARVITY'}</title>
+        <meta name="description" content={locale === 'fr'
+          ? 'Questions fréquentes sur NEARVITY : fonctionnement, sécurité, localisation, mode fantôme, suppression de compte. Centre d\'aide complet.'
+          : 'Frequently asked questions about NEARVITY: how it works, safety, location, ghost mode, account deletion. Complete help center.'
+        } />
+        <link rel="canonical" href={`${SITE_URL}/help`} />
+        <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+      </Helmet>
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
           onClick={() => navigate(user ? '/profile' : '/')}
