@@ -114,7 +114,24 @@ export default function HelpPage() {
           : 'Frequently asked questions about NEARVITY: how it works, safety, location, ghost mode, account deletion. Complete help center.'
         } />
         <link rel="canonical" href={`${SITE_URL}/help`} />
+        <meta property="og:title" content={locale === 'fr' ? 'Aide & FAQ — NEARVITY' : 'Help & FAQ — NEARVITY'} />
+        <meta property="og:description" content={locale === 'fr'
+          ? 'Réponses à toutes vos questions sur NEARVITY.'
+          : 'Answers to all your questions about NEARVITY.'
+        } />
+        <meta property="og:url" content={`${SITE_URL}/help`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'Aide & FAQ' : 'Help & FAQ', item: `${SITE_URL}/help` },
+          ],
+        })}</script>
       </Helmet>
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button

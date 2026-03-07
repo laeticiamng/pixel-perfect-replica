@@ -84,7 +84,24 @@ export default function AboutPage() {
           : 'Discover NEARVITY\'s mission — the first 100% real social network. Built in France by EmotionsCare SASU to connect students IRL.'
         } />
         <link rel="canonical" href={`${SITE_URL}/about`} />
+        <meta property="og:title" content={locale === 'fr' ? 'À propos de NEARVITY — Mission & Valeurs' : 'About NEARVITY — Mission & Values'} />
+        <meta property="og:description" content={locale === 'fr'
+          ? 'Le premier réseau social 100% réel, conçu en France par EmotionsCare SASU.'
+          : 'The first 100% real social network, built in France by EmotionsCare SASU.'
+        } />
+        <meta property="og:url" content={`${SITE_URL}/about`} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'NEARVITY', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: locale === 'fr' ? 'À propos' : 'About', item: `${SITE_URL}/about` },
+          ],
+        })}</script>
       </Helmet>
 
       <article className="min-h-screen px-4 py-8 max-w-4xl mx-auto">
