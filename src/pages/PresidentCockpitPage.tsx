@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { AlertTriangle, CheckCircle2, Clock3, ShieldCheck, ShieldX, Siren, TrendingUp } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Clock3, ShieldCheck, ShieldX, Siren, TrendingUp, ArrowLeft, Loader2 } from 'lucide-react';
 import { ActionValidation, HealthStatus, pendingValidationsMock, platformsMock, strategicWatchMock } from '@/data/presidentCockpitMock';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
+import { FullPageLoader } from '@/components/shared/FullPageLoader';
 
 interface ValidationHistoryItem extends ActionValidation {
   decision: 'approuvee' | 'rejetee';
@@ -34,6 +37,8 @@ const formatDateTime = (dateString: string) =>
   });
 
 export default function PresidentCockpitPage() {
+  const navigate = useNavigate();
+  const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const [validations, setValidations] = useState<ActionValidation[]>(pendingValidationsMock);
   const [validationHistory, setValidationHistory] = useState<ValidationHistoryItem[]>([]);
   const [statusFilter, setStatusFilter] = useState<'tous' | HealthStatus>('tous');
@@ -80,6 +85,13 @@ export default function PresidentCockpitPage() {
       ...prev,
     ]);
   };
+
+  // Block non-admin access — after all hooks
+  if (adminLoading) return <FullPageLoader />;
+  if (!isAdmin) {
+    navigate('/', { replace: true });
+    return null;
+  }
 
   return (
     <PageLayout className="pb-8 safe-bottom">
