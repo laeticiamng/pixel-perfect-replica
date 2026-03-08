@@ -11,9 +11,9 @@ interface Testimonial {
   activity: string;
 }
 
-function TestimonialCard({ item }: { item: Testimonial }) {
+const TestimonialCard = forwardRef<HTMLDivElement, { item: Testimonial }>(function TestimonialCard({ item }, ref) {
   return (
-    <div className="relative flex-shrink-0 w-[320px] p-6 rounded-2xl border border-border/40 bg-card/40 backdrop-blur-md group hover:border-coral/30 transition-all duration-300">
+    <div ref={ref} className="relative flex-shrink-0 w-[320px] p-6 rounded-2xl border border-border/40 bg-card/40 backdrop-blur-md group hover:border-coral/30 transition-all duration-300">
       {/* Top shine */}
       <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
       
@@ -33,7 +33,7 @@ function TestimonialCard({ item }: { item: Testimonial }) {
       </div>
     </div>
   );
-}
+});
 
 function Marquee({ items, direction = 'left' }: { items: Testimonial[]; direction?: 'left' | 'right' }) {
   // Double items for infinite loop
