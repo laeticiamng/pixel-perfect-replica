@@ -233,7 +233,7 @@ export default function StatisticsPage() {
                   <span className="text-2xl w-8 text-center font-bold text-coral">
                     {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}`}
                   </span>
-                  <div className="w-12 h-12 rounded-lg bg-deep-blue-light flex items-center justify-center text-2xl">{activity.emoji}</div>
+                  <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center text-2xl">{activity.emoji}</div>
                   <div className="flex-1">
                     <p className="font-medium text-foreground">{activity.activity}</p>
                     <div className="w-full bg-muted/30 rounded-full h-2 mt-1">

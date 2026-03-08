@@ -255,7 +255,7 @@ export default function EditProfilePage() {
               placeholder={t('editProfile.firstNamePlaceholder')}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+              className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
             />
           </div>
 
@@ -266,7 +266,7 @@ export default function EditProfilePage() {
               placeholder={t('editProfile.universityPlaceholder')}
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
-              className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+              className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
             />
           </div>
 
@@ -289,7 +289,7 @@ export default function EditProfilePage() {
                   setBio(e.target.value);
                 }
               }}
-              className="min-h-[100px] bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
+              className="min-h-[100px] bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
             />
           </div>
 
@@ -304,7 +304,7 @@ export default function EditProfilePage() {
               onChange={(e) => setBirthYear(e.target.value)}
               min={1920}
               max={new Date().getFullYear() - 13}
-              className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+              className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
             />
             <p className="text-xs text-muted-foreground">{t('editProfile.birthYearPrivacy')}</p>
           </div>
@@ -315,7 +315,7 @@ export default function EditProfilePage() {
               type="email"
               value={profile?.email || ''}
               disabled
-              className="h-14 bg-deep-blue-light/50 border-border text-muted-foreground rounded-xl cursor-not-allowed"
+              className="h-14 bg-muted/50 border-border text-muted-foreground rounded-xl cursor-not-allowed"
             />
             <p className="text-xs text-muted-foreground">{t('editProfile.emailReadonly')}</p>
           </div>

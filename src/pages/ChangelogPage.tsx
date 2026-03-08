@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BottomNav } from '@/components/BottomNav';
+import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from '@/lib/constants';
@@ -255,7 +256,7 @@ export default function ChangelogPage() {
   const { t, locale } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background pb-24 lg:pb-8">
+    <PageLayout className="pb-24 safe-bottom">
       <Helmet>
         <title>{locale === 'fr' ? 'Journal des mises à jour — NEARVITY' : 'Changelog — NEARVITY'}</title>
         <meta name="description" content={locale === 'fr'
@@ -354,6 +355,6 @@ export default function ChangelogPage() {
       </main>
 
       <BottomNav />
-    </div>
+    </PageLayout>
   );
 }
