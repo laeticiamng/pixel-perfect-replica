@@ -914,13 +914,13 @@ export const translations = {
 
   // Session checkin component
   sessionCheckin: {
-    sessionEnded: { en: 'Session ended', fr: 'Session terminée', de: 'Session beendet' },
+    sessionEnded: { en: 'Meetup ended', fr: 'Rencontre terminée', de: 'Treffen beendet' },
     thanksForParticipating: { en: 'Thanks for participating!', fr: 'Merci d\'avoir participé !', de: 'Danke fürs Mitmachen!' },
     checkinDone: { en: 'Check-in done', fr: 'Check-in effectué', de: 'Einchecken erledigt' },
-    endSession: { en: 'End session', fr: 'Terminer la session', de: 'Session beenden' },
+    endSession: { en: 'End meetup', fr: 'Terminer la rencontre', de: 'Treffen beenden' },
     inProgress: { en: 'In progress...', fr: 'En cours...', de: 'In Bearbeitung...' },
     attendance: { en: 'Attendance', fr: 'Pointage', de: 'Anwesenheit' },
-    confirmPresence: { en: 'Confirm your presence at the session', fr: 'Confirme ta présence à la session', de: 'Bestätige deine Anwesenheit bei der Session' },
+    confirmPresence: { en: 'Confirm your presence at the meetup', fr: 'Confirme ta présence à la rencontre', de: 'Bestätige deine Anwesenheit beim Treffen' },
     checkinWindowOpen: { en: 'Check-in window open', fr: 'Fenêtre de check-in ouverte', de: 'Check-in-Fenster offen' },
     checkinBefore: { en: 'Check-in available 15 min before start', fr: 'Check-in possible 15 min avant le début', de: 'Einchecken 15 Min. vor Beginn möglich' },
     locating: { en: 'Locating...', fr: 'Localisation en cours...', de: 'Ortung...' },
