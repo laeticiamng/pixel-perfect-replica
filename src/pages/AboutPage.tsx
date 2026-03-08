@@ -22,6 +22,7 @@ const fadeUp = (delay = 0) => ({
 export default function AboutPage() {
   const { t, locale } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const values = [
     { icon: Heart, title: t('about.authenticity'), description: t('about.authenticityDesc'), gradient: 'from-coral to-coral-dark' },
