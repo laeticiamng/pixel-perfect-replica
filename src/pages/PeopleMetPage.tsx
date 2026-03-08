@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n';
 import { ACTIVITIES } from '@/types/signal';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { ProfileCardSkeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
