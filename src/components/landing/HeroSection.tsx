@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, AlertTriangle, Download } from 'lucide-react';
+import { ArrowRight, AlertTriangle, Download, Sparkles } from 'lucide-react';
 import { motion, MotionValue } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/lib/i18n';
@@ -18,46 +18,54 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
       style={{ opacity: heroOpacity, scale: heroScale }}
       className="min-h-screen flex flex-col items-center justify-center px-6 relative z-10 pt-16"
     >
-      {/* Main Title */}
+      {/* Announcement badge - 21st.dev style */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="mb-8"
+      >
+        <div className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/60 bg-card/60 backdrop-blur-md hover:border-coral/40 transition-all duration-300 cursor-default">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-coral/10 via-transparent to-coral/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <Sparkles className="h-3.5 w-3.5 text-coral relative z-10" />
+          <span className="text-xs sm:text-sm font-medium text-muted-foreground relative z-10">
+            {t('landing.notADatingApp')}
+          </span>
+          <AlertTriangle className="h-3.5 w-3.5 text-coral/60 relative z-10" />
+        </div>
+      </motion.div>
+
+      {/* Main Title with shimmer effect */}
       <motion.h1 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-6"
+        className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-6"
       >
-        <span className="bg-gradient-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent">
-          {t('landing.seeWhoIsOpen')}
+        <span className="relative inline-block">
+          <span className="bg-gradient-to-r from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent">
+            {t('landing.seeWhoIsOpen')}
+          </span>
         </span>
         <br />
-        <span className="bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent">
-          {t('landing.openToInteract')}
+        <span className="relative inline-block">
+          <span className="hero-shimmer bg-gradient-to-r from-coral via-coral-light via-50% to-coral bg-clip-text text-transparent bg-[length:200%_100%]">
+            {t('landing.openToInteract')}
+          </span>
         </span>
       </motion.h1>
       
-      {/* Subtitle - single concise line */}
+      {/* Subtitle */}
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.4 }}
-        className="text-lg md:text-xl text-muted-foreground text-center max-w-lg mb-6 leading-relaxed"
+        className="text-lg md:text-xl text-muted-foreground text-center max-w-lg mb-10 leading-relaxed"
       >
         {t('landing.heroSubtitle')}
       </motion.p>
-
-      {/* "Not a dating app" badge - below subtitle for clear hierarchy */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.5 }}
-        className="mb-10"
-      >
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-destructive/10 border border-destructive/30">
-          <AlertTriangle className="h-4 w-4 text-destructive" />
-          <span className="text-sm font-bold text-destructive">{t('landing.notADatingApp')}</span>
-        </div>
-      </motion.div>
       
-      {/* CTA Buttons - no pulse animation */}
+      {/* CTA Buttons */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -67,16 +75,16 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         <Button
           onClick={() => navigate('/onboarding')}
           size="lg"
-          className="h-14 sm:h-16 px-8 sm:px-10 text-lg sm:text-xl font-black bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl shadow-coral/30 hover:shadow-coral/40 transition-all duration-300 hover:scale-105"
+          className="group h-14 sm:h-16 px-8 sm:px-10 text-lg sm:text-xl font-black bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl shadow-coral/25 hover:shadow-coral/40 transition-all duration-300 hover:scale-105"
         >
           {t('landing.createMyAccount')}
-          <ArrowRight className="ml-2 h-6 w-6" />
+          <ArrowRight className="ml-2 h-6 w-6 transition-transform group-hover:translate-x-1" />
         </Button>
         <Button
           onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
           variant="outline"
           size="lg"
-          className="h-14 px-8 text-lg font-medium rounded-full border-2 border-muted hover:border-coral/50 hover:bg-coral/5 transition-all duration-300"
+          className="h-14 px-8 text-lg font-medium rounded-full border-2 border-border/80 hover:border-coral/50 hover:bg-coral/5 transition-all duration-300"
         >
           {t('auth.signIn')}
         </Button>

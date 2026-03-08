@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
@@ -10,34 +11,47 @@ export const FinalCTASection = forwardRef<HTMLElement>(function FinalCTASection(
   const { t } = useTranslation();
 
   return (
-    <section ref={ref} className="py-20 px-6 relative z-10 bg-gradient-to-b from-coral/5 to-coral/15 border-t border-coral/10">
-      <div className="max-w-3xl mx-auto text-center">
+    <section ref={ref} className="py-24 px-6 relative z-10">
+      <div className="max-w-3xl mx-auto">
+        {/* Glowing border card - 21st.dev style */}
         <RevealText>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
-            <span className="text-muted-foreground">{t('landing.readyToConnect')}</span>
-            <br />
-            <span className="bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent">
-              {t('landing.connect')}
-            </span>
-          </h2>
-        </RevealText>
-        
-        <RevealText delay={0.2}>
-          <p className="text-lg text-muted-foreground mb-12 max-w-md mx-auto">
-            {t('landing.joinRevolution')}
-            <br />{t('landing.itsFreeNow')}
-          </p>
-        </RevealText>
-        
-        <RevealText delay={0.4}>
-          <Button
-            onClick={() => navigate('/onboarding')}
-            size="lg"
-            className="h-16 px-12 text-xl font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl hover:shadow-coral/30 transition-all duration-300 hover:scale-105"
+          <motion.div
+            className="relative rounded-3xl overflow-hidden"
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.3 }}
           >
-            {t('landing.startNow')}
-            <ArrowRight className="ml-3 h-6 w-6" />
-          </Button>
+            {/* Animated gradient border */}
+            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-coral via-coral-light to-coral animate-gradient-shift" />
+            
+            {/* Inner content */}
+            <div className="relative m-px rounded-3xl bg-card/95 backdrop-blur-xl p-10 md:p-16 text-center">
+              {/* Glow spots */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-coral/50 to-transparent" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-32 bg-coral/10 blur-[60px] rounded-full" />
+              
+              <h2 className="relative text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+                <span className="text-muted-foreground">{t('landing.readyToConnect')}</span>
+                <br />
+                <span className="bg-gradient-to-r from-coral via-coral-light to-coral bg-clip-text text-transparent">
+                  {t('landing.connect')}
+                </span>
+              </h2>
+              
+              <p className="relative text-lg text-muted-foreground mb-10 max-w-md mx-auto">
+                {t('landing.joinRevolution')}
+                <br />{t('landing.itsFreeNow')}
+              </p>
+              
+              <Button
+                onClick={() => navigate('/onboarding')}
+                size="lg"
+                className="group relative h-16 px-12 text-xl font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl shadow-coral/25 hover:shadow-coral/40 transition-all duration-300 hover:scale-105"
+              >
+                {t('landing.startNow')}
+                <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
+          </motion.div>
         </RevealText>
       </div>
     </section>

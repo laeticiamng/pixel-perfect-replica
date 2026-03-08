@@ -513,6 +513,29 @@
   animation: shimmer 2s ease-in-out infinite;
 }
 
+/* Hero text shimmer animation */
+@keyframes hero-shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-shimmer {
+  animation: hero-shimmer 4s ease-in-out infinite;
+}
+
+/* Animated gradient border shift */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease-in-out infinite;
+}
+
 .animate-breathing {
   animation: breathing 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
