@@ -475,5 +475,6 @@ export default function EventsPage() {
 
       <BottomNav />
     </PageLayout>
+    </>
   );
 }
