@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Users, Activity, TrendingUp, Calendar,
@@ -295,6 +296,8 @@ export default function AdminDashboardPage() {
   }
 
   return (
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4">
@@ -665,5 +668,6 @@ export default function AdminDashboardPage() {
         </Tabs>
       </div>
     </PageLayout>
+    </>
   );
 }

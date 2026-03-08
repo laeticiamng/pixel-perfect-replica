@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download, BarChart3, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
@@ -85,6 +86,8 @@ export default function SettingsPage() {
   ];
 
   return (
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto w-full">
         <header className="safe-top px-6 py-6">
@@ -340,5 +343,6 @@ export default function SettingsPage() {
 
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

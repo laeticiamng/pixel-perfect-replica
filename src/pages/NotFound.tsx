@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/PageLayout";
@@ -8,7 +8,6 @@ import { logger } from "@/lib/logger";
 
 const NotFound = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -26,12 +25,11 @@ const NotFound = () => {
         <p className="mb-8 text-muted-foreground">
           {t('notFound.description')}
         </p>
-        <Button
-          onClick={() => navigate("/")}
-          className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl px-6"
-        >
-          <Home className="h-4 w-4 mr-2" />
-          {t('notFound.backHome')}
+        <Button asChild className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl px-6">
+          <Link to="/">
+            <Home className="h-4 w-4 mr-2" />
+            {t('notFound.backHome')}
+          </Link>
         </Button>
       </div>
     </PageLayout>

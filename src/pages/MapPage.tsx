@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays, Users, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -208,6 +209,8 @@ export default function MapPage() {
     : t('mapUI.locationFallback');
 
   return (
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28" animate={false}>
       <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
         {/* Geolocation fallback banner */}
@@ -635,5 +638,6 @@ export default function MapPage() {
         </AnimatePresence>
       </div>
     </PageLayout>
+    </>
   );
 }
