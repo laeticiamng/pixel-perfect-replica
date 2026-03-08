@@ -344,30 +344,46 @@ export function DesktopSidebar() {
             </div>
           )}
           
-          {/* Logout */}
-          {collapsed ? (
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger asChild>
+          {/* Logout with confirmation */}
+          <AlertDialog>
+            {collapsed ? (
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <AlertDialogTrigger asChild>
+                    <button
+                      className="w-full flex items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                    >
+                      <LogOut className="h-5 w-5" />
+                    </button>
+                  </AlertDialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  {t('nav.logout')}
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <AlertDialogTrigger asChild>
                 <button
-                  onClick={() => signOut()}
-                  className="w-full flex items-center justify-center p-3 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                 >
                   <LogOut className="h-5 w-5" />
+                  <span className="text-sm">{t('nav.logout')}</span>
                 </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                {t('nav.logout')}
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <button
-              onClick={() => signOut()}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-            >
-              <LogOut className="h-5 w-5" />
-              <span className="text-sm">{t('nav.logout')}</span>
-            </button>
-          )}
+              </AlertDialogTrigger>
+            )}
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t('nav.logout')}</AlertDialogTitle>
+                <AlertDialogDescription>{t('profile.logoutConfirm')}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                <AlertDialogAction onClick={() => signOut()} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  {t('nav.logout')}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           {/* Collapse Toggle */}
           <Tooltip delayDuration={0}>
