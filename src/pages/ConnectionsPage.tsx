@@ -239,8 +239,9 @@ export default function ConnectionsPage() {
   };
 
   return (
-    <PageLayout>
-      <div className="max-w-2xl mx-auto p-4 space-y-6">
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
+    <PageLayout className="pb-28">
         <PageHeader
           title={t('connections.title')}
           subtitle={t('connections.subtitle')}
