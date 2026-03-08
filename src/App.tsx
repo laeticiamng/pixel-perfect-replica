@@ -95,6 +95,15 @@ const pageVariants = {
   },
 };
 
+// Syncs <html lang="..."> with current locale
+function HtmlLangSync() {
+  const { locale } = useTranslation();
+  useEffect(() => {
+    document.documentElement.lang = locale === 'fr' ? 'fr' : locale === 'de' ? 'de' : 'en';
+  }, [locale]);
+  return null;
+}
+
 // Animated Routes wrapper with keyboard shortcuts
 function AnimatedRoutes() {
   const location = useLocation();
