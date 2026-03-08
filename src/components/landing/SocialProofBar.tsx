@@ -55,16 +55,20 @@ export function SocialProofBar() {
     }
   }, [isInView, stats]);
 
-  // Don't render if all stats are zero (empty database = no social proof)
+  // Show static fallback when no real stats yet
   const allZero = !stats || (stats.active_users_now === 0 && stats.sessions_this_month === 0 && stats.completed_sessions === 0);
 
-  const displayStats = [
+  const fallbackStats = [
+    { icon: Users, value: 0, suffix: '', label: t('landing.trustedStudents') },
+    { icon: Zap, value: 0, suffix: '', label: t('landing.trustedPrivacy') },
+    { icon: MapPin, value: 0, suffix: '', label: t('landing.trustedMadeInFrance') },
+  ];
+
+  const displayStats = allZero ? fallbackStats : [
     { icon: Users, value: stats?.active_users_now ?? 0, suffix: '', label: t('landing.socialProofUsers') },
     { icon: Zap, value: stats?.sessions_this_month ?? 0, suffix: '', label: t('landing.socialProofSessions') },
     { icon: MapPin, value: stats?.completed_sessions ?? 0, suffix: '+', label: t('landing.socialProofCompleted') },
   ];
-
-  if (allZero) return null;
 
   return (
     <motion.section
@@ -83,9 +87,15 @@ export function SocialProofBar() {
               <div className="flex flex-col items-center gap-1 min-w-0">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-coral shrink-0" />
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                  {allZero ? (
+                    <span className="text-sm sm:text-base font-semibold text-foreground">{stat.label}</span>
+                  ) : (
+                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                  )}
                 </div>
-                <span className="text-[10px] sm:text-xs text-muted-foreground font-medium text-center leading-tight">{stat.label}</span>
+                {!allZero && (
+                  <span className="text-[10px] sm:text-xs text-muted-foreground font-medium text-center leading-tight">{stat.label}</span>
+                )}
               </div>
             </div>
           ))}
