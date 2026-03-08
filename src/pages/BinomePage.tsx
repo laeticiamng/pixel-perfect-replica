@@ -227,5 +227,6 @@ export default function BinomePage() {
 
       <BottomNav />
     </PageLayout>
+    </>
   );
 }
