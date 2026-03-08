@@ -4,7 +4,6 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { useTranslation } from '@/lib/i18n';
-import { useTranslation } from '@/lib/i18n';
 import { EmergencyContactsManager } from '@/components/safety';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
