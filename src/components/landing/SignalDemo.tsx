@@ -32,7 +32,7 @@ export const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props,
       {/* Center - You */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-lg glow-coral">
-          <span className="text-white font-bold">T</span>
+          <span className="text-white font-bold">{t('landing.radarMe')}</span>
         </div>
       </div>
       
