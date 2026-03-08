@@ -145,7 +145,7 @@ export default function InstallPage() {
       <Helmet>
         <title>{locale === 'fr' ? 'Installer NEARVITY — Application PWA' : 'Install NEARVITY — PWA App'}</title>
         <meta name="description" content={locale === 'fr'
-          ? 'Installez NEARVITY sur votre téléphone en 30 secondes. Application PWA gratuite.'
+          ? 'Installe NEARVITY sur ton téléphone en 30 secondes. Application PWA gratuite.'
           : 'Install NEARVITY on your phone in 30 seconds. Free PWA app.'
         } />
         <link rel="canonical" href={`${SITE_URL}/install`} />
