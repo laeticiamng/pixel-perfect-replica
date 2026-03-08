@@ -1,6 +1,8 @@
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { useTranslation } from '@/lib/i18n';
 import { SUPPORT_EMAIL, SITE_URL } from '@/lib/constants';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   ArrowLeft, Users, Heart, Shield, Rocket, Mail, MessageCircle,
   MapPin, Zap, BookOpen, HandshakeIcon, Eye, Sparkles,
