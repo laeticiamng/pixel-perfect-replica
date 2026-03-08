@@ -270,6 +270,8 @@ export default function HelpPage() {
           <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>
       </motion.div>
+
+      <BottomNav />
     </PageLayout>
   );
 }

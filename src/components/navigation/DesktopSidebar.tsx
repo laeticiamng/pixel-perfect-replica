@@ -93,7 +93,7 @@ export function DesktopSidebar() {
   };
   
   const renderNavItem = (item: NavItem) => {
-    const isActive = location.pathname === item.to;
+    const isActive = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
     const shouldShowBadge = item.showNewBadge && showBinomeBadge && !isActive;
     const notifBadgeCount = item.to === '/notifications' ? notifUnread : item.to === '/conversations' ? msgUnread : 0;
     const label = t(item.labelKey);
