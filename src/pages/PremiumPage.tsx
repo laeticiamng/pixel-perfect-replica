@@ -246,14 +246,14 @@ export default function PremiumPage() {
       <Helmet>
         <title>{locale === 'fr' ? 'Tarifs & Premium — NEARVITY' : 'Pricing & Premium — NEARVITY'}</title>
         <meta name="description" content={locale === 'fr'
-          ? 'NEARVITY est gratuit. Nearvity+ à 9,90€/mois pour sessions illimitées, mode fantôme et support prioritaire. Sessions à l\'unité à 0,99€.'
-          : 'NEARVITY is free. Nearvity+ at €9.90/month for unlimited sessions, ghost mode and priority support. Pay-per-session at €0.99.'
+          ? 'NEARVITY est gratuit. Nearvity+ à 9,90€/mois pour des rencontres illimitées, mode fantôme et support prioritaire. Rencontre à l\'unité à 0,99€.'
+          : 'NEARVITY is free. Nearvity+ at €9.90/month for unlimited meetups, ghost mode and priority support. Pay-per-meetup at €0.99.'
         } />
         <link rel="canonical" href={`${SITE_URL}/premium`} />
         <meta property="og:title" content={locale === 'fr' ? 'Tarifs — NEARVITY' : 'Pricing — NEARVITY'} />
         <meta property="og:description" content={locale === 'fr'
-          ? 'Gratuit, 0,99€/session ou 9,90€/mois avec Nearvity+.'
-          : 'Free, €0.99/session or €9.90/month with Nearvity+.'
+          ? 'Gratuit, 0,99€/rencontre ou 9,90€/mois avec Nearvity+.'
+          : 'Free, €0.99/meetup or €9.90/month with Nearvity+.'
         } />
         <meta property="og:url" content={`${SITE_URL}/premium`} />
         <meta property="og:type" content="website" />
