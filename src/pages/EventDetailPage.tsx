@@ -158,7 +158,7 @@ export default function EventDetailPage() {
   const isActive = new Date(event.starts_at) <= new Date() && new Date(event.ends_at) > new Date();
 
   return (
-    <PageLayout className="pb-24 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center justify-between mb-2">
           <button onClick={() => navigate('/events')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('eventDetail.backToEvents')}>
