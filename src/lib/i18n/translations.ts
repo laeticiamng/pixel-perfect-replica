@@ -1698,7 +1698,7 @@ export const translations = {
   // Errors
   errors: {
     errorBoundaryTitle: { en: 'Something went wrong', fr: 'Une erreur est survenue', de: 'Etwas ist schiefgelaufen' },
-    errorBoundaryDesc: { en: 'An unexpected error occurred. Please try again.', fr: 'Une erreur inattendue s\'est produite. Veuillez réessayer.', de: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.' },
+    errorBoundaryDesc: { en: 'An unexpected error occurred. Please try again.', fr: 'Une erreur inattendue s\'est produite. Réessaie.', de: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.' },
     home: { en: 'Home', fr: 'Accueil', de: 'Startseite' },
     reload: { en: 'Reload', fr: 'Recharger', de: 'Neu laden' },
   },
