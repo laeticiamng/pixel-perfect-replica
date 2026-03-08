@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronRight, ExternalLink, Mail, MessageCircle, FileText, S
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { APP_VERSION, SUPPORT_EMAIL, SITE_URL } from '@/lib/constants';
