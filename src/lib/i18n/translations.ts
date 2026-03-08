@@ -85,7 +85,7 @@ export const translations = {
     welcome: { en: 'Welcome!', fr: 'Bienvenue !', de: 'Willkommen!' },
     accountCreated: { en: 'Account created successfully!', fr: 'Compte créé avec succès !', de: 'Konto erfolgreich erstellt!' },
     invalidCredentials: { en: 'Invalid email or password', fr: 'Email ou mot de passe incorrect', de: 'Ungültige E-Mail oder Passwort' },
-    confirmEmail: { en: 'Please confirm your email', fr: 'Veuillez confirmer votre email', de: 'Bitte bestätige deine E-Mail' },
+    confirmEmail: { en: 'Please confirm your email', fr: 'Confirme ton email', de: 'Bitte bestätige deine E-Mail' },
     checkEmail: { en: 'Check your email', fr: 'Vérifie ta boîte email', de: 'Prüfe dein Postfach' },
     checkEmailDesc: { en: 'A confirmation email has been sent. Click the link to activate your account.', fr: 'Un email de confirmation a été envoyé. Clique sur le lien pour activer ton compte.', de: 'Eine Bestätigungs-E-Mail wurde gesendet. Klicke auf den Link, um dein Konto zu aktivieren.' },
     resendEmail: { en: 'Resend email', fr: 'Renvoyer l\'email', de: 'E-Mail erneut senden' },
