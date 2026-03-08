@@ -130,7 +130,7 @@ export default function ChangePasswordPage() {
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               placeholder={t('auth.currentPasswordPlaceholder')}
-              className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12"
+              className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12"
             />
             <button
               type="button"
