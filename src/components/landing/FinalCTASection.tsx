@@ -39,7 +39,6 @@ export const FinalCTASection = forwardRef<HTMLElement>(function FinalCTASection(
               
               <p className="relative text-lg text-muted-foreground mb-10 max-w-md mx-auto">
                 {t('landing.joinRevolution')}
-                <br />{t('landing.itsFreeNow')}
               </p>
               
               <Button
