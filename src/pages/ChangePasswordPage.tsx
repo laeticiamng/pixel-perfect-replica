@@ -7,6 +7,7 @@ import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicato
 import { supabase } from '@/integrations/supabase/client';
 import { passwordSchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared';
 import { logger } from '@/lib/logger';
 import { useTranslation } from '@/lib/i18n';
