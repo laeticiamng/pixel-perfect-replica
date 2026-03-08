@@ -1874,6 +1874,72 @@ export const translations = {
     done: { en: 'Got it!', fr: 'C\'est compris !', de: 'Verstanden!' },
   },
 
+  // Map UI
+  mapUI: {
+    loadingMap: { en: 'Loading map...', fr: 'Chargement de la carte...', de: 'Karte wird geladen...' },
+    locationDenied: { en: 'Location access denied. Using approximate position.', fr: 'Accès à la position refusé. Position approximative utilisée.', de: 'Standortzugriff verweigert. Ungefähre Position wird verwendet.' },
+    locationFallback: { en: 'Unable to get precise location. Using fallback.', fr: 'Impossible d\'obtenir la position précise. Position par défaut utilisée.', de: 'Präziser Standort nicht verfügbar. Standardposition wird verwendet.' },
+    youAreVisible: { en: 'You are visible', fr: 'Tu es visible', de: 'Du bist sichtbar' },
+    signalDisabled: { en: 'Signal disabled', fr: 'Signal désactivé', de: 'Signal deaktiviert' },
+    refreshMap: { en: 'Refresh map', fr: 'Actualiser la carte', de: 'Karte aktualisieren' },
+    open: { en: 'Open', fr: 'Ouvert', de: 'Offen' },
+    conditional: { en: 'Conditional', fr: 'Conditionnel', de: 'Bedingt' },
+    you: { en: 'You', fr: 'Toi', de: 'Du' },
+    busy: { en: 'Busy', fr: 'Occupé', de: 'Beschäftigt' },
+    hideFilters: { en: 'Hide filters', fr: 'Masquer les filtres', de: 'Filter ausblenden' },
+    showFilters: { en: 'Show filters', fr: 'Afficher les filtres', de: 'Filter anzeigen' },
+    personOpen: { en: 'person open', fr: 'personne ouverte', de: 'Person offen' },
+    peopleOpen: { en: 'people open', fr: 'personnes ouvertes', de: 'Personen offen' },
+    hideLegend: { en: 'Hide legend', fr: 'Masquer la légende', de: 'Legende ausblenden' },
+    showLegend: { en: 'Show legend', fr: 'Afficher la légende', de: 'Legende anzeigen' },
+    legendIntro: { en: 'Signal Legend', fr: 'Légende des signaux', de: 'Signallegende' },
+    openDesc: { en: '— Available to meet', fr: '— Disponible pour rencontrer', de: '— Bereit zum Treffen' },
+    conditionalDesc: { en: '— Under certain conditions', fr: '— Sous certaines conditions', de: '— Unter bestimmten Bedingungen' },
+    youDesc: { en: '— Your position', fr: '— Ta position', de: '— Deine Position' },
+    distance: { en: 'Distance', fr: 'Distance', de: 'Distanz' },
+    refresh: { en: 'Refresh', fr: 'Rafraîchissement', de: 'Aktualisierung' },
+    mapView: { en: 'Map', fr: 'Carte', de: 'Karte' },
+    radarView: { en: 'Radar', fr: 'Radar', de: 'Radar' },
+    discoverUsers: { en: 'Discover users', fr: 'Découvrir des personnes', de: 'Nutzer entdecken' },
+    deactivateSignal: { en: 'Deactivate signal', fr: 'Désactiver le signal', de: 'Signal deaktivieren' },
+    activateSignal: { en: 'Activate signal', fr: 'Activer le signal', de: 'Signal aktivieren' },
+    tapToDeactivate: { en: 'Tap to deactivate', fr: 'Appuie pour désactiver', de: 'Tippen zum Deaktivieren' },
+    tapToActivate: { en: 'Tap to activate', fr: 'Appuie pour activer', de: 'Tippen zum Aktivieren' },
+    lastUpdate: { en: 'Last update: {time}', fr: 'Dernière mise à jour : {time}', de: 'Letztes Update: {time}' },
+    openTo: { en: 'Open to...', fr: 'Ouvert à...', de: 'Offen für...' },
+    signalThat: { en: 'Signal what you\'re up for', fr: 'Indique ce qui te tente', de: 'Zeige, wofür du offen bist' },
+    wherePlaceholder: { en: 'Where are you? (e.g. Library 2nd floor)', fr: 'Où es-tu ? (ex. Bibliothèque 2e étage)', de: 'Wo bist du? (z.B. Bibliothek 2. OG)' },
+    activating: { en: 'Activating...', fr: 'Activation...', de: 'Wird aktiviert...' },
+  },
+
+  // Map Toasts
+  mapToasts: {
+    mapUpdated: { en: 'Map updated', fr: 'Carte mise à jour', de: 'Karte aktualisiert' },
+    signalDeactivated: { en: 'Signal deactivated', fr: 'Signal désactivé', de: 'Signal deaktiviert' },
+    signalActivated: { en: 'Signal activated!', fr: 'Signal activé !', de: 'Signal aktiviert!' },
+    signalExpired: { en: 'Your signal has expired', fr: 'Ton signal a expiré', de: 'Dein Signal ist abgelaufen' },
+    signalExtended: { en: 'Signal extended!', fr: 'Signal prolongé !', de: 'Signal verlängert!' },
+    signalGreen: { en: 'Signal: Open', fr: 'Signal : Ouvert', de: 'Signal: Offen' },
+    signalYellow: { en: 'Signal: Conditional', fr: 'Signal : Conditionnel', de: 'Signal: Bedingt' },
+    signalRed: { en: 'Signal: Busy', fr: 'Signal : Occupé', de: 'Signal: Beschäftigt' },
+    rateLimitExceeded: { en: 'Too many attempts. Wait {seconds}s.', fr: 'Trop de tentatives. Attends {seconds}s.', de: 'Zu viele Versuche. Warte {seconds}s.' },
+    getCloser: { en: 'Get closer to reveal!', fr: 'Rapproche-toi pour révéler !', de: 'Komm näher zum Enthüllen!' },
+    getCLoser: { en: 'Get closer to reveal!', fr: 'Rapproche-toi pour révéler !', de: 'Komm näher zum Enthüllen!' },
+    locationDenied: { en: 'Location access denied', fr: 'Accès à la position refusé', de: 'Standortzugriff verweigert' },
+    locationUnavailable: { en: 'Location unavailable', fr: 'Position indisponible', de: 'Standort nicht verfügbar' },
+    geoNotSupported: { en: 'Geolocation not supported', fr: 'Géolocalisation non supportée', de: 'Geolokalisierung nicht unterstützt' },
+  },
+
+  // Signal History
+  signalHistory: {
+    history: { en: 'History', fr: 'Historique', de: 'Verlauf' },
+    signalHistory: { en: 'Signal History', fr: 'Historique des signaux', de: 'Signalverlauf' },
+    noHistory: { en: 'No history yet', fr: 'Pas encore d\'historique', de: 'Noch kein Verlauf' },
+    noHistoryDesc: { en: 'Your signal history will appear here', fr: 'Ton historique de signaux apparaîtra ici', de: 'Dein Signalverlauf erscheint hier' },
+    showingLast: { en: 'Showing last 20 signals', fr: 'Affichage des 20 derniers signaux', de: 'Letzte 20 Signale angezeigt' },
+    lastExecution: { en: 'Last run {time}', fr: 'Dernière exécution {time}', de: 'Letzte Ausführung {time}' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
