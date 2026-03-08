@@ -1648,7 +1648,7 @@ export const translations = {
     declineError: { en: 'Could not decline request', fr: 'Impossible de décliner', de: 'Konnte nicht abgelehnt werden' },
     searchFriends: { en: 'Search friends...', fr: 'Rechercher des amis...', de: 'Freunde suchen...' },
     noResults: { en: 'No results', fr: 'Aucun résultat', de: 'Keine Ergebnisse' },
-    noResultsDesc: { en: 'No friends matching your search.', fr: 'Aucun ami ne correspond à votre recherche.', de: 'Keine Freunde, die Ihrer Suche entsprechen.' },
+    noResultsDesc: { en: 'No friends matching your search.', fr: 'Aucun ami ne correspond à ta recherche.', de: 'Keine Freunde, die deiner Suche entsprechen.' },
     friendSince: { en: 'Friends for', fr: 'Amis depuis', de: 'Freunde seit' },
     chatError: { en: 'Could not open chat', fr: 'Impossible d\'ouvrir le chat', de: 'Chat konnte nicht geöffnet werden' },
     removed: { en: 'Connection removed', fr: 'Connexion supprimée', de: 'Verbindung entfernt' },
