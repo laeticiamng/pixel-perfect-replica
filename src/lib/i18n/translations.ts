@@ -995,7 +995,7 @@ export const translations = {
     writeFirst: { en: 'Write a testimonial before submitting', fr: 'Écris un témoignage avant de soumettre', de: 'Schreibe zuerst einen Erfahrungsbericht' },
     tooShort: { en: 'Your testimonial must be at least 20 characters', fr: 'Ton témoignage doit faire au moins 20 caractères', de: 'Dein Erfahrungsbericht muss mindestens 20 Zeichen haben' },
     tooLong: { en: 'Your testimonial cannot exceed 500 characters', fr: 'Ton témoignage ne peut pas dépasser 500 caractères', de: 'Dein Erfahrungsbericht darf 500 Zeichen nicht überschreiten' },
-    alreadySubmitted: { en: 'You already submitted a testimonial for this session', fr: 'Tu as déjà soumis un témoignage pour cette session', de: 'Du hast bereits einen Erfahrungsbericht für diese Session eingereicht' },
+    alreadySubmitted: { en: 'You already submitted a testimonial for this meetup', fr: 'Tu as déjà soumis un témoignage pour cette rencontre', de: 'Du hast bereits einen Erfahrungsbericht für dieses Treffen eingereicht' },
     submitError: { en: 'Error submitting', fr: 'Erreur lors de la soumission', de: 'Fehler beim Einreichen' },
     success: { en: 'Thanks for your testimonial!', fr: 'Merci pour ton témoignage !', de: 'Danke für deinen Erfahrungsbericht!' },
     genericError: { en: 'An error occurred', fr: 'Une erreur est survenue', de: 'Ein Fehler ist aufgetreten' },
