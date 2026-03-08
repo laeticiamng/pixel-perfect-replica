@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Users, Wifi, GraduationCap, UserPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -84,6 +85,7 @@ export default function DiscoverPage() {
 
   return (
     <TooltipProvider>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
       <PageLayout>
         <div className="max-w-3xl mx-auto px-4 py-6 pb-24 lg:pb-6">
           {/* Header */}

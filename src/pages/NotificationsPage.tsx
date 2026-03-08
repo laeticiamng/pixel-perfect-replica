@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Bell, Check, CheckCheck, Trash2, MessageCircle, UserPlus, CalendarDays, MapPin } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
@@ -45,7 +47,9 @@ export default function NotificationsPage() {
   const getIcon = (type: string) => NOTIF_ICONS[type] || NOTIF_ICONS.default;
 
   return (
-    <PageLayout>
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
+    <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto p-4 space-y-4">
         <PageHeader
           title={t('notificationsPage.title')}
@@ -158,6 +162,8 @@ export default function NotificationsPage() {
           </div>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
+    </>
   );
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { MessageCircle, ArrowLeft, Search } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
@@ -47,7 +49,9 @@ export default function ConversationsPage() {
   }
 
   return (
-    <PageLayout>
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
+    <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto p-4 space-y-6">
         <PageHeader
           title={t('conversations.title')}
@@ -122,6 +126,8 @@ export default function ConversationsPage() {
           </div>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
+    </>
   );
 }

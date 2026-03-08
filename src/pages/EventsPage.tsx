@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users, QrCode, Plus, Loader2, Filter, Heart, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -238,6 +239,8 @@ export default function EventsPage() {
   );
 
   return (
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-24 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
@@ -472,5 +475,6 @@ export default function EventsPage() {
 
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

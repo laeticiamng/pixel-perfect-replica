@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Calendar, Users, Clock, History, Crown, Ticket, Sparkles } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
@@ -62,6 +63,8 @@ export default function BinomePage() {
   }
 
   return (
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-24 safe-bottom">
       <BinomeOnboarding onComplete={() => {}} />
       <PageHeader
@@ -224,5 +227,6 @@ export default function BinomePage() {
 
       <BottomNav />
     </PageLayout>
+    </>
   );
 }
