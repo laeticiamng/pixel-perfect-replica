@@ -9,6 +9,7 @@ import { useEventFavorites } from "@/hooks/useEventFavorites";
 import { useTranslation } from "@/lib/i18n";
 import { logger } from "@/lib/logger";
 import { PageLayout } from "@/components/PageLayout";
+import { BottomNav } from "@/components/BottomNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -116,7 +117,7 @@ export default function FavoriteEventsPage() {
   };
 
   return (
-    <PageLayout showSidebar={false} className="pb-24 safe-bottom">
+    <PageLayout showSidebar={false} className="pb-28 safe-bottom">
       <header className="safe-top sticky top-0 z-10 px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
           <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -170,6 +171,7 @@ export default function FavoriteEventsPage() {
           </>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

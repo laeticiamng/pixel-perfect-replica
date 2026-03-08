@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin, ThumbsUp, ThumbsDown, UserX, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { IcebreakerCard, VerificationBadges, MiniChat, VoiceIcebreakerButton } from '@/components/social';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
@@ -217,7 +218,7 @@ export default function ProximityRevealPage() {
   }
 
   return (
-    <PageLayout className={cn("flex flex-col animate-slide-up", isVibrating && "animate-pulse")}>
+    <PageLayout className={cn("flex flex-col pb-28", isVibrating && "animate-pulse")}>
       <header className="safe-top px-6 py-4">
         <button onClick={() => navigate('/map')} className="p-2 rounded-lg hover:bg-muted transition-colors">
           <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -339,6 +340,7 @@ export default function ProximityRevealPage() {
           </Button>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

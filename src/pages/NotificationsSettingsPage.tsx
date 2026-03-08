@@ -6,6 +6,7 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useTranslation } from '@/lib/i18n';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import toast from 'react-hot-toast';
 
@@ -54,7 +55,7 @@ export default function NotificationsSettingsPage() {
   ];
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
@@ -154,6 +155,7 @@ export default function NotificationsSettingsPage() {
           <Button variant="ghost" className="w-full mt-2 text-coral" onClick={() => navigate('/install')}>{t('notificationsSettings.installApp')}</Button>
         </div>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

@@ -7,6 +7,7 @@ import { PasswordStrengthIndicator } from '@/components/PasswordStrengthIndicato
 import { supabase } from '@/integrations/supabase/client';
 import { passwordSchema } from '@/lib/validation';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared';
 import { logger } from '@/lib/logger';
 import { useTranslation } from '@/lib/i18n';
@@ -101,7 +102,7 @@ export default function ChangePasswordPage() {
     confirmPassword === newPassword;
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('auth.changePassword')} backTo="/settings" />
 
       <form onSubmit={handleSubmit} className="px-6 py-8 space-y-6 animate-slide-up">
@@ -228,6 +229,7 @@ export default function ChangePasswordPage() {
           )}
         </Button>
       </form>
+      <BottomNav />
     </PageLayout>
   );
 }

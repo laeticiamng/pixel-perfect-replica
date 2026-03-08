@@ -4,6 +4,7 @@ import { ArrowLeft, Download, FileJson, Loader2, CheckCircle, AlertCircle } from
 import { useGdprExport } from '@/hooks/useGdprExport';
 import { useTranslation } from '@/lib/i18n';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,7 +26,7 @@ export default function DataExportPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/privacy-settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
@@ -87,6 +88,7 @@ export default function DataExportPage() {
           <p className="mt-1">{t('dataExport.contactInfo')}</p>
         </div>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

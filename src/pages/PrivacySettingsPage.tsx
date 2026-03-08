@@ -8,6 +8,7 @@ import { useGdprExport } from '@/hooks/useGdprExport';
 import { useTranslation } from '@/lib/i18n';
 import { EmergencyContactsManager } from '@/components/safety';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import toast from 'react-hot-toast';
 
@@ -33,7 +34,7 @@ export default function PrivacySettingsPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
@@ -145,6 +146,7 @@ export default function PrivacySettingsPage() {
           {t('privacySettings.viewPrivacyPolicy')}
         </button>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

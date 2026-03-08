@@ -8,6 +8,7 @@ import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
 import { useTranslation } from '@/lib/i18n';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -68,7 +69,7 @@ export default function ReportPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('report.title')} backTo="/profile" />
 
       <div className="px-6 py-8">
@@ -147,6 +148,7 @@ export default function ReportPage() {
           )}
         </Button>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }
