@@ -69,7 +69,7 @@ export default function ReportPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('report.title')} backTo="/profile" />
 
       <div className="px-6 py-8">
