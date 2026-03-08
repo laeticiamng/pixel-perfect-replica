@@ -1010,7 +1010,7 @@ export const translations = {
     join: { en: 'Join', fr: 'Rejoindre', de: 'Beitreten' },
     cancelSession: { en: 'Cancel', fr: 'Annuler', de: 'Abbrechen' },
     cancelled: { en: 'Cancelled', fr: 'Annulé', de: 'Abgesagt' },
-    exported: { en: 'Session exported to calendar', fr: 'Session exportée vers le calendrier', de: 'Session in Kalender exportiert' },
+    exported: { en: 'Meetup exported to calendar', fr: 'Rencontre exportée vers le calendrier', de: 'Treffen in Kalender exportiert' },
   },
 
   // Session history page
