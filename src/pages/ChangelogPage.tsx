@@ -354,6 +354,6 @@ export default function ChangelogPage() {
       </main>
 
       <BottomNav />
-    </div>
+    </PageLayout>
   );
 }
