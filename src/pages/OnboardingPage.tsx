@@ -313,7 +313,7 @@ export default function OnboardingPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={cn(
-                    "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl",
+                    "h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl",
                     errors.email && "border-destructive"
                   )}
                   autoComplete="email"
