@@ -301,7 +301,7 @@ export const translations = {
     appPreviewDesc: { en: 'Real-time signals around you', fr: 'Les signaux en temps réel autour de toi', de: 'Echtzeit-Signale in deiner Nähe' },
     liveDemo: { en: 'Live demo', fr: 'Démo live', de: 'Live-Demo' },
     socialProofUsers: { en: 'active now', fr: 'actifs maintenant', de: 'jetzt aktiv' },
-    socialProofSessions: { en: 'sessions this month', fr: 'sessions ce mois', de: 'Sessions diesen Monat' },
+    socialProofSessions: { en: 'meetups this month', fr: 'rencontres ce mois', de: 'Treffen diesen Monat' },
     socialProofCities: { en: 'cities', fr: 'villes', de: 'Städte' },
     socialProofCompleted: { en: 'completed', fr: 'terminées', de: 'abgeschlossen' },
     pricingTitle: { en: 'Simple, transparent pricing', fr: 'Tarifs simples et transparents', de: 'Einfache, transparente Preise' },
