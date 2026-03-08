@@ -336,6 +336,9 @@ export default function ConnectionsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <BottomNav />
     </PageLayout>
+    </>
   );
 }
