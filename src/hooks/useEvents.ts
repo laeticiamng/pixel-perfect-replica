@@ -16,6 +16,10 @@ export interface Event {
   max_participants: number;
   is_active: boolean;
   created_at: string;
+  event_source?: 'community' | 'official_university' | string;
+  source_url?: string | null;
+  source_label?: string | null;
+  participant_count?: number;
 }
 
 interface EventParticipant {
