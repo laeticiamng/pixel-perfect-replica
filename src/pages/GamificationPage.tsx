@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Flame, Trophy, Medal, Crown, Star, Zap, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout';
@@ -157,7 +157,7 @@ function LeaderboardView({
   };
 
   // Load on first render
-  useState(() => { fetchLeaderboard(); });
+  useEffect(() => { fetchLeaderboard(); }, []);
 
   const RANK_STYLES = [
     'bg-gradient-to-r from-signal-yellow/20 to-signal-yellow/5 border-signal-yellow/40',
