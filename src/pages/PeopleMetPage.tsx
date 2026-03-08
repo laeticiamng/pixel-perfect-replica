@@ -81,7 +81,7 @@ export default function PeopleMetPage() {
 
   if (isLoading) {
     return (
-      <PageLayout className="pb-8 safe-bottom">
+      <PageLayout className="pb-28 safe-bottom">
         <header className="safe-top px-6 py-4 flex items-center gap-4">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft className="h-6 w-6 text-foreground" />
