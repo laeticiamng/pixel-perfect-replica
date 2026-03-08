@@ -331,7 +331,7 @@ export default function OnboardingPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={cn(
-                      "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
+                      "h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
                       errors.password && "border-destructive"
                     )}
                     autoComplete={isLogin ? 'current-password' : 'new-password'}
