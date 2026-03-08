@@ -9,6 +9,7 @@ import { useEventFavorites } from "@/hooks/useEventFavorites";
 import { useTranslation } from "@/lib/i18n";
 import { logger } from "@/lib/logger";
 import { PageLayout } from "@/components/PageLayout";
+import { BottomNav } from "@/components/BottomNav";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
