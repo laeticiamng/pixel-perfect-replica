@@ -37,9 +37,9 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
             <Link to="/privacy" className="hover:text-foreground transition-colors">
               {t('nav.privacy')}
             </Link>
-            <a href={`mailto:${SUPPORT_EMAIL}`} rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+            <Link to="/contact" className="hover:text-foreground transition-colors">
               {t('landing.contact')}
-            </a>
+            </Link>
           </nav>
         </div>
         
