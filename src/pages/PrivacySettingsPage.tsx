@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Ghost, Eye, MapPin, Shield, Lock, Download, Loader2 } from 'lucide-react';
+import { ArrowLeft, Ghost, Eye, MapPin, Shield, Lock, Download } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Button } from '@/components/ui/button';
 import { useUserSettings } from '@/hooks/useUserSettings';
-import { useGdprExport } from '@/hooks/useGdprExport';
+import { useTranslation } from '@/lib/i18n';
 import { useTranslation } from '@/lib/i18n';
 import { EmergencyContactsManager } from '@/components/safety';
 import { PageLayout } from '@/components/PageLayout';
