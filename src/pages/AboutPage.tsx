@@ -1,6 +1,8 @@
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { useTranslation } from '@/lib/i18n';
 import { SUPPORT_EMAIL, SITE_URL } from '@/lib/constants';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   ArrowLeft, Users, Heart, Shield, Rocket, Mail, MessageCircle,
   MapPin, Zap, BookOpen, HandshakeIcon, Eye, Sparkles,
@@ -20,6 +22,7 @@ const fadeUp = (delay = 0) => ({
 export default function AboutPage() {
   const { t, locale } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const values = [
     { icon: Heart, title: t('about.authenticity'), description: t('about.authenticityDesc'), gradient: 'from-coral to-coral-dark' },
@@ -304,12 +307,13 @@ export default function AboutPage() {
 
         {/* Back */}
         <div className="text-center pb-8">
-          <Button variant="outline" onClick={() => navigate('/')} className="gap-2">
+          <Button variant="outline" onClick={() => navigate(isAuthenticated ? '/profile' : '/')} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
-            {t('help.backToHome')}
+            {isAuthenticated ? t('help.backToProfile') : t('help.backToHome')}
           </Button>
         </div>
       </article>
+      {isAuthenticated && <BottomNav />}
     </PageLayout>
   );
 }

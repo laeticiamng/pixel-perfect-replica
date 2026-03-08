@@ -247,18 +247,25 @@ export default function SettingsPage() {
               </div>
 
               {item.type === 'toggle' && (
-                <Switch
-                  checked={item.value as boolean}
-                  onCheckedChange={(checked) => {
+                <div 
+                  className={item.premium ? 'cursor-pointer' : ''}
+                  onClick={() => {
                     if (item.premium) {
                       toast(t('settings.premiumFeature'), { icon: '⭐' });
-                      return;
+                      navigate('/premium');
                     }
-                    item.onChange(checked);
-                    toast.success(t('settings.settingUpdated'));
                   }}
-                  disabled={item.premium}
-                />
+                >
+                  <Switch
+                    checked={item.value as boolean}
+                    onCheckedChange={(checked) => {
+                      if (item.premium) return;
+                      item.onChange(checked);
+                      toast.success(t('settings.settingUpdated'));
+                    }}
+                    disabled={item.premium}
+                  />
+                </div>
               )}
             </div>
 
