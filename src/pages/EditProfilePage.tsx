@@ -10,6 +10,7 @@ import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
 import { firstNameSchema, universitySchema } from '@/lib/validation';
 import { logger } from '@/lib/logger';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared';
 import { FavoriteActivitiesSelector } from '@/components/social';
 import { PublicProfilePreview } from '@/components/profile';
