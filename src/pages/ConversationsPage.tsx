@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { MessageCircle, ArrowLeft, Search } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { PageHeader } from '@/components/shared/PageHeader';

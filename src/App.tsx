@@ -108,7 +108,7 @@ function AnimatedRoutes() {
         className="will-change-transform"
       >
         <ErrorBoundary>
-        <Suspense fallback={<FullPageLoader message="Chargement..." />}>
+        <Suspense fallback={<FullPageLoader />}>
           <Routes location={location}>
             {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
