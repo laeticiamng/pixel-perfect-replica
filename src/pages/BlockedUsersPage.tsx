@@ -61,7 +61,7 @@ export default function BlockedUsersPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/privacy-settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
