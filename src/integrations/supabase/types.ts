@@ -782,6 +782,53 @@ export type Database = {
           },
         ]
       }
+      newcomer_checklist: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          location_lat: number | null
+          location_lng: number | null
+          location_name: string | null
+          notes: string | null
+          task_key: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          location_name?: string | null
+          notes?: string | null
+          task_key: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          location_lat?: number | null
+          location_lng?: number | null
+          location_name?: string | null
+          notes?: string | null
+          task_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newcomer_checklist_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           body: string | null
@@ -825,6 +872,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          arrival_city: string | null
+          arrival_date: string | null
           avatar_url: string | null
           bio: string | null
           birth_year: number | null
@@ -833,6 +882,8 @@ export type Database = {
           favorite_activities: string[] | null
           first_name: string
           id: string
+          is_city_guide: boolean
+          is_newcomer: boolean
           is_premium: boolean
           purchased_sessions: number | null
           referral_code: string | null
@@ -843,6 +894,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          arrival_city?: string | null
+          arrival_date?: string | null
           avatar_url?: string | null
           bio?: string | null
           birth_year?: number | null
@@ -851,6 +904,8 @@ export type Database = {
           favorite_activities?: string[] | null
           first_name: string
           id: string
+          is_city_guide?: boolean
+          is_newcomer?: boolean
           is_premium?: boolean
           purchased_sessions?: number | null
           referral_code?: string | null
@@ -861,6 +916,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          arrival_city?: string | null
+          arrival_date?: string | null
           avatar_url?: string | null
           bio?: string | null
           birth_year?: number | null
@@ -869,6 +926,8 @@ export type Database = {
           favorite_activities?: string[] | null
           first_name?: string
           id?: string
+          is_city_guide?: boolean
+          is_newcomer?: boolean
           is_premium?: boolean
           purchased_sessions?: number | null
           referral_code?: string | null
@@ -1715,6 +1774,16 @@ export type Database = {
           interactions: number
           score: number
           sessions_completed: number
+          university: string
+          user_id: string
+        }[]
+      }
+      get_city_guides: {
+        Args: { p_city: string; p_limit?: number }
+        Returns: {
+          avatar_url: string
+          bio: string
+          first_name: string
           university: string
           user_id: string
         }[]
