@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, MapPin, Users, QrCode, Plus, Loader2, Filter, Heart, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
