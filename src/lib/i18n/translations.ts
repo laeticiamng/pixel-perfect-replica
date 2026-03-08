@@ -1972,6 +1972,28 @@ export const translations = {
     note: { en: 'Your data will be downloaded as a JSON file.', fr: 'Tes données seront téléchargées au format JSON.', de: 'Deine Daten werden als JSON-Datei heruntergeladen.' },
   },
 
+
+  // Contact page
+  contact: {
+    title: { en: 'Contact us', fr: 'Nous contacter', de: 'Kontakt' },
+    subtitle: { en: 'A question, a bug, a suggestion? We\'re here to help.', fr: 'Une question, un bug, une suggestion ? On est là pour t\'aider.', de: 'Eine Frage, ein Bug, ein Vorschlag? Wir sind für dich da.' },
+    emailDirect: { en: 'Email us directly', fr: 'Écris-nous directement', de: 'Schreib uns direkt' },
+    formTitle: { en: 'Send us a message', fr: 'Envoie-nous un message', de: 'Schreib uns eine Nachricht' },
+    nameLabel: { en: 'Name', fr: 'Prénom', de: 'Name' },
+    namePlaceholder: { en: 'Your name', fr: 'Ton prénom', de: 'Dein Name' },
+    nameRequired: { en: 'Name is required', fr: 'Le prénom est requis', de: 'Name ist erforderlich' },
+    emailLabel: { en: 'Email', fr: 'Email', de: 'E-Mail' },
+    emailPlaceholder: { en: 'your@email.com', fr: 'ton@email.com', de: 'deine@email.de' },
+    emailInvalid: { en: 'Invalid email', fr: 'Email invalide', de: 'Ungültige E-Mail' },
+    messageLabel: { en: 'Message', fr: 'Message', de: 'Nachricht' },
+    messagePlaceholder: { en: 'Tell us everything...', fr: 'Dis-nous tout...', de: 'Erzähl uns alles...' },
+    messageTooShort: { en: 'Message must be at least 10 characters', fr: 'Le message doit faire au moins 10 caractères', de: 'Nachricht muss mindestens 10 Zeichen lang sein' },
+    send: { en: 'Send message', fr: 'Envoyer le message', de: 'Nachricht senden' },
+    sent: { en: 'Message ready to send!', fr: 'Message prêt à envoyer !', de: 'Nachricht bereit zum Senden!' },
+    thankYou: { en: 'Message sent!', fr: 'Message envoyé !', de: 'Nachricht gesendet!' },
+    thankYouDesc: { en: 'Your email client has opened with your message. We\'ll reply within 48h.', fr: 'Ton client email s\'est ouvert avec ton message. On te répond sous 48h.', de: 'Dein E-Mail-Client wurde mit deiner Nachricht geöffnet. Wir antworten innerhalb von 48h.' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;

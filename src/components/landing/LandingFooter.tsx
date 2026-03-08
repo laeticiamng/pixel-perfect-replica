@@ -1,7 +1,6 @@
 import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '@/lib/i18n';
-import { SUPPORT_EMAIL } from '@/lib/constants';
 import { Heart } from 'lucide-react';
 
 export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, ref) {
