@@ -229,6 +229,7 @@ export default function ChangePasswordPage() {
           )}
         </Button>
       </form>
+      <BottomNav />
     </PageLayout>
   );
 }

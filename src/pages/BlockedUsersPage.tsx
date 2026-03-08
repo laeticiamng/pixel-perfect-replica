@@ -127,6 +127,7 @@ export default function BlockedUsersPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <BottomNav />
     </PageLayout>
   );
 }

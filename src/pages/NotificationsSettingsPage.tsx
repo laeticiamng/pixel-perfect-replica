@@ -155,6 +155,7 @@ export default function NotificationsSettingsPage() {
           <Button variant="ghost" className="w-full mt-2 text-coral" onClick={() => navigate('/install')}>{t('notificationsSettings.installApp')}</Button>
         </div>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

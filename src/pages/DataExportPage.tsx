@@ -88,6 +88,7 @@ export default function DataExportPage() {
           <p className="mt-1">{t('dataExport.contactInfo')}</p>
         </div>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

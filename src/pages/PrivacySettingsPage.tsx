@@ -146,6 +146,7 @@ export default function PrivacySettingsPage() {
           {t('privacySettings.viewPrivacyPolicy')}
         </button>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

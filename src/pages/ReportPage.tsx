@@ -148,6 +148,7 @@ export default function ReportPage() {
           )}
         </Button>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

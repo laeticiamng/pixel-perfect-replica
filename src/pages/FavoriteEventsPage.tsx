@@ -171,6 +171,7 @@ export default function FavoriteEventsPage() {
           </>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }
