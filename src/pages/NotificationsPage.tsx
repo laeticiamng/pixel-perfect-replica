@@ -46,7 +46,9 @@ export default function NotificationsPage() {
   const getIcon = (type: string) => NOTIF_ICONS[type] || NOTIF_ICONS.default;
 
   return (
-    <PageLayout>
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
+    <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto p-4 space-y-4">
         <PageHeader
           title={t('notificationsPage.title')}
