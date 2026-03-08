@@ -161,6 +161,8 @@ export default function NotificationsPage() {
           </div>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
+    </>
   );
 }

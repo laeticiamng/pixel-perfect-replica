@@ -125,6 +125,8 @@ export default function ConversationsPage() {
           </div>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
+    </>
   );
 }
