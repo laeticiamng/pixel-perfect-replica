@@ -1,10 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Ghost, Eye, MapPin, Shield, Lock, Download, Loader2 } from 'lucide-react';
+import { ArrowLeft, Ghost, Eye, MapPin, Shield, Lock, Download } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
-import { Button } from '@/components/ui/button';
 import { useUserSettings } from '@/hooks/useUserSettings';
-import { useGdprExport } from '@/hooks/useGdprExport';
 import { useTranslation } from '@/lib/i18n';
 import { EmergencyContactsManager } from '@/components/safety';
 import { PageLayout } from '@/components/PageLayout';
@@ -15,17 +13,12 @@ import toast from 'react-hot-toast';
 export default function PrivacySettingsPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { settings, setGhostMode, setVisibilityDistance } = useUserSettings();
-  const { downloadExport, isExporting } = useGdprExport();
+  const { settings, setVisibilityDistance } = useUserSettings();
 
-  const handleExportData = async () => {
-    const { error } = await downloadExport();
-    if (error) toast.error(t('privacySettings.exportError'));
-    else toast.success(t('privacySettings.exportSuccess'));
-  };
 
   const handleGhostMode = async () => {
-    toast(t('privacySettings.ghostModePremium'));
+    toast(t('privacySettings.ghostModePremium'), { icon: '⭐' });
+    navigate('/premium');
   };
 
   const handleDistanceChange = async (value: number) => {
@@ -37,7 +30,7 @@ export default function PrivacySettingsPage() {
     <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
-          <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
+          <button onClick={() => navigate('/settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
           <h1 className="text-xl font-bold text-foreground">{t('privacySettings.title')}</h1>
@@ -112,19 +105,7 @@ export default function PrivacySettingsPage() {
           </div>
         </div>
 
-        {/* Export */}
-        <div className="glass rounded-xl p-4">
-          <div className="flex items-start gap-4">
-            <div className="p-2 rounded-lg bg-coral/20 text-coral"><Download className="h-5 w-5" /></div>
-            <div className="flex-1">
-              <p className="font-medium text-foreground">{t('privacySettings.exportData')}</p>
-              <p className="text-sm text-muted-foreground mt-0.5">{t('privacySettings.exportDataDesc')}</p>
-            </div>
-          </div>
-          <Button onClick={handleExportData} disabled={isExporting} className="w-full mt-4 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl">
-            {isExporting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t('privacySettings.exporting')}</>) : (<><Download className="mr-2 h-4 w-4" />{t('privacySettings.downloadData')}</>)}
-          </Button>
-        </div>
+        {/* GDPR Export — dedicated page */}
 
         <button onClick={() => navigate('/blocked-users')} className="w-full glass rounded-xl p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors">
           <div className="p-2 rounded-lg bg-destructive/20 text-destructive"><Shield className="h-5 w-5" /></div>
