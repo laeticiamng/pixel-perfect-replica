@@ -119,7 +119,7 @@ export default function ReportPage() {
             placeholder={t('report.describePlaceholder')}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[150px] bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
+            className="min-h-[150px] bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
             maxLength={1000}
           />
           <p className="text-xs text-muted-foreground text-right">
