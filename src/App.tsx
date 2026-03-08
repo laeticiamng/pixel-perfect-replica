@@ -54,6 +54,7 @@ const ConnectionsPage = lazy(() => import('./pages/ConnectionsPage'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 const GamificationPage = lazy(() => import('./pages/GamificationPage'));
 const DiscoverPage = lazy(() => import('./pages/DiscoverPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
