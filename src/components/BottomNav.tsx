@@ -28,7 +28,7 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
       { to: '/discover', icon: <Compass className="h-6 w-6" />, labelKey: 'nav.discover' },
       { to: '/conversations', icon: <MessageCircle className="h-6 w-6" />, labelKey: 'navMessages', badgeCount: msgUnread },
       { to: '/binome', icon: <Users2 className="h-6 w-6" />, labelKey: 'nav.book', showNewBadge: showBinomeBadge },
-      { to: '/notifications', icon: <Bell className="h-6 w-6" />, labelKey: 'nav.notifications', badgeCount: notifUnread },
+      { to: '/profile', icon: <User className="h-6 w-6" />, labelKey: 'nav.profile', badgeCount: notifUnread },
     ];
 
     return (

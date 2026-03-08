@@ -247,6 +247,7 @@ export default function DiscoverPage() {
             )}
           </div>
         </div>
+        <BottomNav />
       </PageLayout>
     </TooltipProvider>
   );
