@@ -19,6 +19,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { formatDistanceToNow } from 'date-fns';
 import { fr, enUS, de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { BottomNav } from '@/components/BottomNav';
 
 interface DiscoveredUser {
   user_id: string;
