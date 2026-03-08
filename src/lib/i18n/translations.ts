@@ -1641,7 +1641,7 @@ export const translations = {
     requestSent: { en: 'Connection request sent!', fr: 'Demande de connexion envoyée !', de: 'Verbindungsanfrage gesendet!' },
     requestError: { en: 'Could not send request', fr: 'Impossible d\'envoyer la demande', de: 'Anfrage konnte nicht gesendet werden' },
     connect: { en: 'Connect', fr: 'Se connecter', de: 'Verbinden' },
-    wantsToConnect: { en: 'Wants to connect with you', fr: 'Souhaite se connecter avec vous', de: 'Möchte sich mit Ihnen verbinden' },
+    wantsToConnect: { en: 'Wants to connect with you', fr: 'Souhaite se connecter avec toi', de: 'Möchte sich mit dir verbinden' },
     justNow: { en: 'Just now', fr: 'À l\'instant', de: 'Gerade eben' },
     minutesAgo: { en: '{n} min ago', fr: 'Il y a {n} min', de: 'Vor {n} Min.' },
     acceptError: { en: 'Could not accept request', fr: 'Impossible d\'accepter', de: 'Konnte nicht angenommen werden' },
