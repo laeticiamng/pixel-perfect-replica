@@ -340,6 +340,7 @@ export default function ProximityRevealPage() {
           </Button>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }
