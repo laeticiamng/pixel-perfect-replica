@@ -93,6 +93,7 @@ export default function ProfilePage() {
   ];
 
   return (
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto w-full">
         {/* Profile Header */}

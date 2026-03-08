@@ -296,6 +296,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
       <header className="safe-top px-6 py-4">
