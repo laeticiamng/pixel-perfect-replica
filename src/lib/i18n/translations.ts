@@ -1654,7 +1654,7 @@ export const translations = {
     removed: { en: 'Connection removed', fr: 'Connexion supprimée', de: 'Verbindung entfernt' },
     removeError: { en: 'Could not remove connection', fr: 'Impossible de supprimer', de: 'Konnte nicht entfernt werden' },
     removeTitle: { en: 'Remove connection?', fr: 'Supprimer la connexion ?', de: 'Verbindung entfernen?' },
-    removeDesc: { en: 'Are you sure you want to remove {name} from your connections?', fr: 'Voulez-vous vraiment supprimer {name} de vos connexions ?', de: 'Möchten Sie {name} wirklich aus Ihren Verbindungen entfernen?' },
+    removeDesc: { en: 'Are you sure you want to remove {name} from your connections?', fr: 'Tu es sûr·e de vouloir supprimer {name} de tes connexions ?', de: 'Möchtest du {name} wirklich aus deinen Verbindungen entfernen?' },
     removeConfirm: { en: 'Remove', fr: 'Supprimer', de: 'Entfernen' },
   },
 
