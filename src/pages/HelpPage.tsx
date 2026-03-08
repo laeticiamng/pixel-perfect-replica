@@ -107,7 +107,7 @@ export default function HelpPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <Helmet>
         <title>{locale === 'fr' ? 'Aide & FAQ — NEARVITY' : 'Help & FAQ — NEARVITY'}</title>
         <meta name="description" content={locale === 'fr'
