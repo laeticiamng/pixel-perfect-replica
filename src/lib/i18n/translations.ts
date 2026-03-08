@@ -125,7 +125,7 @@ export const translations = {
     changePassword: { en: 'Change password', fr: 'Changer le mot de passe', de: 'Passwort ändern' },
     passwordChanged: { en: 'Password changed successfully!', fr: 'Mot de passe modifié avec succès !', de: 'Passwort erfolgreich geändert!' },
     passwordUpdated: { en: 'Password updated!', fr: 'Mot de passe mis à jour !', de: 'Passwort aktualisiert!' },
-    sessionExpired: { en: 'Session expired, please log in again', fr: 'Session expirée, veuillez vous reconnecter', de: 'Sitzung abgelaufen, bitte erneut anmelden' },
+    sessionExpired: { en: 'Session expired, please log in again', fr: 'Session expirée, reconnecte-toi', de: 'Sitzung abgelaufen, bitte erneut anmelden' },
     passwordRequirements: { en: 'Password requirements:', fr: 'Exigences du mot de passe :', de: 'Passwortanforderungen:' },
     passwordRequirementMin: { en: 'Minimum 6 characters', fr: 'Minimum 6 caractères', de: 'Mindestens 6 Zeichen' },
     passwordRequirementLower: { en: 'At least one lowercase', fr: 'Au moins une minuscule', de: 'Mindestens ein Kleinbuchstabe' },
