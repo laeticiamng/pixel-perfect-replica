@@ -74,11 +74,18 @@ export default function ConversationsPage() {
         {isLoading ? (
           <LoadingSkeleton variant="list" count={5} />
         ) : filtered.length === 0 ? (
-          <EmptyState
-            icon={MessageCircle}
-            title={t('conversations.empty')}
-            description={t('conversations.emptyDesc')}
-          />
+          <div className="space-y-4">
+            <EmptyState
+              icon={MessageCircle}
+              title={t('conversations.empty')}
+              description={t('conversations.emptyDesc')}
+              actionLabel={t('mapUI.discoverUsers')}
+              onAction={() => navigate('/discover')}
+            />
+            <p className="text-center text-xs text-muted-foreground max-w-sm mx-auto">
+              {t('conversations.tipActivateSignal')}
+            </p>
+          </div>
         ) : (
           <div className="space-y-2">
             {filtered.map((convo) => (
