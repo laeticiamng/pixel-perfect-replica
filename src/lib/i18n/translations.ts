@@ -729,9 +729,9 @@ export const translations = {
     sessionsAdded: { en: '{count} meetup added!', fr: '{count} rencontre ajoutée !', de: '{count} Treffen hinzugefügt!' },
     sessionsAddedPlural: { en: '{count} meetups added!', fr: '{count} rencontres ajoutées !', de: '{count} Treffen hinzugefügt!' },
     confirmError: { en: 'Error during confirmation', fr: 'Erreur lors de la confirmation', de: 'Fehler bei der Bestätigung' },
-    roiAnchor: { en: 'Worth it from 10 sessions/month — unlimited included', fr: 'Rentable dès 10 sessions/mois — illimité inclus', de: 'Lohnt sich ab 10 Sessions/Monat — unbegrenzt inklusive' },
-    sessionsPurchasedSuccess: { en: 'Sessions added to your account!', fr: 'Sessions ajoutées à ton compte !', de: 'Sessions deinem Konto hinzugefügt!' },
-    enjoyFeatures: { en: 'You can start creating sessions right away', fr: 'Tu peux créer des sessions dès maintenant', de: 'Du kannst sofort Sessions erstellen' },
+    roiAnchor: { en: 'Worth it from 10 meetups/month — unlimited included', fr: 'Rentable dès 10 rencontres/mois — illimité inclus', de: 'Lohnt sich ab 10 Treffen/Monat — unbegrenzt inklusive' },
+    sessionsPurchasedSuccess: { en: 'Meetups added to your account!', fr: 'Rencontres ajoutées à ton compte !', de: 'Treffen deinem Konto hinzugefügt!' },
+    enjoyFeatures: { en: 'You can start creating meetups right away', fr: 'Tu peux organiser des rencontres dès maintenant', de: 'Du kannst sofort Treffen erstellen' },
   },
 
   // Cookies consent
