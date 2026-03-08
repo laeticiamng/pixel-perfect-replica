@@ -107,7 +107,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-foreground">{t('terms.section11Title')}</h2>
             <p className="text-muted-foreground">
               {t('terms.section11Text')}
-              <a href={`mailto:${LEGAL_EMAIL}`} className="text-coral ml-1">{LEGAL_EMAIL}</a>
+              <a href={`mailto:${LEGAL_EMAIL}`} rel="noopener noreferrer" className="text-coral ml-1">{LEGAL_EMAIL}</a>
             </p>
           </section>
 

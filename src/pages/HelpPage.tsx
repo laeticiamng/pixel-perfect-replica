@@ -86,7 +86,7 @@ export default function HelpPage() {
 
   const supportLinks = [
     { icon: <Mail className="h-5 w-5" />, label: t('help.contactUs'), href: `mailto:${SUPPORT_EMAIL}` },
-    { icon: <MessageCircle className="h-5 w-5" />, label: t('help.community'), href: 'https://discord.gg', external: true },
+    { icon: <MessageCircle className="h-5 w-5" />, label: t('help.community'), href: `mailto:${SUPPORT_EMAIL}` },
     { icon: <FileText className="h-5 w-5" />, label: t('help.termsOfUse'), href: '/terms' },
     { icon: <Shield className="h-5 w-5" />, label: t('help.privacyPolicy'), href: '/privacy' },
   ];
@@ -225,8 +225,8 @@ export default function HelpPage() {
                   <a
                     key={link.label}
                     href={link.href}
-                    target={link.external ? '_blank' : undefined}
-                    rel={link.external ? 'noopener noreferrer' : undefined}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel="noopener noreferrer"
                     className={`flex items-center gap-4 px-4 py-3.5 hover:bg-muted/50 transition-colors ${
                       index !== supportLinks.length - 1 ? 'border-b border-border' : ''
                     }`}

@@ -44,7 +44,11 @@ export default function PostSignupOnboardingPage() {
   useEffect(() => {
     if (locationError && !position && locationStatus === 'loading') {
       setLocationStatus('error');
-      toast.error(locationError);
+      const errorMsg = locationError === 'location_denied' ? t('mapToasts.locationDenied')
+        : locationError === 'location_unavailable' ? t('mapToasts.locationUnavailable')
+        : locationError === 'geolocation_not_supported' ? t('mapToasts.geoNotSupported')
+        : locationError;
+      toast.error(errorMsg);
     }
   }, [locationError, position, locationStatus]);
 
