@@ -4,8 +4,9 @@ import { useEffect, useRef, forwardRef } from 'react';
 import { useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
 import { Helmet } from 'react-helmet-async';
-import { Users, Sparkles, MapPin } from 'lucide-react';
+import { Users, Sparkles, MapPin, Zap, Eye, Handshake } from 'lucide-react';
 import { SITE_URL } from '@/lib/constants';
+import { motion } from 'framer-motion';
 import {
   FloatingOrbs,
   LandingHeader,
@@ -21,63 +22,49 @@ import {
   SocialProofBar,
   PricingPreviewSection,
   LandingTestimonialsSection,
-  TrustedBySection,
 } from '@/components/landing';
 
-// Problem Section
-const ProblemSection = forwardRef<HTMLElement>(function ProblemSection(_props, ref) {
+// How It Works — 3 simple steps (replaces old Problem + SignalExplanation)
+const HowItWorksSection = forwardRef<HTMLElement>(function HowItWorksSection(_props, ref) {
   const { t } = useTranslation();
-  
+
+  const steps = [
+    { icon: Zap, title: t('landing.step1Title'), desc: t('landing.step1Desc'), num: '1' },
+    { icon: Eye, title: t('landing.step2Title'), desc: t('landing.step2Desc'), num: '2' },
+    { icon: Handshake, title: t('landing.step3Title'), desc: t('landing.step3Desc'), num: '3' },
+  ];
+
   return (
-    <section ref={ref} className="py-12 px-6 relative z-10">
+    <section ref={ref} className="py-16 px-6 relative z-10">
       <div className="max-w-4xl mx-auto">
         <RevealText>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-medium text-center leading-relaxed">
-            <span className="text-foreground/70">{t('landing.youWantToMeet')}</span>
-            <br />
-            <span className="text-foreground/70">{t('landing.butYouNeverKnow')}</span>
-            <br />
-            <span className="text-foreground font-bold">{t('landing.wantsToBeApproached')}</span>
-          </p>
-        </RevealText>
-        
-        <RevealText delay={0.2}>
-          <div className="mt-8 text-center">
-            <p className="text-lg text-coral font-semibold">{t('landing.untilNow')}</p>
-          </div>
-        </RevealText>
-      </div>
-    </section>
-  );
-});
-
-// Signal Explanation Section
-const SignalExplanationSection = forwardRef<HTMLElement>(function SignalExplanationSection(_props, ref) {
-  const { t } = useTranslation();
-  
-  return (
-    <section ref={ref} className="py-12 px-6 relative z-10 bg-card/30">
-      <div className="max-w-4xl mx-auto text-center">
-        <RevealText>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            {t('landing.greenSignalChanges')}
-            <br />{t('landing.changesEverything')}
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            {t('landing.howItWorksTitle')}
           </h2>
-        </RevealText>
-        
-        <RevealText delay={0.2}>
-          <p className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto">
-            {t('landing.whenSomeoneActivates')}
-            <br /><span className="text-foreground font-semibold">{t('landing.iAmOpenToInteract')}</span>
+          <p className="text-center text-muted-foreground mb-12 max-w-lg mx-auto">
+            {t('landing.howItWorksSubtitle')}
           </p>
         </RevealText>
-        
-        <RevealText delay={0.4}>
-          <p className="mt-8 text-sm text-muted-foreground">
-            {t('landing.noMoreAwkward')}
-            <br />{t('landing.firstStepDone')}
-          </p>
-        </RevealText>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {steps.map((step, i) => (
+            <RevealText key={i} delay={i * 0.15}>
+              <motion.div
+                className="relative text-center p-6 rounded-2xl border border-border/40 bg-card/40 backdrop-blur-md"
+                whileHover={{ y: -4 }}
+              >
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-coral to-coral-light flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                  {step.num}
+                </div>
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-coral/15 to-coral/5 flex items-center justify-center mx-auto mt-4 mb-4 border border-coral/10">
+                  <step.icon className="h-7 w-7 text-coral" />
+                </div>
+                <h3 className="font-bold text-foreground mb-2">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+              </motion.div>
+            </RevealText>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -96,7 +83,6 @@ const FeaturesSection = forwardRef<HTMLElement>(function FeaturesSection(_props,
           </h2>
         </RevealText>
         
-        {/* Bento grid - asymmetric layout */}
         <div className="grid md:grid-cols-2 gap-4">
           <FeatureCard
             icon={Users}
@@ -237,8 +223,7 @@ export default function LandingPage() {
         <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
         <AppPreviewSection />
         <SocialProofBar />
-        <ProblemSection />
-        <SignalExplanationSection />
+        <HowItWorksSection />
         <FeaturesSection />
         <ComparisonWrapper />
         <UseCasesSection />
