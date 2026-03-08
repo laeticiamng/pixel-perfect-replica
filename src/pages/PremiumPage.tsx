@@ -179,7 +179,7 @@ export default function PremiumPage() {
   // Premium user view
   if (isPremium) {
     return (
-      <PageLayout className="pb-8 safe-bottom">
+      <PageLayout className="pb-28 safe-bottom">
         <header className="safe-top px-6 py-4 flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
             <ArrowLeft className="h-6 w-6 text-foreground" />
