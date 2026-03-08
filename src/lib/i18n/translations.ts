@@ -295,6 +295,8 @@ export const translations = {
     meetInPerson: { en: 'Meet the person, then chat', fr: 'Rencontre la personne, ensuite discute', de: 'Triff die Person, dann chatte' },
     safetyFirst: { en: 'Your safety is our priority', fr: 'Ta sécurité est notre priorité', de: 'Deine Sicherheit hat Priorität' },
     safetyDesc: { en: 'Ghost mode, blocking, GPS fuzzing, panic button', fr: 'Mode fantôme, blocage, floutage GPS, bouton d\'urgence', de: 'Geistmodus, Blockieren, GPS-Verschleierung, Notfallknopf' },
+    guaranteeMutualConsent: { en: 'Mutual consent built in', fr: 'Consentement mutuel intégré', de: 'Gegenseitiges Einverständnis eingebaut' },
+    guaranteeMutualConsentDesc: { en: 'Both people must be open before any interaction can happen.', fr: 'Les deux personnes doivent être dispo avant qu\'un échange ne commence.', de: 'Beide müssen verfügbar sein, bevor eine Interaktion stattfinden kann.' },
     appPreviewTitle: { en: 'See the radar in action', fr: 'Découvre le radar en action', de: 'Sieh den Radar in Aktion' },
     appPreviewDesc: { en: 'Real-time signals around you', fr: 'Les signaux en temps réel autour de toi', de: 'Echtzeit-Signale in deiner Nähe' },
     liveDemo: { en: 'Live demo', fr: 'Démo live', de: 'Live-Demo' },
