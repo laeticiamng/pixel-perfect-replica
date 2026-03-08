@@ -43,13 +43,6 @@ export default function PresidentCockpitPage() {
   const [validationHistory, setValidationHistory] = useState<ValidationHistoryItem[]>([]);
   const [statusFilter, setStatusFilter] = useState<'tous' | HealthStatus>('tous');
 
-  // Block non-admin access
-  if (adminLoading) return <FullPageLoader />;
-  if (!isAdmin) {
-    navigate('/', { replace: true });
-    return null;
-  }
-
   const kpiGlobaux = useMemo(() => {
     const alertesTotal = platformsMock.reduce((acc, platform) => acc + platform.alertesOuvertes, 0);
     const utilisateursTotal = platformsMock.reduce((acc, platform) => acc + platform.utilisateursActifs, 0);
@@ -92,6 +85,13 @@ export default function PresidentCockpitPage() {
       ...prev,
     ]);
   };
+
+  // Block non-admin access — after all hooks
+  if (adminLoading) return <FullPageLoader />;
+  if (!isAdmin) {
+    navigate('/', { replace: true });
+    return null;
+  }
 
   return (
     <PageLayout className="pb-8 safe-bottom">
