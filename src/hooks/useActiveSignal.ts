@@ -351,9 +351,6 @@ export function useActiveSignal() {
   useEffect(() => {
     if (!user || !position) return;
 
-    // Initial fetch
-    fetchNearbyUsers(200);
-
     const channel = supabase
       .channel('active-signals-realtime')
       .on(
