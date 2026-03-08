@@ -19,6 +19,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { formatDistanceToNow } from 'date-fns';
 import { fr, enUS, de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { BottomNav } from '@/components/BottomNav';
 
 interface DiscoveredUser {
   user_id: string;
@@ -86,7 +87,7 @@ export default function DiscoverPage() {
   return (
     <TooltipProvider>
       <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
-      <PageLayout>
+      <PageLayout className="pb-28">
         <div className="max-w-3xl mx-auto px-4 py-6 pb-24 lg:pb-6">
           {/* Header */}
           <PageHeader
@@ -246,6 +247,7 @@ export default function DiscoverPage() {
             )}
           </div>
         </div>
+        <BottomNav />
       </PageLayout>
     </TooltipProvider>
   );

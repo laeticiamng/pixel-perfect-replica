@@ -29,7 +29,7 @@ export default function ConversationsPage() {
 
   if (selectedConvo) {
     return (
-      <PageLayout>
+      <PageLayout className="pb-28">
         <div className="max-w-2xl mx-auto p-4 space-y-4">
           <button
             onClick={() => setSelectedConvo(null)}
@@ -44,6 +44,7 @@ export default function ConversationsPage() {
             className="min-h-[60vh]"
           />
         </div>
+        <BottomNav />
       </PageLayout>
     );
   }

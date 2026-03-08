@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays, Users, Compass } from 'lucide-react';
+import { X, Radio, RefreshCw, Info, Filter, Map, Radar, MapPin, CalendarDays, Users, Compass, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
@@ -266,6 +266,14 @@ export default function MapPage() {
                     <span className="text-muted-foreground">{t(currentActivityData?.labelKey || 'activities.other')}</span>
                   </button>
                 )}
+                {/* Notification bell */}
+                <button
+                  onClick={() => navigate('/notifications')}
+                  aria-label={t('nav.notifications')}
+                  className="relative p-2.5 rounded-xl bg-deep-blue-light/80 text-muted-foreground hover:text-foreground hover:bg-deep-blue-light transition-all"
+                >
+                  <Bell className="h-4 w-4" />
+                </button>
                 
                 <button
                   onClick={handleManualRefresh}
