@@ -54,6 +54,7 @@ const ConnectionsPage = lazy(() => import('./pages/ConnectionsPage'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 const GamificationPage = lazy(() => import('./pages/GamificationPage'));
 const DiscoverPage = lazy(() => import('./pages/DiscoverPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -119,6 +120,7 @@ function AnimatedRoutes() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/install" element={<InstallPage />} />
             <Route path="/changelog" element={<ChangelogPage />} />
 
