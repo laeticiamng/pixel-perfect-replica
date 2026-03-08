@@ -113,19 +113,7 @@ export default function PrivacySettingsPage() {
           </div>
         </div>
 
-        {/* Export */}
-        <div className="glass rounded-xl p-4">
-          <div className="flex items-start gap-4">
-            <div className="p-2 rounded-lg bg-coral/20 text-coral"><Download className="h-5 w-5" /></div>
-            <div className="flex-1">
-              <p className="font-medium text-foreground">{t('privacySettings.exportData')}</p>
-              <p className="text-sm text-muted-foreground mt-0.5">{t('privacySettings.exportDataDesc')}</p>
-            </div>
-          </div>
-          <Button onClick={handleExportData} disabled={isExporting} className="w-full mt-4 bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl">
-            {isExporting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{t('privacySettings.exporting')}</>) : (<><Download className="mr-2 h-4 w-4" />{t('privacySettings.downloadData')}</>)}
-          </Button>
-        </div>
+        {/* GDPR Export — dedicated page */}
 
         <button onClick={() => navigate('/blocked-users')} className="w-full glass rounded-xl p-4 flex items-center gap-4 hover:bg-muted/50 transition-colors">
           <div className="p-2 rounded-lg bg-destructive/20 text-destructive"><Shield className="h-5 w-5" /></div>
