@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap, Gift, Copy, Share2 } from 'lucide-react';
+import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap, Gift, Copy, Share2, CalendarDays, Settings } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -71,13 +71,14 @@ export default function ProfilePage() {
       items: [
         { icon: <User className="h-5 w-5" />, label: t('profile.editProfile'), route: '/profile/edit' },
         { icon: <Crown className="h-5 w-5" />, label: t('profile.goPremium'), route: '/premium' },
-        { icon: <Bell className="h-5 w-5" />, label: t('settings.notifications'), onClick: handleNotifications },
-        { icon: <Lock className="h-5 w-5" />, label: t('settings.privacy'), onClick: handlePrivacy },
+        { icon: <Bell className="h-5 w-5" />, label: t('nav.notifications'), route: '/notifications' },
+        { icon: <Settings className="h-5 w-5" />, label: t('nav.settings'), route: '/settings' },
       ],
     },
     {
       title: t('profile.history'),
       items: [
+        { icon: <CalendarDays className="h-5 w-5" />, label: t('nav.events'), route: '/events' },
         { icon: <BarChart3 className="h-5 w-5" />, label: t('profile.myStats'), route: '/statistics' },
         { icon: <Users className="h-5 w-5" />, label: t('profile.peopleMet'), route: '/people-met' },
       ],
