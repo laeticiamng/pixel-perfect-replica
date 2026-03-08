@@ -34,6 +34,8 @@ export default function EditProfilePage() {
   const [birthYear, setBirthYear] = useState<string>('');
   const [favoriteActivities, setFavoriteActivities] = useState<ActivityType[]>([]);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
+  const [isCityGuide, setIsCityGuide] = useState(false);
+  const [isNewcomer, setIsNewcomer] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
