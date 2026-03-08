@@ -1029,7 +1029,7 @@ export const translations = {
     statusIncomplete: { en: 'Not completed', fr: 'Non complétée', de: 'Nicht abgeschlossen' },
     exportIcs: { en: 'Export (.ics)', fr: 'Exporter (.ics)', de: 'Exportieren (.ics)' },
     loadError: { en: 'Error loading history', fr: 'Erreur lors du chargement de l\'historique', de: 'Fehler beim Laden des Verlaufs' },
-    exported: { en: 'Session exported to calendar', fr: 'Session exportée vers le calendrier', de: 'Session in Kalender exportiert' },
+    exported: { en: 'Meetup exported to calendar', fr: 'Rencontre exportée vers le calendrier', de: 'Treffen in Kalender exportiert' },
     atCity: { en: 'at {city}', fr: 'à {city}', de: 'in {city}' },
     activityPlaceholder: { en: 'Activity', fr: 'Activité', de: 'Aktivität' },
   },
