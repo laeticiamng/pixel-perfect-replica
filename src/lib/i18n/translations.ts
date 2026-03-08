@@ -1941,6 +1941,24 @@ export const translations = {
     lastExecution: { en: 'Last run {time}', fr: 'Dernière exécution {time}', de: 'Letzte Ausführung {time}' },
   },
 
+  // Data Export (GDPR)
+  dataExport: {
+    title: { en: 'Data Export', fr: 'Export de données', de: 'Datenexport' },
+    portabilityRight: { en: 'Right to Data Portability', fr: 'Droit à la portabilité', de: 'Recht auf Datenübertragbarkeit' },
+    gdprArticle: { en: 'GDPR Article 20', fr: 'Article 20 du RGPD', de: 'DSGVO Artikel 20' },
+    description: { en: 'Download all your personal data in JSON format.', fr: 'Télécharge toutes tes données personnelles au format JSON.', de: 'Lade alle deine persönlichen Daten im JSON-Format herunter.' },
+    includedData: { en: 'Included data', fr: 'Données incluses', de: 'Enthaltene Daten' },
+    profileData: { en: 'Profile information', fr: 'Informations de profil', de: 'Profilinformationen' },
+    accountSettings: { en: 'Account settings', fr: 'Paramètres du compte', de: 'Kontoeinstellungen' },
+    usageStats: { en: 'Usage statistics', fr: 'Statistiques d\'utilisation', de: 'Nutzungsstatistiken' },
+    interactionHistory: { en: 'Interaction history', fr: 'Historique des interactions', de: 'Interaktionsverlauf' },
+    emergencyContacts: { en: 'Emergency contacts', fr: 'Contacts d\'urgence', de: 'Notfallkontakte' },
+    exportButton: { en: 'Download my data', fr: 'Télécharger mes données', de: 'Meine Daten herunterladen' },
+    exportedSuccess: { en: 'Data exported successfully!', fr: 'Données exportées avec succès !', de: 'Daten erfolgreich exportiert!' },
+    exportError: { en: 'Export failed. Please try again.', fr: 'L\'export a échoué. Réessaye.', de: 'Export fehlgeschlagen. Bitte erneut versuchen.' },
+    note: { en: 'Your data will be downloaded as a JSON file.', fr: 'Tes données seront téléchargées au format JSON.', de: 'Deine Daten werden als JSON-Datei heruntergeladen.' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
