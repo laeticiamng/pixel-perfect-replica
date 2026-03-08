@@ -102,7 +102,7 @@ export default function ChangePasswordPage() {
     confirmPassword === newPassword;
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('auth.changePassword')} backTo="/settings" />
 
       <form onSubmit={handleSubmit} className="px-6 py-8 space-y-6 animate-slide-up">
