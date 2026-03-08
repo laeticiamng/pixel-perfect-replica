@@ -24,6 +24,7 @@ const PresidentCockpitPage = lazy(() => import('./pages/PresidentCockpitPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const PostSignupOnboardingPage = lazy(() => import('./pages/PostSignupOnboardingPage'));
+const NewcomerOnboardingPage = lazy(() => import('./pages/NewcomerOnboardingPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const ChangePasswordPage = lazy(() => import('./pages/ChangePasswordPage'));
