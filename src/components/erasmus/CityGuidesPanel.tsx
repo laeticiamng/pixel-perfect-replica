@@ -40,7 +40,7 @@ export function CityGuidesPanel({ city }: CityGuidesPanelProps) {
     return (
       <div className="space-y-3">
         <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-          <Star className="h-5 w-5 text-amber-400" />
+        <Star className="h-5 w-5 text-primary" />
           {t('erasmus.cityGuides')}
         </h3>
         {[1, 2, 3].map((i) => (
