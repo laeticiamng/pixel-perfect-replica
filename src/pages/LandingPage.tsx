@@ -83,12 +83,12 @@ const SignalExplanationSection = forwardRef<HTMLElement>(function SignalExplanat
   );
 });
 
-// Features Grid Section
+// Features Grid Section - Bento grid layout
 const FeaturesSection = forwardRef<HTMLElement>(function FeaturesSection(_props, ref) {
   const { t } = useTranslation();
   
   return (
-    <section ref={ref} className="py-12 px-6 relative z-10">
+    <section ref={ref} className="py-16 px-6 relative z-10">
       <div className="max-w-5xl mx-auto">
         <RevealText>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
@@ -96,12 +96,15 @@ const FeaturesSection = forwardRef<HTMLElement>(function FeaturesSection(_props,
           </h2>
         </RevealText>
         
-        <div className="grid md:grid-cols-3 gap-6">
+        {/* Bento grid - asymmetric layout */}
+        <div className="grid md:grid-cols-2 gap-4">
           <FeatureCard
             icon={Users}
             title={t('landing.fightLoneliness')}
             description={t('landing.fightLonelinessDesc')}
             delay={0}
+            size="large"
+            className="md:row-span-2"
           />
           <FeatureCard
             icon={Sparkles}
