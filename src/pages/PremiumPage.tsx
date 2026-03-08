@@ -221,6 +221,7 @@ export default function PremiumPage() {
             )}
           </Button>
         </div>
+        <BottomNav />
       </PageLayout>
     );
   }
