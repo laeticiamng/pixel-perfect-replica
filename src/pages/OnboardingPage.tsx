@@ -362,7 +362,7 @@ export default function OnboardingPage() {
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       className={cn(
-                        "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl",
+                        "h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl",
                         errors.firstName && "border-destructive"
                       )}
                       autoComplete="given-name"
