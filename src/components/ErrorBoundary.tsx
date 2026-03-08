@@ -3,6 +3,7 @@ import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getCurrentLocale, translations } from '@/lib/i18n/translations';
 import { logger } from '@/lib/logger';
+import { reportError } from '@/lib/errorReporter';
 
 interface Props {
   children: ReactNode;
@@ -27,6 +28,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     logger.ui.error('ErrorBoundary', error.message, errorInfo?.componentStack ?? undefined);
+    reportError(error, { component: 'ErrorBoundary' });
     this.setState({ errorInfo });
   }
 
