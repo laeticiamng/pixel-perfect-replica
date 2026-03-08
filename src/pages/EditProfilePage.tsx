@@ -45,7 +45,7 @@ export default function EditProfilePage() {
       if (!user) return;
       const { data } = await supabase
         .from('profiles')
-        .select('bio, favorite_activities, birth_year')
+        .select('bio, favorite_activities, birth_year, is_city_guide, is_newcomer')
         .eq('id', user.id)
         .single();
       
