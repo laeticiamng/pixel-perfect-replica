@@ -218,7 +218,7 @@ export default function ProximityRevealPage() {
   }
 
   return (
-    <PageLayout className={cn("flex flex-col animate-slide-up", isVibrating && "animate-pulse")}>
+    <PageLayout className={cn("flex flex-col pb-28", isVibrating && "animate-pulse")}>
       <header className="safe-top px-6 py-4">
         <button onClick={() => navigate('/map')} className="p-2 rounded-lg hover:bg-muted transition-colors">
           <ArrowLeft className="h-6 w-6 text-foreground" />
