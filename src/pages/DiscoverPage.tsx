@@ -87,7 +87,7 @@ export default function DiscoverPage() {
   return (
     <TooltipProvider>
       <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
-      <PageLayout>
+      <PageLayout className="pb-28">
         <div className="max-w-3xl mx-auto px-4 py-6 pb-24 lg:pb-6">
           {/* Header */}
           <PageHeader
