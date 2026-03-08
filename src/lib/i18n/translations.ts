@@ -1284,7 +1284,7 @@ export const translations = {
   // Binome Description Card
   binomeDescription: {
     howItWorks: { en: 'How does it work?', fr: 'Comment ça marche ?', de: 'Wie funktioniert es?' },
-    description: { en: 'Create a slot or join one in your city. On the day, check in on-site and enjoy your session! You can create up to 4 free slots per month.', fr: 'Crée un créneau ou rejoins-en un dans ta ville. Le jour J, fais ton check-in sur place et profite de ta session ! Tu peux créer jusqu\'à 4 créneaux gratuits par mois.', de: 'Erstelle einen Slot oder tritt einem in deiner Stadt bei. Am Trefftermin checke vor Ort ein und genieße deine Session! Du kannst bis zu 4 kostenlose Slots pro Monat erstellen.' },
+    description: { en: 'Create a slot or join one in your city. On the day, check in on-site and enjoy your meetup! You can create up to 4 free slots per month.', fr: 'Crée un créneau ou rejoins-en un dans ta ville. Le jour J, fais ton check-in sur place et profite de ta rencontre ! Tu peux créer jusqu\'à 4 créneaux gratuits par mois.', de: 'Erstelle einen Slot oder tritt einem in deiner Stadt bei. Am Trefftermin checke vor Ort ein und genieße dein Treffen! Du kannst bis zu 4 kostenlose Slots pro Monat erstellen.' },
     viewTutorial: { en: 'View full tutorial →', fr: 'Voir le tutoriel complet →', de: 'Vollständiges Tutorial ansehen →' },
   },
 
