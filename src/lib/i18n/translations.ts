@@ -281,7 +281,7 @@ export const translations = {
     awkwardApproach: { en: 'Awkward approach', fr: 'Approche gênante', de: 'Peinliches Ansprechen' },
     naturalApproach: { en: 'Natural approach', fr: 'Approche naturelle', de: 'Natürliches Ansprechen' },
     realMeetingsGuarantee: { en: '100% Real Meetings Guarantee', fr: 'Garantie Rencontres 100% Réelles', de: '100% echte Treffen garantiert' },
-    notADatingApp: { en: 'This is NOT a dating app', fr: 'Ce n\'est PAS une app de rencontre amoureuse', de: 'Das ist KEINE Dating-App' },
+    notADatingApp: { en: '100% real-life. 0% dating.', fr: '100% réel. 0% dating.', de: '100% real. 0% Dating.' },
     forRealConnections: { en: 'For real, in-person connections', fr: 'Pour des connexions réelles, en personne', de: 'Für echte, persönliche Verbindungen' },
     noVirtualChat: { en: 'No endless virtual chatting', fr: 'Pas de tchat virtuel sans fin', de: 'Kein endloses virtuelles Chatten' },
     meetInPerson: { en: 'Meet the person, then chat', fr: 'Rencontre la personne, ensuite discute', de: 'Triff die Person, dann chatte' },
