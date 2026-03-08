@@ -81,7 +81,7 @@ export const translations = {
     termsLink: { en: 'Terms of Service', fr: 'Conditions Générales', de: 'Nutzungsbedingungen' },
     and: { en: 'and the', fr: 'et la', de: 'und die' },
     privacyLink: { en: 'Privacy Policy', fr: 'Politique de confidentialité', de: 'Datenschutzerklärung' },
-    mustAcceptTerms: { en: 'You must accept the terms and privacy policy', fr: 'Vous devez accepter les CGU et la politique de confidentialité', de: 'Du musst die Nutzungsbedingungen und Datenschutzerklärung akzeptieren' },
+    mustAcceptTerms: { en: 'You must accept the terms and privacy policy', fr: 'Tu dois accepter les CGU et la politique de confidentialité', de: 'Du musst die Nutzungsbedingungen und Datenschutzerklärung akzeptieren' },
     welcome: { en: 'Welcome!', fr: 'Bienvenue !', de: 'Willkommen!' },
     accountCreated: { en: 'Account created successfully!', fr: 'Compte créé avec succès !', de: 'Konto erfolgreich erstellt!' },
     invalidCredentials: { en: 'Invalid email or password', fr: 'Email ou mot de passe incorrect', de: 'Ungültige E-Mail oder Passwort' },
