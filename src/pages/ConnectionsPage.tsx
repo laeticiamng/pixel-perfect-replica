@@ -243,104 +243,104 @@ export default function ConnectionsPage() {
   return (
     <>
       <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
-    <PageLayout className="pb-28">
-        <PageHeader
-          title={t('connections.title')}
-          subtitle={t('connections.subtitle')}
-          showBack
-        />
+      <PageLayout className="pb-28">
+        <div className="max-w-2xl mx-auto p-4 space-y-6">
+          <PageHeader
+            title={t('connections.title')}
+            subtitle={t('connections.subtitle')}
+            showBack
+          />
 
-        <Tabs defaultValue="friends" className="w-full">
-          <TabsList className="w-full grid grid-cols-2 rounded-xl">
-            <TabsTrigger value="friends" className="rounded-xl">
-              <UserCheck className="h-4 w-4 mr-2" />
-              {t('connections.friends')} ({acceptedConnections.length})
-            </TabsTrigger>
-            <TabsTrigger value="pending" className="rounded-xl relative">
-              <UserPlus className="h-4 w-4 mr-2" />
-              {t('connections.requests')} ({pendingRequests.length})
-              {pendingRequests.length > 0 && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-coral text-white text-[10px] font-bold rounded-full">
-                  {pendingRequests.length}
-                </span>
+          <Tabs defaultValue="friends" className="w-full">
+            <TabsList className="w-full grid grid-cols-2 rounded-xl">
+              <TabsTrigger value="friends" className="rounded-xl">
+                <UserCheck className="h-4 w-4 mr-2" />
+                {t('connections.friends')} ({acceptedConnections.length})
+              </TabsTrigger>
+              <TabsTrigger value="pending" className="rounded-xl relative">
+                <UserPlus className="h-4 w-4 mr-2" />
+                {t('connections.requests')} ({pendingRequests.length})
+                {pendingRequests.length > 0 && (
+                  <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-coral text-white text-[10px] font-bold rounded-full">
+                    {pendingRequests.length}
+                  </span>
+                )}
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="friends" className="mt-4 space-y-3">
+              {acceptedConnections.length > 0 && (
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder={t('connections.searchFriends')}
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                    className="pl-10 rounded-xl"
+                  />
+                </div>
               )}
-            </TabsTrigger>
-          </TabsList>
 
-          <TabsContent value="friends" className="mt-4 space-y-3">
-            {/* Search friends */}
-            {acceptedConnections.length > 0 && (
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={t('connections.searchFriends')}
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-10 rounded-xl"
+              {isLoading ? (
+                <LoadingSkeleton variant="list" count={4} />
+              ) : filteredFriends.length === 0 && searchQuery ? (
+                <EmptyState
+                  icon={Search}
+                  title={t('connections.noResults')}
+                  description={t('connections.noResultsDesc')}
                 />
-              </div>
-            )}
+              ) : acceptedConnections.length === 0 ? (
+                <EmptyState
+                  icon={Users2}
+                  title={t('connections.noFriends')}
+                  description={t('connections.noFriendsDesc')}
+                />
+              ) : (
+                filteredFriends.map(renderFriendCard)
+              )}
+            </TabsContent>
 
-            {isLoading ? (
-              <LoadingSkeleton variant="list" count={4} />
-            ) : filteredFriends.length === 0 && searchQuery ? (
-              <EmptyState
-                icon={Search}
-                title={t('connections.noResults')}
-                description={t('connections.noResultsDesc')}
-              />
-            ) : acceptedConnections.length === 0 ? (
-              <EmptyState
-                icon={Users2}
-                title={t('connections.noFriends')}
-                description={t('connections.noFriendsDesc')}
-              />
-            ) : (
-              filteredFriends.map(renderFriendCard)
-            )}
-          </TabsContent>
+            <TabsContent value="pending" className="mt-4 space-y-3">
+              {isLoading ? (
+                <LoadingSkeleton variant="list" count={3} />
+              ) : pendingRequests.length === 0 ? (
+                <EmptyState
+                  icon={Clock}
+                  title={t('connections.noPending')}
+                  description={t('connections.noPendingDesc')}
+                />
+              ) : (
+                pendingRequests.map(renderPendingCard)
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
 
-          <TabsContent value="pending" className="mt-4 space-y-3">
-            {isLoading ? (
-              <LoadingSkeleton variant="list" count={3} />
-            ) : pendingRequests.length === 0 ? (
-              <EmptyState
-                icon={Clock}
-                title={t('connections.noPending')}
-                description={t('connections.noPendingDesc')}
-              />
-            ) : (
-              pendingRequests.map(renderPendingCard)
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
+        {/* Confirm remove dialog */}
+        <AlertDialog open={!!removeTarget} onOpenChange={(open) => !open && setRemoveTarget(null)}>
+          <AlertDialogContent className="glass border-border">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-foreground">{t('connections.removeTitle')}</AlertDialogTitle>
+              <AlertDialogDescription className="text-muted-foreground">
+                {t('connections.removeDesc').replace('{name}', removeTarget?.name || '')}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="border-border text-foreground hover:bg-muted">
+                {t('cancel')}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleRemoveConnection}
+                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              >
+                {t('connections.removeConfirm')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-      {/* Confirm remove dialog */}
-      <AlertDialog open={!!removeTarget} onOpenChange={(open) => !open && setRemoveTarget(null)}>
-        <AlertDialogContent className="glass border-border">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-foreground">{t('connections.removeTitle')}</AlertDialogTitle>
-            <AlertDialogDescription className="text-muted-foreground">
-              {t('connections.removeDesc').replace('{name}', removeTarget?.name || '')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-border text-foreground hover:bg-muted">
-              {t('cancel')}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleRemoveConnection}
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-            >
-              {t('connections.removeConfirm')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <BottomNav />
-    </PageLayout>
+        <BottomNav />
+      </PageLayout>
     </>
   );
 }
