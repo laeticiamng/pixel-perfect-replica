@@ -37,9 +37,18 @@ const formatDateTime = (dateString: string) =>
   });
 
 export default function PresidentCockpitPage() {
+  const navigate = useNavigate();
+  const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const [validations, setValidations] = useState<ActionValidation[]>(pendingValidationsMock);
   const [validationHistory, setValidationHistory] = useState<ValidationHistoryItem[]>([]);
   const [statusFilter, setStatusFilter] = useState<'tous' | HealthStatus>('tous');
+
+  // Block non-admin access
+  if (adminLoading) return <FullPageLoader />;
+  if (!isAdmin) {
+    navigate('/', { replace: true });
+    return null;
+  }
 
   const kpiGlobaux = useMemo(() => {
     const alertesTotal = platformsMock.reduce((acc, platform) => acc + platform.alertesOuvertes, 0);
