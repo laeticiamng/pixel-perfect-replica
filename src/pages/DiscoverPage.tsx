@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Users, Wifi, GraduationCap, UserPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
