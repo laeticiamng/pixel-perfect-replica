@@ -71,13 +71,14 @@ export default function ProfilePage() {
       items: [
         { icon: <User className="h-5 w-5" />, label: t('profile.editProfile'), route: '/profile/edit' },
         { icon: <Crown className="h-5 w-5" />, label: t('profile.goPremium'), route: '/premium' },
-        { icon: <Bell className="h-5 w-5" />, label: t('settings.notifications'), onClick: handleNotifications },
-        { icon: <Lock className="h-5 w-5" />, label: t('settings.privacy'), onClick: handlePrivacy },
+        { icon: <Bell className="h-5 w-5" />, label: t('nav.notifications'), route: '/notifications' },
+        { icon: <Settings className="h-5 w-5" />, label: t('nav.settings'), route: '/settings' },
       ],
     },
     {
       title: t('profile.history'),
       items: [
+        { icon: <CalendarDays className="h-5 w-5" />, label: t('nav.events'), route: '/events' },
         { icon: <BarChart3 className="h-5 w-5" />, label: t('profile.myStats'), route: '/statistics' },
         { icon: <Users className="h-5 w-5" />, label: t('profile.peopleMet'), route: '/people-met' },
       ],

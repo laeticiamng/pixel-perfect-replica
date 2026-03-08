@@ -37,7 +37,7 @@ export const BottomNav = forwardRef<HTMLElement, Record<string, never>>(
           <div className="mx-4 mb-4 glass-strong rounded-2xl shadow-medium">
             <div className="flex items-center justify-around py-3.5 px-6">
               {navItems.map((item) => {
-                const isActive = location.pathname === item.to;
+                const isActive = location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to));
                 const label = t(item.labelKey);
                 return (
                   <RouterNavLink
