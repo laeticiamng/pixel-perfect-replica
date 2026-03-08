@@ -87,7 +87,7 @@ export default function HelpPage() {
 
   const supportLinks = [
     { icon: <Mail className="h-5 w-5" />, label: t('help.contactUs'), href: `mailto:${SUPPORT_EMAIL}` },
-    { icon: <MessageCircle className="h-5 w-5" />, label: t('help.community'), href: `mailto:${SUPPORT_EMAIL}` },
+    { icon: <MessageCircle className="h-5 w-5" />, label: t('help.giveFeedback'), href: '/feedback' },
     { icon: <FileText className="h-5 w-5" />, label: t('help.termsOfUse'), href: '/terms' },
     { icon: <Shield className="h-5 w-5" />, label: t('help.privacyPolicy'), href: '/privacy' },
   ];

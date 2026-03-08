@@ -307,12 +307,13 @@ export default function AboutPage() {
 
         {/* Back */}
         <div className="text-center pb-8">
-          <Button variant="outline" onClick={() => navigate('/')} className="gap-2">
+          <Button variant="outline" onClick={() => navigate(isAuthenticated ? '/profile' : '/')} className="gap-2">
             <ArrowLeft className="w-4 h-4" />
-            {t('help.backToHome')}
+            {isAuthenticated ? t('help.backToProfile') : t('help.backToHome')}
           </Button>
         </div>
       </article>
+      {isAuthenticated && <BottomNav />}
     </PageLayout>
   );
 }
