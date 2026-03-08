@@ -231,12 +231,12 @@ export default function PremiumPage() {
     '@type': 'Product',
     name: 'NEARVITY',
     description: locale === 'fr'
-      ? 'Réseau social IRL pour étudiants. Plans gratuit, session unitaire et premium.'
-      : 'IRL social network for students. Free, pay-per-session and premium plans.',
+      ? 'Réseau social IRL pour étudiants. Plans gratuit, rencontre à l\'unité et premium.'
+      : 'IRL social network for students. Free, pay-per-meetup and premium plans.',
     brand: { '@type': 'Brand', name: 'NEARVITY' },
     offers: [
       { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
-      { '@type': 'Offer', name: 'Session', price: '0.99', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+      { '@type': 'Offer', name: 'Meetup', price: '0.99', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
       { '@type': 'Offer', name: 'Nearvity+', price: '9.90', priceCurrency: 'EUR', priceValidUntil: '2027-12-31', availability: 'https://schema.org/InStock' },
     ],
   };
