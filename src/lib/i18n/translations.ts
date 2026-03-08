@@ -1714,6 +1714,7 @@ export const translations = {
     empty: { en: 'No conversations yet', fr: 'Aucune conversation', de: 'Noch keine Unterhaltungen' },
     emptyDesc: { en: 'Start by meeting people nearby!', fr: 'Commencez par rencontrer des gens à proximité !', de: 'Beginnen Sie damit, Menschen in der Nähe zu treffen!' },
     noMessages: { en: 'No messages yet', fr: 'Pas encore de messages', de: 'Noch keine Nachrichten' },
+    tipActivateSignal: { en: '💡 Tip: Activate your signal on the map to meet people and start conversations!', fr: '💡 Astuce : Active ton signal sur la carte pour rencontrer du monde et lancer des conversations !', de: '💡 Tipp: Aktiviere dein Signal auf der Karte, um Leute zu treffen und Gespräche zu starten!' },
   },
 
   // Empty state social proof
