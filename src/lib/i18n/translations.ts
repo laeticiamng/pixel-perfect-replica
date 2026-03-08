@@ -946,7 +946,7 @@ export const translations = {
     pleasantCompany: { en: 'Pleasant company', fr: 'Agréable à côtoyer', de: 'Angenehme Gesellschaft' },
     iRecommend: { en: 'I recommend', fr: 'Je recommande', de: 'Ich empfehle' },
     commentOptional: { en: 'Comment (optional)', fr: 'Commentaire (optionnel)', de: 'Kommentar (optional)' },
-    commentPlaceholder: { en: 'A note about this session...', fr: 'Un petit mot sur cette session...', de: 'Eine Notiz zu dieser Session...' },
+    commentPlaceholder: { en: 'A note about this meetup...', fr: 'Un petit mot sur cette rencontre...', de: 'Eine Notiz zu diesem Treffen...' },
     previous: { en: 'Previous', fr: 'Précédent', de: 'Zurück' },
     finish: { en: 'Finish', fr: 'Terminer', de: 'Fertig' },
     thanksFeedback: { en: 'Thanks for your feedback!', fr: 'Merci pour ton feedback !', de: 'Danke für dein Feedback!' },
