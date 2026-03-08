@@ -44,12 +44,10 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
         </div>
         
         <div className="text-center text-xs text-muted-foreground">
-          <Link to="/changelog" className="font-medium hover:text-coral transition-colors">
-            NEARVITY v{APP_VERSION} • PWA
-          </Link>
-          <p className="mt-1 flex items-center justify-center gap-1">
+          <p className="flex items-center justify-center gap-1">
             Made with <Heart className="h-3.5 w-3.5 text-coral fill-coral" /> in France by EmotionsCare SASU
           </p>
+          <p className="mt-1 text-muted-foreground/60">© {new Date().getFullYear()} NEARVITY. All rights reserved.</p>
         </div>
       </div>
     </footer>
