@@ -255,7 +255,7 @@ export default function ChangelogPage() {
   const { t, locale } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-background pb-24 lg:pb-8">
+    <PageLayout className="pb-24 safe-bottom">
       <Helmet>
         <title>{locale === 'fr' ? 'Journal des mises à jour — NEARVITY' : 'Changelog — NEARVITY'}</title>
         <meta name="description" content={locale === 'fr'
