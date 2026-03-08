@@ -326,6 +326,7 @@ const App = () => (
             />
             <BrowserRouter>
               <AnalyticsProvider>
+                <HtmlLangSync />
                 <CommandPalette />
                 <AnimatedRoutes />
                 <CookieConsent />
