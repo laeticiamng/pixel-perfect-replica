@@ -638,5 +638,6 @@ export default function MapPage() {
         </AnimatePresence>
       </div>
     </PageLayout>
+    </>
   );
 }

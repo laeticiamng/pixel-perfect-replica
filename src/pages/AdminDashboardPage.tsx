@@ -668,5 +668,6 @@ export default function AdminDashboardPage() {
         </Tabs>
       </div>
     </PageLayout>
+    </>
   );
 }

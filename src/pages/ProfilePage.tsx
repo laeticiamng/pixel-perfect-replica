@@ -276,5 +276,6 @@ export default function ProfilePage() {
       <BottomNav />
       </div>
     </PageLayout>
+    </>
   );
 }
