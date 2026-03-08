@@ -266,7 +266,7 @@ export const translations = {
     tryCTA: { en: 'Try it free — no card needed', fr: 'Essaie gratuitement — sans carte bancaire', de: 'Kostenlos testen — ohne Kreditkarte' },
     readyToConnect: { en: 'Ready to', fr: 'Prêt·e à', de: 'Bereit,' },
     connect: { en: 'meet someone?', fr: 'rencontrer quelqu\'un ?', de: 'jemanden zu treffen?' },
-    joinRevolution: { en: 'Thousands of students already use NEARVITY to meet people on campus.', fr: 'Des milliers d\'étudiants utilisent déjà NEARVITY pour se rencontrer sur leur campus.', de: 'Tausende Studenten nutzen NEARVITY bereits, um sich auf dem Campus zu treffen.' },
+    joinRevolution: { en: 'Join the first students reinventing how people meet on campus.', fr: 'Rejoins les premiers étudiants qui changent la façon de se rencontrer sur leur campus.', de: 'Schließe dich den ersten Studenten an, die das Kennenlernen auf dem Campus neu erfinden.' },
     itsFreeNow: { en: 'It\'s free. Join in 30 seconds.', fr: 'C\'est gratuit. Inscris-toi en 30 secondes.', de: 'Es ist kostenlos. Registriere dich in 30 Sekunden.' },
     install: { en: 'Install', fr: 'Installer', de: 'Installieren' },
     terms: { en: 'Terms', fr: 'Conditions', de: 'AGB' },
