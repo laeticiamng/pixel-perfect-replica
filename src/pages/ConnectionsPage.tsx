@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Users2, UserCheck, UserPlus, Clock, MessageCircle, Search, UserX, ArrowLeft } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
