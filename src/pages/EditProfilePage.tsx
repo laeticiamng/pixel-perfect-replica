@@ -173,6 +173,7 @@ export default function EditProfilePage() {
         bio: sanitizedBio || null,
         birth_year: birthYear ? parseInt(birthYear, 10) : null,
         favorite_activities: favoriteActivities,
+        is_city_guide: isCityGuide,
       })
       .eq('id', user?.id);
     
