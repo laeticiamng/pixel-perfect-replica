@@ -28,6 +28,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     logger.ui.error('ErrorBoundary', error.message, errorInfo?.componentStack ?? undefined);
+    reportError(error, { component: 'ErrorBoundary' });
     this.setState({ errorInfo });
   }
 
