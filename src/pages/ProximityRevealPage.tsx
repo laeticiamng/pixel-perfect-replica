@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Star, Clock, Flag, GraduationCap, MessageCircle, AlertTriangle, Loader2, MapPin, ThumbsUp, ThumbsDown, UserX, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { IcebreakerCard, VerificationBadges, MiniChat, VoiceIcebreakerButton } from '@/components/social';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useInteractions } from '@/hooks/useInteractions';
