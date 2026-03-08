@@ -29,7 +29,7 @@ export default function DataExportPage() {
     <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
-          <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
+          <button onClick={() => navigate('/privacy-settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
           <h1 className="text-xl font-bold text-foreground">{t('dataExport.title')}</h1>

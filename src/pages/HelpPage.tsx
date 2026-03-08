@@ -136,7 +136,7 @@ export default function HelpPage() {
       </Helmet>
       <header className="safe-top px-6 py-4 flex items-center gap-4">
         <button
-          onClick={() => navigate(user ? '/profile' : '/')}
+          onClick={() => navigate(user ? '/settings' : '/')}
           className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
           aria-label={user ? t('help.backToProfile') : t('help.backToHome')}
         >
