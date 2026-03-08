@@ -8,9 +8,9 @@ export const GuaranteeSection = forwardRef<HTMLElement>(function GuaranteeSectio
   const { t } = useTranslation();
 
   const guarantees = [
-    { icon: Ban, title: t('landing.noVirtualChat'), desc: t('landing.meetInPerson'), color: 'coral' },
-    { icon: CheckCircle, title: t('landing.mutualConsent'), desc: t('landing.naturalApproach'), color: 'signal-green' },
-    { icon: Shield, title: t('landing.safetyFirst'), desc: t('landing.safetyDesc'), color: 'signal-yellow' },
+    { icon: Ban, title: t('landing.noVirtualChat'), desc: t('landing.meetInPerson') },
+    { icon: CheckCircle, title: t('landing.guaranteeMutualConsent'), desc: t('landing.guaranteeMutualConsentDesc') },
+    { icon: Shield, title: t('landing.safetyFirst'), desc: t('landing.safetyDesc') },
   ];
 
   return (
