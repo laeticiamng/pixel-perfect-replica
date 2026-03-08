@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Flame, Trophy, Medal, Crown, Star, Zap, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
 import { useGamification, ACHIEVEMENTS } from '@/hooks/useGamification';
