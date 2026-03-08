@@ -229,7 +229,7 @@ export const translations = {
     meetingsReinvented: { en: 'Meetings reinvented', fr: 'La rencontre réinventée', de: 'Treffen neu gedacht' },
     seeWhoIsOpen: { en: "Find someone to", fr: 'Trouve quelqu\'un pour', de: 'Finde jemanden zum' },
     openToInteract: { en: 'do things with, right now.', fr: 'faire des choses avec toi, maintenant.', de: 'gemeinsam etwas unternehmen, jetzt.' },
-    heroSubtitle: { en: 'Activate your signal, see who around you is also looking for a study buddy, a gym partner, or just someone to grab coffee with. 100% real, 0% awkward.', fr: 'Active ton signal, vois qui autour de toi cherche aussi un partenaire de révision, un binôme de sport ou simplement quelqu\'un pour un café. 100% réel, 0% gênant.', de: 'Aktiviere dein Signal und sieh, wer in deiner Nähe auch einen Lernpartner, Trainingspartner oder einfach jemanden für einen Kaffee sucht. 100% real, 0% peinlich.' },
+    heroSubtitle: { en: 'See who around you wants to study, eat, work out or just chat — and meet them in real life.', fr: 'Vois qui autour de toi veut réviser, manger, faire du sport ou discuter — et retrouve-le en vrai.', de: 'Sieh, wer in deiner Nähe lernen, essen, trainieren oder reden will — und triff die Person im echten Leben.' },
     heroTagline: { en: 'The student app for spontaneous IRL meetups', fr: 'L\'app étudiante pour se retrouver spontanément IRL', de: 'Die Studenten-App für spontane IRL-Treffen' },
     createRealConnections: { en: 'Real people. Real activities. Right here.', fr: 'Des vraies personnes. Des vraies activités. Ici même.', de: 'Echte Menschen. Echte Aktivitäten. Genau hier.' },
     getStarted: { en: 'Get Started', fr: 'Commencer', de: 'Loslegen' },
