@@ -291,6 +291,7 @@ export default function EventDetailPage() {
       </div>
 
       <QRCodeScanner isOpen={showScanner} onClose={() => setShowScanner(false)} onScan={handleScanCheckIn} />
+      <BottomNav />
     </PageLayout>
   );
 }
