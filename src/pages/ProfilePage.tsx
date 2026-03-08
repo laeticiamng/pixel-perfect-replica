@@ -57,13 +57,8 @@ export default function ProfilePage() {
     navigate('/');
   };
 
-  const handleNotifications = () => {
-    navigate('/notifications-settings');
-  };
 
-  const handlePrivacy = () => {
-    navigate('/privacy-settings');
-  };
+
 
   const menuSections: MenuSection[] = [
     {
