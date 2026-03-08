@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Calendar, Users, Clock, History, Crown, Ticket, Sparkles } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
