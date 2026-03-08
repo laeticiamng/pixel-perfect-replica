@@ -88,7 +88,7 @@ export default function FeedbackPage() {
             placeholder={t('feedback.placeholder')}
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            className="min-h-[120px] bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-2xl resize-none shadow-soft focus:ring-2 focus:ring-coral/30"
+            className="min-h-[120px] bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-2xl resize-none shadow-soft focus:ring-2 focus:ring-coral/30"
             maxLength={500}
           />
           <p className="text-xs text-muted-foreground text-right">
