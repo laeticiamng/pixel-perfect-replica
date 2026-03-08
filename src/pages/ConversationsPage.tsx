@@ -57,7 +57,7 @@ export default function ConversationsPage() {
         <PageHeader
           title={t('conversations.title')}
           subtitle={t('conversations.subtitle')}
-          showBack
+          showBack={false}
         />
 
         {/* Search */}

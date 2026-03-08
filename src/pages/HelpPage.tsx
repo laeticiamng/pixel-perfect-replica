@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronRight, ExternalLink, Mail, MessageCircle, FileText, S
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { APP_VERSION, SUPPORT_EMAIL, SITE_URL } from '@/lib/constants';
@@ -106,7 +107,7 @@ export default function HelpPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <Helmet>
         <title>{locale === 'fr' ? 'Aide & FAQ — NEARVITY' : 'Help & FAQ — NEARVITY'}</title>
         <meta name="description" content={locale === 'fr'
@@ -269,6 +270,8 @@ export default function HelpPage() {
           <p className="text-xs text-muted-foreground mt-1">{t('landing.madeWith')}</p>
         </motion.div>
       </motion.div>
+
+      <BottomNav />
     </PageLayout>
   );
 }
