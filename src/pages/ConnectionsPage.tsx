@@ -183,7 +183,7 @@ export default function ConnectionsPage() {
             size="sm"
             variant="ghost"
             onClick={() => setRemoveTarget({ id: connection.id, name })}
-            className="rounded-xl text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+            className="rounded-xl text-muted-foreground hover:text-destructive lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
           >
             <UserX className="h-4 w-4" />
           </Button>

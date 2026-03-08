@@ -157,7 +157,7 @@ function LeaderboardView({
   };
 
   // Load on first render
-  useState(() => { fetchLeaderboard(); });
+  useEffect(() => { fetchLeaderboard(); }, []);
 
   const RANK_STYLES = [
     'bg-gradient-to-r from-signal-yellow/20 to-signal-yellow/5 border-signal-yellow/40',

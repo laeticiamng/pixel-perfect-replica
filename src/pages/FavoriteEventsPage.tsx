@@ -117,7 +117,7 @@ export default function FavoriteEventsPage() {
   };
 
   return (
-    <PageLayout showSidebar={false} className="pb-28 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top sticky top-0 z-10 px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
           <ArrowLeft className="h-6 w-6 text-foreground" />
