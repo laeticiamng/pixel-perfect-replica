@@ -315,6 +315,35 @@ export default function EditProfilePage() {
             <p className="text-xs text-muted-foreground">{t('editProfile.birthYearPrivacy')}</p>
           </div>
 
+          {/* Erasmus section */}
+          <div className="space-y-3 p-4 rounded-xl bg-muted/50 border border-border">
+            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Plane className="h-4 w-4 text-coral" />
+              Erasmus+
+            </h4>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5 text-signal-green" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">{t('erasmus.becomeGuide')}</p>
+                  <p className="text-xs text-muted-foreground">{t('erasmus.becomeGuideDesc')}</p>
+                </div>
+              </div>
+              <Switch checked={isCityGuide} onCheckedChange={setIsCityGuide} />
+            </div>
+
+            {isNewcomer && (
+              <Button
+                variant="outline"
+                onClick={() => navigate('/newcomer')}
+                className="w-full mt-2 rounded-xl"
+              >
+                📋 {t('erasmus.firstWeekChecklist')}
+              </Button>
+            )}
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">{t('editProfile.emailLabel')}</label>
             <Input
