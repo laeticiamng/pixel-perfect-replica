@@ -315,7 +315,7 @@ export default function EditProfilePage() {
               type="email"
               value={profile?.email || ''}
               disabled
-              className="h-14 bg-deep-blue-light/50 border-border text-muted-foreground rounded-xl cursor-not-allowed"
+              className="h-14 bg-muted/50 border-border text-muted-foreground rounded-xl cursor-not-allowed"
             />
             <p className="text-xs text-muted-foreground">{t('editProfile.emailReadonly')}</p>
           </div>
