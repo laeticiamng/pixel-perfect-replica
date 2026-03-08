@@ -66,12 +66,17 @@ export function useEvents() {
   const fetchJoinedEvents = useCallback(async () => {
     if (!user) return;
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('event_participants')
       .select('*')
       .eq('user_id', user.id);
 
-    setJoinedEvents(data || []);
+    if (!error) {
+      setJoinedEvents(data || []);
+    } else {
+      console.warn('Failed to fetch joined events:', error.message);
+      setJoinedEvents([]);
+    }
   }, [user]);
 
   useEffect(() => {
