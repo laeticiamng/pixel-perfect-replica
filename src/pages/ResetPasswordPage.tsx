@@ -147,7 +147,7 @@ export default function ResetPasswordPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className={cn(
-                  "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
+                  "h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
                   error && "border-destructive"
                 )}
                 autoComplete="new-password"
@@ -172,7 +172,7 @@ export default function ResetPasswordPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={cn(
-                  "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
+                  "h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
                   error && "border-destructive"
                 )}
                 autoComplete="new-password"

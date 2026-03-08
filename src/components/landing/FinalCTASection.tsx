@@ -39,7 +39,6 @@ export const FinalCTASection = forwardRef<HTMLElement>(function FinalCTASection(
               
               <p className="relative text-lg text-muted-foreground mb-10 max-w-md mx-auto">
                 {t('landing.joinRevolution')}
-                <br />{t('landing.itsFreeNow')}
               </p>
               
               <Button
@@ -47,9 +46,12 @@ export const FinalCTASection = forwardRef<HTMLElement>(function FinalCTASection(
                 size="lg"
                 className="group relative h-16 px-12 text-xl font-bold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral text-white rounded-full shadow-xl shadow-coral/25 hover:shadow-coral/40 transition-all duration-300 hover:scale-105"
               >
-                {t('landing.startNow')}
+                {t('landing.createMyAccount')}
                 <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
               </Button>
+              <p className="relative text-sm text-muted-foreground mt-4">
+                {t('landing.itsFreeNow')}
+              </p>
             </div>
           </motion.div>
         </RevealText>

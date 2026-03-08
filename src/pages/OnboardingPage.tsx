@@ -313,7 +313,7 @@ export default function OnboardingPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={cn(
-                    "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl",
+                    "h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl",
                     errors.email && "border-destructive"
                   )}
                   autoComplete="email"
@@ -331,7 +331,7 @@ export default function OnboardingPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className={cn(
-                      "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
+                      "h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl pr-12",
                       errors.password && "border-destructive"
                     )}
                     autoComplete={isLogin ? 'current-password' : 'new-password'}
@@ -362,7 +362,7 @@ export default function OnboardingPage() {
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       className={cn(
-                        "h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl",
+                        "h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl",
                         errors.firstName && "border-destructive"
                       )}
                       autoComplete="given-name"
@@ -377,7 +377,7 @@ export default function OnboardingPage() {
                     placeholder={t('auth.universityOptional')}
                     value={university}
                     onChange={(e) => setUniversity(e.target.value)}
-                    className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+                    className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
                     autoComplete="organization"
                   />
 
