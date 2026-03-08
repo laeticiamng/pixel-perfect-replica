@@ -1940,12 +1940,6 @@ export const translations = {
     lastExecution: { en: 'Last run {time}', fr: 'Dernière exécution {time}', de: 'Letzte Ausführung {time}' },
   },
 
-  // Signal Matching
-  matching: {
-    compatibleNearby: { en: 'is nearby with a compatible activity', fr: 'est à proximité avec une activité compatible', de: 'ist in der Nähe mit einer kompatiblen Aktivität' },
-    matchFound: { en: 'Match found!', fr: 'Match trouvé !', de: 'Match gefunden!' },
-  },
-
 } as const;
 
 export type TranslationKey = keyof typeof translations;
