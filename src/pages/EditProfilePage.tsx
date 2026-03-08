@@ -304,7 +304,7 @@ export default function EditProfilePage() {
               onChange={(e) => setBirthYear(e.target.value)}
               min={1920}
               max={new Date().getFullYear() - 13}
-              className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+              className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
             />
             <p className="text-xs text-muted-foreground">{t('editProfile.birthYearPrivacy')}</p>
           </div>
