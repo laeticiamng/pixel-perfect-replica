@@ -444,18 +444,10 @@ export default function MapPage() {
         {/* Interactive Map / Radar */}
         <div className="flex-1 min-h-0 px-4 sm:px-6" data-tour="map-area">
           {filteredNearbyUsers.length === 0 && !isActive ? (
-            <div className="flex flex-col items-center justify-center h-full gap-4">
+            <div className="flex flex-col items-center justify-center h-full">
               <EmptyRadarState
                 onActivateSignal={handleSignalToggle}
               />
-              <Button
-                variant="outline"
-                onClick={() => navigate('/discover')}
-                className="rounded-xl gap-2 border-coral/50 text-coral hover:bg-coral/10"
-              >
-                <Compass className="h-4 w-4" />
-                {t('mapUI.discoverUsers')}
-              </Button>
             </div>
           ) : mapMode === 'map' ? (
             <InteractiveMap
@@ -502,45 +494,47 @@ export default function MapPage() {
           )}
         </div>
 
-        {/* Connection Requests */}
-        <div className="px-6">
-          <ConnectionRequestsPanel />
-        </div>
-
-        {/* Signal Buttons */}
-        <div className="px-6 mb-4 space-y-3">
-          <div className="flex gap-3">
-            <button
-              onClick={handleSignalToggle}
-              data-tour="signal-button"
-              aria-label={isActive ? t('mapUI.deactivateSignal') : t('mapUI.activateSignal')}
-              className={cn(
-                'flex-1 h-16 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-medium',
-                'font-bold text-base',
-                isActive
-                  ? 'bg-gradient-to-r from-signal-green/20 to-signal-green/10 border-2 border-signal-green text-signal-green glow-green'
-                  : 'bg-gradient-to-r from-coral/20 to-coral/10 border-2 border-coral text-coral animate-glow-pulse hover:scale-[1.02]'
+        {/* Signal Buttons - only show when not in empty state */}
+        {(isActive || filteredNearbyUsers.length > 0) && (
+          <>
+            <div className="px-6">
+              <ConnectionRequestsPanel />
+            </div>
+            <div className="px-6 mb-4 space-y-3">
+              <div className="flex gap-3">
+                <button
+                  onClick={handleSignalToggle}
+                  data-tour="signal-button"
+                  aria-label={isActive ? t('mapUI.deactivateSignal') : t('mapUI.activateSignal')}
+                  className={cn(
+                    'flex-1 h-16 rounded-2xl flex items-center justify-center gap-3 transition-all duration-300 shadow-medium',
+                    'font-bold text-base',
+                    isActive
+                      ? 'bg-gradient-to-r from-signal-green/20 to-signal-green/10 border-2 border-signal-green text-signal-green glow-green'
+                      : 'bg-gradient-to-r from-coral/20 to-coral/10 border-2 border-coral text-coral animate-glow-pulse hover:scale-[1.02]'
+                  )}
+                >
+                  <Radio className="h-5 w-5" />
+                  {isActive ? t('mapUI.tapToDeactivate') : t('mapUI.tapToActivate')}
+                </button>
+                <button
+                  onClick={() => setShowCreateGroup(true)}
+                  className="h-16 px-4 rounded-2xl flex items-center justify-center gap-2 border-2 border-coral/50 text-coral hover:bg-coral/10 transition-all font-bold text-sm"
+                  aria-label={t('groupSignal.createTitle')}
+                >
+                  <Users className="h-5 w-5" />
+                  {t('groupSignal.group')}
+                </button>
+              </div>
+              
+              {lastUpdated && (
+                <p className="text-center text-xs text-muted-foreground font-medium">
+                  {t('mapUI.lastUpdate', { time: getTimeSinceUpdate() || '' })}
+                </p>
               )}
-            >
-              <Radio className="h-5 w-5" />
-              {isActive ? t('mapUI.tapToDeactivate') : t('mapUI.tapToActivate')}
-            </button>
-            <button
-              onClick={() => setShowCreateGroup(true)}
-              className="h-16 px-4 rounded-2xl flex items-center justify-center gap-2 border-2 border-coral/50 text-coral hover:bg-coral/10 transition-all font-bold text-sm"
-              aria-label={t('groupSignal.createTitle')}
-            >
-              <Users className="h-5 w-5" />
-              {t('groupSignal.group')}
-            </button>
-          </div>
-          
-          {lastUpdated && (
-            <p className="text-center text-xs text-muted-foreground font-medium">
-              {t('mapUI.lastUpdate', { time: getTimeSinceUpdate() || '' })}
-            </p>
-          )}
-        </div>
+            </div>
+          </>
+        )}
 
         {/* Activity Modal */}
         {showActivityModal && (
