@@ -38,7 +38,7 @@ export default function PrivacySettingsPage() {
     <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
-          <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
+          <button onClick={() => navigate('/settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
           <h1 className="text-xl font-bold text-foreground">{t('privacySettings.title')}</h1>
