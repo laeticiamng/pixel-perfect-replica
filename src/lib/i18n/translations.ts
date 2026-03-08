@@ -350,7 +350,7 @@ export const translations = {
     seeDemo: { en: 'See demo with fake signals', fr: 'Voir la démo avec de faux signaux', de: 'Demo mit Testsignalen ansehen' },
     demoMode: { en: 'Demo mode', fr: 'Mode démo', de: 'Demo-Modus' },
     demoModeDesc: { en: 'Show fake signals to discover the app', fr: 'Afficher de faux signaux pour découvrir l\'app', de: 'Testsignale anzeigen, um die App zu entdecken' },
-    sessionExpired: { en: 'Session expired, please log in again', fr: 'Session expirée, veuillez vous reconnecter', de: 'Sitzung abgelaufen, bitte erneut anmelden' },
+    sessionExpired: { en: 'Session expired, please log in again', fr: 'Session expirée, reconnecte-toi', de: 'Sitzung abgelaufen, bitte erneut anmelden' },
     mapLoadError: { en: 'Unable to load the map', fr: 'Impossible de charger la carte', de: 'Karte konnte nicht geladen werden' },
     me: { en: 'ME', fr: 'MOI', de: 'ICH' },
     deactivateConfirm: { en: 'Are you sure you want to deactivate your signal? You will no longer be visible to others.', fr: 'Tu es sûr(e) de vouloir désactiver ton signal ? Tu ne seras plus visible pour les autres.', de: 'Bist du sicher, dass du dein Signal deaktivieren möchtest? Du bist dann für andere nicht mehr sichtbar.' },
