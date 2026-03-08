@@ -395,9 +395,9 @@ export default function OnboardingPage() {
                       />
                       <span className="text-sm text-muted-foreground leading-snug">
                         {t('auth.acceptTermsPrefix')}{' '}
-                        <a href="/terms" target="_blank" className="text-coral hover:underline">{t('auth.termsLink')}</a>
+                        <Link to="/terms" target="_blank" className="text-coral hover:underline">{t('auth.termsLink')}</Link>
                         {' '}{t('auth.and')}{' '}
-                        <a href="/privacy" target="_blank" className="text-coral hover:underline">{t('auth.privacyLink')}</a>
+                        <Link to="/privacy" target="_blank" className="text-coral hover:underline">{t('auth.privacyLink')}</Link>
                       </span>
                     </label>
                     {errors.terms && (
