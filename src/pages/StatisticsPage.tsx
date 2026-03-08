@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BarChart3, TrendingUp, Clock, Users, Star, Calendar, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { BottomNav } from '@/components/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useTranslation } from '@/lib/i18n';
