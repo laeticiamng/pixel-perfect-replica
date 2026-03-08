@@ -882,6 +882,10 @@ export type Database = {
           favorite_activities: string[] | null
           first_name: string
           id: string
+          inclusion_disability: boolean | null
+          inclusion_first_gen: boolean | null
+          inclusion_international: boolean | null
+          inclusion_lgbtq: boolean | null
           is_city_guide: boolean
           is_newcomer: boolean
           is_premium: boolean
@@ -904,6 +908,10 @@ export type Database = {
           favorite_activities?: string[] | null
           first_name: string
           id: string
+          inclusion_disability?: boolean | null
+          inclusion_first_gen?: boolean | null
+          inclusion_international?: boolean | null
+          inclusion_lgbtq?: boolean | null
           is_city_guide?: boolean
           is_newcomer?: boolean
           is_premium?: boolean
@@ -926,6 +934,10 @@ export type Database = {
           favorite_activities?: string[] | null
           first_name?: string
           id?: string
+          inclusion_disability?: boolean | null
+          inclusion_first_gen?: boolean | null
+          inclusion_international?: boolean | null
+          inclusion_lgbtq?: boolean | null
           is_city_guide?: boolean
           is_newcomer?: boolean
           is_premium?: boolean
@@ -1669,6 +1681,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wellbeing_checks: {
+        Row: {
+          created_at: string
+          id: string
+          loneliness_score: number
+          social_satisfaction: number
+          user_id: string
+          wants_mentor: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          loneliness_score: number
+          social_satisfaction: number
+          user_id: string
+          wants_mentor?: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          loneliness_score?: number
+          social_satisfaction?: number
+          user_id?: string
+          wants_mentor?: boolean
+        }
+        Relationships: []
       }
     }
     Views: {
