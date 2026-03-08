@@ -292,6 +292,7 @@ export default function AboutPage() {
               </h3>
               <a
                 href={`mailto:${SUPPORT_EMAIL}`}
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 text-muted-foreground hover:text-coral transition-colors"
               >
                 <Mail className="w-4 h-4" />
