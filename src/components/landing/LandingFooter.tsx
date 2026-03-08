@@ -47,7 +47,7 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
           <p className="flex items-center justify-center gap-1">
             Made with <Heart className="h-3.5 w-3.5 text-coral fill-coral" /> in France by EmotionsCare SASU
           </p>
-          <p className="mt-1 text-muted-foreground/60">© {new Date().getFullYear()} NEARVITY. All rights reserved.</p>
+          <p className="mt-1 text-muted-foreground/60">© {new Date().getFullYear()} NEARVITY. {t('landing.allRightsReserved')}</p>
         </div>
       </div>
     </footer>
