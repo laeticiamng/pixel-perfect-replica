@@ -63,6 +63,8 @@ export default function BinomePage() {
   }
 
   return (
+    <>
+      <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-24 safe-bottom">
       <BinomeOnboarding onComplete={() => {}} />
       <PageHeader
