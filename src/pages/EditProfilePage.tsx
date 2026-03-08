@@ -266,7 +266,7 @@ export default function EditProfilePage() {
               placeholder={t('editProfile.universityPlaceholder')}
               value={university}
               onChange={(e) => setUniversity(e.target.value)}
-              className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+              className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
             />
           </div>
 
