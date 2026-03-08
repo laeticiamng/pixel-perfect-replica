@@ -55,6 +55,8 @@ export default function EditProfilePage() {
           setFavoriteActivities(data.favorite_activities as ActivityType[]);
         }
         if (data.birth_year) setBirthYear(String(data.birth_year));
+        setIsCityGuide(data.is_city_guide ?? false);
+        setIsNewcomer(data.is_newcomer ?? false);
       }
     };
     fetchProfileData();
