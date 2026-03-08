@@ -189,7 +189,7 @@ export default function EventsPage() {
       </CardHeader>
       <CardContent className="space-y-3">
         {event.description && (
-          <p className="text-sm text-muted-foreground">{event.description}</p>
+          <p className="text-sm text-muted-foreground">{event.description.replace(/^\[[\w]+\]\s*/, '')}</p>
         )}
         
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
