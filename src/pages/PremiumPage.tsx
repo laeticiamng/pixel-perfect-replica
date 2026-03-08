@@ -241,7 +241,7 @@ export default function PremiumPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <Helmet>
         <title>{locale === 'fr' ? 'Tarifs & Premium — NEARVITY' : 'Pricing & Premium — NEARVITY'}</title>
         <meta name="description" content={locale === 'fr'
