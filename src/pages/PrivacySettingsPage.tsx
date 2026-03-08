@@ -13,14 +13,8 @@ import toast from 'react-hot-toast';
 export default function PrivacySettingsPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { settings, setGhostMode, setVisibilityDistance } = useUserSettings();
-  const { downloadExport, isExporting } = useGdprExport();
+  const { settings, setVisibilityDistance } = useUserSettings();
 
-  const handleExportData = async () => {
-    const { error } = await downloadExport();
-    if (error) toast.error(t('privacySettings.exportError'));
-    else toast.success(t('privacySettings.exportSuccess'));
-  };
 
   const handleGhostMode = async () => {
     toast(t('privacySettings.ghostModePremium'), { icon: '⭐' });
