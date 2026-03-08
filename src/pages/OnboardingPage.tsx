@@ -377,7 +377,7 @@ export default function OnboardingPage() {
                     placeholder={t('auth.universityOptional')}
                     value={university}
                     onChange={(e) => setUniversity(e.target.value)}
-                    className="h-14 bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl"
+                    className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
                     autoComplete="organization"
                   />
 

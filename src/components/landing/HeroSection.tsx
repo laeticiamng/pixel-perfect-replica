@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, AlertTriangle, Download, Sparkles } from 'lucide-react';
+import { ArrowRight, Download, Sparkles } from 'lucide-react';
 import { motion, MotionValue } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/lib/i18n';
