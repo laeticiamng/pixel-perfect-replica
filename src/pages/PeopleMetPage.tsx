@@ -174,6 +174,7 @@ export default function PeopleMetPage() {
           </div>
         )}
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

@@ -472,6 +472,7 @@ export default function PremiumPage() {
           </Link>.
         </p>
       </motion.div>
+      <BottomNav />
     </PageLayout>
   );
 }

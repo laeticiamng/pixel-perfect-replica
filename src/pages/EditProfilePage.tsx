@@ -335,6 +335,7 @@ export default function EditProfilePage() {
           </Button>
         </div>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

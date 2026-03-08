@@ -279,6 +279,7 @@ export default function StatisticsPage() {
           <p className="text-xs text-muted-foreground mt-4 text-center">{t('statistics.basedOnLast')}</p>
         </div>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }
