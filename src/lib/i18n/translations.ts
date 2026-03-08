@@ -1624,12 +1624,12 @@ export const translations = {
   // Connections
   connections: {
     title: { en: 'Connections', fr: 'Connexions', de: 'Verbindungen' },
-    subtitle: { en: 'People you\'ve met', fr: 'Les personnes que vous avez rencontrées', de: 'Menschen, die Sie getroffen haben' },
+    subtitle: { en: 'People you\'ve met', fr: 'Les personnes que tu as rencontrées', de: 'Menschen, die du getroffen hast' },
     friends: { en: 'Friends', fr: 'Amis', de: 'Freunde' },
     requests: { en: 'Requests', fr: 'Demandes', de: 'Anfragen' },
     pendingRequests: { en: 'Pending requests', fr: 'Demandes en attente', de: 'Ausstehende Anfragen' },
     noFriends: { en: 'No connections yet', fr: 'Aucune connexion', de: 'Noch keine Verbindungen' },
-    noFriendsDesc: { en: 'Connect with people you meet nearby!', fr: 'Connectez-vous avec les personnes rencontrées !', de: 'Verbinden Sie sich mit Menschen, die Sie treffen!' },
+    noFriendsDesc: { en: 'Connect with people you meet nearby!', fr: 'Connecte-toi avec les personnes rencontrées !', de: 'Verbinde dich mit Menschen, die du triffst!' },
     noPending: { en: 'No pending requests', fr: 'Aucune demande en attente', de: 'Keine ausstehenden Anfragen' },
     noPendingDesc: { en: 'Connection requests will appear here.', fr: 'Les demandes de connexion apparaîtront ici.', de: 'Verbindungsanfragen erscheinen hier.' },
     accept: { en: 'Accept', fr: 'Accepter', de: 'Annehmen' },
