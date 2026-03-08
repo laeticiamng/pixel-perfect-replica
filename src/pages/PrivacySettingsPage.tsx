@@ -8,6 +8,7 @@ import { useGdprExport } from '@/hooks/useGdprExport';
 import { useTranslation } from '@/lib/i18n';
 import { EmergencyContactsManager } from '@/components/safety';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import toast from 'react-hot-toast';
 
