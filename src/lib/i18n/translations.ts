@@ -320,6 +320,8 @@ export const translations = {
     trustedStudents: { en: 'Built for students', fr: 'Conçu pour les étudiants', de: 'Für Studenten entwickelt' },
     trustedPrivacy: { en: 'Privacy first', fr: 'Vie privée d\'abord', de: 'Datenschutz zuerst' },
     trustedMadeInFrance: { en: 'Made in France 🇫🇷', fr: 'Made in France 🇫🇷', de: 'Made in France 🇫🇷' },
+    allRightsReserved: { en: 'All rights reserved.', fr: 'Tous droits réservés.', de: 'Alle Rechte vorbehalten.' },
+    radarMe: { en: 'Me', fr: 'Moi', de: 'Ich' },
   },
 
   // Map page
