@@ -41,7 +41,7 @@ export const translations = {
   // Navigation
   nav: {
     map: { en: 'Map', fr: 'Carte', de: 'Karte' },
-    book: { en: 'Sessions', fr: 'Sessions', de: 'Sessions' },
+    book: { en: 'Meetups', fr: 'Rencontres', de: 'Treffen' },
     discover: { en: 'Discover', fr: 'Découvrir', de: 'Entdecken' },
     events: { en: 'Events', fr: 'Événements', de: 'Events' },
     profile: { en: 'Profile', fr: 'Profil', de: 'Profil' },
