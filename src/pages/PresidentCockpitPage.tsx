@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
-import { AlertTriangle, CheckCircle2, Clock3, ShieldCheck, ShieldX, Siren, TrendingUp } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Clock3, ShieldCheck, ShieldX, Siren, TrendingUp, ArrowLeft, Loader2 } from 'lucide-react';
 import { ActionValidation, HealthStatus, pendingValidationsMock, platformsMock, strategicWatchMock } from '@/data/presidentCockpitMock';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
+import { FullPageLoader } from '@/components/shared/FullPageLoader';
 
 interface ValidationHistoryItem extends ActionValidation {
   decision: 'approuvee' | 'rejetee';
