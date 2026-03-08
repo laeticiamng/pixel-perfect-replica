@@ -137,7 +137,7 @@ export default function EventDetailPage() {
 
   if (!event) {
     return (
-      <PageLayout className="pb-24 safe-bottom">
+      <PageLayout className="pb-28 safe-bottom">
         <header className="safe-top px-6 py-4">
           <button onClick={() => navigate('/events')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('eventDetail.backToEvents')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
