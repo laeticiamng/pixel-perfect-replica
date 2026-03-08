@@ -931,7 +931,7 @@ export const translations = {
     getCloser: { en: 'Get closer to the meeting place', fr: 'Rapproche-toi du lieu de rendez-vous', de: 'Komm näher zum Treffpunkt' },
     checkinSuccess: { en: 'Check-in successful!', fr: 'Check-in réussi !', de: 'Einchecken erfolgreich!' },
     checkinErrorToast: { en: 'Error during check-in', fr: 'Erreur lors du check-in', de: 'Fehler beim Einchecken' },
-    checkoutSuccess: { en: 'Session ended! See you soon', fr: 'Session terminée ! À bientôt', de: 'Session beendet! Bis bald' },
+    checkoutSuccess: { en: 'Meetup ended! See you soon', fr: 'Rencontre terminée ! À bientôt', de: 'Treffen beendet! Bis bald' },
     checkoutError: { en: 'Error during check-out', fr: 'Erreur lors du check-out', de: 'Fehler beim Auschecken' },
     cantCheckinYet: { en: 'You can\'t check in yet!', fr: 'Tu ne peux pas encore pointer !', de: 'Du kannst noch nicht einchecken!' },
     tooFar: { en: 'Too far! ({distance}m > {max}m)', fr: 'Trop loin ! ({distance}m > {max}m)', de: 'Zu weit! ({distance}m > {max}m)' },
