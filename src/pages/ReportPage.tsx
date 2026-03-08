@@ -8,6 +8,7 @@ import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { sanitizeDbText } from '@/lib/sanitize';
 import { useTranslation } from '@/lib/i18n';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
