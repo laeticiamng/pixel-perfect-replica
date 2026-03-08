@@ -78,6 +78,7 @@ export default function ProfilePage() {
     {
       title: t('profile.history'),
       items: [
+        { icon: <UserCheck className="h-5 w-5" />, label: t('connections.title'), route: '/connections' },
         { icon: <CalendarDays className="h-5 w-5" />, label: t('nav.events'), route: '/events' },
         { icon: <BarChart3 className="h-5 w-5" />, label: t('profile.myStats'), route: '/statistics' },
         { icon: <Users className="h-5 w-5" />, label: t('profile.peopleMet'), route: '/people-met' },
