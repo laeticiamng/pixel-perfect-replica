@@ -939,7 +939,7 @@ export const translations = {
 
   // Session feedback form
   sessionFeedback: {
-    title: { en: 'How was the session?', fr: 'Comment s\'est passée la session ?', de: 'Wie war die Session?' },
+    title: { en: 'How was the meetup?', fr: 'Comment s\'est passée la rencontre ?', de: 'Wie war das Treffen?' },
     participantOf: { en: 'Participant {current} of {total}', fr: 'Participant {current} sur {total}', de: 'Teilnehmer {current} von {total}' },
     rateThisPerson: { en: 'Rate this person', fr: 'Évalue cette personne', de: 'Bewerte diese Person' },
     wasOnTime: { en: 'Was on time', fr: 'Était à l\'heure', de: 'War pünktlich' },
