@@ -17,6 +17,7 @@ import { getPasswordPolicyErrorMessage, isPwnedPasswordError, isWeakPasswordErro
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from '@/lib/constants';
+import { isProviderEnabled } from '@/config/authProviders';
 import toast from 'react-hot-toast';
 
 type Step = 1 | 2 | 3;
