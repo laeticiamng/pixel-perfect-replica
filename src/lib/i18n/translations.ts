@@ -315,7 +315,7 @@ export const translations = {
     pricingUnitDesc: { en: 'Pay only when you need it', fr: 'Paie uniquement quand tu en as besoin', de: 'Zahle nur, wenn du es brauchst' },
     pricingUnitF1: { en: 'No commitment', fr: 'Sans engagement', de: 'Ohne Bindung' },
     pricingUnitF2: { en: 'Buy 1 to 10 meetups', fr: 'Achète 1 à 10 rencontres', de: 'Kaufe 1 bis 10 Treffen' },
-    pricingUnitCTA: { en: 'Buy meetups', fr: 'Acheter des rencontres', de: 'Treffen kaufen' },
+    pricingUnitCTA: { en: 'Add meetups', fr: 'Ajouter des créneaux', de: 'Treffen hinzufügen' },
     testimonialsTitle: { en: 'What users say', fr: 'Ce que disent les utilisateurs', de: 'Was Nutzer sagen' },
     trustedStudents: { en: 'Built for students', fr: 'Conçu pour les étudiants', de: 'Für Studenten entwickelt' },
     trustedPrivacy: { en: 'Privacy first', fr: 'Vie privée d\'abord', de: 'Datenschutz zuerst' },
