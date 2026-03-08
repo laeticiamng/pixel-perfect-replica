@@ -87,9 +87,15 @@ export function SocialProofBar() {
               <div className="flex flex-col items-center gap-1 min-w-0">
                 <div className="flex items-center gap-1 sm:gap-2">
                   <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-coral shrink-0" />
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                  {allZero ? (
+                    <span className="text-sm sm:text-base font-semibold text-foreground">{stat.label}</span>
+                  ) : (
+                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                  )}
                 </div>
-                <span className="text-[10px] sm:text-xs text-muted-foreground font-medium text-center leading-tight">{stat.label}</span>
+                {!allZero && (
+                  <span className="text-[10px] sm:text-xs text-muted-foreground font-medium text-center leading-tight">{stat.label}</span>
+                )}
               </div>
             </div>
           ))}

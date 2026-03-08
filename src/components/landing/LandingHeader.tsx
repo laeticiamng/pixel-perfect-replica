@@ -28,6 +28,9 @@ export function LandingHeader() {
           <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 hidden md:inline-flex">
             <Link to="/premium">{t('premium.title')}</Link>
           </Button>
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 hidden md:inline-flex">
+            <Link to="/contact">{t('landing.contact')}</Link>
+          </Button>
           <Button asChild variant="ghost" size="sm" className="text-coral hover:text-coral-dark hover:bg-coral/10 gap-1.5 px-2 sm:px-3">
             <Link to="/install">
               <Download className="h-4 w-4" />
