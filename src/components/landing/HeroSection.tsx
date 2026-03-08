@@ -18,7 +18,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
       style={{ opacity: heroOpacity, scale: heroScale }}
       className="min-h-screen flex flex-col items-center justify-center px-6 relative z-10 pt-16"
     >
-      {/* Announcement badge - 21st.dev style */}
+      {/* Tagline badge */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -29,9 +29,8 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-coral/10 via-transparent to-coral/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <Sparkles className="h-3.5 w-3.5 text-coral relative z-10" />
           <span className="text-xs sm:text-sm font-medium text-muted-foreground relative z-10">
-            {t('landing.notADatingApp')}
+            {t('landing.heroTagline')}
           </span>
-          <AlertTriangle className="h-3.5 w-3.5 text-coral/60 relative z-10" />
         </div>
       </motion.div>
 
