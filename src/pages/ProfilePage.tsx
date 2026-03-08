@@ -80,8 +80,10 @@ export default function ProfilePage() {
       items: [
         { icon: <UserCheck className="h-5 w-5" />, label: t('connections.title'), route: '/connections' },
         { icon: <CalendarDays className="h-5 w-5" />, label: t('nav.events'), route: '/events' },
+        { icon: <Trophy className="h-5 w-5" />, label: t('gamification.achievements'), route: '/achievements' },
         { icon: <BarChart3 className="h-5 w-5" />, label: t('profile.myStats'), route: '/statistics' },
         { icon: <Users className="h-5 w-5" />, label: t('profile.peopleMet'), route: '/people-met' },
+        { icon: <Download className="h-5 w-5" />, label: t('dataExport.title'), route: '/data-export' },
       ],
     },
     {
