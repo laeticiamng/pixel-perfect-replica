@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, MapPin, Check, Loader2, Eye, EyeOff, Sparkles, Mail, RefreshCw, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -395,9 +395,9 @@ export default function OnboardingPage() {
                       />
                       <span className="text-sm text-muted-foreground leading-snug">
                         {t('auth.acceptTermsPrefix')}{' '}
-                        <a href="/terms" target="_blank" className="text-coral hover:underline">{t('auth.termsLink')}</a>
+                        <Link to="/terms" target="_blank" className="text-coral hover:underline">{t('auth.termsLink')}</Link>
                         {' '}{t('auth.and')}{' '}
-                        <a href="/privacy" target="_blank" className="text-coral hover:underline">{t('auth.privacyLink')}</a>
+                        <Link to="/privacy" target="_blank" className="text-coral hover:underline">{t('auth.privacyLink')}</Link>
                       </span>
                     </label>
                     {errors.terms && (

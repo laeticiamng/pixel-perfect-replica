@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap, Gift, Copy, Share2, CalendarDays, Settings, UserCheck } from 'lucide-react';
+import { User, Bell, Lock, BarChart3, Users, HelpCircle, MessageSquare, AlertTriangle, LogOut, ChevronRight, Crown, GraduationCap, Gift, Copy, Share2, CalendarDays, Settings, UserCheck, Trophy, Download } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -80,8 +80,10 @@ export default function ProfilePage() {
       items: [
         { icon: <UserCheck className="h-5 w-5" />, label: t('connections.title'), route: '/connections' },
         { icon: <CalendarDays className="h-5 w-5" />, label: t('nav.events'), route: '/events' },
+        { icon: <Trophy className="h-5 w-5" />, label: t('gamification.achievements'), route: '/achievements' },
         { icon: <BarChart3 className="h-5 w-5" />, label: t('profile.myStats'), route: '/statistics' },
         { icon: <Users className="h-5 w-5" />, label: t('profile.peopleMet'), route: '/people-met' },
+        { icon: <Download className="h-5 w-5" />, label: t('dataExport.title'), route: '/data-export' },
       ],
     },
     {
