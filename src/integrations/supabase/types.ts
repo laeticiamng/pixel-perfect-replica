@@ -472,6 +472,7 @@ export type Database = {
           created_at: string
           description: string | null
           ends_at: string
+          event_source: string
           id: string
           is_active: boolean
           latitude: number
@@ -481,6 +482,8 @@ export type Database = {
           name: string
           organizer_id: string
           qr_code_secret: string
+          source_label: string | null
+          source_url: string | null
           starts_at: string
           updated_at: string
         }
@@ -488,6 +491,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           ends_at: string
+          event_source?: string
           id?: string
           is_active?: boolean
           latitude: number
@@ -497,6 +501,8 @@ export type Database = {
           name: string
           organizer_id: string
           qr_code_secret?: string
+          source_label?: string | null
+          source_url?: string | null
           starts_at: string
           updated_at?: string
         }
@@ -504,6 +510,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           ends_at?: string
+          event_source?: string
           id?: string
           is_active?: boolean
           latitude?: number
@@ -513,6 +520,8 @@ export type Database = {
           name?: string
           organizer_id?: string
           qr_code_secret?: string
+          source_label?: string | null
+          source_url?: string | null
           starts_at?: string
           updated_at?: string
         }
@@ -1867,6 +1876,16 @@ export type Database = {
           date: string
         }[]
       }
+      get_event_attendees_public: {
+        Args: { p_event_id: string; p_limit?: number }
+        Returns: {
+          avatar_url: string
+          checked_in: boolean
+          first_name: string
+          joined_at: string
+          user_id: string
+        }[]
+      }
       get_event_for_participant: {
         Args: { p_event_id: string }
         Returns: {
@@ -1925,6 +1944,7 @@ export type Database = {
           created_at: string
           description: string
           ends_at: string
+          event_source: string
           id: string
           is_active: boolean
           latitude: number
@@ -1933,7 +1953,20 @@ export type Database = {
           max_participants: number
           name: string
           organizer_id: string
+          participant_count: number
+          source_label: string
+          source_url: string
           starts_at: string
+        }[]
+      }
+      get_institutional_metrics: {
+        Args: never
+        Returns: {
+          avg_integration_days: number
+          international_local_ratio: number
+          isolated_pct: number
+          students_total: number
+          university: string
         }[]
       }
       get_interaction_profile: {
