@@ -16,6 +16,10 @@ export interface Event {
   max_participants: number;
   is_active: boolean;
   created_at: string;
+  event_source?: 'community' | 'official_university' | string;
+  source_url?: string | null;
+  source_label?: string | null;
+  participant_count?: number;
 }
 
 interface EventParticipant {
@@ -110,6 +114,7 @@ export function useEvents() {
         starts_at: eventData.starts_at.toISOString(),
         ends_at: eventData.ends_at.toISOString(),
         max_participants: eventData.max_participants || 100,
+        event_source: 'community',
       })
       .select()
       .single();
