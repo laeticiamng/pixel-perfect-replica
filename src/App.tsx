@@ -24,6 +24,7 @@ const PresidentCockpitPage = lazy(() => import('./pages/PresidentCockpitPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const PostSignupOnboardingPage = lazy(() => import('./pages/PostSignupOnboardingPage'));
+const NewcomerOnboardingPage = lazy(() => import('./pages/NewcomerOnboardingPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const ChangePasswordPage = lazy(() => import('./pages/ChangePasswordPage'));
@@ -126,6 +127,7 @@ function AnimatedRoutes() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/welcome" element={<PostSignupOnboardingPage />} />
+            <Route path="/newcomer" element={<NewcomerOnboardingPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/terms" element={<TermsPage />} />

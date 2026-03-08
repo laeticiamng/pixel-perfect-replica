@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, Loader2, X } from 'lucide-react';
+import { Camera, Loader2, X, Users, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
@@ -33,6 +34,8 @@ export default function EditProfilePage() {
   const [birthYear, setBirthYear] = useState<string>('');
   const [favoriteActivities, setFavoriteActivities] = useState<ActivityType[]>([]);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
+  const [isCityGuide, setIsCityGuide] = useState(false);
+  const [isNewcomer, setIsNewcomer] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -42,7 +45,7 @@ export default function EditProfilePage() {
       if (!user) return;
       const { data } = await supabase
         .from('profiles')
-        .select('bio, favorite_activities, birth_year')
+        .select('bio, favorite_activities, birth_year, is_city_guide, is_newcomer')
         .eq('id', user.id)
         .single();
       
@@ -52,6 +55,8 @@ export default function EditProfilePage() {
           setFavoriteActivities(data.favorite_activities as ActivityType[]);
         }
         if (data.birth_year) setBirthYear(String(data.birth_year));
+        setIsCityGuide(data.is_city_guide ?? false);
+        setIsNewcomer(data.is_newcomer ?? false);
       }
     };
     fetchProfileData();
@@ -168,6 +173,7 @@ export default function EditProfilePage() {
         bio: sanitizedBio || null,
         birth_year: birthYear ? parseInt(birthYear, 10) : null,
         favorite_activities: favoriteActivities,
+        is_city_guide: isCityGuide,
       })
       .eq('id', user?.id);
     
@@ -307,6 +313,35 @@ export default function EditProfilePage() {
               className="h-14 bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl"
             />
             <p className="text-xs text-muted-foreground">{t('editProfile.birthYearPrivacy')}</p>
+          </div>
+
+          {/* Erasmus section */}
+          <div className="space-y-3 p-4 rounded-xl bg-muted/50 border border-border">
+            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Plane className="h-4 w-4 text-coral" />
+              Erasmus+
+            </h4>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Users className="h-5 w-5 text-signal-green" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">{t('erasmus.becomeGuide')}</p>
+                  <p className="text-xs text-muted-foreground">{t('erasmus.becomeGuideDesc')}</p>
+                </div>
+              </div>
+              <Switch checked={isCityGuide} onCheckedChange={setIsCityGuide} />
+            </div>
+
+            {isNewcomer && (
+              <Button
+                variant="outline"
+                onClick={() => navigate('/newcomer')}
+                className="w-full mt-2 rounded-xl"
+              >
+                📋 {t('erasmus.firstWeekChecklist')}
+              </Button>
+            )}
           </div>
 
           <div className="space-y-2">
