@@ -1,4 +1,5 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
@@ -10,6 +11,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { useTheme } from "@/hooks";
 import { AnalyticsProvider } from "@/hooks/useAnalytics";
 import { FullPageLoader } from "@/components/shared/FullPageLoader";
+import { useTranslation } from "@/lib/i18n";
 
 // Lazy-loaded pages — each page is code-split into its own chunk
 const LandingPage = lazy(() => import('./pages/LandingPage'));
