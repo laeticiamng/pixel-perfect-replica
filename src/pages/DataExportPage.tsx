@@ -4,6 +4,7 @@ import { ArrowLeft, Download, FileJson, Loader2, CheckCircle, AlertCircle } from
 import { useGdprExport } from '@/hooks/useGdprExport';
 import { useTranslation } from '@/lib/i18n';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
