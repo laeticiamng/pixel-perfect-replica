@@ -289,7 +289,7 @@ export default function EditProfilePage() {
                   setBio(e.target.value);
                 }
               }}
-              className="min-h-[100px] bg-deep-blue-light border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
+              className="min-h-[100px] bg-muted border-border text-foreground placeholder:text-muted-foreground rounded-xl resize-none"
             />
           </div>
 
