@@ -90,7 +90,14 @@ export default function SettingsPage() {
       <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto w-full">
-        <header className="safe-top px-6 py-6">
+        <header className="safe-top px-6 py-6 flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-lg hover:bg-muted transition-colors"
+            aria-label={t('back')}
+          >
+            <ArrowLeft className="h-6 w-6 text-foreground" />
+          </button>
           <h1 className="text-2xl font-bold text-foreground">{t('settings.title')}</h1>
         </header>
 
