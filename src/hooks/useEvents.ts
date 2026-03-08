@@ -114,6 +114,7 @@ export function useEvents() {
         starts_at: eventData.starts_at.toISOString(),
         ends_at: eventData.ends_at.toISOString(),
         max_participants: eventData.max_participants || 100,
+        event_source: 'community',
       })
       .select()
       .single();
