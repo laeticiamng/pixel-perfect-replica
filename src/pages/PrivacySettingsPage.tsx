@@ -25,7 +25,8 @@ export default function PrivacySettingsPage() {
   };
 
   const handleGhostMode = async () => {
-    toast(t('privacySettings.ghostModePremium'));
+    toast(t('privacySettings.ghostModePremium'), { icon: '⭐' });
+    navigate('/premium');
   };
 
   const handleDistanceChange = async (value: number) => {
