@@ -251,7 +251,7 @@ export default function NewcomerOnboardingPage() {
             >
               <div className="text-center mb-6">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3">
-                  <Users className="h-8 w-8 text-amber-500" />
+                  <Users className="h-8 w-8 text-primary" />
                 </div>
                 <h2 className="text-xl font-bold text-foreground">{t('erasmus.meetYourGuides')}</h2>
                 <p className="text-sm text-muted-foreground mt-1">
