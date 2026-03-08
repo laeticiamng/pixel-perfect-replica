@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { MiniChat } from '@/components/social/MiniChat';
 
 export default function ConversationsPage() {
+  const navigate = useNavigate();
   const { conversations, isLoading } = useConversations();
   const { t, locale } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
