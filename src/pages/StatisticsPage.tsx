@@ -95,7 +95,7 @@ export default function StatisticsPage() {
 
   if (isLoading) {
     return (
-      <PageLayout className="pb-8 safe-bottom">
+      <PageLayout className="pb-28 safe-bottom">
         <header className="safe-top px-6 py-4 flex items-center gap-4">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -106,6 +106,7 @@ export default function StatisticsPage() {
           <div className="grid grid-cols-2 gap-4">{[...Array(4)].map((_, i) => <StatCardSkeleton key={i} />)}</div>
           <ChartSkeleton /><ChartSkeleton />
         </div>
+        <BottomNav />
       </PageLayout>
     );
   }
