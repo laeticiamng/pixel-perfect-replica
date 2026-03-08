@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Flame, Trophy, Medal, Crown, Star, Zap, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { LoadingSkeleton } from '@/components/shared/LoadingSkeleton';
 import { useGamification, ACHIEVEMENTS } from '@/hooks/useGamification';
@@ -282,17 +283,18 @@ export default function GamificationPage() {
 
   if (isLoading) {
     return (
-      <PageLayout>
+      <PageLayout className="pb-28">
         <div className="max-w-2xl mx-auto p-4 space-y-6">
           <PageHeader title={t('gamification.title')} subtitle={t('gamification.subtitle')} showBack />
           <LoadingSkeleton variant="card" count={3} />
         </div>
+        <BottomNav />
       </PageLayout>
     );
   }
 
   return (
-    <PageLayout>
+    <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto p-4 space-y-6">
         <PageHeader
           title={t('gamification.title')}
@@ -333,6 +335,7 @@ export default function GamificationPage() {
           </TabsContent>
         </Tabs>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

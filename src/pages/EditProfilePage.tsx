@@ -10,6 +10,7 @@ import { sanitizeDbText, stripHtml } from '@/lib/sanitize';
 import { firstNameSchema, universitySchema } from '@/lib/validation';
 import { logger } from '@/lib/logger';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared';
 import { FavoriteActivitiesSelector } from '@/components/social';
 import { PublicProfilePreview } from '@/components/profile';
@@ -182,7 +183,7 @@ export default function EditProfilePage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('editProfile.title')} backTo="/profile" />
 
       <div className="px-6 py-8 animate-fade-in">
@@ -334,6 +335,7 @@ export default function EditProfilePage() {
           </Button>
         </div>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }

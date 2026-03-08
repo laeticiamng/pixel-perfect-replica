@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PageLayout } from '@/components/PageLayout';
+import { BottomNav } from '@/components/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/hooks/useSubscription';
 import { logger } from '@/lib/logger';
@@ -178,7 +179,7 @@ export default function PremiumPage() {
   // Premium user view
   if (isPremium) {
     return (
-      <PageLayout className="pb-8 safe-bottom">
+      <PageLayout className="pb-28 safe-bottom">
         <header className="safe-top px-6 py-4 flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -220,6 +221,7 @@ export default function PremiumPage() {
             )}
           </Button>
         </div>
+        <BottomNav />
       </PageLayout>
     );
   }
@@ -240,7 +242,7 @@ export default function PremiumPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <Helmet>
         <title>{locale === 'fr' ? 'Tarifs & Premium — NEARVITY' : 'Pricing & Premium — NEARVITY'}</title>
         <meta name="description" content={locale === 'fr'
@@ -471,6 +473,7 @@ export default function PremiumPage() {
           </Link>.
         </p>
       </motion.div>
+      <BottomNav />
     </PageLayout>
   );
 }

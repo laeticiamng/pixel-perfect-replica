@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BarChart3, TrendingUp, Clock, Users, Star, Calendar, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { BottomNav } from '@/components/BottomNav';
 import { useAuth } from '@/contexts/AuthContext';
 import { useInteractions } from '@/hooks/useInteractions';
 import { useTranslation } from '@/lib/i18n';
@@ -94,7 +95,7 @@ export default function StatisticsPage() {
 
   if (isLoading) {
     return (
-      <PageLayout className="pb-8 safe-bottom">
+      <PageLayout className="pb-28 safe-bottom">
         <header className="safe-top px-6 py-4 flex items-center gap-4">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -105,6 +106,7 @@ export default function StatisticsPage() {
           <div className="grid grid-cols-2 gap-4">{[...Array(4)].map((_, i) => <StatCardSkeleton key={i} />)}</div>
           <ChartSkeleton /><ChartSkeleton />
         </div>
+        <BottomNav />
       </PageLayout>
     );
   }
@@ -125,7 +127,7 @@ export default function StatisticsPage() {
   };
 
   return (
-    <PageLayout className="pb-8 safe-bottom">
+    <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
@@ -277,6 +279,7 @@ export default function StatisticsPage() {
           <p className="text-xs text-muted-foreground mt-4 text-center">{t('statistics.basedOnLast')}</p>
         </div>
       </div>
+      <BottomNav />
     </PageLayout>
   );
 }
