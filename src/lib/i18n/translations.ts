@@ -1015,14 +1015,14 @@ export const translations = {
 
   // Session history page
   sessionHistory: {
-    title: { en: 'Session history', fr: 'Historique des sessions', de: 'Session-Verlauf' },
+    title: { en: 'Meetup history', fr: 'Historique des rencontres', de: 'Treffen-Verlauf' },
     all: { en: 'All', fr: 'Toutes', de: 'Alle' },
     created: { en: 'Created', fr: 'Créées', de: 'Erstellt' },
     joined: { en: 'Joined', fr: 'Rejointes', de: 'Beigetreten' },
     total: { en: 'Total', fr: 'Total', de: 'Gesamt' },
     completed: { en: 'Completed', fr: 'Complétées', de: 'Abgeschlossen' },
-    noHistory: { en: 'No past sessions', fr: 'Aucune session passée', de: 'Keine vergangenen Sessions' },
-    noHistoryDesc: { en: 'Your session history will appear here', fr: 'Ton historique de sessions apparaîtra ici', de: 'Dein Session-Verlauf erscheint hier' },
+    noHistory: { en: 'No past meetups', fr: 'Aucune rencontre passée', de: 'Keine vergangenen Treffen' },
+    noHistoryDesc: { en: 'Your meetup history will appear here', fr: 'Ton historique de rencontres apparaîtra ici', de: 'Dein Treffen-Verlauf erscheint hier' },
     creator: { en: 'Creator', fr: 'Créateur', de: 'Ersteller' },
     statusCompleted: { en: 'Completed', fr: 'Complétée', de: 'Abgeschlossen' },
     statusCancelled: { en: 'Cancelled', fr: 'Annulée', de: 'Abgesagt' },
