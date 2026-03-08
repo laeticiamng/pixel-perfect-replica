@@ -266,6 +266,14 @@ export default function MapPage() {
                     <span className="text-muted-foreground">{t(currentActivityData?.labelKey || 'activities.other')}</span>
                   </button>
                 )}
+                {/* Notification bell */}
+                <button
+                  onClick={() => navigate('/notifications')}
+                  aria-label={t('nav.notifications')}
+                  className="relative p-2.5 rounded-xl bg-deep-blue-light/80 text-muted-foreground hover:text-foreground hover:bg-deep-blue-light transition-all"
+                >
+                  <Bell className="h-4 w-4" />
+                </button>
                 
                 <button
                   onClick={handleManualRefresh}
