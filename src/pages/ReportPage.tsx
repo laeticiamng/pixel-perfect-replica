@@ -70,6 +70,8 @@ export default function ReportPage() {
   };
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('report.title')} backTo="/profile" />
 
