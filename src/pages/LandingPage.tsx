@@ -228,6 +228,7 @@ export default function LandingPage() {
         <FeaturesSection />
         <ComparisonWrapper />
         <UseCasesSection />
+        <ErasmusFeaturesSection />
         <PricingPreviewSection />
         <LandingTestimonialsSection />
         <GuaranteeSection />
