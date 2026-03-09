@@ -14,6 +14,7 @@ import {
   EventCategorySelector, EventCategoryBadge, type EventCategory,
   EventFavoriteButton
 } from '@/components/events';
+import { EventAttendeesPreview } from '@/components/events/EventAttendeesPreview';
 import { useEvents, Event } from '@/hooks/useEvents';
 import { useEventFavorites } from '@/hooks/useEventFavorites';
 import { useLocationStore } from '@/stores/locationStore';
