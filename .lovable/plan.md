@@ -1,100 +1,120 @@
 
 
-# AUDIT TECHNIQUE COMPLET — NEARVITY v2.0.0 (Audit #2)
+# Audit NEARVITY -- Ce qui manque pour être unique et révolutionnaire
 
-## 1. RÉSUMÉ EXÉCUTIF
+## Etat actuel : ce qui a été implémenté
 
-**État global** : La plateforme a significativement progressé depuis l'audit #1. Les P0 critiques (InstitutionalDashboard, notifications cron auth, EventAttendeesPreview RLS) ont été corrigés. L'architecture reste solide. Cependant, de nouveaux constats P0/P1 persistent ou ont été introduits.
-
-**Niveau de préparation** : 17.5/20 — Bon. Corrections restantes ciblées et réalisables.
-
-**Verdict go-live** : **NON EN L'ÉTAT** — 2 P0 et 4 P1 restent.
-
-### Top P0
-1. **System EF : `cleanup-expired` et `cleanup_rate_limits` sans AUCUNE auth** — Contrairement à `check-shadow-bans` (admin requis), ces 2 actions sont exécutables par n'importe qui publiquement (lignes 852-865 de system/index.ts). L'utilisation du service role client rend l'appel destructif.
-2. **i18n : clé `wellbeing.going` inexistante** — `EventAttendeesPreview.tsx` utilise `t('wellbeing.going')` (ligne 66-67). Cette clé n'existe dans aucune traduction. Le fallback `'going'` fonctionne mais en anglais uniquement, cassant le FR/DE.
-
-### Top P1
-1. **AdminDashboardPage : pas de guard ProtectedRoute + admin** — Utilise toujours un `useEffect` redirect (lignes 87-106) au lieu de `<Navigate>`. Flash de contenu admin possible (rendu complet de la page avant redirect, visible ligne 282-296 : fallback UI shield affiché mais le composant entier est monté et les hooks/fetches sont exécutés).
-2. **EventAttendeesPreview : double RPC call (N+1)** — Pour chaque event card, 2 appels RPC sont faits (lignes 26 + 37). Sur 20 events = 40 requêtes.
-3. **PresidentCockpitPage : données 100% mock sans indication visible** — Le badge "DEMO" a été supprimé dans la dernière édition. La page affiche des données non réelles sans avertissement.
-4. **Notifications EF health endpoint : expose auth_required map** — `auth_required` inclut `"send-session-reminders": "none"` (ligne 443-447). Information utile à un attaquant pour savoir quelles actions ne nécessitent pas d'auth.
+Les éléments suivants sont opérationnels :
+- Système de signaux (green/yellow/red) avec géolocalisation temps réel
+- Sessions binôme avec quota, Stripe, feedback, fiabilité
+- Événements avec QR check-in, favoris, catégories
+- Messagerie complète (conversations, unread badges, Realtime)
+- Page Connexions/Amis avec chat intégré
+- Centre de notifications avec badges temps réel
+- Gamification (streaks, achievements, leaderboard campus)
+- Événements sur la carte avec indicateur "Happening Now"
+- i18n (EN/FR/DE), dark/light, PWA, RLS, rate limiting, shadow banning
+- Referral, admin dashboard, reliability scoring, command palette
 
 ---
 
-## 2. TABLEAU D'AUDIT
+## Lacunes critiques restantes
 
-| Priorité | Domaine | Page / Fonction | Problème | Risque | Recommandation | Faisable ? |
-|---|---|---|---|---|---|---|
-| P0 | Security | system EF: cleanup-expired, cleanup_rate_limits | Aucune auth — exécutable publiquement | Suppression de données par attaquant externe | Ajouter vérification anon/SRK comme dans notifications EF | Oui |
-| P0 | i18n | EventAttendeesPreview | Clé `wellbeing.going` inexistante en FR/DE/EN | Texte anglais hardcodé affiché en FR/DE | Créer clé `events.going` dans translations | Oui |
-| P1 | Auth | AdminDashboardPage | useEffect redirect au lieu de Navigate guard | Flash de contenu admin, hooks exécutés | Remplacer par pattern `useAdminCheck` + `<Navigate>` | Oui |
-| P1 | Perf | EventAttendeesPreview | 2 RPC calls par event card | Cascade de requêtes | Fusionner en 1 RPC avec count | Oui |
-| P1 | UX | PresidentCockpitPage | Badge "DEMO" supprimé, données mock sans avertissement | Utilisateur croit aux données | Réajouter badge ou bannière | Oui |
-| P1 | Security | notifications EF health | Expose la carte `auth_required` avec actions "none" | Information leaking | Retirer la carte auth_required du health check | Oui |
-| P2 | Security | system EF health | Même problème — expose la carte auth_required | Information leaking | Retirer | Oui |
-| P2 | Accessibilité | InclusionRadarSection | Vérifier que les aria-labels ont bien été ajoutés | Conformité a11y | Confirmer | Oui |
-| P2 | i18n | AdminDashboardPage | Onglets "Events", "Pages", "Scraper" non traduits (lignes 422-427 hardcodés EN) | Incohérence i18n | Traduire | Oui |
-| P3 | Perf | AdminDashboardPage | Fetch de TOUS les analytics_events pour compter côté client (lignes 182-256) | N queries + client-side aggregation | Utiliser des RPCs d'agrégation | Non prioritaire |
+### 1. Pas de découverte d'utilisateurs hors proximité
+Les utilisateurs ne peuvent trouver d'autres personnes que via le radar live. Aucun annuaire, aucune recherche par activité/université/intérêts. La plateforme est vide quand personne n'a son signal activé.
 
----
+**Manquant :** Page de découverte / feed, section "gens près de ton campus", matching par activité favorite.
 
-## 3. DÉTAIL PAR CATÉGORIE
+### 2. Pas de formation de groupe / meetup spontané
+La plateforme connecte uniquement en 1-to-1. Si 4 personnes étudient à proximité, impossible de "former un groupe".
 
-### Security
-- **Confirmé OK** : notifications EF cron actions (send-session-reminders, send-reengagement) maintenant protégées par vérification anon/SRK.
-- **Cassé** : system EF `cleanup-expired` (ligne 857) et `cleanup_rate_limits` (ligne 863) passent directement au handler SANS aucune auth. Le commentaire dit "Can be called by cron (no auth) or by admin" mais aucune vérification n'est faite. Quiconque peut POST `{"action":"cleanup-expired"}` et déclencher la suppression de signaux, messages, analytics, etc.
-- **Douteux** : health endpoints exposent la carte `auth_required` révélant quelles actions sont non protégées.
+**Manquant :** Signal de groupe ("je cherche 3+ personnes"), chat de groupe, carte d'activité de groupe.
 
-### Auth & Autorisations
-- **Confirmé OK** : ProtectedRoute sur /newcomer, /institutional-dashboard. useAdminCheck sur PresidentCockpitPage et InstitutionalDashboardPage.
-- **Cassé** : AdminDashboardPage utilise toujours `useEffect` + `navigate('/')` (ligne 90). Non atomique — le composant se monte, les hooks `useSystemStats(isAdmin)` et `loadAnalytics` s'exécutent brièvement avec `isAdmin=false` (via l'état initial), puis redirect.
+### 3. Pas de suggestions intelligentes de timing
+L'IA fait des recommandations basiques. Aucune analyse "Ton campus est le plus actif le mardi à midi" ni "3 personnes étudient ici habituellement à 14h".
 
-### Frontend & Rendu
-- **Confirmé OK** : InstitutionalDashboardPage créée et fonctionnelle avec états loading/error/empty. NotFound a Helmet avec noindex. Toutes les pages protégées ont Helmet noindex.
-- **Douteux** : PresidentCockpitPage sans badge "DEMO" — les données EMOTIONSCARE sont présentées comme réelles.
+**Manquant :** Heatmap campus par horaire, suggestion "meilleur moment pour activer", patterns d'activité historiques.
 
-### i18n
-- **Cassé** : `t('wellbeing.going')` dans EventAttendeesPreview n'existe dans aucune traduction. Le composant affichera toujours "going" en anglais quelle que soit la langue active.
-- **Douteux** : AdminDashboardPage a des onglets hardcodés en anglais ("Events", "Pages", "Scraper").
+### 4. Pas de hub campus / communauté
+La plateforme est générique -- pas de contenu spécifique par campus, pas de tableau d'affichage, pas de feed communautaire.
 
-### Performance
-- EventAttendeesPreview fait 2 appels RPC séquentiels par card (un pour les 3 premiers, un pour le count total avec limit 200).
-- AdminDashboardPage fetch toutes les lignes d'analytics_events pour agrégation client-side — potentiellement des milliers de rows.
+**Manquant :** Page campus, feed communautaire, événements campus, outils admin université.
 
 ---
 
-## 4. PLAN D'ACTION
+## Lacunes UX
 
-### P0 Immédiat
-1. **Sécuriser system EF** : ajouter vérification anon/SRK sur `cleanup-expired` et `cleanup_rate_limits` (même pattern que notifications EF).
-2. **Corriger i18n EventAttendeesPreview** : ajouter clé `events.going` dans EN/FR/DE et remplacer `t('wellbeing.going')` par `t('events.going')`.
+### 5. Pas de tutoriel onboarding pour les fonctionnalités clés
+`PostSignupOnboardingPage` existe mais les fonctionnalités de la carte (activation signal, radar vs map, icebreakers) n'ont aucun guide. Un nouvel utilisateur voit une carte vide sans aide.
 
-### P1 Rapide
-3. **Fix AdminDashboardPage** : remplacer le pattern useEffect/navigate par `useAdminCheck` + `if (!isAdmin) return <Navigate to="/" replace />` avant le render.
-4. **Réajouter badge DEMO** sur PresidentCockpitPage.
-5. **Retirer auth_required** des health endpoints de notifications et system EF.
-6. **Optimiser EventAttendeesPreview** : un seul RPC call.
+**Manquant :** Walkthrough interactif (tooltips/coach marks) à la première visite de la carte.
 
-### P2
-7. Traduire onglets AdminDashboardPage.
+### 6. Pas de feedback haptique/audio pour les actions clés
+Activation du signal, réception d'une demande de connexion, détection d'un utilisateur proche -- rien de tout cela ne déclenche de vibration (malgré le setting `proximity_vibration`) ni de son.
+
+**Manquant :** Intégration API Vibration, signaux audio pour les alertes de proximité.
+
+### 7. Les empty states manquent d'engagement
+`EmptyRadarState` a un radar animé et un CTA d'invitation, ce qui est bien. Mais il manque du social proof, des suggestions d'activités, ou de la gamification "sois le premier".
+
+**Manquant :** Stats communautaires dans l'empty state, suggestion de sessions binôme programmées, countdown "prochaine activité à X".
+
+### 8. Pas de badges de vérification visibles sur la carte
+Les badges de vérification (étudiant vérifié) existent en DB mais ne sont affichés ni sur les marqueurs de carte ni dans `UserPopupCard`.
+
+**Manquant :** Icônes de badge sur les marqueurs, indicateurs de confiance dans UserPopupCard.
 
 ---
 
-## 5. IMPLÉMENTATION IMMÉDIATE
+## Différenciateurs manquants
 
-Corrections à implémenter :
+### 9. Pas de notes vocales / intégration audio
+`VoiceIcebreakerButton` génère des icebreakers audio. Mais pas de fonctionnalité de note vocale dans le chat, pas de message audio rapide.
 
-1. **system EF** : ajouter vérification cron token sur `cleanup-expired`, `cleanup_expired` et `cleanup_rate_limits` (comme le pattern de notifications EF lignes 632-642).
-2. **EventAttendeesPreview.tsx** : remplacer `t('wellbeing.going')` par `t('events.going')`.
-3. **translations.ts** : ajouter clé `events.going` en EN ("going"), FR ("inscrit(s)"), DE ("dabei").
-4. **AdminDashboardPage.tsx** : remplacer le pattern useEffect par useAdminCheck + Navigate guard.
-5. **PresidentCockpitPage.tsx** : réajouter un badge "Données de démonstration" visible.
-6. **notifications EF + system EF** : retirer `auth_required` des réponses health.
-7. **EventAttendeesPreview** : fusionner les 2 appels RPC en 1 seul (utiliser le count du premier appel ou passer un limit suffisant).
+**Manquant :** Notes vocales dans le chat, playback d'icebreaker audio, feature walkie-talkie de proximité.
 
-### Non implémenté (nécessite décision) :
-- Remplacement des données mock PresidentCockpitPage par données réelles (décision produit)
-- Optimisation des agrégations AdminDashboardPage (refactoring backend)
-- CORS restriction (configuration Cloud)
+### 10. Pas de mode offline robuste
+La PWA est configurée mais pas de cache de données offline, pas de service worker pour background sync, pas d'indicateur offline au-delà de `OfflineBanner`.
+
+**Manquant :** Architecture offline-first avec sessions en cache, actions en queue, sync en background.
+
+---
+
+## Dette technique
+
+### 11. `(supabase as any)` dans useConnections
+Le hook `useConnections` utilise `(supabase as any)` partout (lignes 33, 50, 85, 113, 139). La table `connections` n'est probablement pas dans les types générés. Cela casse la type-safety et masque les erreurs.
+
+### 12. Mock data toujours utilisée dans signalStore
+`src/stores/signalStore.ts` utilise `generateMockUsers` (ligne 55) pour les utilisateurs proches. Le vrai hook `useActiveSignal` existe et fonctionne, mais le store référence encore les mocks. Ce store semble d'ailleurs inutilisé vu que `useMapPageLogic` utilise directement `useActiveSignal`.
+
+### 13. Pas de couverture E2E pour les flux critiques
+Les fichiers de test existent mais sont principalement unitaires. Pas de vrai test E2E pour : signup → activer signal → voir utilisateur proche → envoyer icebreaker → chat.
+
+---
+
+## Ordre de priorité d'implémentation
+
+```text
+Priorité 1 (Différenciation) :
+  [1] Découverte d'utilisateurs hors proximité
+  [2] Formation de groupe / meetup spontané
+  [5] Tutoriel onboarding interactif
+
+Priorité 2 (Engagement) :
+  [3] Suggestions intelligentes de timing
+  [7] Empty states enrichis (social proof, suggestions)
+  [8] Badges de vérification sur la carte
+
+Priorité 3 (Innovation) :
+  [9] Notes vocales dans le chat
+  [4] Hub campus / communauté
+  [6] Feedback haptique/audio
+
+Priorité 4 (Qualité) :
+  [11] Supprimer les `as any` dans useConnections
+  [12] Supprimer le signalStore mock inutilisé
+  [10] Robustesse offline
+  [13] Tests E2E
+```
 

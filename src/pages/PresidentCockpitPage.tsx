@@ -95,6 +95,9 @@ export default function PresidentCockpitPage() {
         <section className="safe-top px-4 md:px-6 py-4 space-y-2">
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">President Cockpit HQ</h1>
+            <Badge variant="outline" className="bg-signal-yellow/10 text-signal-yellow border-signal-yellow/30 text-xs">
+              ⚠️ Données de démonstration
+            </Badge>
           </div>
           <p className="text-muted-foreground text-sm md:text-base">
             Pilotage centralisé des {companyInfo.totalPlatformes} plateformes SaaS d&apos;{companyInfo.nom}

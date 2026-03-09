@@ -436,15 +436,8 @@ function handleHealth(): Response {
       action: "health",
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "1.3.0",
+      version: "1.4.0",
       actions: ["send-admin-alert", "send-push", "send-session-reminders", "send-reengagement", "health"],
-      auth_required: {
-        "send-admin-alert": "admin",
-        "send-push": "authenticated",
-        "send-session-reminders": "none",
-        "send-reengagement": "none",
-        "health": "none"
-      }
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );

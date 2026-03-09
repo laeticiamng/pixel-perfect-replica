@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Users, Activity, TrendingUp, Calendar,
   BarChart3, Clock, Eye, MousePointer, Shield, Bell,
@@ -12,12 +12,14 @@ import { CronJobsMonitor } from '@/components/admin/CronJobsMonitor';
 import { EventScraperCard } from '@/components/admin/EventScraperCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useSystemStats } from '@/hooks/useSystemStats';
 import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { logger } from '@/lib/logger';
 import { PageLayout } from '@/components/PageLayout';
+import { FullPageLoader } from '@/components/shared/FullPageLoader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
@@ -56,9 +58,8 @@ const CHART_COLORS = [
 
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { t, locale } = useTranslation();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const [isLoading, setIsLoading] = useState(true);
   
   // System stats from edge function
@@ -82,28 +83,6 @@ export default function AdminDashboardPage() {
   const [categoryCounts, setCategoryCounts] = useState<CategoryCounts[]>([]);
   const [pageViewCounts, setPageViewCounts] = useState<PageViewCounts[]>([]);
   const [hourlyActivity, setHourlyActivity] = useState<{ hour: string; count: number }[]>([]);
-
-  // Check admin status
-  useEffect(() => {
-    const checkAdmin = async () => {
-      if (!user) {
-        navigate('/');
-        return;
-      }
-
-      const { data } = await supabase
-        .rpc('has_role', { _user_id: user.id, _role: 'admin' });
-      
-      if (!data) {
-        navigate('/');
-        return;
-      }
-      
-      setIsAdmin(true);
-    };
-
-    checkAdmin();
-  }, [user, navigate]);
 
   // Sync system stats when available
   useEffect(() => {
@@ -279,21 +258,8 @@ export default function AdminDashboardPage() {
     return null;
   };
 
-  if (!isAdmin) {
-    return (
-      <PageLayout className="pb-8 safe-bottom">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-foreground mb-2">{t('admin.restrictedAccess')}</h2>
-            <p className="text-muted-foreground">
-              {t('admin.restrictedDesc')}
-            </p>
-          </div>
-        </div>
-      </PageLayout>
-    );
-  }
+  if (adminLoading) return <FullPageLoader />;
+  if (!isAdmin) return <Navigate to="/" replace />;
 
   return (
     <>

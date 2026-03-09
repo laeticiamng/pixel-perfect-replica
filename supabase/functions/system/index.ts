@@ -159,7 +159,7 @@ function handleHealth(): Response {
       action: "health",
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "1.2.0",
+      version: "1.3.0",
       actions: [
         "health",
         "get-stats",
@@ -170,16 +170,6 @@ function handleHealth(): Response {
         "check-shadow-bans",
         "send-error-alert"
       ],
-      auth_required: {
-        "health": "none",
-        "get-stats": "admin",
-        "get-user-quota": "authenticated",
-        "get-system-logs": "admin",
-        "get-error-rate": "admin",
-        "cleanup-expired": "admin",
-        "check-shadow-bans": "admin",
-        "send-error-alert": "admin"
-      }
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
@@ -851,15 +841,35 @@ const handler = async (req: Request): Promise<Response> => {
 
       case "cleanup-expired":
       case "cleanup_expired": {
-        // Can be called by cron (no auth) or by admin
-        // For cron calls, the anon key is used which has limited access
-        // The actual cleanup uses service role client internally
+        // Cron/internal — verify the caller is using the project anon key or service role key
+        const cleanupToken = req.headers.get("Authorization")?.replace("Bearer ", "");
+        const CLEANUP_ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+        const CLEANUP_SRK = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+        if (!cleanupToken || (cleanupToken !== CLEANUP_ANON && cleanupToken !== CLEANUP_SRK)) {
+          console.warn("[system] cleanup-expired: unauthorized caller");
+          return new Response(
+            JSON.stringify({ error: "Unauthorized — cron token required" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        console.log("[system] cleanup-expired: cron auth verified");
         response = await handleCleanupExpired(supabase);
         break;
       }
 
       case "cleanup_rate_limits": {
-        // Can be called by cron (no auth) or by admin
+        // Cron/internal — verify the caller is using the project anon key or service role key
+        const rlToken = req.headers.get("Authorization")?.replace("Bearer ", "");
+        const RL_ANON = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+        const RL_SRK = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+        if (!rlToken || (rlToken !== RL_ANON && rlToken !== RL_SRK)) {
+          console.warn("[system] cleanup_rate_limits: unauthorized caller");
+          return new Response(
+            JSON.stringify({ error: "Unauthorized — cron token required" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        console.log("[system] cleanup_rate_limits: cron auth verified");
         response = await handleCleanupRateLimits(supabase);
         break;
       }
