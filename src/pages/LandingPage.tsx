@@ -225,13 +225,12 @@ export default function LandingPage() {
         <AppPreviewSection />
         <SocialProofBar />
         <HowItWorksSection />
+        <GuaranteeSection />
         <FeaturesSection />
-        <ComparisonWrapper />
         <UseCasesSection />
         <ErasmusFeaturesSection />
-        <PricingPreviewSection />
         <LandingTestimonialsSection />
-        <GuaranteeSection />
+        <PricingPreviewSection />
         <FinalCTASection />
       </main>
       <LandingFooter />

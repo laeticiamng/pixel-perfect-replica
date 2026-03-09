@@ -77,11 +77,19 @@ export const LandingTestimonialsSection = forwardRef<HTMLElement>(function Landi
       .eq('is_approved', true)
       .limit(12)
       .then(({ data }) => {
-        if (data && data.length > 0) setTestimonials(data);
+        if (data && data.length > 0) {
+          setTestimonials(data);
+        } else {
+          // Fallback testimonials for empty DB
+          setTestimonials([
+            { id: 'f1', quote: t('landing.fallbackTestimonial1'), activity: t('landing.fallbackActivity1') },
+            { id: 'f2', quote: t('landing.fallbackTestimonial2'), activity: t('landing.fallbackActivity2') },
+            { id: 'f3', quote: t('landing.fallbackTestimonial3'), activity: t('landing.fallbackActivity3') },
+            { id: 'f4', quote: t('landing.fallbackTestimonial4'), activity: t('landing.fallbackActivity4') },
+          ]);
+        }
       });
-  }, []);
-
-  if (testimonials.length === 0) return null;
+  }, [t]);
 
   const half = Math.ceil(testimonials.length / 2);
   const row1 = testimonials.slice(0, half);

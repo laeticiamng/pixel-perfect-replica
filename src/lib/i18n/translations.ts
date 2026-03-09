@@ -350,6 +350,14 @@ export const translations = {
     erasmusFeature5Title: { en: 'Wellbeing Check', fr: 'Bilan bien-être', de: 'Wohlbefinden-Check' },
     erasmusFeature5Desc: { en: 'Subtle weekly check-in on loneliness & social satisfaction — with peer mentor suggestions if needed.', fr: 'Bilan hebdomadaire discret sur la solitude et la satisfaction sociale — avec suggestions de mentor si besoin.', de: 'Diskreter wöchentlicher Check zu Einsamkeit & sozialer Zufriedenheit — mit Mentor-Vorschlägen bei Bedarf.' },
     erasmusCTA: { en: 'Start your Erasmus journey', fr: 'Commence ton aventure Erasmus', de: 'Starte dein Erasmus-Abenteuer' },
+    fallbackTestimonial1: { en: 'I was eating alone every day at the cafeteria. Now I meet someone new almost every lunch.', fr: 'Je mangeais seul tous les jours à la cafét. Maintenant je rencontre quelqu\'un de nouveau presque chaque midi.', de: 'Ich habe jeden Tag allein in der Mensa gegessen. Jetzt treffe ich fast jeden Mittag jemand Neues.' },
+    fallbackActivity1: { en: 'lunch', fr: 'déjeuner', de: 'Mittagessen' },
+    fallbackTestimonial2: { en: 'As an Erasmus student, this app helped me find study partners in my first week.', fr: 'En tant qu\'étudiante Erasmus, cette app m\'a aidée à trouver des partenaires de révision dès ma première semaine.', de: 'Als Erasmus-Studentin hat mir die App geholfen, in meiner ersten Woche Lernpartner zu finden.' },
+    fallbackActivity2: { en: 'study', fr: 'révision', de: 'Lernen' },
+    fallbackTestimonial3: { en: 'I wanted to work out but had no gym buddy. Found one in 10 minutes with the signal.', fr: 'Je voulais faire du sport mais je n\'avais personne. J\'ai trouvé quelqu\'un en 10 min avec le signal.', de: 'Ich wollte trainieren, hatte aber keinen Gym-Partner. In 10 Minuten einen gefunden.' },
+    fallbackActivity3: { en: 'sport', fr: 'sport', de: 'Sport' },
+    fallbackTestimonial4: { en: 'The concept is genius — no awkwardness because both people already said yes.', fr: 'Le concept est génial — zéro gêne parce que les deux personnes ont déjà dit oui.', de: 'Das Konzept ist genial — kein peinliches Ansprechen, weil beide schon ja gesagt haben.' },
+    fallbackActivity4: { en: 'coffee', fr: 'café', de: 'Kaffee' },
   },
 
   // Map page
