@@ -22,6 +22,7 @@ import {
   SocialProofBar,
   PricingPreviewSection,
   LandingTestimonialsSection,
+  ErasmusFeaturesSection,
 } from '@/components/landing';
 
 // How It Works — 3 simple steps (replaces old Problem + SignalExplanation)
@@ -227,6 +228,7 @@ export default function LandingPage() {
         <FeaturesSection />
         <ComparisonWrapper />
         <UseCasesSection />
+        <ErasmusFeaturesSection />
         <PricingPreviewSection />
         <LandingTestimonialsSection />
         <GuaranteeSection />
