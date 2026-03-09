@@ -21,9 +21,9 @@ export function EventAttendeesPreview({ eventId, className }: EventAttendeesPrev
 
   useEffect(() => {
     const fetchAttendees = async () => {
-      // Use the public RPC to bypass RLS restrictions
+      // Single RPC call with reasonable limit — use length as count
       const { data, error } = await supabase
-        .rpc('get_event_attendees_public', { p_event_id: eventId, p_limit: 3 });
+        .rpc('get_event_attendees_public', { p_event_id: eventId, p_limit: 200 });
 
       if (error) {
         console.warn('[EventAttendeesPreview] RPC error:', error.message);
@@ -31,11 +31,8 @@ export function EventAttendeesPreview({ eventId, className }: EventAttendeesPrev
       }
 
       if (data && data.length > 0) {
-        setAttendees(data.map((a: any) => ({ first_name: a.first_name, avatar_url: a.avatar_url })));
-        // For total count, we need a separate count call via the same RPC with higher limit
-        const { data: allData } = await supabase
-          .rpc('get_event_attendees_public', { p_event_id: eventId, p_limit: 200 });
-        setCount(allData?.length || data.length);
+        setAttendees(data.slice(0, 3).map((a: any) => ({ first_name: a.first_name, avatar_url: a.avatar_url })));
+        setCount(data.length);
       }
     };
     fetchAttendees();
