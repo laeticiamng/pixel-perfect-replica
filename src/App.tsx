@@ -21,6 +21,7 @@ const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
 const PremiumPage = lazy(() => import('./pages/PremiumPage'));
 const ChangelogPage = lazy(() => import('./pages/ChangelogPage'));
 const PresidentCockpitPage = lazy(() => import('./pages/PresidentCockpitPage'));
+const InstitutionalDashboardPage = lazy(() => import('./pages/InstitutionalDashboardPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const PostSignupOnboardingPage = lazy(() => import('./pages/PostSignupOnboardingPage'));
