@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { BarChart3, TrendingUp, Clock, Users, Star, Calendar, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
