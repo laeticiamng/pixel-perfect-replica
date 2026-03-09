@@ -103,6 +103,8 @@ export default function ChangePasswordPage() {
     confirmPassword === newPassword;
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('auth.changePassword')} backTo="/settings" />
 
