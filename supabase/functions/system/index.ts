@@ -159,7 +159,7 @@ function handleHealth(): Response {
       action: "health",
       status: "ok",
       timestamp: new Date().toISOString(),
-      version: "1.2.0",
+      version: "1.3.0",
       actions: [
         "health",
         "get-stats",
@@ -170,16 +170,6 @@ function handleHealth(): Response {
         "check-shadow-bans",
         "send-error-alert"
       ],
-      auth_required: {
-        "health": "none",
-        "get-stats": "admin",
-        "get-user-quota": "authenticated",
-        "get-system-logs": "admin",
-        "get-error-rate": "admin",
-        "cleanup-expired": "admin",
-        "check-shadow-bans": "admin",
-        "send-error-alert": "admin"
-      }
     }),
     { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
   );
