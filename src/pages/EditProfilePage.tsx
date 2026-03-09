@@ -62,6 +62,10 @@ export default function EditProfilePage() {
         if (data.birth_year) setBirthYear(String(data.birth_year));
         setIsCityGuide(data.is_city_guide ?? false);
         setIsNewcomer(data.is_newcomer ?? false);
+        setInclusionInternational(data.inclusion_international ?? false);
+        setInclusionDisability(data.inclusion_disability ?? false);
+        setInclusionLgbtq(data.inclusion_lgbtq ?? false);
+        setInclusionFirstGen(data.inclusion_first_gen ?? false);
       }
     };
     fetchProfileData();
