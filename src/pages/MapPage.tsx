@@ -642,6 +642,7 @@ export default function MapPage() {
           )}
         </AnimatePresence>
       </div>
+      <WellbeingCheckModal isOpen={showWellbeing} onClose={dismissWellbeing} />
     </PageLayout>
     </>
   );

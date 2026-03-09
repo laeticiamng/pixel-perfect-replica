@@ -2035,6 +2035,41 @@ export const translations = {
     checklistAvailableLater: { en: 'You can always access this checklist from your profile', fr: 'Tu peux retrouver cette checklist depuis ton profil', de: 'Du findest diese Checkliste immer in deinem Profil' },
   },
 
+  // Wellbeing Check
+  wellbeing: {
+    title: { en: 'How are you doing?', fr: 'Comment ça va ?', de: 'Wie geht es dir?' },
+    subtitle: { en: 'Quick weekly check-in — your answers are private.', fr: 'Check-in hebdomadaire rapide — tes réponses sont privées.', de: 'Wöchentlicher Check-in — deine Antworten sind privat.' },
+    q1: { en: 'How lonely have you felt this week?', fr: 'À quel point t\'es-tu senti(e) seul(e) cette semaine ?', de: 'Wie einsam hast du dich diese Woche gefühlt?' },
+    q2: { en: 'How satisfied are you with your social life?', fr: 'Es-tu satisfait(e) de ta vie sociale ?', de: 'Wie zufrieden bist du mit deinem Sozialleben?' },
+    q3: { en: 'Would you like to be connected with a peer mentor?', fr: 'Souhaites-tu être mis(e) en contact avec un pair mentor ?', de: 'Möchtest du mit einem Peer-Mentor verbunden werden?' },
+    notAtAll: { en: 'Not at all', fr: 'Pas du tout', de: 'Gar nicht' },
+    veryMuch: { en: 'Very much', fr: 'Énormément', de: 'Sehr stark' },
+    veryUnsatisfied: { en: 'Very unsatisfied', fr: 'Très insatisfait', de: 'Sehr unzufrieden' },
+    verySatisfied: { en: 'Very satisfied', fr: 'Très satisfait', de: 'Sehr zufrieden' },
+    thankYou: { en: 'Thanks for sharing! 💙', fr: 'Merci d\'avoir partagé ! 💙', de: 'Danke fürs Teilen! 💙' },
+    submitError: { en: 'Could not save your response', fr: 'Impossible d\'enregistrer ta réponse', de: 'Antwort konnte nicht gespeichert werden' },
+    resourcesTitle: { en: 'You\'re not alone', fr: 'Tu n\'es pas seul(e)', de: 'Du bist nicht allein' },
+    resourcesIntro: { en: 'Here are some resources that might help:', fr: 'Voici quelques ressources qui pourraient t\'aider :', de: 'Hier sind einige Ressourcen, die helfen könnten:' },
+    esnDesc: { en: 'Support for Erasmus students', fr: 'Soutien pour étudiants Erasmus', de: 'Unterstützung für Erasmus-Studierende' },
+    befriendersDesc: { en: 'International crisis support', fr: 'Soutien international en cas de crise', de: 'Internationale Krisenunterstützung' },
+    mentorConfirm: { en: 'We\'ll connect you with a peer mentor soon!', fr: 'On te connecte bientôt avec un pair mentor !', de: 'Wir verbinden dich bald mit einem Peer-Mentor!' },
+    going: { en: 'going', fr: 'y vont', de: 'gehen' },
+  },
+
+  // Inclusion Radar
+  inclusion: {
+    title: { en: 'Inclusion Radar', fr: 'Radar Inclusion', de: 'Inklusions-Radar' },
+    description: { en: 'Opt-in to connect with students like you. The matching algorithm will prioritize inclusive connections.', fr: 'Active ces tags pour te connecter avec des étudiant(e)s comme toi. L\'algorithme de matching priorisera ces connexions inclusives.', de: 'Aktiviere Tags, um dich mit ähnlichen Studierenden zu verbinden. Der Matching-Algorithmus priorisiert inklusive Verbindungen.' },
+    international: { en: 'International student', fr: 'Étudiant(e) international(e)', de: 'Internationaler Studierender' },
+    internationalDesc: { en: 'Connect with other international students', fr: 'Connecte-toi avec d\'autres étudiant(e)s internationaux', de: 'Verbinde dich mit anderen internationalen Studierenden' },
+    disability: { en: 'Student with disability', fr: 'Étudiant(e) en situation de handicap', de: 'Studierender mit Behinderung' },
+    disabilityDesc: { en: 'Find peers who understand your experience', fr: 'Trouve des pairs qui comprennent ton expérience', de: 'Finde Gleichgesinnte, die deine Erfahrung verstehen' },
+    lgbtq: { en: 'LGBTQ+ student', fr: 'Étudiant(e) LGBTQ+', de: 'LGBTQ+ Studierender' },
+    lgbtqDesc: { en: 'Connect with LGBTQ+ community members', fr: 'Connecte-toi avec la communauté LGBTQ+', de: 'Verbinde dich mit LGBTQ+ Community-Mitgliedern' },
+    firstGen: { en: 'First-generation student', fr: 'Étudiant(e) de première génération', de: 'Erstakademiker' },
+    firstGenDesc: { en: 'Meet others who are first in their family at university', fr: 'Rencontre d\'autres premiers de leur famille à l\'université', de: 'Triff andere, die als Erste in ihrer Familie studieren' },
+  },
+
 } as const;
 
 export type TranslationKey = keyof typeof translations;
