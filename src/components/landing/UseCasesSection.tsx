@@ -1,10 +1,8 @@
 import { forwardRef } from 'react';
-import { BookOpen, Dumbbell, Coffee, Laptop, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { BookOpen, Dumbbell, Coffee, Laptop } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
-import { Button } from '@/components/ui/button';
 import { type LucideIcon } from 'lucide-react';
 
 export const UseCasesSection = forwardRef<HTMLElement>(function UseCasesSection(_props, ref) {
