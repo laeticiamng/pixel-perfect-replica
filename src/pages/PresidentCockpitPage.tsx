@@ -89,10 +89,7 @@ export default function PresidentCockpitPage() {
 
   // Block non-admin access — after all hooks
   if (adminLoading) return <FullPageLoader />;
-  if (!isAdmin) {
-    navigate('/', { replace: true });
-    return null;
-  }
+  if (!isAdmin) return <Navigate to="/" replace />;
 
   return (
     <PageLayout className="pb-8 safe-bottom">
