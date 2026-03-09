@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, UserCircle, Search, Filter } from 'lucide-react';
 import { useInteractions } from '@/hooks/useInteractions';
