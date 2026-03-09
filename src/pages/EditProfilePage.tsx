@@ -50,7 +50,7 @@ export default function EditProfilePage() {
       if (!user) return;
       const { data } = await supabase
         .from('profiles')
-        .select('bio, favorite_activities, birth_year, is_city_guide, is_newcomer')
+        .select('bio, favorite_activities, birth_year, is_city_guide, is_newcomer, inclusion_international, inclusion_disability, inclusion_lgbtq, inclusion_first_gen')
         .eq('id', user.id)
         .single();
       
