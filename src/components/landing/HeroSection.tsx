@@ -79,15 +79,23 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           {t('landing.createMyAccount')}
           <ArrowRight className="ml-2 h-6 w-6 transition-transform group-hover:translate-x-1" />
         </Button>
-        <Button
+      </motion.div>
+
+      {/* Discrete login link */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="mt-4 text-sm text-muted-foreground"
+      >
+        {t('landing.alreadyAccount')}{' '}
+        <button
           onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
-          variant="outline"
-          size="lg"
-          className="h-14 px-8 text-lg font-medium rounded-full border-2 border-border/80 hover:border-coral/50 hover:bg-coral/5 transition-all duration-300"
+          className="text-coral hover:underline font-medium transition-colors"
         >
           {t('auth.signIn')}
-        </Button>
-      </motion.div>
+        </button>
+      </motion.p>
 
       {/* PWA Install hint - visible on mobile */}
       <motion.button

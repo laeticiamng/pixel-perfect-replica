@@ -52,18 +52,6 @@ export const UseCasesSection = forwardRef<HTMLElement>(function UseCasesSection(
           ))}
         </div>
 
-        <RevealText delay={0.5}>
-          <div className="mt-12 text-center">
-            <Button
-              size="lg"
-              onClick={() => navigate('/onboarding')}
-              className="group bg-gradient-to-r from-coral to-coral-light text-white font-bold px-8 py-6 text-lg rounded-full shadow-lg shadow-coral/20 hover:shadow-coral/30 transition-all duration-300 hover:scale-105"
-            >
-              {t('landing.tryCTA')}
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </div>
-        </RevealText>
       </div>
     </section>
   );

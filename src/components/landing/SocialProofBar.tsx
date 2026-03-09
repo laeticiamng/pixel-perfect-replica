@@ -58,13 +58,13 @@ export function SocialProofBar() {
   // Show static fallback when no real stats yet
   const allZero = !stats || (stats.active_users_now === 0 && stats.sessions_this_month === 0 && stats.completed_sessions === 0);
 
-  const fallbackStats = [
-    { icon: Users, value: 0, suffix: '', label: t('landing.trustedStudents') },
-    { icon: Zap, value: 0, suffix: '', label: t('landing.trustedPrivacy') },
-    { icon: MapPin, value: 0, suffix: '', label: t('landing.trustedMadeInFrance') },
+  const fallbackBadges = [
+    { icon: Users, label: t('landing.trustBadgeFree') },
+    { icon: Zap, label: t('landing.trustBadgePrivacy') },
+    { icon: MapPin, label: t('landing.trustBadgeFrance') },
   ];
 
-  const displayStats = allZero ? fallbackStats : [
+  const displayStats = allZero ? null : [
     { icon: Users, value: stats?.active_users_now ?? 0, suffix: '', label: t('landing.socialProofUsers') },
     { icon: Zap, value: stats?.sessions_this_month ?? 0, suffix: '', label: t('landing.socialProofSessions') },
     { icon: MapPin, value: stats?.completed_sessions ?? 0, suffix: '+', label: t('landing.socialProofCompleted') },
@@ -80,25 +80,32 @@ export function SocialProofBar() {
       className="py-8 px-6 relative z-10"
     >
       <div className="max-w-3xl mx-auto">
-         <div className="flex items-center justify-center bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl py-4 px-3 sm:px-6">
-          {displayStats.map((stat, i) => (
-            <div key={i} className="flex items-center min-w-0">
-              {i > 0 && <div className="w-px h-8 bg-border/50 mx-2 sm:mx-4 md:mx-6 shrink-0" />}
-              <div className="flex flex-col items-center gap-1 min-w-0">
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-coral shrink-0" />
-                  {allZero ? (
-                    <span className="text-sm sm:text-base font-semibold text-foreground">{stat.label}</span>
-                  ) : (
-                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                  )}
+        <div className="flex items-center justify-center bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl py-4 px-3 sm:px-6">
+          {allZero ? (
+            // Trust badges when no real data
+            fallbackBadges.map((badge, i) => (
+              <div key={i} className="flex items-center min-w-0">
+                {i > 0 && <div className="w-px h-8 bg-border/50 mx-2 sm:mx-4 md:mx-6 shrink-0" />}
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <badge.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-coral shrink-0" />
+                  <span className="text-xs sm:text-sm font-semibold text-foreground">{badge.label}</span>
                 </div>
-                {!allZero && (
-                  <span className="text-[10px] sm:text-xs text-muted-foreground font-medium text-center leading-tight">{stat.label}</span>
-                )}
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            displayStats!.map((stat, i) => (
+              <div key={i} className="flex items-center min-w-0">
+                {i > 0 && <div className="w-px h-8 bg-border/50 mx-2 sm:mx-4 md:mx-6 shrink-0" />}
+                <div className="flex flex-col items-center gap-1 min-w-0">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-coral shrink-0" />
+                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                  </div>
+                  <span className="text-[10px] sm:text-xs text-muted-foreground font-medium text-center leading-tight">{stat.label}</span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </motion.section>

@@ -14,7 +14,6 @@ import {
   AppPreviewSection,
   RevealText,
   FeatureCard,
-  ComparisonSection,
   UseCasesSection,
   GuaranteeSection,
   FinalCTASection,
@@ -111,27 +110,6 @@ const FeaturesSection = forwardRef<HTMLElement>(function FeaturesSection(_props,
   );
 });
 
-// Comparison Wrapper Section
-const ComparisonWrapper = forwardRef<HTMLElement>(function ComparisonWrapper(_props, ref) {
-  const { t } = useTranslation();
-  
-  return (
-    <section ref={ref} className="py-12 px-6 relative z-10 bg-card/30">
-      <div className="max-w-2xl mx-auto">
-        <RevealText>
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-            {t('landing.weConnectIntentions')}
-          </h2>
-          <p className="text-xl text-coral font-semibold text-center mb-12">
-            {t('landing.weConnectIntentions2')}
-          </p>
-        </RevealText>
-        
-        <ComparisonSection />
-      </div>
-    </section>
-  );
-});
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -225,13 +203,12 @@ export default function LandingPage() {
         <AppPreviewSection />
         <SocialProofBar />
         <HowItWorksSection />
+        <GuaranteeSection />
         <FeaturesSection />
-        <ComparisonWrapper />
         <UseCasesSection />
         <ErasmusFeaturesSection />
-        <PricingPreviewSection />
         <LandingTestimonialsSection />
-        <GuaranteeSection />
+        <PricingPreviewSection />
         <FinalCTASection />
       </main>
       <LandingFooter />
