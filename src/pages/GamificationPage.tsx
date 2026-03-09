@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Flame, Trophy, Medal, Crown, Star, Zap, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PageLayout } from '@/components/PageLayout';
