@@ -13,6 +13,7 @@ import {
   HeroSection,
   AppPreviewSection,
   RevealText,
+  FeatureCard,
   UseCasesSection,
   GuaranteeSection,
   FinalCTASection,
