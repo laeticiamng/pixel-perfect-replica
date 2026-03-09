@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Users, Activity, TrendingUp, Calendar,
   BarChart3, Clock, Eye, MousePointer, Shield, Bell,
@@ -12,12 +12,14 @@ import { CronJobsMonitor } from '@/components/admin/CronJobsMonitor';
 import { EventScraperCard } from '@/components/admin/EventScraperCard';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useSystemStats } from '@/hooks/useSystemStats';
 import { Button } from '@/components/ui/button';
 import toast from 'react-hot-toast';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { logger } from '@/lib/logger';
 import { PageLayout } from '@/components/PageLayout';
+import { FullPageLoader } from '@/components/shared/FullPageLoader';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
