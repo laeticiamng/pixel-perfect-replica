@@ -4,3 +4,4 @@ export { EventCategoryBadge, EventCategorySelector, type EventCategory } from '.
 export { EventReminderBanner, UpcomingEventsReminder } from './EventReminderBanner';
 export { RecurrenceSelector, type RecurrenceType } from './RecurrenceSelector';
 export { EventFavoriteButton } from './EventFavoriteButton';
+export { EventAttendeesPreview } from './EventAttendeesPreview';
