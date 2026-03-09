@@ -128,7 +128,11 @@ function AnimatedRoutes() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/welcome" element={<PostSignupOnboardingPage />} />
-            <Route path="/newcomer" element={<NewcomerOnboardingPage />} />
+            <Route path="/newcomer" element={
+              <ProtectedRoute>
+                <NewcomerOnboardingPage />
+              </ProtectedRoute>
+            } />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/terms" element={<TermsPage />} />
