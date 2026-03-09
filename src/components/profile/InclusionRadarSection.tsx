@@ -66,6 +66,7 @@ export function InclusionRadarSection({
             <Switch
               checked={values[key]}
               onCheckedChange={handlers[key]}
+              aria-label={t(`inclusion.${key}`)}
             />
           </div>
         ))}

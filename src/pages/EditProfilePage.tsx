@@ -400,5 +400,6 @@ export default function EditProfilePage() {
       </div>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

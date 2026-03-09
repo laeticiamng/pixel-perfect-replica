@@ -234,5 +234,6 @@ export default function ChangePasswordPage() {
       </form>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

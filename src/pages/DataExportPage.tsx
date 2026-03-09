@@ -93,5 +93,6 @@ export default function DataExportPage() {
       </div>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

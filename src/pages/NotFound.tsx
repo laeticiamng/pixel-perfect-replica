@@ -39,6 +39,7 @@ const NotFound = () => {
         </Button>
       </div>
     </PageLayout>
+    </>
   );
 };
 

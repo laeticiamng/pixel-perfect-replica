@@ -340,5 +340,6 @@ export default function GamificationPage() {
       </div>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

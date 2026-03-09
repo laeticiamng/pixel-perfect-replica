@@ -295,5 +295,6 @@ export default function PresidentCockpitPage() {
         </Card>
       </section>
     </PageLayout>
+    </>
   );
 }

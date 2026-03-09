@@ -231,6 +231,11 @@ function AnimatedRoutes() {
                 <PresidentCockpitPage />
               </ProtectedRoute>
             } />
+            <Route path="/institutional-dashboard" element={
+              <ProtectedRoute>
+                <InstitutionalDashboardPage />
+              </ProtectedRoute>
+            } />
             <Route path="/blocked-users" element={
               <ProtectedRoute>
                 <BlockedUsersPage />

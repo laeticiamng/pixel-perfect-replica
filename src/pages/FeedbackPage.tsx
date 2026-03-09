@@ -114,5 +114,6 @@ export default function FeedbackPage() {
       </div>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }
