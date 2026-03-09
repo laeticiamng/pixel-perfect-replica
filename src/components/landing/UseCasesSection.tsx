@@ -7,7 +7,6 @@ import { type LucideIcon } from 'lucide-react';
 
 export const UseCasesSection = forwardRef<HTMLElement>(function UseCasesSection(_props, ref) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const useCases: { icon: LucideIcon; place: string; action: string; gradient: string }[] = [
     { icon: BookOpen, place: t('landing.library'), action: t('landing.studyTogether'), gradient: 'from-blue-500/10 to-transparent' },
