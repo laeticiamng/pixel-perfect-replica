@@ -44,6 +44,7 @@ export default function MapPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
+  const { shouldShow: showWellbeing, dismiss: dismissWellbeing } = useWellbeingCheck();
   const { position, error: locationError, isWatching } = useLocationStore();
   const { hasSeenLocationPrompt, setHasSeenLocationPrompt } = useSettingsStore();
   const [locationBannerDismissed, setLocationBannerDismissed] = useState(false);
