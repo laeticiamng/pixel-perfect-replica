@@ -203,6 +203,8 @@ export default function EditProfilePage() {
   };
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('editProfile.title')} backTo="/profile" />
 
