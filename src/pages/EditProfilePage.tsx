@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Loader2, X, Users, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
