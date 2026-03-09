@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -69,6 +70,8 @@ export default function ReportPage() {
   };
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('report.title')} backTo="/profile" />
 
@@ -150,5 +153,6 @@ export default function ReportPage() {
       </div>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

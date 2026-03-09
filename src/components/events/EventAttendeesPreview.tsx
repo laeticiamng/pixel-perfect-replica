@@ -20,35 +20,25 @@ export function EventAttendeesPreview({ eventId, className }: EventAttendeesPrev
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const fetch = async () => {
-      // Get count
-      const { count: total } = await supabase
-        .from('event_participants')
-        .select('*', { count: 'exact', head: true })
-        .eq('event_id', eventId);
-      
-      setCount(total || 0);
+    const fetchAttendees = async () => {
+      // Use the public RPC to bypass RLS restrictions
+      const { data, error } = await supabase
+        .rpc('get_event_attendees_public', { p_event_id: eventId, p_limit: 3 });
 
-      if (total && total > 0) {
-        // Get first 3 participant profiles
-        const { data: participants } = await supabase
-          .from('event_participants')
-          .select('user_id')
-          .eq('event_id', eventId)
-          .limit(3);
+      if (error) {
+        console.warn('[EventAttendeesPreview] RPC error:', error.message);
+        return;
+      }
 
-        if (participants) {
-          const ids = participants.map(p => p.user_id);
-          const { data: profiles } = await supabase
-            .from('profiles')
-            .select('first_name, avatar_url')
-            .in('id', ids);
-          
-          setAttendees(profiles || []);
-        }
+      if (data && data.length > 0) {
+        setAttendees(data.map((a: any) => ({ first_name: a.first_name, avatar_url: a.avatar_url })));
+        // For total count, we need a separate count call via the same RPC with higher limit
+        const { data: allData } = await supabase
+          .rpc('get_event_attendees_public', { p_event_id: eventId, p_limit: 200 });
+        setCount(allData?.length || data.length);
       }
     };
-    fetch();
+    fetchAttendees();
   }, [eventId]);
 
   if (count === 0) return null;

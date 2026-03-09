@@ -21,6 +21,7 @@ const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'));
 const PremiumPage = lazy(() => import('./pages/PremiumPage'));
 const ChangelogPage = lazy(() => import('./pages/ChangelogPage'));
 const PresidentCockpitPage = lazy(() => import('./pages/PresidentCockpitPage'));
+const InstitutionalDashboardPage = lazy(() => import('./pages/InstitutionalDashboardPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const PostSignupOnboardingPage = lazy(() => import('./pages/PostSignupOnboardingPage'));
@@ -127,7 +128,11 @@ function AnimatedRoutes() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/welcome" element={<PostSignupOnboardingPage />} />
-            <Route path="/newcomer" element={<NewcomerOnboardingPage />} />
+            <Route path="/newcomer" element={
+              <ProtectedRoute>
+                <NewcomerOnboardingPage />
+              </ProtectedRoute>
+            } />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/terms" element={<TermsPage />} />
@@ -224,6 +229,11 @@ function AnimatedRoutes() {
             <Route path="/president-cockpit" element={
               <ProtectedRoute>
                 <PresidentCockpitPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/institutional-dashboard" element={
+              <ProtectedRoute>
+                <InstitutionalDashboardPage />
               </ProtectedRoute>
             } />
             <Route path="/blocked-users" element={

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Eye, EyeOff, Lock, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -102,6 +103,8 @@ export default function ChangePasswordPage() {
     confirmPassword === newPassword;
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('auth.changePassword')} backTo="/settings" />
 
@@ -231,5 +234,6 @@ export default function ChangePasswordPage() {
       </form>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

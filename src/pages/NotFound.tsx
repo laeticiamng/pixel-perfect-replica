@@ -1,5 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { PageLayout } from "@/components/PageLayout";
 import { Home, Search } from "lucide-react";
@@ -15,6 +16,11 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
+    <>
+    <Helmet>
+      <title>404 — NEARVITY</title>
+      <meta name="robots" content="noindex, nofollow" />
+    </Helmet>
     <PageLayout className="flex items-center justify-center px-6">
       <div className="text-center">
         <div className="w-20 h-20 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6">
@@ -33,6 +39,7 @@ const NotFound = () => {
         </Button>
       </div>
     </PageLayout>
+    </>
   );
 };
 

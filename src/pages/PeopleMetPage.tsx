@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, UserCircle, Search, Filter } from 'lucide-react';
 import { useInteractions } from '@/hooks/useInteractions';
@@ -94,6 +95,8 @@ export default function PeopleMetPage() {
   }
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
@@ -176,5 +179,6 @@ export default function PeopleMetPage() {
       </div>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

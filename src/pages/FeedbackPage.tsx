@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -48,6 +49,8 @@ export default function FeedbackPage() {
   };
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('feedback.title')} backTo="/profile" />
 
@@ -111,5 +114,6 @@ export default function FeedbackPage() {
       </div>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

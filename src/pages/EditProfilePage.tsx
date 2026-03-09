@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Loader2, X, Users, Plane } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -202,6 +203,8 @@ export default function EditProfilePage() {
   };
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('editProfile.title')} backTo="/profile" />
 
@@ -397,5 +400,6 @@ export default function EditProfilePage() {
       </div>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

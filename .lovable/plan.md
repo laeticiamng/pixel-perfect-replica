@@ -1,141 +1,120 @@
 
 
-# AUDIT TECHNIQUE COMPLET — NEARVITY v2.0.0
+# Audit NEARVITY -- Ce qui manque pour être unique et révolutionnaire
 
-## 1. RÉSUMÉ EXÉCUTIF
+## Etat actuel : ce qui a été implémenté
 
-**État global** : Plateforme mature, bien architecturée, avec des patterns de sécurité solides (RLS, auth centralisée, rate limiting). Cependant, plusieurs fonctionnalités Erasmus+ récemment ajoutées sont partiellement branchées, et certaines pages critiques manquent de guards ou de métadonnées.
-
-**Niveau de préparation** : 16/20 — Bon pour un MVP avancé, mais des corrections P0/P1 sont nécessaires avant un go-live confiant.
-
-**Verdict go-live** : **NON EN L'ÉTAT** — 3 P0 et 5 P1 doivent être résolus.
-
-### Top P0
-1. **Institutional Dashboard manquant** : Annoncé dans les conversations précédentes, l'`InstitutionalDashboardPage.tsx` n'existe pas. La route n'est pas enregistrée dans App.tsx. Le RPC `get_institutional_metrics` n'est référencé nulle part dans le frontend. Fonctionnalité fantôme.
-2. **Notifications edge function : actions cron sans auth** : `send-session-reminders` et `send-reengagement` n'ont aucune vérification (pas de token cron, pas de clé API). N'importe qui peut appeler l'endpoint publiquement avec `verify_jwt=false` et déclencher l'envoi d'emails/push à tous les utilisateurs.
-3. **EventAttendeesPreview : fuite de données RLS** : Le composant requête `event_participants` et `profiles` directement. Or la policy RLS sur `event_participants` ne permet de voir que ses propres participations OU celles d'événements qu'on organise. Le composant va donc échouer silencieusement pour la majorité des utilisateurs (count toujours 0), rendant la feature "Who else is going?" non fonctionnelle.
-
-### Top P1
-1. **PresidentCockpitPage : 100% mock data** — Affiche des données hardcodées (`platformsMock`, `pendingValidationsMock`). Aucune donnée réelle. Page fonctionnellement trompeuse.
-2. **AdminDashboardPage : pas de guard ProtectedRoute** — Utilise un redirect dans useEffect (race condition possible), au lieu du pattern `ProtectedRoute` + `useAdminCheck` cohérent.
-3. **NewcomerOnboardingPage : pas de Helmet** — Aucune métadonnée SEO. Page publique sans title ni description.
-4. **Pages sans Helmet** : GamificationPage, StatisticsPage, BlockedUsersPage, ChangePasswordPage, DataExportPage, FeedbackPage, ReportPage, PeopleMetPage, EditProfilePage — aucune n'a de balise `<Helmet>`.
-5. **System edge function : actions sensibles sans auth requise** — `cleanup-expired`, `get-stats`, `check-shadow-bans` sont accessibles avec `verify_jwt=false` et la validation auth dépend du parsing du body (l'action détermine si l'auth est requise).
+Les éléments suivants sont opérationnels :
+- Système de signaux (green/yellow/red) avec géolocalisation temps réel
+- Sessions binôme avec quota, Stripe, feedback, fiabilité
+- Événements avec QR check-in, favoris, catégories
+- Messagerie complète (conversations, unread badges, Realtime)
+- Page Connexions/Amis avec chat intégré
+- Centre de notifications avec badges temps réel
+- Gamification (streaks, achievements, leaderboard campus)
+- Événements sur la carte avec indicateur "Happening Now"
+- i18n (EN/FR/DE), dark/light, PWA, RLS, rate limiting, shadow banning
+- Referral, admin dashboard, reliability scoring, command palette
 
 ---
 
-## 2. TABLEAU D'AUDIT
+## Lacunes critiques restantes
 
-| Priorité | Domaine | Page / Fonction | Problème | Symptôme | Risque | Recommandation | Faisable immédiatement ? |
-|----------|---------|-----------------|----------|----------|--------|----------------|--------------------------|
-| P0 | Feature | InstitutionalDashboardPage | Page inexistante | Fichier non trouvé, route absente | Feature annoncée non livrée | Créer la page + route ou retirer la référence | Oui |
-| P0 | Security | notifications EF: cron actions | Pas d'auth sur send-session-reminders / send-reengagement | Tout appelant externe peut trigger | Spam, abus, envoi de push/email non autorisé | Ajouter vérification token (anon key ou secret header) | Oui |
-| P0 | Data | EventAttendeesPreview | RLS bloque la lecture de event_participants pour non-participants | Count toujours 0, feature cassée | Feature "Who else is going?" non fonctionnelle | Utiliser le RPC `get_event_attendees_public` déjà créé en migration | Oui |
-| P1 | Feature | PresidentCockpitPage | 100% données mockées | platformsMock, pendingValidationsMock | Page trompeuse, aucune donnée réelle | Brancher sur données réelles ou marquer clairement "Demo" | Oui (badge) |
-| P1 | Auth | AdminDashboardPage | Guard via useEffect au lieu de ProtectedRoute pattern | Race condition possible, flash de contenu | Contenu admin brièvement visible | Aligner avec le pattern PresidentCockpitPage (useAdminCheck) | Oui |
-| P1 | SEO | 10+ pages protégées | Pas de Helmet (title, meta robots) | Pages sans title dans l'onglet | Mauvaise UX, pas de noindex | Ajouter Helmet avec noindex à toutes les pages protégées | Oui |
-| P1 | Security | system EF | Auth granulaire par action, certaines actions sensibles (cleanup, shadow-bans) potentiellement accessibles | verify_jwt=false | Admin actions exposées | Non confirmé sans lire le router complet, mais à vérifier | Partiellement |
-| P2 | i18n | WellbeingCheckModal | Utilise `t('wellbeing.going')` comme fallback dans EventAttendeesPreview | Clé potentiellement manquante ou mal nommée | Texte incorrect | Créer clé dédiée `events.going` | Oui |
-| P2 | UX | NewcomerOnboardingPage | Page `/newcomer` publique (pas de ProtectedRoute) mais nécessite un user connecté | Crash si user=null quand on écrit en DB | Erreur runtime | Soit ajouter ProtectedRoute, soit gérer le cas null | Oui |
-| P2 | Code | PresidentCockpitPage | `navigate('/')` appelé pendant le render (hors useEffect) | Warning React potential | Anti-pattern React | Remplacer par `<Navigate to="/" replace />` | Oui |
-| P2 | Performance | EventAttendeesPreview | N+1 queries (1 count + 1 participants + 1 profiles par event card) | Cascade de requêtes sur la page events | Latence | Utiliser un seul RPC batch | Oui |
-| P2 | Security | CORS | `Access-Control-Allow-Origin: *` sur toutes les edge functions | Trop permissif | Requêtes cross-origin non restreintes | Limiter à l'URL de production | Non (config Cloud) |
-| P3 | SEO | NotFound | Pas de Helmet avec title "404" | Onglet sans titre significatif | Mineur | Ajouter Helmet | Oui |
-| P3 | Accessibilité | InclusionRadarSection | Switches sans labels accessibles (aria-label) | Accessibilité réduite | Conformité a11y | Ajouter aria-label | Oui |
-| P3 | UX | WellbeingCheck | Le timer de 10s pour afficher le modal peut interrompre l'UX principale | UX un peu intrusive | Mineur | Considérer un délai plus long ou un trigger contextuel | Non prioritaire |
+### 1. Pas de découverte d'utilisateurs hors proximité
+Les utilisateurs ne peuvent trouver d'autres personnes que via le radar live. Aucun annuaire, aucune recherche par activité/université/intérêts. La plateforme est vide quand personne n'a son signal activé.
 
----
+**Manquant :** Page de découverte / feed, section "gens près de ton campus", matching par activité favorite.
 
-## 3. DÉTAIL PAR CATÉGORIE
+### 2. Pas de formation de groupe / meetup spontané
+La plateforme connecte uniquement en 1-to-1. Si 4 personnes étudient à proximité, impossible de "former un groupe".
 
-### A. Frontend & Rendu
-- **Fonctionne** : LandingPage, OnboardingPage, MapPage, ProfilePage, SettingsPage, PremiumPage, EventsPage, BinomePage, HelpPage, TermsPage, PrivacyPage, ContactPage, AboutPage — tous rendent correctement avec Helmet.
-- **Cassé** : InstitutionalDashboardPage n'existe pas.
-- **Douteux** : PresidentCockpitPage affiche uniquement du mock. NewcomerOnboardingPage publique mais dépend d'un user.
+**Manquant :** Signal de groupe ("je cherche 3+ personnes"), chat de groupe, carte d'activité de groupe.
 
-### B. QA Fonctionnelle
-- **Fonctionne** : Auth flow (signup/login/reset/OAuth), profile edit, events CRUD, binome sessions, conversations, notifications, gamification.
-- **Cassé** : "Who else is going?" (EventAttendeesPreview) — RLS empêche la lecture. Institutional Dashboard absent.
-- **Non confirmé** : Stripe checkout en conditions réelles (dépend des clés live).
+### 3. Pas de suggestions intelligentes de timing
+L'IA fait des recommandations basiques. Aucune analyse "Ton campus est le plus actif le mardi à midi" ni "3 personnes étudient ici habituellement à 14h".
 
-### C. Auth & Autorisations
-- **Fonctionne** : ProtectedRoute pattern, has_role RPC, useAdminCheck, JWT validation dans edge functions.
-- **Douteux** : AdminDashboardPage utilise un useEffect redirect au lieu de ProtectedRoute. PresidentCockpitPage appelle navigate() pendant le render.
-- **Risque** : `/newcomer` est public mais écrit en DB (crash si non connecté).
+**Manquant :** Heatmap campus par horaire, suggestion "meilleur moment pour activer", patterns d'activité historiques.
 
-### D. APIs & Edge Functions
-- **Fonctionne** : 11 des 13 edge functions utilisent authenticateRequest correctement.
-- **Cassé** : `notifications` et `system` n'utilisent PAS le helper centralisé `_shared/auth.ts`. Elles ont leur propre implémentation et des actions cron sans auth.
-- **Risque** : Les actions `send-session-reminders` et `send-reengagement` sont appelables par n'importe qui.
+### 4. Pas de hub campus / communauté
+La plateforme est générique -- pas de contenu spécifique par campus, pas de tableau d'affichage, pas de feed communautaire.
 
-### E. Database & RLS
-- **Fonctionne** : Toutes les tables ont RLS activé. Policies cohérentes sur profiles, interactions, messages, events, user_roles.
-- **Cassé** : `event_participants` SELECT policy trop restrictive pour la feature "attendees preview" — seuls les participants et organisateurs peuvent voir.
-- **Non confirmé** : Inclusion radar matching (RPCs discover_users, get_nearby_signals avec inclusion boost) — la migration SQL a été créée mais le frontend n'appelle pas explicitement ces RPCs avec les nouveaux paramètres.
-
-### F. Sécurité
-- **Points forts** : Rate limiting systématique, Zod validation, sanitization (DOMPurify, stripHtml), HIBP password check, getClaims auth, SECURITY DEFINER functions.
-- **Faiblesses** : CORS wildcard, cron actions sans auth, verify_jwt=false partout (compensé par auth manuelle sauf pour les 2 fonctions citées).
-
-### G. Paiement & Billing
-- **Fonctionne structurellement** : create-checkout, check-subscription, customer-portal, confirm-session-purchase — tous avec auth + rate limiting + validation.
-- **Non confirmé** : Clés Stripe live vs test, webhooks de synchronisation (le projet utilise le polling comme stratégie documentée).
-
-### H. SEO
-- **Fonctionne** : Pages publiques (Landing, Help, Terms, Privacy, About, Contact, Premium, Onboarding) ont toutes des Helmet complets avec JSON-LD.
-- **Manquant** : 10+ pages protégées sans Helmet (pas de title, pas de noindex). NotFound sans Helmet.
-
-### I. i18n
-- **Fonctionne** : FR/EN/DE couverture sur les modules principaux.
-- **Douteux** : Clé `wellbeing.going` utilisée dans EventAttendeesPreview — probablement incorrecte ou manquante.
-- **Non confirmé** : Couverture complète de toutes les clés Erasmus+ nouvelles.
-
-### J. Observabilité
-- **Fonctionne** : Logger structuré, analytics events, cron monitoring, admin alerts, error reporter.
-- **Manquant** : Pas de health check public accessible (seulement via edge function avec body JSON).
+**Manquant :** Page campus, feed communautaire, événements campus, outils admin université.
 
 ---
 
-## 4. PLAN D'ACTION PRIORISÉ
+## Lacunes UX
 
-### Correctifs P0 (immédiat)
-1. **Créer InstitutionalDashboardPage** ou retirer les références. La migration `get_institutional_metrics` existe en DB — il faut le frontend.
-2. **Sécuriser les actions cron** dans `notifications` EF — ajouter une vérification que le token est le service role ou l'anon key du projet.
-3. **Corriger EventAttendeesPreview** — utiliser le RPC `get_event_attendees_public` au lieu de requêtes directes bloquées par RLS.
+### 5. Pas de tutoriel onboarding pour les fonctionnalités clés
+`PostSignupOnboardingPage` existe mais les fonctionnalités de la carte (activation signal, radar vs map, icebreakers) n'ont aucun guide. Un nouvel utilisateur voit une carte vide sans aide.
 
-### Correctifs P1 (rapide)
-4. Ajouter `<Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>` à toutes les pages protégées sans Helmet.
-5. Ajouter un badge "Demo / Données fictives" sur PresidentCockpitPage.
-6. Protéger `/newcomer` avec ProtectedRoute dans App.tsx.
-7. Remplacer `navigate('/')` dans le render de PresidentCockpitPage par `<Navigate to="/" replace />`.
+**Manquant :** Walkthrough interactif (tooltips/coach marks) à la première visite de la carte.
 
-### Améliorations P2
-8. Batch les requêtes EventAttendeesPreview.
-9. Unifier notifications/system EF pour utiliser `_shared/auth.ts`.
-10. Ajouter clé i18n `events.going` correcte.
+### 6. Pas de feedback haptique/audio pour les actions clés
+Activation du signal, réception d'une demande de connexion, détection d'un utilisateur proche -- rien de tout cela ne déclenche de vibration (malgré le setting `proximity_vibration`) ni de son.
 
-### Polish P3
-11. Helmet sur NotFound.
-12. aria-label sur InclusionRadarSection switches.
-13. Délai wellbeing check configurable.
+**Manquant :** Intégration API Vibration, signaux audio pour les alertes de proximité.
+
+### 7. Les empty states manquent d'engagement
+`EmptyRadarState` a un radar animé et un CTA d'invitation, ce qui est bien. Mais il manque du social proof, des suggestions d'activités, ou de la gamification "sois le premier".
+
+**Manquant :** Stats communautaires dans l'empty state, suggestion de sessions binôme programmées, countdown "prochaine activité à X".
+
+### 8. Pas de badges de vérification visibles sur la carte
+Les badges de vérification (étudiant vérifié) existent en DB mais ne sont affichés ni sur les marqueurs de carte ni dans `UserPopupCard`.
+
+**Manquant :** Icônes de badge sur les marqueurs, indicateurs de confiance dans UserPopupCard.
 
 ---
 
-## 5. IMPLÉMENTATION IMMÉDIATE (plan)
+## Différenciateurs manquants
 
-Les corrections suivantes seront implémentées :
+### 9. Pas de notes vocales / intégration audio
+`VoiceIcebreakerButton` génère des icebreakers audio. Mais pas de fonctionnalité de note vocale dans le chat, pas de message audio rapide.
 
-1. **Créer `InstitutionalDashboardPage.tsx`** avec route `/institutional-dashboard` protégée par ProtectedRoute + admin check, branchée sur le RPC `get_institutional_metrics` existant.
-2. **Corriger `EventAttendeesPreview.tsx`** pour utiliser `get_event_attendees_public` RPC.
-3. **Protéger `/newcomer`** avec ProtectedRoute dans App.tsx.
-4. **Ajouter Helmet noindex** à toutes les pages protégées qui en manquent (~10 pages).
-5. **Fix PresidentCockpitPage** : remplacer navigate() par `<Navigate>` + ajouter badge "Demo".
-6. **Sécuriser notifications EF cron actions** : vérifier que le header Authorization contient l'anon key ou le service role key du projet.
-7. **Ajouter Helmet à NotFound**.
+**Manquant :** Notes vocales dans le chat, playback d'icebreaker audio, feature walkie-talkie de proximité.
 
-### Ne sera PAS implémenté (nécessite décision/accès) :
-- Remplacement des données mock de PresidentCockpitPage par des données réelles (décision produit)
-- Restriction CORS (configuration Cloud)
-- Vérification Stripe live keys (accès externe)
-- Unification des helpers auth dans notifications/system (refactoring majeur)
+### 10. Pas de mode offline robuste
+La PWA est configurée mais pas de cache de données offline, pas de service worker pour background sync, pas d'indicateur offline au-delà de `OfflineBanner`.
+
+**Manquant :** Architecture offline-first avec sessions en cache, actions en queue, sync en background.
+
+---
+
+## Dette technique
+
+### 11. `(supabase as any)` dans useConnections
+Le hook `useConnections` utilise `(supabase as any)` partout (lignes 33, 50, 85, 113, 139). La table `connections` n'est probablement pas dans les types générés. Cela casse la type-safety et masque les erreurs.
+
+### 12. Mock data toujours utilisée dans signalStore
+`src/stores/signalStore.ts` utilise `generateMockUsers` (ligne 55) pour les utilisateurs proches. Le vrai hook `useActiveSignal` existe et fonctionne, mais le store référence encore les mocks. Ce store semble d'ailleurs inutilisé vu que `useMapPageLogic` utilise directement `useActiveSignal`.
+
+### 13. Pas de couverture E2E pour les flux critiques
+Les fichiers de test existent mais sont principalement unitaires. Pas de vrai test E2E pour : signup → activer signal → voir utilisateur proche → envoyer icebreaker → chat.
+
+---
+
+## Ordre de priorité d'implémentation
+
+```text
+Priorité 1 (Différenciation) :
+  [1] Découverte d'utilisateurs hors proximité
+  [2] Formation de groupe / meetup spontané
+  [5] Tutoriel onboarding interactif
+
+Priorité 2 (Engagement) :
+  [3] Suggestions intelligentes de timing
+  [7] Empty states enrichis (social proof, suggestions)
+  [8] Badges de vérification sur la carte
+
+Priorité 3 (Innovation) :
+  [9] Notes vocales dans le chat
+  [4] Hub campus / communauté
+  [6] Feedback haptique/audio
+
+Priorité 4 (Qualité) :
+  [11] Supprimer les `as any` dans useConnections
+  [12] Supprimer le signalStore mock inutilisé
+  [10] Robustesse offline
+  [13] Tests E2E
+```
 

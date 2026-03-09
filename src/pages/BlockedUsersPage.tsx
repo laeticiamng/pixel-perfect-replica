@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, UserX, Unlock, Loader2 } from 'lucide-react';
 import { useUserBlocks } from '@/hooks/useUserBlocks';
@@ -61,6 +62,8 @@ export default function BlockedUsersPage() {
   };
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <header className="safe-top px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
@@ -129,5 +132,6 @@ export default function BlockedUsersPage() {
       </AlertDialog>
       <BottomNav />
     </PageLayout>
+    </>
   );
 }

@@ -629,15 +629,35 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       case "send-session-reminders": {
-        // No auth required — called by internal CRON via pg_net.
-        console.log("[notifications] send-session-reminders: bypassing auth (cron/internal)");
+        // Cron/internal — verify the caller is using the project anon key or service role key
+        const cronToken = req.headers.get("Authorization")?.replace("Bearer ", "");
+        const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+        const SRK = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+        if (!cronToken || (cronToken !== ANON_KEY && cronToken !== SRK)) {
+          console.warn("[notifications] send-session-reminders: unauthorized caller");
+          return new Response(
+            JSON.stringify({ error: "Unauthorized — cron token required" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        console.log("[notifications] send-session-reminders: cron auth verified");
         response = await handleSessionReminders(supabase);
         break;
       }
 
       case "send-reengagement": {
-        // No auth required — called by daily CRON via pg_net.
-        console.log("[notifications] send-reengagement: bypassing auth (cron/internal)");
+        // Cron/internal — verify the caller is using the project anon key or service role key
+        const reengToken = req.headers.get("Authorization")?.replace("Bearer ", "");
+        const ANON_KEY_RE = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+        const SRK_RE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+        if (!reengToken || (reengToken !== ANON_KEY_RE && reengToken !== SRK_RE)) {
+          console.warn("[notifications] send-reengagement: unauthorized caller");
+          return new Response(
+            JSON.stringify({ error: "Unauthorized — cron token required" }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        console.log("[notifications] send-reengagement: cron auth verified");
         response = await handleReengagement(supabase);
         break;
       }

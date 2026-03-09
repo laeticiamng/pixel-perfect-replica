@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { PageLayout } from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -37,7 +38,6 @@ const formatDateTime = (dateString: string) =>
   });
 
 export default function PresidentCockpitPage() {
-  const navigate = useNavigate();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const [validations, setValidations] = useState<ActionValidation[]>(pendingValidationsMock);
   const [validationHistory, setValidationHistory] = useState<ValidationHistoryItem[]>([]);
@@ -88,15 +88,20 @@ export default function PresidentCockpitPage() {
 
   // Block non-admin access — after all hooks
   if (adminLoading) return <FullPageLoader />;
-  if (!isAdmin) {
-    navigate('/', { replace: true });
-    return null;
-  }
+  if (!isAdmin) return <Navigate to="/" replace />;
 
   return (
+    <>
+    <Helmet>
+      <title>President Cockpit — NEARVITY</title>
+      <meta name="robots" content="noindex, nofollow" />
+    </Helmet>
     <PageLayout className="pb-8 safe-bottom">
       <section className="safe-top px-4 md:px-6 py-4 space-y-2">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground">President Cockpit HQ</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">President Cockpit HQ</h1>
+          <Badge className="bg-signal-yellow/20 text-signal-yellow border-signal-yellow/30 text-xs">DEMO</Badge>
+        </div>
         <p className="text-muted-foreground text-sm md:text-base">
           Pilotage centralisé des 7 plateformes SaaS d&apos;EMOTIONSCARE SASU.
         </p>
@@ -289,5 +294,6 @@ export default function PresidentCockpitPage() {
         </Card>
       </section>
     </PageLayout>
+    </>
   );
 }
