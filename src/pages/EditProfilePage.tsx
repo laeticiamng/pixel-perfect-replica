@@ -15,6 +15,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared';
 import { FavoriteActivitiesSelector } from '@/components/social';
 import { PublicProfilePreview } from '@/components/profile';
+import { InclusionRadarSection } from '@/components/profile/InclusionRadarSection';
 import { useTranslation } from '@/lib/i18n';
 import { ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
