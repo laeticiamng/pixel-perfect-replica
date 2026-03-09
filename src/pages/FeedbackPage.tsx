@@ -49,6 +49,8 @@ export default function FeedbackPage() {
   };
 
   return (
+    <>
+    <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('feedback.title')} backTo="/profile" />
 
