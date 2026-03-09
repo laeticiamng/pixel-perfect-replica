@@ -204,6 +204,9 @@ export default function EventsPage() {
           </div>
         </div>
 
+        {/* Social layer: who else is going */}
+        <EventAttendeesPreview eventId={event.id} />
+
         <div className="flex gap-2">
           {isJoined ? (
             <>
