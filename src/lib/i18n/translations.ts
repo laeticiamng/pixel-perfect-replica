@@ -228,7 +228,8 @@ export const translations = {
   landing: {
     meetingsReinvented: { en: 'Meetings reinvented', fr: 'La rencontre réinventée', de: 'Treffen neu gedacht' },
     seeWhoIsOpen: { en: "Find someone to", fr: 'Trouve quelqu\'un pour', de: 'Finde jemanden zum' },
-    openToInteract: { en: 'do things with, right now.', fr: 'faire des choses avec toi, maintenant.', de: 'gemeinsam etwas unternehmen, jetzt.' },
+    openToInteract: { en: 'do things with, right now.', fr: 'faire quelque chose ensemble, maintenant.', de: 'gemeinsam etwas unternehmen, jetzt.' },
+    alreadyAccount: { en: 'Already have an account?', fr: 'Déjà un compte ?', de: 'Bereits ein Konto?' },
     heroSubtitle: { en: 'See who around you wants to study, eat, work out or just chat — and meet them in real life.', fr: 'Vois qui autour de toi veut réviser, manger, faire du sport ou discuter — et retrouve-le en vrai.', de: 'Sieh, wer in deiner Nähe lernen, essen, trainieren oder reden will — und triff die Person im echten Leben.' },
     heroTagline: { en: 'The student app for spontaneous IRL meetups', fr: 'L\'app étudiante pour se retrouver spontanément IRL', de: 'Die Studenten-App für spontane IRL-Treffen' },
     createRealConnections: { en: 'Real people. Real activities. Right here.', fr: 'Des vraies personnes. Des vraies activités. Ici même.', de: 'Echte Menschen. Echte Aktivitäten. Genau hier.' },
