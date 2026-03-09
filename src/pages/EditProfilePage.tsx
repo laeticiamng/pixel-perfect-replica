@@ -37,6 +37,10 @@ export default function EditProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
   const [isCityGuide, setIsCityGuide] = useState(false);
   const [isNewcomer, setIsNewcomer] = useState(false);
+  const [inclusionInternational, setInclusionInternational] = useState(false);
+  const [inclusionDisability, setInclusionDisability] = useState(false);
+  const [inclusionLgbtq, setInclusionLgbtq] = useState(false);
+  const [inclusionFirstGen, setInclusionFirstGen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
