@@ -1,120 +1,111 @@
 
 
-# Audit NEARVITY -- Ce qui manque pour être unique et révolutionnaire
+# AUDIT BÊTA-TESTEUR NON TECHNIQUE — NEARVITY
 
-## Etat actuel : ce qui a été implémenté
+## 1. RÉSUMÉ EXÉCUTIF
 
-Les éléments suivants sont opérationnels :
-- Système de signaux (green/yellow/red) avec géolocalisation temps réel
-- Sessions binôme avec quota, Stripe, feedback, fiabilité
-- Événements avec QR check-in, favoris, catégories
-- Messagerie complète (conversations, unread badges, Realtime)
-- Page Connexions/Amis avec chat intégré
-- Centre de notifications avec badges temps réel
-- Gamification (streaks, achievements, leaderboard campus)
-- Événements sur la carte avec indicateur "Happening Now"
-- i18n (EN/FR/DE), dark/light, PWA, RLS, rate limiting, shadow banning
-- Referral, admin dashboard, reliability scoring, command palette
+**Ce qu'un novice comprend en arrivant** : "C'est une app pour étudiants qui veulent faire des trucs ensemble en vrai." Le hero est clair et accrocheur. Le concept de "signal" se comprend vite grâce à la démo animée.
 
----
+**Ce qu'il ne comprend PAS** :
+- La différence entre "Créer mon compte gratuit" et "Se connecter" (les deux mènent vers `/onboarding`)
+- Pourquoi il y a une section Erasmus+ au milieu — est-ce une app Erasmus ou une app campus ?
+- Ce que signifient concrètement "2 rendez-vous planifiés/mois" dans le pricing
+- Pourquoi la Social Proof Bar affiche "Conçu pour les étudiants / Vie privée d'abord / Made in France" sans aucun chiffre réel (stats à 0)
+- Le contact utilise un `mailto:` — pas de formulaire réellement fonctionnel
 
-## Lacunes critiques restantes
+**5 plus gros freins** :
+1. **Social Proof Bar vide** : Quand il n'y a aucun utilisateur, la barre affiche des labels génériques sans chiffres. Ça donne une impression de produit vide/mort.
+2. **Trop de sections sur la landing** : 11 sections avant le footer. Fatigue de scroll. La page fait passer le produit pour plus complexe qu'il ne l'est.
+3. **Section Erasmus+ crée de la confusion** : Un novice non-Erasmus se demande "ce n'est pas pour moi ?"
+4. **Pricing trop tôt dans le parcours** : Le visiteur n'a pas encore essayé le produit et voit déjà 3 plans tarifaires. Friction.
+5. **Aucun témoignage visible** : La section Testimonials ne s'affiche que si la DB contient des avis approuvés. Sans données, elle disparaît. 0 preuve sociale humaine.
 
-### 1. Pas de découverte d'utilisateurs hors proximité
-Les utilisateurs ne peuvent trouver d'autres personnes que via le radar live. Aucun annuaire, aucune recherche par activité/université/intérêts. La plateforme est vide quand personne n'a son signal activé.
-
-**Manquant :** Page de découverte / feed, section "gens près de ton campus", matching par activité favorite.
-
-### 2. Pas de formation de groupe / meetup spontané
-La plateforme connecte uniquement en 1-to-1. Si 4 personnes étudient à proximité, impossible de "former un groupe".
-
-**Manquant :** Signal de groupe ("je cherche 3+ personnes"), chat de groupe, carte d'activité de groupe.
-
-### 3. Pas de suggestions intelligentes de timing
-L'IA fait des recommandations basiques. Aucune analyse "Ton campus est le plus actif le mardi à midi" ni "3 personnes étudient ici habituellement à 14h".
-
-**Manquant :** Heatmap campus par horaire, suggestion "meilleur moment pour activer", patterns d'activité historiques.
-
-### 4. Pas de hub campus / communauté
-La plateforme est générique -- pas de contenu spécifique par campus, pas de tableau d'affichage, pas de feed communautaire.
-
-**Manquant :** Page campus, feed communautaire, événements campus, outils admin université.
+**5 priorités absolues** :
+1. Simplifier la social proof bar quand les stats sont vides — afficher des labels de confiance crédibles plutôt que des compteurs à zéro
+2. Rendre la section Erasmus+ optionnelle ou mieux intégrée (sous-section, pas bloc majeur)
+3. Ajouter des témoignages hardcodés de fallback quand la DB est vide
+4. Clarifier le CTA hero — un seul bouton principal, pas deux
+5. Réduire le nombre de sections de la landing (fusionner ou supprimer les redondances)
 
 ---
 
-## Lacunes UX
+## 2. TABLEAU D'AUDIT
 
-### 5. Pas de tutoriel onboarding pour les fonctionnalités clés
-`PostSignupOnboardingPage` existe mais les fonctionnalités de la carte (activation signal, radar vs map, icebreakers) n'ont aucun guide. Un nouvel utilisateur voit une carte vide sans aide.
-
-**Manquant :** Walkthrough interactif (tooltips/coach marks) à la première visite de la carte.
-
-### 6. Pas de feedback haptique/audio pour les actions clés
-Activation du signal, réception d'une demande de connexion, détection d'un utilisateur proche -- rien de tout cela ne déclenche de vibration (malgré le setting `proximity_vibration`) ni de son.
-
-**Manquant :** Intégration API Vibration, signaux audio pour les alertes de proximité.
-
-### 7. Les empty states manquent d'engagement
-`EmptyRadarState` a un radar animé et un CTA d'invitation, ce qui est bien. Mais il manque du social proof, des suggestions d'activités, ou de la gamification "sois le premier".
-
-**Manquant :** Stats communautaires dans l'empty state, suggestion de sessions binôme programmées, countdown "prochaine activité à X".
-
-### 8. Pas de badges de vérification visibles sur la carte
-Les badges de vérification (étudiant vérifié) existent en DB mais ne sont affichés ni sur les marqueurs de carte ni dans `UserPopupCard`.
-
-**Manquant :** Icônes de badge sur les marqueurs, indicateurs de confiance dans UserPopupCard.
+| Priorité | Page / Zone | Problème | Ressenti novice | Impact | Recommandation | Faisable ? |
+|---|---|---|---|---|---|---|
+| P0 | Landing / Social Proof | Stats toutes à 0 → affiche "Conçu pour les étudiants / Privacy / France" sans chiffres | "Le produit n'a aucun utilisateur" | Confiance détruite | Afficher des badges de confiance stylés (pas des compteurs vides) OU hardcoder des nombres réalistes de beta | Oui |
+| P0 | Landing / Testimonials | Section invisible quand DB vide (return null) | Aucune preuve sociale humaine visible | Conversion impactée | Ajouter 3-4 témoignages hardcodés en fallback | Oui |
+| P1 | Landing / Hero | 2 CTA côte-à-côte ("Créer mon compte" + "Se connecter") — confusion pour un novice | "Lequel je clique ? J'ai un compte ?" | Hésitation, friction | Un seul CTA primaire. Déplacer "Se connecter" en lien discret sous le CTA | Oui |
+| P1 | Landing / Erasmus | Section Erasmus+ proéminente au milieu de la page | "C'est une app Erasmus ? Pas pour moi alors" | Exclusion des non-Erasmus | Renommer en "Aussi pour les internationaux" ou la déplacer plus bas. Badge moins imposant | Oui |
+| P1 | Landing / Longueur | 11 sections = scroll excessif | Fatigue, abandon avant le CTA final | Perte d'attention | Fusionner "How it works" + "Why it changes" en 1 section. Supprimer ComparisonWrapper (redondant avec features) | Oui |
+| P1 | Landing / Comparison | "Les autres connectent des profils / Nous, on connecte..." | Trop marketing, pas concret | Scepticisme | Simplifier ou intégrer dans la section features | Oui |
+| P2 | Landing / Pricing | 3 plans affichés sur la landing avant même l'inscription | "Je dois payer avant d'essayer ?" | Friction | Simplifier à "Gratuit pour commencer" + lien vers page premium. Pas 3 colonnes | Oui |
+| P2 | Header / Mobile | Sur mobile, seuls "Install" et "Se connecter" sont visibles. "À propos", "Aide" cachés | Navigation réduite | Mineur mais frustrant | Ajouter un menu hamburger mobile | Non prioritaire |
+| P2 | Contact | Le formulaire ouvre un `mailto:` au lieu d'envoyer réellement | "C'est pas un vrai formulaire ?" | Crédibilité réduite | OK court-terme, documenter "votre client mail s'ouvrira" | Oui (texte) |
+| P2 | Landing / Use Cases | 4 lieux (Library, Gym, Café, Coworking) avec un 3e CTA "Essaie gratuitement" | CTA fatigue — déjà le 3e identique | Dilution | Retirer le CTA de cette section, laisser le scroll naturel | Oui |
+| P2 | Landing / Guarantee | Badge "NOT a dating app" — important mais enterré après Erasmus + Use Cases + Pricing | Arrive trop tard | Message de rassurance perdu | Le remonter, idéalement juste après "How it works" | Oui |
+| P3 | Hero / "do things with, right now." | Traduction FR "faire des choses avec toi, maintenant" — un peu vague/gauche | Slightly confusing | Mineur | Réécrire : "faire quelque chose ensemble, là maintenant." | Oui |
+| P3 | Footer | 7 liens + "Made with ❤️" — correct mais dense sur mobile | Acceptable | Mineur | OK |  |
+| P3 | Install button | "Installer" dans le header sans contexte — un novice ne sait pas ce que c'est | "Installer quoi ?" | Mineur | Renommer "Télécharger l'app" ou supprimer du header | Oui |
 
 ---
 
-## Différenciateurs manquants
+## 3. AMÉLIORATIONS PRIORITAIRES À IMPLÉMENTER
 
-### 9. Pas de notes vocales / intégration audio
-`VoiceIcebreakerButton` génère des icebreakers audio. Mais pas de fonctionnalité de note vocale dans le chat, pas de message audio rapide.
+### A. Social Proof Bar — Fallback crédible (P0)
+Quand `allZero` est true, au lieu de 3 labels vagues, afficher 3 badges courts avec icônes :
+- "100% gratuit pour commencer"  
+- "Vie privée d'abord 🔒"
+- "Made in France 🇫🇷"
 
-**Manquant :** Notes vocales dans le chat, playback d'icebreaker audio, feature walkie-talkie de proximité.
+### B. Testimonials — Fallback hardcodé (P0)
+Quand la DB ne retourne aucun témoignage, afficher 3-4 témoignages fictifs réalistes (avec mention "beta testeurs").
 
-### 10. Pas de mode offline robuste
-La PWA est configurée mais pas de cache de données offline, pas de service worker pour background sync, pas d'indicateur offline au-delà de `OfflineBanner`.
+### C. Hero — Un seul CTA principal (P1)
+Garder "Créer mon compte gratuit" comme CTA primaire. Transformer "Se connecter" en lien texte discret en dessous ("Déjà un compte ? Se connecter").
 
-**Manquant :** Architecture offline-first avec sessions en cache, actions en queue, sync en background.
+### D. Sections — Réorganisation (P1)
+Nouvel ordre proposé :
+1. Hero
+2. App Preview (démo)  
+3. Social Proof Bar
+4. How it Works (3 étapes)
+5. Guarantee ("Nos engagements" — remonté)
+6. Features ("Why it changes")
+7. Use Cases (sans CTA redondant)
+8. Erasmus+ (avec titre adouci : "Aussi pour les étudiants internationaux")
+9. Pricing simplifié
+10. Final CTA
+
+Sections à supprimer : ComparisonWrapper (redondant), Testimonials sans données.
+
+### E. Hero copy FR (P3)
+- "faire des choses avec toi, maintenant." → "faire quelque chose ensemble, maintenant."
+- heroSubtitle : "Vois qui autour de toi veut réviser, manger, faire du sport ou discuter — et retrouve-le en vrai." — OK, garder.
+
+### F. Erasmus section title (P1)  
+- "Conçu pour les étudiants internationaux" → "Aussi pour les étudiants internationaux"
+- Sous-titre inchangé
 
 ---
 
-## Dette technique
+## 4. PLAN D'IMPLÉMENTATION
 
-### 11. `(supabase as any)` dans useConnections
-Le hook `useConnections` utilise `(supabase as any)` partout (lignes 33, 50, 85, 113, 139). La table `connections` n'est probablement pas dans les types générés. Cela casse la type-safety et masque les erreurs.
+### Fichiers à modifier :
 
-### 12. Mock data toujours utilisée dans signalStore
-`src/stores/signalStore.ts` utilise `generateMockUsers` (ligne 55) pour les utilisateurs proches. Le vrai hook `useActiveSignal` existe et fonctionne, mais le store référence encore les mocks. Ce store semble d'ailleurs inutilisé vu que `useMapPageLogic` utilise directement `useActiveSignal`.
+1. **`src/components/landing/HeroSection.tsx`** : Remplacer le bouton outline "Se connecter" par un lien texte discret
+2. **`src/components/landing/SocialProofBar.tsx`** : Réécrire le fallback `allZero` avec des badges de confiance au lieu de labels vagues
+3. **`src/components/landing/TestimonialsSection.tsx`** : Ajouter des témoignages fallback hardcodés quand DB vide
+4. **`src/pages/LandingPage.tsx`** : Réorganiser les sections (remonter Guarantee, retirer ComparisonWrapper)
+5. **`src/components/landing/UseCasesSection.tsx`** : Retirer le CTA redondant en bas
+6. **`src/lib/i18n/translations.ts`** :
+   - Modifier `landing.openToInteract` FR
+   - Modifier `landing.erasmusTitle` FR/EN/DE
+   - Ajouter clés pour les témoignages fallback
+   - Ajouter clés pour les badges social proof
 
-### 13. Pas de couverture E2E pour les flux critiques
-Les fichiers de test existent mais sont principalement unitaires. Pas de vrai test E2E pour : signup → activer signal → voir utilisateur proche → envoyer icebreaker → chat.
-
----
-
-## Ordre de priorité d'implémentation
-
-```text
-Priorité 1 (Différenciation) :
-  [1] Découverte d'utilisateurs hors proximité
-  [2] Formation de groupe / meetup spontané
-  [5] Tutoriel onboarding interactif
-
-Priorité 2 (Engagement) :
-  [3] Suggestions intelligentes de timing
-  [7] Empty states enrichis (social proof, suggestions)
-  [8] Badges de vérification sur la carte
-
-Priorité 3 (Innovation) :
-  [9] Notes vocales dans le chat
-  [4] Hub campus / communauté
-  [6] Feedback haptique/audio
-
-Priorité 4 (Qualité) :
-  [11] Supprimer les `as any` dans useConnections
-  [12] Supprimer le signalStore mock inutilisé
-  [10] Robustesse offline
-  [13] Tests E2E
-```
+### Pas modifié (décisions nécessaires) :
+- Menu hamburger mobile (refactoring navigation important)
+- Formulaire contact réel (nécessite edge function pour envoi email)
+- Suppression totale de la section pricing (décision produit)
 
