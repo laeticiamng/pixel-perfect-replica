@@ -38,7 +38,6 @@ const formatDateTime = (dateString: string) =>
   });
 
 export default function PresidentCockpitPage() {
-  const navigate = useNavigate();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const [validations, setValidations] = useState<ActionValidation[]>(pendingValidationsMock);
   const [validationHistory, setValidationHistory] = useState<ValidationHistoryItem[]>([]);
