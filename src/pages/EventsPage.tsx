@@ -14,6 +14,7 @@ import {
   EventCategorySelector, EventCategoryBadge, type EventCategory,
   EventFavoriteButton
 } from '@/components/events';
+import { EventAttendeesPreview } from '@/components/events/EventAttendeesPreview';
 import { useEvents, Event } from '@/hooks/useEvents';
 import { useEventFavorites } from '@/hooks/useEventFavorites';
 import { useLocationStore } from '@/stores/locationStore';
@@ -202,6 +203,9 @@ export default function EventsPage() {
             <span>{t('events.max')} {event.max_participants}</span>
           </div>
         </div>
+
+        {/* Social layer: who else is going */}
+        <EventAttendeesPreview eventId={event.id} />
 
         <div className="flex gap-2">
           {isJoined ? (

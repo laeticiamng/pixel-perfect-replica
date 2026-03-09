@@ -15,6 +15,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared';
 import { FavoriteActivitiesSelector } from '@/components/social';
 import { PublicProfilePreview } from '@/components/profile';
+import { InclusionRadarSection } from '@/components/profile/InclusionRadarSection';
 import { useTranslation } from '@/lib/i18n';
 import { ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
@@ -36,6 +37,10 @@ export default function EditProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || '');
   const [isCityGuide, setIsCityGuide] = useState(false);
   const [isNewcomer, setIsNewcomer] = useState(false);
+  const [inclusionInternational, setInclusionInternational] = useState(false);
+  const [inclusionDisability, setInclusionDisability] = useState(false);
+  const [inclusionLgbtq, setInclusionLgbtq] = useState(false);
+  const [inclusionFirstGen, setInclusionFirstGen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -45,7 +50,7 @@ export default function EditProfilePage() {
       if (!user) return;
       const { data } = await supabase
         .from('profiles')
-        .select('bio, favorite_activities, birth_year, is_city_guide, is_newcomer')
+        .select('bio, favorite_activities, birth_year, is_city_guide, is_newcomer, inclusion_international, inclusion_disability, inclusion_lgbtq, inclusion_first_gen')
         .eq('id', user.id)
         .single();
       
@@ -57,6 +62,10 @@ export default function EditProfilePage() {
         if (data.birth_year) setBirthYear(String(data.birth_year));
         setIsCityGuide(data.is_city_guide ?? false);
         setIsNewcomer(data.is_newcomer ?? false);
+        setInclusionInternational(data.inclusion_international ?? false);
+        setInclusionDisability(data.inclusion_disability ?? false);
+        setInclusionLgbtq(data.inclusion_lgbtq ?? false);
+        setInclusionFirstGen(data.inclusion_first_gen ?? false);
       }
     };
     fetchProfileData();
@@ -174,6 +183,10 @@ export default function EditProfilePage() {
         birth_year: birthYear ? parseInt(birthYear, 10) : null,
         favorite_activities: favoriteActivities,
         is_city_guide: isCityGuide,
+        inclusion_international: inclusionInternational,
+        inclusion_disability: inclusionDisability,
+        inclusion_lgbtq: inclusionLgbtq,
+        inclusion_first_gen: inclusionFirstGen,
       })
       .eq('id', user?.id);
     
@@ -314,6 +327,18 @@ export default function EditProfilePage() {
             />
             <p className="text-xs text-muted-foreground">{t('editProfile.birthYearPrivacy')}</p>
           </div>
+
+          {/* Inclusion Radar */}
+          <InclusionRadarSection
+            inclusionInternational={inclusionInternational}
+            inclusionDisability={inclusionDisability}
+            inclusionLgbtq={inclusionLgbtq}
+            inclusionFirstGen={inclusionFirstGen}
+            onChangeInternational={setInclusionInternational}
+            onChangeDisability={setInclusionDisability}
+            onChangeLgbtq={setInclusionLgbtq}
+            onChangeFirstGen={setInclusionFirstGen}
+          />
 
           {/* Erasmus section */}
           <div className="space-y-3 p-4 rounded-xl bg-muted/50 border border-border">
