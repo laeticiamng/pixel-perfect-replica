@@ -337,7 +337,7 @@ export const translations = {
     allRightsReserved: { en: 'All rights reserved.', fr: 'Tous droits réservés.', de: 'Alle Rechte vorbehalten.' },
     radarMe: { en: 'Me', fr: 'Moi', de: 'Ich' },
     erasmusBadge: { en: 'Erasmus+ Ready', fr: 'Prêt pour Erasmus+', de: 'Erasmus+ Ready' },
-    erasmusTitle: { en: 'Built for international students', fr: 'Conçu pour les étudiants internationaux', de: 'Für internationale Studierende entwickelt' },
+    erasmusTitle: { en: 'Also for international students', fr: 'Aussi pour les étudiants internationaux', de: 'Auch für internationale Studierende' },
     erasmusSubtitle: { en: 'Arrive in a new city and feel at home from day one.', fr: 'Arrive dans une nouvelle ville et sens-toi chez toi dès le premier jour.', de: 'Komm in einer neuen Stadt an und fühle dich vom ersten Tag an zuhause.' },
     erasmusFeature1Title: { en: 'City Guides', fr: 'Guides locaux', de: 'Stadtführer' },
     erasmusFeature1Desc: { en: 'Get matched with local students who volunteer to help you discover your new city.', fr: 'Connecte-toi avec des étudiants locaux qui t\'aident à découvrir ta nouvelle ville.', de: 'Werde mit lokalen Studierenden verbunden, die dir helfen, deine neue Stadt zu entdecken.' },
