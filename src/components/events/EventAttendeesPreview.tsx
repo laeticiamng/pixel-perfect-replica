@@ -60,8 +60,8 @@ export function EventAttendeesPreview({ eventId, className }: EventAttendeesPrev
       </div>
       <span className="text-xs text-muted-foreground">
         {count === 1
-          ? `1 ${t('wellbeing.going') || 'going'}`
-          : `${count} ${t('wellbeing.going') || 'going'}`}
+          ? `1 ${t('events.going')}`
+          : `${count} ${t('events.going')}`}
       </span>
     </div>
   );

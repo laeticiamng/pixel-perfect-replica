@@ -258,21 +258,8 @@ export default function AdminDashboardPage() {
     return null;
   };
 
-  if (!isAdmin) {
-    return (
-      <PageLayout className="pb-8 safe-bottom">
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <Shield className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-foreground mb-2">{t('admin.restrictedAccess')}</h2>
-            <p className="text-muted-foreground">
-              {t('admin.restrictedDesc')}
-            </p>
-          </div>
-        </div>
-      </PageLayout>
-    );
-  }
+  if (adminLoading) return <FullPageLoader />;
+  if (!isAdmin) return <Navigate to="/" replace />;
 
   return (
     <>

@@ -888,6 +888,7 @@ export const translations = {
     checkinError: { en: 'Error during check-in', fr: 'Erreur lors du check-in', de: 'Fehler beim Einchecken' },
     anonymous: { en: 'Anonymous', fr: 'Anonyme', de: 'Anonym' },
     dateAt: { en: 'at', fr: 'à', de: 'um' },
+    going: { en: 'going', fr: 'inscrit(s)', de: 'dabei' },
   },
 
   // Event check-in page
