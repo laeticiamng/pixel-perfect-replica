@@ -92,9 +92,17 @@ export default function PresidentCockpitPage() {
   if (!isAdmin) return <Navigate to="/" replace />;
 
   return (
+    <>
+    <Helmet>
+      <title>President Cockpit — NEARVITY</title>
+      <meta name="robots" content="noindex, nofollow" />
+    </Helmet>
     <PageLayout className="pb-8 safe-bottom">
       <section className="safe-top px-4 md:px-6 py-4 space-y-2">
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground">President Cockpit HQ</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">President Cockpit HQ</h1>
+          <Badge className="bg-signal-yellow/20 text-signal-yellow border-signal-yellow/30 text-xs">DEMO</Badge>
+        </div>
         <p className="text-muted-foreground text-sm md:text-base">
           Pilotage centralisé des 7 plateformes SaaS d&apos;EMOTIONSCARE SASU.
         </p>
