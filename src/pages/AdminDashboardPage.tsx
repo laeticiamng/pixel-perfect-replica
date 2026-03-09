@@ -58,9 +58,8 @@ const CHART_COLORS = [
 
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { t, locale } = useTranslation();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const [isLoading, setIsLoading] = useState(true);
   
   // System stats from edge function
@@ -84,28 +83,6 @@ export default function AdminDashboardPage() {
   const [categoryCounts, setCategoryCounts] = useState<CategoryCounts[]>([]);
   const [pageViewCounts, setPageViewCounts] = useState<PageViewCounts[]>([]);
   const [hourlyActivity, setHourlyActivity] = useState<{ hour: string; count: number }[]>([]);
-
-  // Check admin status
-  useEffect(() => {
-    const checkAdmin = async () => {
-      if (!user) {
-        navigate('/');
-        return;
-      }
-
-      const { data } = await supabase
-        .rpc('has_role', { _user_id: user.id, _role: 'admin' });
-      
-      if (!data) {
-        navigate('/');
-        return;
-      }
-      
-      setIsAdmin(true);
-    };
-
-    checkAdmin();
-  }, [user, navigate]);
 
   // Sync system stats when available
   useEffect(() => {
