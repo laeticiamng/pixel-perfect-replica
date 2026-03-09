@@ -36,6 +36,8 @@ import { ACTIVITIES } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import { isEventHappeningNow } from '@/components/map/EventMapMarker';
 import { AnimatePresence } from 'framer-motion';
+import { WellbeingCheckModal } from '@/components/wellbeing/WellbeingCheckModal';
+import { useWellbeingCheck } from '@/hooks/useWellbeingCheck';
 import toast from 'react-hot-toast';
 
 export default function MapPage() {
