@@ -328,6 +328,18 @@ export default function EditProfilePage() {
             <p className="text-xs text-muted-foreground">{t('editProfile.birthYearPrivacy')}</p>
           </div>
 
+          {/* Inclusion Radar */}
+          <InclusionRadarSection
+            inclusionInternational={inclusionInternational}
+            inclusionDisability={inclusionDisability}
+            inclusionLgbtq={inclusionLgbtq}
+            inclusionFirstGen={inclusionFirstGen}
+            onChangeInternational={setInclusionInternational}
+            onChangeDisability={setInclusionDisability}
+            onChangeLgbtq={setInclusionLgbtq}
+            onChangeFirstGen={setInclusionFirstGen}
+          />
+
           {/* Erasmus section */}
           <div className="space-y-3 p-4 rounded-xl bg-muted/50 border border-border">
             <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
