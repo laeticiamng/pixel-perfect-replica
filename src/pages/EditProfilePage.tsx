@@ -183,6 +183,10 @@ export default function EditProfilePage() {
         birth_year: birthYear ? parseInt(birthYear, 10) : null,
         favorite_activities: favoriteActivities,
         is_city_guide: isCityGuide,
+        inclusion_international: inclusionInternational,
+        inclusion_disability: inclusionDisability,
+        inclusion_lgbtq: inclusionLgbtq,
+        inclusion_first_gen: inclusionFirstGen,
       })
       .eq('id', user?.id);
     
