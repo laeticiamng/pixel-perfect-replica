@@ -58,10 +58,10 @@ export function SocialProofBar() {
   // Show static fallback when no real stats yet
   const allZero = !stats || (stats.active_users_now === 0 && stats.sessions_this_month === 0 && stats.completed_sessions === 0);
 
-  const fallbackStats = [
-    { icon: Users, value: 0, suffix: '', label: t('landing.trustedStudents') },
-    { icon: Zap, value: 0, suffix: '', label: t('landing.trustedPrivacy') },
-    { icon: MapPin, value: 0, suffix: '', label: t('landing.trustedMadeInFrance') },
+  const fallbackBadges = [
+    { icon: Users, label: t('landing.trustBadgeFree') },
+    { icon: Zap, label: t('landing.trustBadgePrivacy') },
+    { icon: MapPin, label: t('landing.trustBadgeFrance') },
   ];
 
   const displayStats = allZero ? fallbackStats : [
