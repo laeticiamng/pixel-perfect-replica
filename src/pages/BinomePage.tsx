@@ -84,7 +84,7 @@ export default function BinomePage() {
         }
       />
         
-      <div className="px-6 space-y-4">
+      <div className="px-4 sm:px-6 space-y-4">
         {usage && <SessionQuotaBadge sessionsCreated={usage.sessionsCreated} sessionsLimit={usage.sessionsLimit} isPremium={usage.isPremium} canCreate={usage.canCreate} purchasedSessions={usage.purchasedSessions} />}
         
         {!canCreate && !isPremium && <PremiumNudge />}

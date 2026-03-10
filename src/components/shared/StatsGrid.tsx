@@ -17,12 +17,12 @@ interface StatsGridProps {
 
 export function StatsGrid({ items, columns = 2, className }: StatsGridProps) {
   return (
-    <div 
+    <div
       className={cn(
-        "grid gap-4",
+        "grid gap-2 sm:gap-4",
         columns === 2 && "grid-cols-2",
-        columns === 3 && "grid-cols-3",
-        columns === 4 && "grid-cols-4",
+        columns === 3 && "grid-cols-2 sm:grid-cols-3",
+        columns === 4 && "grid-cols-2 sm:grid-cols-3 md:grid-cols-4",
         className
       )}
     >
@@ -33,7 +33,7 @@ export function StatsGrid({ items, columns = 2, className }: StatsGridProps) {
             key={index}
             onClick={item.onClick}
             className={cn(
-              "glass rounded-xl p-4 animate-slide-up text-left",
+              "glass rounded-xl p-3 sm:p-4 animate-slide-up text-left",
               item.onClick && "hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             )}
             style={{ animationDelay: `${0.05 * index}s` }}
@@ -86,8 +86,8 @@ export function StatCard({ icon, label, value, colorClass, onClick, className }:
         <span className="text-sm text-muted-foreground">{label}</span>
       </div>
       <p className={cn(
-        "text-3xl font-bold",
-        colorClass?.includes('coral') 
+        "text-2xl sm:text-3xl font-bold",
+        colorClass?.includes('coral')
           ? "bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent"
           : "text-foreground"
       )}>

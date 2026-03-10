@@ -95,7 +95,7 @@ export function CreateSessionForm({ onSubmit, onCancel, isLoading }: CreateSessi
           {form.formState.errors.activity && <p className="text-sm text-destructive mt-1">{form.formState.errors.activity.message}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField control={form.control} name="scheduled_date" render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>{t('createSession.date')}</FormLabel>
@@ -174,10 +174,10 @@ export function CreateSessionForm({ onSubmit, onCancel, isLoading }: CreateSessi
         <FormField control={form.control} name="max_participants" render={({ field }) => (
           <FormItem>
             <FormLabel className="flex items-center gap-2"><Users className="h-4 w-4" />{t('createSession.maxParticipants')}</FormLabel>
-            <div className="flex gap-2 flex-wrap">
+            <div className="grid grid-cols-5 gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                 <Button key={num} type="button" variant={field.value === num ? "default" : "outline"} size="sm"
-                  className={cn("w-10 h-10", field.value === num && "bg-coral hover:bg-coral/90")} onClick={() => field.onChange(num)}>
+                  className={cn("h-10", field.value === num && "bg-coral hover:bg-coral/90")} onClick={() => field.onChange(num)}>
                   {num}
                 </Button>
               ))}

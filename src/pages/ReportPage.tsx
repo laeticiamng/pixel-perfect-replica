@@ -75,7 +75,7 @@ export default function ReportPage() {
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('report.title')} backTo="/profile" />
 
-      <div className="px-6 py-8">
+      <div className="px-4 sm:px-6 py-8">
         {/* Info Banner */}
         <div className="glass rounded-xl p-4 mb-6 border-2 border-signal-yellow/30 animate-fade-in">
           <div className="flex items-center gap-3">

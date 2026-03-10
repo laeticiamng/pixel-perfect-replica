@@ -24,7 +24,7 @@ export function ActivityModal({
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center bg-background/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-[500px] glass-strong rounded-t-3xl p-6 pb-8 animate-slide-up">
+      <div className="w-full sm:max-w-[500px] glass-strong rounded-t-3xl p-4 sm:p-6 pb-6 sm:pb-8 animate-slide-up">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-xl font-bold text-foreground">{t('activityModal.title')}</h2>

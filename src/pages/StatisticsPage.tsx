@@ -97,13 +97,13 @@ export default function StatisticsPage() {
   if (isLoading) {
     return (
       <PageLayout className="pb-28 safe-bottom">
-        <header className="safe-top px-6 py-4 flex items-center gap-4">
+        <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
           <h1 className="text-xl font-bold text-foreground">{t('statistics.title')}</h1>
         </header>
-        <div className="px-6 space-y-6">
+        <div className="px-4 sm:px-6 space-y-4 sm:space-y-6">
           <div className="grid grid-cols-2 gap-4">{[...Array(4)].map((_, i) => <StatCardSkeleton key={i} />)}</div>
           <ChartSkeleton /><ChartSkeleton />
         </div>
@@ -131,7 +131,7 @@ export default function StatisticsPage() {
     <>
     <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -141,7 +141,7 @@ export default function StatisticsPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-4 sm:space-y-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-4">
           <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.05s' }}>
@@ -149,33 +149,33 @@ export default function StatisticsPage() {
               <div className="p-1.5 rounded-lg bg-coral/20"><Users className="h-4 w-4 text-coral" /></div>
               <span className="text-sm text-muted-foreground">{t('statistics.totalMeetings')}</span>
             </div>
-            <p className="text-3xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.interactions || 0}</p>
+            <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.interactions || 0}</p>
           </div>
           <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
             <div className="flex items-center gap-2 mb-2">
               <div className="p-1.5 rounded-lg bg-signal-green/20"><Clock className="h-4 w-4 text-signal-green" /></div>
               <span className="text-sm text-muted-foreground">{t('statistics.hoursActive')}</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
           </div>
           <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.15s' }}>
             <div className="flex items-center gap-2 mb-2">
               <div className="p-1.5 rounded-lg bg-signal-yellow/20"><Star className="h-4 w-4 text-signal-yellow" /></div>
               <span className="text-sm text-muted-foreground">{t('statistics.avgRating')}</span>
             </div>
-            <p className="text-3xl font-bold bg-gradient-to-r from-signal-yellow to-coral bg-clip-text text-transparent">{stats?.rating?.toFixed(1) || '5.0'}</p>
+            <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-signal-yellow to-coral bg-clip-text text-transparent">{stats?.rating?.toFixed(1) || '5.0'}</p>
           </div>
           <div className="glass rounded-xl p-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center gap-2 mb-2">
               <div className="p-1.5 rounded-lg bg-signal-green/20"><TrendingUp className="h-4 w-4 text-signal-green" /></div>
               <span className="text-sm text-muted-foreground">{t('statistics.avgPerDay')}</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">{avgPerDay}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-foreground">{avgPerDay}</p>
           </div>
         </div>
 
         {/* Weekly Chart */}
-        <div className="glass rounded-xl p-6">
+        <div className="glass rounded-xl p-4 sm:p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-coral" />
@@ -197,7 +197,7 @@ export default function StatisticsPage() {
 
         {/* Pie Chart */}
         {pieData.length > 0 && (
-          <div className="glass rounded-xl p-6">
+          <div className="glass rounded-xl p-4 sm:p-6">
             <div className="flex items-center gap-2 mb-4">
               <Calendar className="h-5 w-5 text-coral" />
               <h2 className="font-semibold text-foreground">{t('statistics.activityBreakdown')}</h2>
@@ -224,7 +224,7 @@ export default function StatisticsPage() {
         )}
 
         {/* Top Activities */}
-        <div className="glass rounded-xl p-6">
+        <div className="glass rounded-xl p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
             <Trophy className="h-5 w-5 text-signal-yellow" />
             <h2 className="font-semibold text-foreground">{t('statistics.topActivities')}</h2>
@@ -259,7 +259,7 @@ export default function StatisticsPage() {
         </div>
 
         {/* Hourly Heatmap */}
-        <div className="glass rounded-xl p-6">
+        <div className="glass rounded-xl p-4 sm:p-6">
           <h2 className="font-semibold text-foreground mb-4">{t('statistics.mostActiveHours')}</h2>
           {hourlyData.length > 0 && hourlyData.some(h => h.count > 0) ? (
             <div className="h-32">

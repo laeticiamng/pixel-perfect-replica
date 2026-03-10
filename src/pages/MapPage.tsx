@@ -218,7 +218,7 @@ export default function MapPage() {
       <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
         {/* Geolocation fallback banner */}
         {showLocationBanner && (
-          <div className="px-6 pt-4">
+          <div className="px-4 sm:px-6 pt-4">
             <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-signal-yellow/10 border border-signal-yellow/30 text-sm">
               <div className="flex items-center gap-2 text-signal-yellow">
                 <MapPin className="h-4 w-4 shrink-0" />
@@ -232,7 +232,7 @@ export default function MapPage() {
         )}
 
         {/* Header */}
-        <header className="safe-top px-6 py-4">
+        <header className="safe-top px-4 sm:px-6 py-4">
           <div className="glass-strong rounded-2xl p-4 shadow-medium">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -402,7 +402,7 @@ export default function MapPage() {
 
         {/* Searching Indicator */}
         {isActive && (
-          <div className="px-6 mb-4">
+          <div className="px-4 sm:px-6 mb-4">
             <SearchingIndicator 
               isSearching={isActive} 
               nearbyCount={filteredNearbyUsers.length}
@@ -500,10 +500,10 @@ export default function MapPage() {
         {/* Signal Buttons - only show when not in empty state */}
         {(isActive || filteredNearbyUsers.length > 0) && (
           <>
-            <div className="px-6">
+            <div className="px-4 sm:px-6">
               <ConnectionRequestsPanel />
             </div>
-            <div className="px-6 mb-4 space-y-3">
+            <div className="px-4 sm:px-6 mb-4 space-y-3">
               <div className="flex gap-3">
                 <button
                   onClick={handleSignalToggle}

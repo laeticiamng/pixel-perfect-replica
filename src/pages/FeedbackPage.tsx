@@ -54,7 +54,7 @@ export default function FeedbackPage() {
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('feedback.title')} backTo="/profile" />
 
-      <div className="px-6 py-8 animate-slide-up">
+      <div className="px-4 sm:px-6 py-8 animate-slide-up">
         <div className="text-center mb-8">
           <p className="text-lg text-foreground mb-2 font-semibold">{t('feedback.question')}</p>
           <p className="text-sm text-muted-foreground">{t('feedback.subtitle')}</p>

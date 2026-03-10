@@ -65,7 +65,7 @@ export default function BlockedUsersPage() {
     <>
     <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/privacy-settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -75,7 +75,7 @@ export default function BlockedUsersPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-4">
+      <div className="px-4 sm:px-6 space-y-4">
         {loadingProfiles ? (
           <div className="flex items-center justify-center py-16"><Loader2 className="h-8 w-8 text-coral animate-spin" /></div>
         ) : blockedUsers.length === 0 ? (

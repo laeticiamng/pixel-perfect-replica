@@ -683,7 +683,7 @@ export default function OnboardingPage() {
   // Magic link sent screen
   if (isMagicLinkSent) {
     return (
-      <PageLayout showSidebar={false} className="flex flex-col px-6 py-8 safe-top safe-bottom">
+      <PageLayout showSidebar={false} className="flex flex-col px-4 sm:px-6 py-8 safe-top safe-bottom">
         <div className="max-w-md mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
           <div className="space-y-6 animate-slide-up text-center">
             <div className="w-24 h-24 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6 glow-coral">
@@ -733,7 +733,7 @@ export default function OnboardingPage() {
   // Email confirmation screen
   if (showEmailConfirmation) {
     return (
-      <PageLayout showSidebar={false} className="flex flex-col px-6 py-8 safe-top safe-bottom">
+      <PageLayout showSidebar={false} className="flex flex-col px-4 sm:px-6 py-8 safe-top safe-bottom">
         <div className="max-w-md mx-auto w-full flex-1 flex flex-col justify-center relative z-10">
           <div className="space-y-6 animate-slide-up text-center">
             <div className="w-24 h-24 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6 glow-coral">

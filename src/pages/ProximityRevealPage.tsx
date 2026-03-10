@@ -92,7 +92,7 @@ export default function ProximityRevealPage() {
 
   if (isLoadingProfile || isCheckingReveal) {
     return (
-      <PageLayout className="flex items-center justify-center px-6">
+      <PageLayout className="flex items-center justify-center px-4 sm:px-6">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-coral" />
           <p className="text-muted-foreground">{t('reveal.loadingProfile')}</p>
@@ -103,7 +103,7 @@ export default function ProximityRevealPage() {
 
   if (!user) {
     return (
-      <PageLayout className="flex items-center justify-center px-6">
+      <PageLayout className="flex items-center justify-center px-4 sm:px-6">
         <div className="text-center">
           <div className="w-20 h-20 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-4">
             <UserX className="h-10 w-10 text-muted-foreground" />
@@ -123,7 +123,7 @@ export default function ProximityRevealPage() {
 
   if (revealBlocked) {
     return (
-      <PageLayout className="flex items-center justify-center px-6">
+      <PageLayout className="flex items-center justify-center px-4 sm:px-6">
         <div className="text-center">
           <div className="text-6xl mb-4">⏱️</div>
           <div className="flex items-center justify-center gap-2 mb-2">
@@ -192,7 +192,7 @@ export default function ProximityRevealPage() {
 
   if (showFeedback) {
     return (
-      <PageLayout className="flex flex-col items-center justify-center px-6 animate-fade-in">
+      <PageLayout className="flex flex-col items-center justify-center px-4 sm:px-6 animate-fade-in">
         <h2 className="text-2xl font-bold text-foreground mb-8">{t('reveal.howWasIt')}</h2>
         
         <div className="flex gap-6 mb-8">
@@ -219,13 +219,13 @@ export default function ProximityRevealPage() {
 
   return (
     <PageLayout className={cn("flex flex-col pb-28", isVibrating && "animate-pulse")}>
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <button onClick={() => navigate('/map')} className="p-2 rounded-lg hover:bg-muted transition-colors">
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
       </header>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6">
         <div className="w-full max-w-sm">
           <div className="flex justify-center mb-6">
             <div className="relative">
@@ -285,12 +285,12 @@ export default function ProximityRevealPage() {
       </div>
 
       {showChat && interactionId && (
-        <div className="px-6 pb-4">
+        <div className="px-4 sm:px-6 pb-4">
           <MiniChat interactionId={interactionId} otherUserName={user.firstName} className="glass rounded-2xl" />
         </div>
       )}
 
-      <div className="px-6 pb-8 space-y-3">
+      <div className="px-4 sm:px-6 pb-8 space-y-3">
         {!showChat ? (
           <>
             <div className="flex gap-3">

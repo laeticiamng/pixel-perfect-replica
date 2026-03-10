@@ -97,7 +97,7 @@ export default function ProfilePage() {
     <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto w-full">
         {/* Profile Header */}
-        <header className="safe-top px-6 py-8">
+        <header className="safe-top px-4 sm:px-6 py-8">
         <div className="flex flex-col items-center">
           {/* Avatar with enhanced glow */}
           <div className="relative mb-5">
@@ -169,7 +169,7 @@ export default function ProfilePage() {
       </header>
 
       {/* Menu Sections */}
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         {menuSections.map((section, sectionIdx) => (
           <div key={section.title} className="animate-slide-up" style={{ animationDelay: `${0.2 + sectionIdx * 0.1}s` }}>
             <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 px-1">

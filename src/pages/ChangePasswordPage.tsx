@@ -108,7 +108,7 @@ export default function ChangePasswordPage() {
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('auth.changePassword')} backTo="/settings" />
 
-      <form onSubmit={handleSubmit} className="px-6 py-8 space-y-6 animate-slide-up">
+      <form onSubmit={handleSubmit} className="px-4 sm:px-6 py-8 space-y-6 animate-slide-up">
         {/* Security Info */}
         <div className="glass rounded-xl p-4 border-2 border-signal-green/30">
           <div className="flex items-center gap-3">

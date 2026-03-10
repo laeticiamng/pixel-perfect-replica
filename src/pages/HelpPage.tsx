@@ -134,7 +134,7 @@ export default function HelpPage() {
           ],
         })}</script>
       </Helmet>
-      <header className="safe-top px-6 py-4 flex items-center gap-4">
+      <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
         <button
           onClick={() => navigate(user ? '/settings' : '/')}
           className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors"
@@ -149,7 +149,7 @@ export default function HelpPage() {
       </header>
 
       <motion.div 
-        className="px-6 space-y-6"
+        className="px-4 sm:px-6 space-y-6"
         initial="hidden"
         animate="visible"
         variants={{

@@ -56,7 +56,7 @@ export default function NotificationsSettingsPage() {
 
   return (
     <PageLayout className="pb-28 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -66,7 +66,7 @@ export default function NotificationsSettingsPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         {/* Push Notifications */}
         <div className="glass rounded-xl p-4 border-2 border-coral/30 animate-fade-in">
           <div className="flex items-center justify-between gap-4">

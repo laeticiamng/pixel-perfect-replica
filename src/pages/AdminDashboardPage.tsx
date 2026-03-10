@@ -266,19 +266,19 @@ export default function AdminDashboardPage() {
       <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-8 safe-bottom">
       {/* Header */}
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <button
               onClick={() => navigate('/settings')}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              className="p-2 rounded-lg hover:bg-muted transition-colors flex-shrink-0"
               aria-label={t('back')}
             >
-              <ArrowLeft className="h-6 w-6 text-foreground" />
+              <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
             </button>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">{t('admin.dashboard')}</h1>
-              <p className="text-sm text-muted-foreground">{t('admin.analyticsEngagement')}</p>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">{t('admin.dashboard')}</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">{t('admin.analyticsEngagement')}</p>
             </div>
           </div>
           <Button 
@@ -329,9 +329,9 @@ export default function AdminDashboardPage() {
         )}
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-4 sm:space-y-6">
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-4">
           <Card className="glass border-0">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
@@ -340,7 +340,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <span className="text-sm text-muted-foreground">{t('admin.users')}</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">{totalUsers}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground">{totalUsers}</p>
             </CardContent>
           </Card>
           
@@ -352,7 +352,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <span className="text-sm text-muted-foreground">{t('admin.activeSignals')}</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">{totalSignals}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground">{totalSignals}</p>
             </CardContent>
           </Card>
           
@@ -364,7 +364,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <span className="text-sm text-muted-foreground">{t('admin.analyticsEvents')}</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">{totalEvents}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground">{totalEvents}</p>
             </CardContent>
           </Card>
           
@@ -376,14 +376,14 @@ export default function AdminDashboardPage() {
                 </div>
                 <span className="text-sm text-muted-foreground">{t('admin.interactions')}</span>
               </div>
-              <p className="text-3xl font-bold text-foreground">{totalInteractions}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-foreground">{totalInteractions}</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Tabs for different analytics views */}
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-6 bg-muted/30">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 bg-muted/30">
             <TabsTrigger value="overview">{t('admin.overview')}</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="pages">Pages</TabsTrigger>

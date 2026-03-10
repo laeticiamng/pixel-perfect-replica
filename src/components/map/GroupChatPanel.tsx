@@ -41,7 +41,7 @@ export function GroupChatPanel({ group, onClose }: GroupChatPanelProps) {
       animate={{ y: 0 }}
       exit={{ y: '100%' }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      className="fixed inset-x-0 bottom-0 z-[70] max-w-[500px] mx-auto h-[70dvh] bg-card border-t border-border rounded-t-3xl shadow-2xl flex flex-col"
+      className="fixed inset-x-0 bottom-0 z-[70] sm:max-w-[500px] mx-auto h-[70dvh] bg-card border-t border-border rounded-t-3xl shadow-2xl flex flex-col"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
