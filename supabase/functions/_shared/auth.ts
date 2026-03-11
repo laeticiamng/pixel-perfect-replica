@@ -1,5 +1,35 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
+// Allowed origins for CORS — restrict to production domain + Lovable preview
+const ALLOWED_ORIGINS = [
+  "https://nearvity.fr",
+  "https://www.nearvity.fr",
+];
+
+function getAllowedOrigin(req?: Request): string {
+  const origin = req?.headers?.get("Origin") ?? "";
+  // Allow production domains, lovable previews, and localhost for dev
+  if (
+    ALLOWED_ORIGINS.includes(origin) ||
+    origin.endsWith(".lovable.app") ||
+    origin.startsWith("http://localhost")
+  ) {
+    return origin;
+  }
+  // Default to production domain (safe fallback)
+  return ALLOWED_ORIGINS[0];
+}
+
+export function getCorsHeaders(req?: Request) {
+  return {
+    "Access-Control-Allow-Origin": getAllowedOrigin(req),
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "Vary": "Origin",
+  };
+}
+
+/** @deprecated Use getCorsHeaders(req) for origin-aware CORS. Kept for backward compat. */
 export const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
