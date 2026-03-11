@@ -24,10 +24,11 @@ export const FinalCTASection = forwardRef<HTMLElement>(function FinalCTASection(
             <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-coral via-coral-light to-coral animate-gradient-shift" />
             
             {/* Inner content */}
-            <div className="relative m-px rounded-3xl bg-card/95 backdrop-blur-xl p-10 md:p-16 text-center">
+            <div className="relative m-[1.5px] rounded-3xl bg-card/95 backdrop-blur-xl p-10 md:p-16 text-center">
               {/* Glow spots */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-coral/50 to-transparent" />
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-32 bg-coral/10 blur-[60px] rounded-full" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-40 bg-coral/15 blur-[80px] rounded-full" />
               
               <h2 className="relative text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
                 <span className="text-muted-foreground">{t('landing.readyToConnect')}</span>
