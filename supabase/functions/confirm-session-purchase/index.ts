@@ -45,6 +45,21 @@ serve(async (req) => {
 
     logStep("Verifying Stripe checkout session", { checkout_session_id });
 
+    // --- Replay protection: check if this checkout_session_id was already used ---
+    const { data: existing } = await supabaseClient
+      .from("session_purchase_log")
+      .select("id")
+      .eq("checkout_session_id", checkout_session_id)
+      .maybeSingle();
+
+    if (existing) {
+      logStep("Replay detected — checkout session already confirmed", { checkout_session_id });
+      return new Response(
+        JSON.stringify({ error: "This purchase has already been confirmed" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 }
+      );
+    }
+
     const Stripe = (await import("https://esm.sh/stripe@18.5.0")).default;
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -69,6 +84,15 @@ serve(async (req) => {
     }
 
     logStep("Stripe verification passed, adding sessions", { count });
+
+    // Record the purchase BEFORE adding sessions (prevents replay on partial failure)
+    await supabaseClient
+      .from("session_purchase_log")
+      .insert({
+        checkout_session_id,
+        user_id: userId,
+        sessions_purchased: count,
+      });
 
     const { data: newTotal, error: addError } = await supabaseClient.rpc(
       "add_purchased_sessions",
