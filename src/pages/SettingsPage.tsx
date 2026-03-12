@@ -90,7 +90,7 @@ export default function SettingsPage() {
       <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28">
       <div className="max-w-2xl mx-auto w-full">
-        <header className="safe-top px-6 py-6 flex items-center gap-4">
+        <header className="safe-top px-4 sm:px-6 py-6 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
             className="p-2 rounded-lg hover:bg-muted transition-colors"
@@ -102,7 +102,7 @@ export default function SettingsPage() {
         </header>
 
       <motion.div 
-        className="px-6 space-y-4"
+        className="px-4 sm:px-6 space-y-4"
         initial="hidden"
         animate="visible"
         variants={{

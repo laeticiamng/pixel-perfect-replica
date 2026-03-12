@@ -118,7 +118,7 @@ export default function FavoriteEventsPage() {
 
   return (
     <PageLayout className="pb-28 safe-bottom">
-      <header className="safe-top sticky top-0 z-10 px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
+      <header className="safe-top sticky top-0 z-10 px-4 sm:px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
@@ -131,7 +131,7 @@ export default function FavoriteEventsPage() {
         </div>
       </header>
 
-      <div className="px-6 py-6 space-y-6">
+      <div className="px-4 sm:px-6 py-6 space-y-6">
         {isLoading || favLoading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (<Skeleton key={i} className="h-32 rounded-xl" />))}

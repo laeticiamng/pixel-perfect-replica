@@ -138,12 +138,12 @@ export default function EventDetailPage() {
   if (!event) {
     return (
       <PageLayout className="pb-28 safe-bottom">
-        <header className="safe-top px-6 py-4">
+        <header className="safe-top px-4 sm:px-6 py-4">
           <button onClick={() => navigate('/events')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('eventDetail.backToEvents')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
         </header>
-        <div className="px-6 py-12 text-center">
+        <div className="px-4 sm:px-6 py-12 text-center">
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
             <MapPin className="h-8 w-8 text-muted-foreground" />
           </div>
@@ -159,7 +159,7 @@ export default function EventDetailPage() {
 
   return (
     <PageLayout className="pb-28 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center justify-between mb-2">
           <button onClick={() => navigate('/events')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('eventDetail.backToEvents')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -172,7 +172,7 @@ export default function EventDetailPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         <Card className="glass border-0 overflow-hidden">
           <CardHeader>
             <div className="flex items-center justify-between">

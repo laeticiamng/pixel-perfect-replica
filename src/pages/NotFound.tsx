@@ -21,7 +21,7 @@ const NotFound = () => {
       <title>404 — NEARVITY</title>
       <meta name="robots" content="noindex, nofollow" />
     </Helmet>
-    <PageLayout className="flex items-center justify-center px-6">
+    <PageLayout className="flex items-center justify-center px-4 sm:px-6">
       <div className="text-center">
         <div className="w-20 h-20 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6">
           <Search className="h-10 w-10 text-coral" />

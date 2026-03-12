@@ -14,10 +14,10 @@ export default {
       },
       screens: {
         sm: "100%",
-        md: "540px",
-        lg: "540px",
-        xl: "540px",
-        "2xl": "540px",
+        md: "100%",
+        lg: "720px",
+        xl: "720px",
+        "2xl": "720px",
       },
     },
     extend: {

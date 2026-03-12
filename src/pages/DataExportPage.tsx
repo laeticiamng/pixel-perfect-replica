@@ -30,7 +30,7 @@ export default function DataExportPage() {
     <>
     <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/privacy-settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -40,7 +40,7 @@ export default function DataExportPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         <Card className="glass border-0">
           <CardHeader>
             <div className="flex items-center gap-3">

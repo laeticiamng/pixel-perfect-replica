@@ -65,7 +65,7 @@ export default function ContactPage() {
         <link rel="canonical" href={`${SITE_URL}/contact`} />
       </Helmet>
 
-      <header className="safe-top px-6 py-4 flex items-center gap-4">
+      <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
         <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
@@ -73,7 +73,7 @@ export default function ContactPage() {
       </header>
 
       <motion.div
-        className="px-6 max-w-lg mx-auto space-y-6"
+        className="px-4 sm:px-6 max-w-lg mx-auto space-y-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}

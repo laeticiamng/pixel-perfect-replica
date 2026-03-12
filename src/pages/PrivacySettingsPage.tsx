@@ -28,7 +28,7 @@ export default function PrivacySettingsPage() {
 
   return (
     <PageLayout className="pb-28 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -38,7 +38,7 @@ export default function PrivacySettingsPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         <div className="glass rounded-xl p-4 border-2 border-signal-green/30 animate-fade-in">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-full bg-signal-green/20"><Shield className="h-5 w-5 text-signal-green" /></div>

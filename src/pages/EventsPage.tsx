@@ -193,13 +193,13 @@ export default function EventsPage() {
           <p className="text-sm text-muted-foreground">{event.description.replace(/^\[[\w]+\]\s*/, '')}</p>
         )}
         
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
+            <Calendar className="h-4 w-4 shrink-0" />
             <span>{format(new Date(event.starts_at), locale === 'fr' ? 'PPP à HH:mm' : "PPP 'at' HH:mm", { locale: dateLocale })}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
+            <Users className="h-4 w-4 shrink-0" />
             <span>{t('events.max')} {event.max_participants}</span>
           </div>
         </div>
@@ -246,7 +246,7 @@ export default function EventsPage() {
     <>
       <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-24 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button
             onClick={() => navigate('/map')}
@@ -260,7 +260,7 @@ export default function EventsPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         {/* Filters and Create Button */}
         <div className="flex gap-2">
           {!showCreate && (

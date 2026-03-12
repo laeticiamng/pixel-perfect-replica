@@ -27,27 +27,27 @@ export function PageHeader({
   const { t } = useTranslation();
 
   return (
-    <header className={cn("safe-top px-6 py-4", className)}>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+    <header className={cn("safe-top px-4 sm:px-6 py-3 sm:py-4", className)}>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
           {showBack && (
             <button
               onClick={() => backTo ? navigate(backTo) : navigate(-1)}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              className="p-2 rounded-lg hover:bg-muted transition-colors flex-shrink-0"
               aria-label={t('back')}
             >
-              <ArrowLeft className="h-6 w-6 text-foreground" />
+              <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6 text-foreground" />
             </button>
           )}
-          <div>
-            <h1 className="text-xl font-bold text-foreground">{title}</h1>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">{title}</h1>
             {subtitle && (
-              <p className="text-sm text-muted-foreground">{subtitle}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">{subtitle}</p>
             )}
           </div>
         </div>
         {(rightContent || action) && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {rightContent}
             {action}
           </div>

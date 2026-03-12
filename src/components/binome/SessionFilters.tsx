@@ -69,7 +69,7 @@ export function SessionFilters({ filters, onFiltersChange, onSearch, isLoading }
       </div>
 
       {showAdvanced && (
-        <div className="grid grid-cols-3 gap-2 p-3 rounded-lg bg-muted/30">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 p-3 rounded-lg bg-muted/30">
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" size="sm" className={cn("justify-start text-left font-normal", !filters.date && "text-muted-foreground")}>

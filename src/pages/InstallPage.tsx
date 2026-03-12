@@ -162,7 +162,7 @@ export default function InstallPage() {
           ],
         })}</script>
       </Helmet>
-      <header className="safe-top sticky top-0 z-10 px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
+      <header className="safe-top sticky top-0 z-10 px-4 sm:px-6 py-4 flex items-center gap-4 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('install.backLabel')}>
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
@@ -172,7 +172,7 @@ export default function InstallPage() {
         </div>
       </header>
 
-      <div className="px-6 space-y-8 animate-slide-up">
+      <div className="px-4 sm:px-6 space-y-8 animate-slide-up">
         {/* Hero */}
         <div className="text-center py-6">
           <div className="relative inline-block mb-6">

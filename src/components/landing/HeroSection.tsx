@@ -16,7 +16,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
   return (
     <motion.section 
       style={{ opacity: heroOpacity, scale: heroScale }}
-      className="min-h-screen flex flex-col items-center justify-center px-6 relative z-10 pt-16"
+      className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 relative z-10 pt-16"
     >
       {/* Tagline badge */}
       <motion.div

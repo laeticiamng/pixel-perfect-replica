@@ -231,7 +231,7 @@ export default function SessionDetailPage() {
 
   return (
     <PageLayout className="pb-24 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4">
           <button onClick={() => navigate('/binome')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -248,7 +248,7 @@ export default function SessionDetailPage() {
         </div>
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         {/* Creator Card */}
         <Card className="glass border-0">
           <CardContent className="p-4">

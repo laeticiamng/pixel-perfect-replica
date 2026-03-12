@@ -123,13 +123,13 @@ export default function SessionHistoryPage() {
   if (isLoading) {
     return (
       <PageLayout className="pb-24 safe-bottom">
-        <header className="safe-top px-6 py-4">
+        <header className="safe-top px-4 sm:px-6 py-4">
           <div className="flex items-center gap-4 mb-2">
             <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted"><ArrowLeft className="h-6 w-6" /></button>
             <h1 className="text-xl font-bold">{t('sessionHistory.title')}</h1>
           </div>
         </header>
-        <div className="px-6 space-y-4"><LoadingSkeleton variant="card" count={4} /></div>
+        <div className="px-4 sm:px-6 space-y-4"><LoadingSkeleton variant="card" count={4} /></div>
         <BottomNav />
       </PageLayout>
     );
@@ -139,7 +139,7 @@ export default function SessionHistoryPage() {
 
   return (
     <PageLayout className="pb-24 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate(-1)} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -149,7 +149,7 @@ export default function SessionHistoryPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-4">
+      <div className="px-4 sm:px-6 space-y-4">
         <div className="flex gap-2 flex-wrap">
           <Select value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
             <SelectTrigger className="w-[140px]"><Filter className="h-4 w-4 mr-2" /><SelectValue /></SelectTrigger>

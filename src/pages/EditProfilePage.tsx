@@ -208,7 +208,7 @@ export default function EditProfilePage() {
     <PageLayout className="pb-28 safe-bottom">
       <PageHeader title={t('editProfile.title')} backTo="/profile" />
 
-      <div className="px-6 py-8 animate-fade-in">
+      <div className="px-4 sm:px-6 py-8 animate-fade-in">
         {/* Avatar */}
         <div className="flex justify-center mb-8">
           <div className="relative">

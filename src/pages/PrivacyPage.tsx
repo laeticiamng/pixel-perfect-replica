@@ -32,7 +32,7 @@ export default function PrivacyPage() {
         })}</script>
       </Helmet>
 
-      <header className="safe-top px-6 py-4 flex items-center gap-4">
+      <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
         <Link
           to="/"
           className="p-2 rounded-lg hover:bg-muted transition-colors"
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
         <h1 className="text-xl font-bold text-foreground">{t('privacy.title')}</h1>
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         <div className="glass rounded-xl p-6 space-y-4">
           <p className="text-muted-foreground text-sm">{t('privacy.lastUpdated')}</p>
           <p className="text-foreground">{t('privacy.intro')}</p>

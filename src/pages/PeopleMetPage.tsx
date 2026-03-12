@@ -83,13 +83,13 @@ export default function PeopleMetPage() {
   if (isLoading) {
     return (
       <PageLayout className="pb-28 safe-bottom">
-        <header className="safe-top px-6 py-4 flex items-center gap-4">
+        <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
           <h1 className="text-xl font-bold text-foreground">{t('peopleMet.title')}</h1>
         </header>
-        <div className="px-6 space-y-3">{[...Array(5)].map((_, i) => <ProfileCardSkeleton key={i} />)}</div>
+        <div className="px-4 sm:px-6 space-y-3">{[...Array(5)].map((_, i) => <ProfileCardSkeleton key={i} />)}</div>
       </PageLayout>
     );
   }
@@ -98,7 +98,7 @@ export default function PeopleMetPage() {
     <>
     <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28 safe-bottom">
-      <header className="safe-top px-6 py-4">
+      <header className="safe-top px-4 sm:px-6 py-4">
         <div className="flex items-center gap-4 mb-2">
           <button onClick={() => navigate('/profile')} className="p-2 rounded-lg hover:bg-muted transition-colors">
             <ArrowLeft className="h-6 w-6 text-foreground" />
@@ -108,7 +108,7 @@ export default function PeopleMetPage() {
         <Breadcrumbs className="px-2" />
       </header>
 
-      <div className="px-6 space-y-4">
+      <div className="px-4 sm:px-6 space-y-4">
         {peopleMet.length > 0 && (
           <div className="grid grid-cols-4 gap-2">
             <div className="glass rounded-xl p-3 text-center"><p className="text-xl font-bold text-foreground">{stats.total}</p><p className="text-xs text-muted-foreground">Total</p></div>

@@ -70,7 +70,7 @@ export default function DiagnosticsPage() {
 
   return (
     <PageLayout className="pb-8 safe-bottom">
-      <header className="safe-top px-6 py-4 flex items-center gap-4">
+      <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
         <button onClick={() => navigate('/settings')} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label={t('diagnostics.backLabel')}>
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
@@ -78,7 +78,7 @@ export default function DiagnosticsPage() {
         <span className="ml-auto text-xs bg-signal-yellow/20 text-signal-yellow px-2 py-1 rounded">DEV ONLY</span>
       </header>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 sm:px-6 space-y-6">
         {/* Quick Health Check */}
         <div className="glass rounded-xl p-4 border-2 border-signal-green/30">
           <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">✅ {t('diagnostics.systemStatus')}</h2>

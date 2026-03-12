@@ -180,14 +180,14 @@ export default function PremiumPage() {
   if (isPremium) {
     return (
       <PageLayout className="pb-28 safe-bottom">
-        <header className="safe-top px-6 py-4 flex items-center gap-4">
+        <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
           <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
           <h1 className="text-xl font-bold text-foreground">{t('premium.nearvityPlusTitle')}</h1>
         </header>
 
-        <div className="px-6 py-12 text-center">
+        <div className="px-4 sm:px-6 py-12 text-center">
           <div className="w-20 h-20 rounded-full bg-gradient-to-br from-coral to-signal-yellow flex items-center justify-center mx-auto mb-6 shadow-lg glow-coral">
             <Crown className="h-10 w-10 text-white" />
           </div>
@@ -269,15 +269,15 @@ export default function PremiumPage() {
           ],
         })}</script>
       </Helmet>
-      <header className="safe-top px-6 py-4 flex items-center gap-4">
+      <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
         <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
         <h1 className="text-xl font-bold text-foreground">{t('premium.title')}</h1>
       </header>
 
-      <motion.div 
-        className="px-6 space-y-6"
+      <motion.div
+        className="px-4 sm:px-6 space-y-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
