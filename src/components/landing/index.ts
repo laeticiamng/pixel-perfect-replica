@@ -1,6 +1,8 @@
 export { RevealText } from './RevealText';
 export { FloatingOrbs } from './FloatingOrbs';
-export { HeroScene3D } from './HeroScene3D';
+// HeroScene3D is intentionally NOT re-exported here.
+// It is lazy-loaded exclusively through FloatingOrbs to keep
+// three/r3f/postprocessing out of the main bundle.
 export { SignalDemo } from './SignalDemo';
 export { FeatureCard } from './FeatureCard';
 
