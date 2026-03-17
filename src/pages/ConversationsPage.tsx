@@ -26,7 +26,7 @@ export default function ConversationsPage() {
   const dateFnsLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   const filtered = conversations.filter(c =>
-    c.other_user_name.toLowerCase().includes(searchQuery.toLowerCase())
+    (c.other_user_name ?? '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (selectedConvo) {
@@ -99,7 +99,7 @@ export default function ConversationsPage() {
                 <Avatar className="h-12 w-12 flex-shrink-0">
                   <AvatarImage src={convo.other_user_avatar || undefined} alt={convo.other_user_name} />
                   <AvatarFallback className="bg-coral/20 text-coral font-bold">
-                    {convo.other_user_name.charAt(0).toUpperCase()}
+                    {(convo.other_user_name ?? '?').charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">

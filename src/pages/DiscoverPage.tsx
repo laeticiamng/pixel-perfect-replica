@@ -20,6 +20,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { fr, enUS, de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { BottomNav } from '@/components/BottomNav';
+import toast from 'react-hot-toast';
 
 interface DiscoveredUser {
   user_id: string;
@@ -60,6 +61,7 @@ export default function DiscoverPage() {
       setUsers((data ?? []) as DiscoveredUser[]);
     } catch (err) {
       console.error('Error fetching users:', err);
+      toast.error(t('errors.generic'));
     } finally {
       setIsLoading(false);
     }
@@ -71,15 +73,10 @@ export default function DiscoverPage() {
     return () => clearTimeout(timer);
   }, [fetchUsers]);
 
-  // Fetch unique universities for filter
+  // Derive unique universities from current results
   useEffect(() => {
-    if (users.length > 0) {
-      const unis = [...new Set(users.map(u => u.university).filter(Boolean))] as string[];
-      setUniversities(prev => {
-        const merged = [...new Set([...prev, ...unis])];
-        return merged.sort();
-      });
-    }
+    const unis = [...new Set(users.map(u => u.university).filter(Boolean))] as string[];
+    setUniversities(unis.sort());
   }, [users]);
 
   const onlineCount = users.filter(u => u.is_online_now).length;
@@ -113,6 +110,8 @@ export default function DiscoverPage() {
                 size="icon"
                 className="h-12 w-12 rounded-xl shrink-0"
                 onClick={() => setShowFilters(!showFilters)}
+                aria-label={showFilters ? t('discover.hideFilters') : t('discover.showFilters')}
+                aria-expanded={showFilters}
               >
                 <Filter className="h-4 w-4" />
               </Button>
@@ -272,6 +271,10 @@ function UserCard({ user, index, dateLocale, t, onViewProfile }: UserCardProps) 
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3 }}
       onClick={onViewProfile}
+      role="button"
+      tabIndex={0}
+      aria-label={`${t('discover.viewProfile')} ${user.first_name || ''}`}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onViewProfile(); } }}
       className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-coral/30 hover:shadow-md transition-all cursor-pointer group"
     >
       {/* Avatar */}
@@ -285,7 +288,7 @@ function UserCard({ user, index, dateLocale, t, onViewProfile }: UserCardProps) 
             />
           ) : (
             <span className="text-xl font-bold text-foreground">
-              {user.first_name?.charAt(0).toUpperCase()}
+              {(user.first_name ?? '?').charAt(0).toUpperCase()}
             </span>
           )}
         </div>
@@ -348,6 +351,7 @@ function UserCard({ user, index, dateLocale, t, onViewProfile }: UserCardProps) 
         size="icon"
         className="shrink-0 rounded-xl text-muted-foreground group-hover:text-coral group-hover:bg-coral/10 transition-all"
         onClick={(e) => { e.stopPropagation(); onViewProfile(); }}
+        aria-label={t('discover.viewProfile')}
       >
         <UserPlus className="h-5 w-5" />
       </Button>

@@ -66,7 +66,7 @@ export default function ContactPage() {
       </Helmet>
 
       <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
+        <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors" aria-label={t('back')}>
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
         <h1 className="text-xl font-bold text-foreground">{t('contact.title')}</h1>
@@ -121,33 +121,41 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1 block">{t('contact.nameLabel')}</label>
+                    <label htmlFor="contact-name" className="text-sm font-medium text-foreground mb-1 block">{t('contact.nameLabel')}</label>
                     <Input
+                      id="contact-name"
+                      name="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder={t('contact.namePlaceholder')}
                       className="bg-muted"
                       maxLength={100}
+                      autoComplete="name"
                     />
-                    {errors.name && <p className="text-xs text-destructive mt-1">{t('contact.nameRequired')}</p>}
+                    {errors.name && <p className="text-xs text-destructive mt-1" role="alert">{t('contact.nameRequired')}</p>}
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1 block">{t('contact.emailLabel')}</label>
+                    <label htmlFor="contact-email" className="text-sm font-medium text-foreground mb-1 block">{t('contact.emailLabel')}</label>
                     <Input
+                      id="contact-email"
+                      name="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={t('contact.emailPlaceholder')}
                       className="bg-muted"
                       maxLength={255}
+                      autoComplete="email"
                     />
-                    {errors.email && <p className="text-xs text-destructive mt-1">{t('contact.emailInvalid')}</p>}
+                    {errors.email && <p className="text-xs text-destructive mt-1" role="alert">{t('contact.emailInvalid')}</p>}
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-foreground mb-1 block">{t('contact.messageLabel')}</label>
+                    <label htmlFor="contact-message" className="text-sm font-medium text-foreground mb-1 block">{t('contact.messageLabel')}</label>
                     <Textarea
+                      id="contact-message"
+                      name="message"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder={t('contact.messagePlaceholder')}

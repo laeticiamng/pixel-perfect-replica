@@ -8,7 +8,10 @@ interface FullPageLoaderProps {
 
 export function FullPageLoader({ message, className }: FullPageLoaderProps) {
   return (
-    <div className={cn(
+    <div
+      role="status"
+      aria-live="polite"
+      className={cn(
       "min-h-screen bg-background flex flex-col items-center justify-center gap-6",
       className
     )}>
@@ -42,6 +45,8 @@ export function FullPageLoader({ message, className }: FullPageLoaderProps) {
         </motion.div>
       </div>
       
+      {/* Screen reader fallback */}
+      {!message && <span className="sr-only">Loading...</span>}
       {/* Message */}
       {message && (
         <motion.p

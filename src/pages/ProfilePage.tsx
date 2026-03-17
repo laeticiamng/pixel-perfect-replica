@@ -143,25 +143,28 @@ export default function ProfilePage() {
           
           {/* Stats with enhanced styling */}
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6 mt-6 animate-slide-up" style={{ animationDelay: '0.15s' }}>
-            <button 
+            <button
               onClick={() => navigate('/statistics')}
+              aria-label={`${stats?.interactions || 0} ${t('profile.interactions')} — ${t('profile.myStats')}`}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{stats?.interactions || 0}</p>
               <p className="text-xs text-muted-foreground font-medium">{t('profile.interactions')}</p>
             </button>
-            <button 
+            <button
               onClick={() => navigate('/statistics')}
+              aria-label={`${Math.round(stats?.hours_active || 0)}h ${t('profile.active')} — ${t('profile.myStats')}`}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
               <p className="text-2xl font-bold text-foreground">{Math.round(stats?.hours_active || 0)}h</p>
               <p className="text-xs text-muted-foreground font-medium">{t('profile.active')}</p>
             </button>
-            <button 
+            <button
               onClick={() => navigate('/statistics')}
+              aria-label={`${stats?.rating != null ? stats.rating.toFixed(1) : '5.0'} ${t('profile.rating')} — ${t('profile.myStats')}`}
               className="text-center glass rounded-2xl px-5 py-3 hover:scale-105 hover:bg-card/90 active:scale-95 transition-all duration-300"
             >
-              <p className="text-2xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.rating?.toFixed(1) || '5.0'}</p>
+              <p className="text-2xl font-bold bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">{stats?.rating != null ? stats.rating.toFixed(1) : '5.0'}</p>
               <p className="text-xs text-muted-foreground font-medium">{t('profile.rating')}</p>
             </button>
           </div>

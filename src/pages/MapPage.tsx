@@ -182,7 +182,7 @@ export default function MapPage() {
   if (showLocationPrompt) {
     return (
       <PageLayout className="pb-28" animate={false}>
-        <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
+        <div className="max-w-2xl mx-auto w-full min-h-[100dvh] flex flex-col">
           <LocationPermissionScreen
             onRequestPermission={handleRequestLocation}
             onSkip={handleSkipLocation}
@@ -197,7 +197,7 @@ export default function MapPage() {
   if (isWatching && !position && !locationError) {
     return (
       <PageLayout className="pb-28" animate={false}>
-        <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
+        <div className="max-w-2xl mx-auto w-full min-h-[100dvh] flex flex-col">
           <FullPageLoader message={t('mapUI.loadingMap')} />
           <BottomNav />
         </div>
@@ -215,7 +215,7 @@ export default function MapPage() {
     <>
       <Helmet><meta name="robots" content="noindex, nofollow" /></Helmet>
     <PageLayout className="pb-28" animate={false}>
-      <div className="max-w-2xl mx-auto w-full h-[100dvh] flex flex-col">
+      <div className="max-w-2xl mx-auto w-full min-h-[100dvh] flex flex-col">
         {/* Geolocation fallback banner */}
         {showLocationBanner && (
           <div className="px-4 sm:px-6 pt-4">
@@ -224,7 +224,7 @@ export default function MapPage() {
                 <MapPin className="h-4 w-4 shrink-0" />
                 <span>{locationBannerMessage}</span>
               </div>
-              <button onClick={() => setLocationBannerDismissed(true)} className="text-muted-foreground hover:text-foreground">
+              <button onClick={() => setLocationBannerDismissed(true)} className="text-muted-foreground hover:text-foreground" aria-label={t('dismiss')}>
                 <X className="h-4 w-4" />
               </button>
             </div>
@@ -460,8 +460,8 @@ export default function MapPage() {
                 firstName: u.firstName,
                 signal: u.signal,
                 activity: u.activity,
-                latitude: u.position?.latitude || 0,
-                longitude: u.position?.longitude || 0,
+                latitude: u.position?.latitude ?? 48.8566,
+                longitude: u.position?.longitude ?? 2.3522,
                 distance: u.distance,
                 avatar_url: undefined,
                 rating: u.rating,
@@ -482,7 +482,7 @@ export default function MapPage() {
               eventParticipantCounts={eventParticipantCounts}
               visibilityDistance={settings.visibility_distance}
               className="w-full h-full"
-              userInitial={profile?.first_name?.charAt(0).toUpperCase() || '?'}
+              userInitial={profile?.first_name ? profile.first_name.charAt(0).toUpperCase() : '?'}
               activityFilters={activityFilters}
               onActivityFilterToggle={toggleActivityFilter}
               groupSignalLoading={groupLoading}
@@ -541,8 +541,8 @@ export default function MapPage() {
 
         {/* Activity Modal */}
         {showActivityModal && (
-          <div className="fixed inset-0 z-[60] flex items-end justify-center bg-background/80 backdrop-blur-sm animate-fade-in">
-            <div className="w-full max-w-[500px] glass-strong rounded-t-3xl p-6 pb-8 animate-slide-up">
+          <div className="fixed inset-0 z-[60] flex items-end justify-center bg-background/80 backdrop-blur-sm animate-fade-in" onClick={() => setShowActivityModal(false)} role="dialog" aria-modal="true" aria-label={t('mapUI.openTo')}>
+            <div className="w-full max-w-[500px] glass-strong rounded-t-3xl p-6 pb-8 animate-slide-up" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-xl font-bold text-foreground">{t('mapUI.openTo')}</h2>
@@ -551,6 +551,7 @@ export default function MapPage() {
                 <button
                   onClick={() => setShowActivityModal(false)}
                   className="p-2 rounded-lg hover:bg-muted"
+                  aria-label={t('cancel')}
                 >
                   <X className="h-5 w-5 text-muted-foreground" />
                 </button>

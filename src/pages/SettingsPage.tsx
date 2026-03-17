@@ -273,6 +273,10 @@ export default function SettingsPage() {
               <div className="mt-4 px-1">
                 <Slider
                   value={[item.value as number]}
+                  onValueCommit={([value]) => {
+                    item.onChange(value);
+                    toast.success(t('settings.settingUpdated'));
+                  }}
                   onValueChange={([value]) => {
                     item.onChange(value);
                   }}
@@ -280,6 +284,7 @@ export default function SettingsPage() {
                   max={500}
                   step={50}
                   className="w-full"
+                  aria-label={t('settings.visibilityDistance')}
                 />
                 <div className="flex justify-between mt-2 text-xs text-muted-foreground">
                   <span>50m</span>

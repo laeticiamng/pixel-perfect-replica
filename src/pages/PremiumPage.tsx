@@ -181,7 +181,7 @@ export default function PremiumPage() {
     return (
       <PageLayout className="pb-28 safe-bottom">
         <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
-          <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
+          <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors" aria-label={t('back')}>
             <ArrowLeft className="h-6 w-6 text-foreground" />
           </button>
           <h1 className="text-xl font-bold text-foreground">{t('premium.nearvityPlusTitle')}</h1>
@@ -270,7 +270,7 @@ export default function PremiumPage() {
         })}</script>
       </Helmet>
       <header className="safe-top px-4 sm:px-6 py-4 flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors">
+        <button onClick={() => navigate(-1)} className="p-2.5 rounded-xl hover:bg-muted/50 transition-colors" aria-label={t('back')}>
           <ArrowLeft className="h-6 w-6 text-foreground" />
         </button>
         <h1 className="text-xl font-bold text-foreground">{t('premium.title')}</h1>
@@ -289,6 +289,7 @@ export default function PremiumPage() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
+              role="alert"
               className="flex items-center gap-3 p-4 rounded-xl bg-signal-green/10 border border-signal-green/30"
             >
               <PartyPopper className="h-5 w-5 text-signal-green shrink-0" />
@@ -404,12 +405,14 @@ export default function PremiumPage() {
                   onClick={() => setSessionQuantity(Math.max(1, sessionQuantity - 1))}
                   className="px-3 py-2 text-foreground hover:bg-muted-foreground/10 rounded-l-xl transition-colors"
                   disabled={sessionQuantity <= 1}
+                  aria-label={t('premium.decreaseQuantity')}
                 >-</button>
-                <span className="px-4 py-2 font-bold text-foreground min-w-[40px] text-center">{sessionQuantity}</span>
+                <span className="px-4 py-2 font-bold text-foreground min-w-[40px] text-center" aria-live="polite">{sessionQuantity}</span>
                 <button
                   onClick={() => setSessionQuantity(Math.min(10, sessionQuantity + 1))}
                   className="px-3 py-2 text-foreground hover:bg-muted-foreground/10 rounded-r-xl transition-colors"
                   disabled={sessionQuantity >= 10}
+                  aria-label={t('premium.increaseQuantity')}
                 >+</button>
               </div>
               <span className="text-muted-foreground">= {(sessionQuantity * 0.99).toFixed(2)}€</span>
