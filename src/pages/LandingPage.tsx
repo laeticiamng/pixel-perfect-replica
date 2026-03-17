@@ -206,8 +206,8 @@ export default function LandingPage() {
         <GuaranteeSection />
         <FeaturesSection />
         <UseCasesSection />
-        <ErasmusFeaturesSection />
         <LandingTestimonialsSection />
+        <ErasmusFeaturesSection />
         <PricingPreviewSection />
         <FinalCTASection />
       </main>
