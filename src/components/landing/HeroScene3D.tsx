@@ -1,6 +1,5 @@
 import { useRef, useMemo, useCallback } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { AdaptiveDpr, AdaptiveEvents } from '@react-three/drei';
 import { EffectComposer, Bloom, ChromaticAberration, Vignette, Noise } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
@@ -85,8 +84,8 @@ varying float vDisplacement;
 varying float vFresnel;
 
 void main() {
-  float noiseFreq = 1.2 + uScrollProgress * 0.5;
-  float noiseAmp = 0.35 * uDistortion;
+  float noiseFreq = 1.0 + uScrollProgress * 0.4;
+  float noiseAmp = 0.4 * uDistortion;
 
   vec3 pos = position;
 
@@ -127,7 +126,7 @@ varying vec3 vWorldPosition;
 varying float vDisplacement;
 varying float vFresnel;
 
-// Thin-film iridescence simulation
+// Thin-film iridescence simulation — more saturated
 vec3 iridescence(float angle, float thickness) {
   float phase = angle * thickness * 6.2831853;
   return vec3(
@@ -141,41 +140,54 @@ void main() {
   vec3 viewDir = normalize(-vPosition);
   float fresnel = vFresnel;
 
-  // Base colors
-  vec3 coralColor = vec3(1.0, 0.45, 0.35);
-  vec3 purpleColor = vec3(0.55, 0.2, 0.8);
-  vec3 goldColor = vec3(1.0, 0.78, 0.35);
-  vec3 blueAccent = vec3(0.2, 0.5, 1.0);
+  // Base colors — richer, more saturated
+  vec3 coralColor = vec3(1.0, 0.42, 0.32);
+  vec3 purpleColor = vec3(0.6, 0.15, 0.85);
+  vec3 goldColor = vec3(1.0, 0.75, 0.3);
+  vec3 blueAccent = vec3(0.25, 0.55, 1.0);
+  vec3 pinkHighlight = vec3(1.0, 0.35, 0.6);
 
-  // Mix based on displacement + animated normal
-  float mixFactor = vDisplacement * 2.5 + 0.5;
-  mixFactor += sin(uTime * 0.4 + vNormal.y * 3.0) * 0.2;
+  // Mix based on displacement + animated normal — more dynamic
+  float mixFactor = vDisplacement * 3.0 + 0.5;
+  mixFactor += sin(uTime * 0.35 + vNormal.y * 4.0) * 0.25;
   mixFactor = clamp(mixFactor, 0.0, 1.0);
 
   vec3 baseColor = mix(coralColor, purpleColor, mixFactor);
 
-  // Iridescence — thin film interference based on view angle
+  // Iridescence — stronger, more visible thin film interference
   float iriAngle = dot(viewDir, vNormal);
-  float thickness = 1.8 + sin(uTime * 0.3 + vWorldPosition.y * 2.0) * 0.3;
+  float thickness = 2.2 + sin(uTime * 0.25 + vWorldPosition.y * 2.5) * 0.4;
   vec3 iriColor = iridescence(iriAngle, thickness);
-  baseColor = mix(baseColor, iriColor * vec3(1.0, 0.6, 0.5), 0.25);
+  baseColor = mix(baseColor, iriColor * vec3(1.0, 0.55, 0.5), 0.4);
 
-  // Fresnel glow with pulsing rim light
-  float rimPulse = 0.8 + 0.2 * sin(uTime * 1.5);
-  vec3 fresnelColor = mix(coralColor * 1.6, goldColor, fresnel * 0.6);
-  vec3 finalColor = mix(baseColor * 0.55, fresnelColor * rimPulse, fresnel);
+  // Fresnel rim — stronger, more sculpted
+  float rimPulse = 0.85 + 0.15 * sin(uTime * 1.2);
+  vec3 fresnelColor = mix(coralColor * 1.8, goldColor * 1.3, fresnel * 0.5);
+  fresnelColor += pinkHighlight * pow(fresnel, 3.0) * 0.3;
+  vec3 finalColor = mix(baseColor * 0.7, fresnelColor * rimPulse, fresnel);
 
-  // Emissive bloom contribution
-  finalColor += coralColor * fresnel * 0.5;
-  finalColor += blueAccent * pow(fresnel, 5.0) * 0.15;
+  // Emissive bloom — stronger contribution
+  finalColor += coralColor * fresnel * 0.7;
+  finalColor += blueAccent * pow(fresnel, 4.0) * 0.25;
+  finalColor += pinkHighlight * pow(fresnel, 6.0) * 0.15;
 
-  // Environment reflection fake — cubemap-like gradient
+  // Subsurface-like inner glow
+  float sss = pow(max(dot(viewDir, vNormal), 0.0), 1.5) * 0.15;
+  finalColor += coralColor * sss;
+
+  // Environment reflection — richer
   vec3 reflectDir = reflect(-viewDir, vNormal);
   float envMix = reflectDir.y * 0.5 + 0.5;
-  vec3 envColor = mix(vec3(0.05, 0.0, 0.1), vec3(0.3, 0.15, 0.4), envMix);
-  finalColor += envColor * fresnel * 0.3;
+  vec3 envColor = mix(vec3(0.08, 0.0, 0.15), vec3(0.35, 0.18, 0.5), envMix);
+  finalColor += envColor * fresnel * 0.35;
 
-  float alpha = 0.88 + fresnel * 0.12;
+  // Specular highlight — sharp, premium feel
+  vec3 lightDir = normalize(vec3(1.0, 1.0, 0.8));
+  vec3 halfVec = normalize(viewDir + lightDir);
+  float spec = pow(max(dot(vNormal, halfVec), 0.0), 64.0);
+  finalColor += vec3(1.0, 0.9, 0.8) * spec * 0.5;
+
+  float alpha = 0.92 + fresnel * 0.08;
 
   gl_FragColor = vec4(finalColor, alpha);
 }
@@ -198,9 +210,10 @@ varying vec3 vNormal;
 varying vec3 vPosition;
 void main() {
   vec3 viewDir = normalize(-vPosition);
-  float fresnel = pow(1.0 - max(dot(viewDir, vNormal), 0.0), 2.0);
-  vec3 warmGlow = vec3(1.0, 0.5, 0.3) * (0.4 + 0.1 * sin(uTime * 0.8));
-  float alpha = fresnel * 0.35;
+  float fresnel = pow(1.0 - max(dot(viewDir, vNormal), 0.0), 1.8);
+  vec3 warmGlow = vec3(1.0, 0.45, 0.28) * (0.6 + 0.15 * sin(uTime * 0.6));
+  warmGlow += vec3(0.4, 0.1, 0.6) * fresnel * 0.3;
+  float alpha = fresnel * 0.5;
   gl_FragColor = vec4(warmGlow, alpha);
 }
 `;
@@ -238,9 +251,9 @@ void main() {
   gl_PointSize = size * (300.0 / -mvPosition.z);
   gl_Position = projectionMatrix * mvPosition;
 
-  // Distance-based alpha
+  // Distance-based alpha — stronger for fewer, brighter particles
   float dist = length(pos);
-  vAlpha = smoothstep(8.0, 2.0, dist) * 0.7;
+  vAlpha = smoothstep(8.0, 2.5, dist) * 0.9;
   vGlow = pulse;
 }
 `;
@@ -250,14 +263,16 @@ varying float vAlpha;
 varying float vGlow;
 
 void main() {
-  // Soft circle with glow
+  // Soft circle with richer glow halo
   float d = length(gl_PointCoord - vec2(0.5));
   if (d > 0.5) discard;
-  float softEdge = 1.0 - smoothstep(0.2, 0.5, d);
-  float glow = exp(-d * 4.0) * vGlow;
+  float softEdge = 1.0 - smoothstep(0.15, 0.5, d);
+  float glow = exp(-d * 3.0) * vGlow;
 
-  vec3 color = mix(vec3(1.0, 0.45, 0.35), vec3(1.0, 0.75, 0.4), glow * 0.5);
-  float alpha = (softEdge * 0.6 + glow * 0.4) * vAlpha;
+  vec3 coreColor = vec3(1.0, 0.92, 0.85);
+  vec3 midColor = mix(vec3(1.0, 0.45, 0.35), vec3(1.0, 0.7, 0.4), vGlow * 0.5);
+  vec3 color = mix(midColor, coreColor, smoothstep(0.15, 0.0, d));
+  float alpha = (softEdge * 0.7 + glow * 0.5) * vAlpha;
 
   gl_FragColor = vec4(color, alpha);
 }
@@ -277,9 +292,9 @@ uniform float uTime;
 uniform vec3 uColor;
 varying float vAngle;
 void main() {
-  float pulse = 0.5 + 0.5 * sin(vAngle * 3.0 + uTime * 2.0);
-  float alpha = 0.15 + pulse * 0.2;
-  vec3 color = uColor * (0.8 + pulse * 0.4);
+  float pulse = 0.5 + 0.5 * sin(vAngle * 3.0 + uTime * 1.5);
+  float alpha = 0.25 + pulse * 0.3;
+  vec3 color = uColor * (1.0 + pulse * 0.5);
   gl_FragColor = vec4(color, alpha);
 }
 `;
@@ -309,10 +324,11 @@ function OrganicSphere({ scrollProgress }: { scrollProgress: number }) {
     mouseCurrent.current.lerp(new THREE.Vector2(pointer.x, pointer.y), 0.03);
     uniforms.uMouse.value.copy(mouseCurrent.current);
 
-    meshRef.current.rotation.y += delta * 0.06;
-    meshRef.current.rotation.x = mouseCurrent.current.y * 0.4;
-    meshRef.current.position.x = mouseCurrent.current.x * 0.4;
-    meshRef.current.position.y = mouseCurrent.current.y * 0.25 - scrollProgress * 2;
+    meshRef.current.rotation.y += delta * 0.04;
+    meshRef.current.rotation.x = mouseCurrent.current.y * 0.3;
+    // Slightly off-center to the right for compositional balance
+    meshRef.current.position.x = 0.6 + mouseCurrent.current.x * 0.3;
+    meshRef.current.position.y = 0.2 + mouseCurrent.current.y * 0.2 - scrollProgress * 2;
 
     const s = THREE.MathUtils.lerp(1, 0.55, scrollProgress);
     meshRef.current.scale.setScalar(s);
@@ -320,7 +336,7 @@ function OrganicSphere({ scrollProgress }: { scrollProgress: number }) {
 
   return (
     <mesh ref={meshRef}>
-      <icosahedronGeometry args={[1.8, 80]} />
+      <icosahedronGeometry args={[2.8, 96]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={sphereVertexShader}
@@ -343,15 +359,16 @@ function InnerGlow({ scrollProgress }: { scrollProgress: number }) {
     if (!ref.current) return;
     uniforms.uTime.value += delta;
     if (meshRef.current) {
-      const s = THREE.MathUtils.lerp(1, 0.5, scrollProgress) * 1.4;
+      const s = THREE.MathUtils.lerp(1, 0.5, scrollProgress) * 1.6;
       meshRef.current.scale.setScalar(s);
-      meshRef.current.position.y = -scrollProgress * 2;
+      meshRef.current.position.x = 0.6;
+      meshRef.current.position.y = 0.2 - scrollProgress * 2;
     }
   });
 
   return (
     <mesh ref={meshRef}>
-      <icosahedronGeometry args={[1.2, 32]} />
+      <icosahedronGeometry args={[2.0, 32]} />
       <shaderMaterial
         ref={ref}
         vertexShader={innerGlowVertex}
@@ -365,8 +382,8 @@ function InnerGlow({ scrollProgress }: { scrollProgress: number }) {
   );
 }
 
-// ── Points Particle Field ────────────────────────────────────────────
-const PARTICLE_COUNT = 1200;
+// ── Points Particle Field — fewer but premium ───────────────────────
+const PARTICLE_COUNT = 300;
 
 function ParticleField({ scrollProgress }: { scrollProgress: number }) {
   const pointsRef = useRef<THREE.Points>(null);
@@ -382,15 +399,15 @@ function ParticleField({ scrollProgress }: { scrollProgress: number }) {
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      const r = 2.2 + Math.random() * 5.5;
+      const r = 3.2 + Math.random() * 4.5;
 
       positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = r * Math.cos(phi);
 
-      sizes[i] = 2.0 + Math.random() * 6.0;
+      sizes[i] = 4.0 + Math.random() * 10.0;
       phases[i] = Math.random() * Math.PI * 2;
-      speeds[i] = 0.5 + Math.random() * 2.0;
+      speeds[i] = 0.3 + Math.random() * 1.2;
     }
 
     const geo = new THREE.BufferGeometry();
@@ -573,14 +590,14 @@ function OrbitalRing({ radius, tilt, speed, color, scrollProgress }: {
     if (!ref.current || !matRef.current) return;
     uniforms.uTime.value += delta;
     ref.current.rotation.z += delta * speed;
-    ref.current.position.y = -scrollProgress * 2;
+    ref.current.position.y = 0.2 - scrollProgress * 2;
     const s = THREE.MathUtils.lerp(1, 0.5, scrollProgress);
     ref.current.scale.setScalar(s);
   });
 
   return (
-    <mesh ref={ref} rotation={tilt}>
-      <torusGeometry args={[radius, 0.008, 8, 128]} />
+    <mesh ref={ref} rotation={tilt} position={[0.6, 0.2, 0]}>
+      <torusGeometry args={[radius, 0.018, 12, 160]} />
       <shaderMaterial
         ref={matRef}
         vertexShader={ringVertexShader}
@@ -597,9 +614,9 @@ function OrbitalRing({ radius, tilt, speed, color, scrollProgress }: {
 
 function OrbitalRings({ scrollProgress }: { scrollProgress: number }) {
   const rings = useMemo(() => [
-    { radius: 2.6, tilt: [0.3, 0.2, 0] as [number, number, number], speed: 0.15, color: new THREE.Color(1.0, 0.5, 0.35) },
-    { radius: 3.0, tilt: [-0.5, 0.8, 0.3] as [number, number, number], speed: -0.1, color: new THREE.Color(0.8, 0.4, 1.0) },
-    { radius: 3.5, tilt: [0.8, -0.3, -0.2] as [number, number, number], speed: 0.08, color: new THREE.Color(1.0, 0.75, 0.3) },
+    { radius: 3.4, tilt: [0.3, 0.2, 0] as [number, number, number], speed: 0.12, color: new THREE.Color(1.0, 0.5, 0.35) },
+    { radius: 3.9, tilt: [-0.5, 0.8, 0.3] as [number, number, number], speed: -0.08, color: new THREE.Color(0.8, 0.4, 1.0) },
+    { radius: 4.5, tilt: [0.8, -0.3, -0.2] as [number, number, number], speed: 0.06, color: new THREE.Color(1.0, 0.75, 0.3) },
   ], []);
 
   return (
@@ -615,44 +632,47 @@ function OrbitalRings({ scrollProgress }: { scrollProgress: number }) {
 function SceneContent({ scrollProgress }: { scrollProgress: number }) {
   return (
     <>
-      <ambientLight intensity={0.1} />
-      <pointLight position={[5, 5, 5]} intensity={0.9} color="#ff7363" />
-      <pointLight position={[-5, -3, 3]} intensity={0.5} color="#8833cc" />
-      <pointLight position={[0, -4, 2]} intensity={0.3} color="#ffbb55" />
+      <ambientLight intensity={0.15} />
+      {/* Key light — strong coral from upper right */}
+      <pointLight position={[4, 4, 5]} intensity={1.4} color="#ff6b5a" />
+      {/* Fill light — purple from left */}
+      <pointLight position={[-5, -2, 3]} intensity={0.7} color="#9933dd" />
+      {/* Rim light — gold from below */}
+      <pointLight position={[1, -5, 2]} intensity={0.5} color="#ffcc55" />
+      {/* Back light — cool accent for depth */}
+      <pointLight position={[0, 2, -4]} intensity={0.4} color="#4488ff" />
 
       <InnerGlow scrollProgress={scrollProgress} />
       <OrganicSphere scrollProgress={scrollProgress} />
       <ParticleField scrollProgress={scrollProgress} />
-      <ConnectionLines scrollProgress={scrollProgress} />
       <OrbitalRings scrollProgress={scrollProgress} />
 
       <EffectComposer>
         <Bloom
-          intensity={1.2}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.9}
+          intensity={1.8}
+          luminanceThreshold={0.15}
+          luminanceSmoothing={0.85}
           mipmapBlur
         />
         <ChromaticAberration
           blendFunction={BlendFunction.NORMAL}
-          offset={new THREE.Vector2(0.0008, 0.0008)}
+          offset={new THREE.Vector2(0.001, 0.001)}
           radialModulation
-          modulationOffset={0.3}
+          modulationOffset={0.25}
         />
         <Vignette
-          offset={0.3}
-          darkness={0.6}
+          offset={0.25}
+          darkness={0.7}
           blendFunction={BlendFunction.NORMAL}
         />
         <Noise
           premultiply
           blendFunction={BlendFunction.SOFT_LIGHT}
-          opacity={0.25}
+          opacity={0.18}
         />
       </EffectComposer>
 
-      <AdaptiveDpr pixelated />
-      <AdaptiveEvents />
+      {/* DPR handled by Canvas dpr prop */}
     </>
   );
 }
@@ -672,8 +692,8 @@ export function HeroScene3D({ scrollProgress }: HeroScene3DProps) {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
-        dpr={[0.75, 1.5]}
-        camera={{ position: [0, 0, 6], fov: 50 }}
+        dpr={[1, 2]}
+        camera={{ position: [0, 0, 7], fov: 48 }}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
         style={{ background: 'transparent' }}
       >

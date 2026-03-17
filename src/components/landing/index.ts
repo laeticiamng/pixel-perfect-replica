@@ -3,7 +3,7 @@ export { FloatingOrbs } from './FloatingOrbs';
 export { HeroScene3D } from './HeroScene3D';
 export { SignalDemo } from './SignalDemo';
 export { FeatureCard } from './FeatureCard';
-export { ComparisonSection } from './ComparisonSection';
+
 export { LandingHeader } from './LandingHeader';
 export { HeroSection } from './HeroSection';
 export { AppPreviewSection } from './AppPreviewSection';
