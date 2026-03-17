@@ -219,7 +219,7 @@ export default function MapPage() {
         {/* Geolocation fallback banner */}
         {showLocationBanner && (
           <div className="px-4 sm:px-6 pt-4">
-            <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-signal-yellow/10 border border-signal-yellow/30 text-sm">
+            <div role="alert" className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-signal-yellow/10 border border-signal-yellow/30 text-sm">
               <div className="flex items-center gap-2 text-signal-yellow">
                 <MapPin className="h-4 w-4 shrink-0" />
                 <span>{locationBannerMessage}</span>

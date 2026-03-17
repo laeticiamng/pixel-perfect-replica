@@ -9,11 +9,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useTranslation } from '@/lib/i18n';
 import { getPasswordPolicyErrorMessage, isPwnedPasswordError, isWeakPasswordError } from '@/lib/authErrorMapper';
 import { cn } from '@/lib/utils';
+import { Helmet } from 'react-helmet-async';
 import toast from 'react-hot-toast';
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -125,6 +126,10 @@ export default function ResetPasswordPage() {
 
   return (
     <PageLayout showSidebar={false} className="flex flex-col px-4 sm:px-6 py-8 safe-bottom">
+      <Helmet>
+        <title>{locale === 'fr' ? 'Nouveau mot de passe — NEARVITY' : 'Reset Password — NEARVITY'}</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       {/* Content */}
       <div className="flex-1 flex flex-col justify-center">
         <div className="w-16 h-16 rounded-full bg-coral/20 flex items-center justify-center mx-auto mb-6">
@@ -156,7 +161,7 @@ export default function ResetPasswordPage() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('a11y.hidePassword') : t('a11y.showPassword')}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -181,7 +186,7 @@ export default function ResetPasswordPage() {
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                aria-label={showConfirmPassword ? t('a11y.hidePassword') : t('a11y.showPassword')}
               >
                 {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>

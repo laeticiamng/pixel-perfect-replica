@@ -10,6 +10,7 @@ import { ActivityType } from '@/types/signal';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/lib/i18n';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 import toast from 'react-hot-toast';
 
 type Step = 1 | 2 | 3;
@@ -412,6 +413,10 @@ export default function PostSignupOnboardingPage() {
 
   return (
     <PageLayout showSidebar={false} className="flex flex-col min-h-[100dvh]">
+      <Helmet>
+        <title>Welcome — NEARVITY</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <div className="flex-1 flex flex-col max-w-md mx-auto w-full py-8">
         {/* Progress dots */}
         <div className="flex justify-center gap-2 mb-6 px-6">

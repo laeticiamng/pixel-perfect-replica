@@ -46,8 +46,11 @@ export default function ContactPage() {
     setErrors({});
 
     // Open mailto with pre-filled content
-    const subject = encodeURIComponent(`[NEARVITY Contact] Message de ${name}`);
-    const body = encodeURIComponent(`Nom : ${name}\nEmail : ${email}\n\n${message}`);
+    const subjectText = t('contact.mailSubject').replace('{name}', name);
+    const subject = encodeURIComponent(subjectText);
+    const nameLabel = t('contact.mailBodyName');
+    const emailLabel = t('contact.mailBodyEmail');
+    const body = encodeURIComponent(`${nameLabel} : ${name}\n${emailLabel} : ${email}\n\n${message}`);
     window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
 
     setSent(true);
@@ -131,8 +134,10 @@ export default function ContactPage() {
                       className="bg-muted"
                       maxLength={100}
                       autoComplete="name"
+                      aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                      aria-invalid={!!errors.name}
                     />
-                    {errors.name && <p className="text-xs text-destructive mt-1" role="alert">{t('contact.nameRequired')}</p>}
+                    {errors.name && <p id="contact-name-error" className="text-xs text-destructive mt-1" role="alert">{t('contact.nameRequired')}</p>}
                   </div>
 
                   <div>
@@ -147,8 +152,10 @@ export default function ContactPage() {
                       className="bg-muted"
                       maxLength={255}
                       autoComplete="email"
+                      aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                      aria-invalid={!!errors.email}
                     />
-                    {errors.email && <p className="text-xs text-destructive mt-1" role="alert">{t('contact.emailInvalid')}</p>}
+                    {errors.email && <p id="contact-email-error" className="text-xs text-destructive mt-1" role="alert">{t('contact.emailInvalid')}</p>}
                   </div>
 
                   <div>
@@ -161,9 +168,11 @@ export default function ContactPage() {
                       placeholder={t('contact.messagePlaceholder')}
                       className="bg-muted min-h-[120px]"
                       maxLength={2000}
+                      aria-describedby={errors.message ? 'contact-message-error' : undefined}
+                      aria-invalid={!!errors.message}
                     />
                     <p className="text-xs text-muted-foreground mt-1 text-right">{message.length}/2000</p>
-                    {errors.message && <p className="text-xs text-destructive mt-1">{t('contact.messageTooShort')}</p>}
+                    {errors.message && <p id="contact-message-error" className="text-xs text-destructive mt-1" role="alert">{t('contact.messageTooShort')}</p>}
                   </div>
                 </CardContent>
               </Card>

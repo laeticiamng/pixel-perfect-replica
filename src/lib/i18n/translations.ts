@@ -2019,6 +2019,9 @@ export const translations = {
     sent: { en: 'Message ready to send!', fr: 'Message prêt à envoyer !', de: 'Nachricht bereit zum Senden!' },
     thankYou: { en: 'Message sent!', fr: 'Message envoyé !', de: 'Nachricht gesendet!' },
     thankYouDesc: { en: 'Your email client has opened with your message. We\'ll reply within 48h.', fr: 'Ton client email s\'est ouvert avec ton message. On te répond sous 48h.', de: 'Dein E-Mail-Client wurde mit deiner Nachricht geöffnet. Wir antworten innerhalb von 48h.' },
+    mailSubject: { en: '[NEARVITY Contact] Message from {name}', fr: '[NEARVITY Contact] Message de {name}', de: '[NEARVITY Contact] Nachricht von {name}' },
+    mailBodyName: { en: 'Name', fr: 'Nom', de: 'Name' },
+    mailBodyEmail: { en: 'Email', fr: 'Email', de: 'E-Mail' },
   },
 
   // Erasmus Newcomer Mode
@@ -2095,6 +2098,22 @@ export const translations = {
     lgbtqDesc: { en: 'Connect with LGBTQ+ community members', fr: 'Connecte-toi avec la communauté LGBTQ+', de: 'Verbinde dich mit LGBTQ+ Community-Mitgliedern' },
     firstGen: { en: 'First-generation student', fr: 'Étudiant(e) de première génération', de: 'Erstakademiker' },
     firstGenDesc: { en: 'Meet others who are first in their family at university', fr: 'Rencontre d\'autres premiers de leur famille à l\'université', de: 'Triff andere, die als Erste in ihrer Familie studieren' },
+  },
+
+  // Accessibility
+  a11y: {
+    showPassword: { en: 'Show password', fr: 'Afficher le mot de passe', de: 'Passwort anzeigen' },
+    hidePassword: { en: 'Hide password', fr: 'Masquer le mot de passe', de: 'Passwort verbergen' },
+    homeLink: { en: 'NEARVITY — Home', fr: 'NEARVITY — Accueil', de: 'NEARVITY — Startseite' },
+  },
+
+  // Missing keys
+  dismiss: { en: 'Dismiss', fr: 'Fermer', de: 'Schließen' },
+
+  // Footer
+  footer: {
+    madeWith: { en: 'Made with', fr: 'Fait avec', de: 'Gemacht mit' },
+    inFranceBy: { en: 'in France by', fr: 'en France par', de: 'in Frankreich von' },
   },
 
 } as const;
