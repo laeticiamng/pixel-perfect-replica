@@ -34,6 +34,7 @@ export default function ProfilePage() {
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { t } = useTranslation();
   const { referralCode, referralsCount, shareLink } = useReferral();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleCopyReferralLink = async () => {
     if (!shareLink) return;
@@ -48,8 +49,11 @@ export default function ProfilePage() {
   };
 
   const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
     const { error } = await signOut();
     if (error) {
+      setIsLoggingOut(false);
       toast.error(t('errors.generic'));
       return;
     }
@@ -222,7 +226,7 @@ export default function ProfilePage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
-              <AlertDialogAction onClick={handleLogout} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              <AlertDialogAction onClick={handleLogout} disabled={isLoggingOut} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                 {t('nav.logout')}
               </AlertDialogAction>
             </AlertDialogFooter>

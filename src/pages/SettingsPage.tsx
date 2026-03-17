@@ -22,7 +22,7 @@ export default function SettingsPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
-  const { isAdmin } = useAdminCheck();
+  const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const {
     settings,
     setGhostMode,
@@ -296,7 +296,7 @@ export default function SettingsPage() {
         ))}
 
         {/* Admin Dashboard (admin only) */}
-        {isAdmin && (
+        {!adminLoading && isAdmin && (
           <button 
             onClick={() => navigate('/admin')}
             className="w-full glass rounded-xl p-4 flex items-center gap-4 text-coral hover:bg-coral/10 transition-colors"

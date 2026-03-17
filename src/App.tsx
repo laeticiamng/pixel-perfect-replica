@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { Toaster as HotToaster } from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ErrorBoundary, CookieConsent, OfflineBanner, ProtectedRoute, CommandPalette } from "@/components";
+import { RoleProtectedRoute } from "@/components/RoleProtectedRoute";
 import { useKeyboardShortcuts } from "@/hooks";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { useTheme } from "@/hooks";
@@ -222,19 +223,19 @@ function AnimatedRoutes() {
               </ProtectedRoute>
             } />
             <Route path="/admin" element={
-              <ProtectedRoute>
+              <RoleProtectedRoute requiredRole="admin">
                 <AdminDashboardPage />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             } />
             <Route path="/president-cockpit" element={
-              <ProtectedRoute>
+              <RoleProtectedRoute requiredRole="admin">
                 <PresidentCockpitPage />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             } />
             <Route path="/institutional-dashboard" element={
-              <ProtectedRoute>
+              <RoleProtectedRoute requiredRole="admin">
                 <InstitutionalDashboardPage />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             } />
             <Route path="/blocked-users" element={
               <ProtectedRoute>
