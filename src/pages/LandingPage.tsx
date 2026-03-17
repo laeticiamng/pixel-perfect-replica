@@ -196,7 +196,7 @@ export default function LandingPage() {
         <script type="application/ld+json">{JSON.stringify(jsonLdApp)}</script>
         <script type="application/ld+json">{JSON.stringify(jsonLdWebSite)}</script>
       </Helmet>
-      <FloatingOrbs />
+      <FloatingOrbs scrollProgress={scrollYProgress} />
       <LandingHeader />
       <main>
         <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />

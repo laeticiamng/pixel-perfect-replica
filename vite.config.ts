@@ -90,6 +90,7 @@ export default defineConfig(({ mode }) => {
             'vendor-mapbox': ['mapbox-gl', 'supercluster'],
             'vendor-charts': ['recharts'],
             'vendor-supabase': ['@supabase/supabase-js'],
+            'vendor-3d': ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
           },
         },
       },

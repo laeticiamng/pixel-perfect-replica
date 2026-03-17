@@ -1,62 +1,120 @@
 
 
-## Plan : Landing page 3D immersive avec React Three Fiber
+# Audit NEARVITY -- Ce qui manque pour être unique et révolutionnaire
 
-### Concept
+## Etat actuel : ce qui a été implémenté
 
-Remplacer le composant `FloatingOrbs` (blurs CSS statiques) par une scène 3D WebGL plein écran en arrière-plan du hero. L'effet : une sphère organique animée entourée de particules flottantes, réactive au scroll et au mouvement de la souris — style Apple Vision Pro / Linear 2026.
+Les éléments suivants sont opérationnels :
+- Système de signaux (green/yellow/red) avec géolocalisation temps réel
+- Sessions binôme avec quota, Stripe, feedback, fiabilité
+- Événements avec QR check-in, favoris, catégories
+- Messagerie complète (conversations, unread badges, Realtime)
+- Page Connexions/Amis avec chat intégré
+- Centre de notifications avec badges temps réel
+- Gamification (streaks, achievements, leaderboard campus)
+- Événements sur la carte avec indicateur "Happening Now"
+- i18n (EN/FR/DE), dark/light, PWA, RLS, rate limiting, shadow banning
+- Referral, admin dashboard, reliability scoring, command palette
 
-### Ce qui sera créé
+---
 
-**1. Installation des dépendances**
-- `@react-three/fiber@^8.18` + `three@^0.170` + `@react-three/drei@^9.122.0` + `@react-three/postprocessing@^2.16`
+## Lacunes critiques restantes
 
-**2. Nouveau composant : `src/components/landing/HeroScene3D.tsx`**
-- Canvas R3F plein écran, `pointer-events-none`, position fixed derrière le contenu
-- **Sphère organique centrale** : géométrie icosaèdre avec vertex displacement via un shader custom (bruit simplex), animée par `useFrame` — surface iridescente coral/purple avec fresnel
-- **Champ de particules** : ~800 points flottants autour de la sphère, mouvement brownien lent, taille variable, couleur coral avec opacité dégressive
-- **Lignes de connexion** : quelques liens dynamiques entre particules proches (style réseau social / proximité — cohérent avec le produit)
-- **Réactivité souris** : la sphère suit légèrement le curseur (parallax 3D via `useThree` + lerp)
-- **Réactivité scroll** : la sphère se déforme et s'éloigne au scroll (prop `scrollProgress` depuis la page)
-- **Post-processing** : Bloom subtil sur les éléments lumineux + ChromaticAberration léger
+### 1. Pas de découverte d'utilisateurs hors proximité
+Les utilisateurs ne peuvent trouver d'autres personnes que via le radar live. Aucun annuaire, aucune recherche par activité/université/intérêts. La plateforme est vide quand personne n'a son signal activé.
 
-**3. Shader custom GLSL (inline)**
-- Vertex shader : displacement avec 3D simplex noise, animé par `uTime`
-- Fragment shader : dégradé coral → purple basé sur la normale + effet fresnel pour les bords lumineux
+**Manquant :** Page de découverte / feed, section "gens près de ton campus", matching par activité favorite.
 
-**4. Mise à jour de `FloatingOrbs.tsx`**
-- Conservé comme fallback CSS pour les appareils bas de gamme
-- Détection `navigator.hardwareConcurrency` et `WebGL` support : si < 4 cores ou pas de WebGL → fallback CSS, sinon → scène 3D
+### 2. Pas de formation de groupe / meetup spontané
+La plateforme connecte uniquement en 1-to-1. Si 4 personnes étudient à proximité, impossible de "former un groupe".
 
-**5. Mise à jour de `LandingPage.tsx`**
-- Passer `scrollYProgress` à la scène 3D
-- Lazy-load du composant 3D avec `React.lazy` + `Suspense` (fallback = FloatingOrbs actuels)
+**Manquant :** Signal de groupe ("je cherche 3+ personnes"), chat de groupe, carte d'activité de groupe.
 
-### Architecture technique
+### 3. Pas de suggestions intelligentes de timing
+L'IA fait des recommandations basiques. Aucune analyse "Ton campus est le plus actif le mardi à midi" ni "3 personnes étudient ici habituellement à 14h".
+
+**Manquant :** Heatmap campus par horaire, suggestion "meilleur moment pour activer", patterns d'activité historiques.
+
+### 4. Pas de hub campus / communauté
+La plateforme est générique -- pas de contenu spécifique par campus, pas de tableau d'affichage, pas de feed communautaire.
+
+**Manquant :** Page campus, feed communautaire, événements campus, outils admin université.
+
+---
+
+## Lacunes UX
+
+### 5. Pas de tutoriel onboarding pour les fonctionnalités clés
+`PostSignupOnboardingPage` existe mais les fonctionnalités de la carte (activation signal, radar vs map, icebreakers) n'ont aucun guide. Un nouvel utilisateur voit une carte vide sans aide.
+
+**Manquant :** Walkthrough interactif (tooltips/coach marks) à la première visite de la carte.
+
+### 6. Pas de feedback haptique/audio pour les actions clés
+Activation du signal, réception d'une demande de connexion, détection d'un utilisateur proche -- rien de tout cela ne déclenche de vibration (malgré le setting `proximity_vibration`) ni de son.
+
+**Manquant :** Intégration API Vibration, signaux audio pour les alertes de proximité.
+
+### 7. Les empty states manquent d'engagement
+`EmptyRadarState` a un radar animé et un CTA d'invitation, ce qui est bien. Mais il manque du social proof, des suggestions d'activités, ou de la gamification "sois le premier".
+
+**Manquant :** Stats communautaires dans l'empty state, suggestion de sessions binôme programmées, countdown "prochaine activité à X".
+
+### 8. Pas de badges de vérification visibles sur la carte
+Les badges de vérification (étudiant vérifié) existent en DB mais ne sont affichés ni sur les marqueurs de carte ni dans `UserPopupCard`.
+
+**Manquant :** Icônes de badge sur les marqueurs, indicateurs de confiance dans UserPopupCard.
+
+---
+
+## Différenciateurs manquants
+
+### 9. Pas de notes vocales / intégration audio
+`VoiceIcebreakerButton` génère des icebreakers audio. Mais pas de fonctionnalité de note vocale dans le chat, pas de message audio rapide.
+
+**Manquant :** Notes vocales dans le chat, playback d'icebreaker audio, feature walkie-talkie de proximité.
+
+### 10. Pas de mode offline robuste
+La PWA est configurée mais pas de cache de données offline, pas de service worker pour background sync, pas d'indicateur offline au-delà de `OfflineBanner`.
+
+**Manquant :** Architecture offline-first avec sessions en cache, actions en queue, sync en background.
+
+---
+
+## Dette technique
+
+### 11. `(supabase as any)` dans useConnections
+Le hook `useConnections` utilise `(supabase as any)` partout (lignes 33, 50, 85, 113, 139). La table `connections` n'est probablement pas dans les types générés. Cela casse la type-safety et masque les erreurs.
+
+### 12. Mock data toujours utilisée dans signalStore
+`src/stores/signalStore.ts` utilise `generateMockUsers` (ligne 55) pour les utilisateurs proches. Le vrai hook `useActiveSignal` existe et fonctionne, mais le store référence encore les mocks. Ce store semble d'ailleurs inutilisé vu que `useMapPageLogic` utilise directement `useActiveSignal`.
+
+### 13. Pas de couverture E2E pour les flux critiques
+Les fichiers de test existent mais sont principalement unitaires. Pas de vrai test E2E pour : signup → activer signal → voir utilisateur proche → envoyer icebreaker → chat.
+
+---
+
+## Ordre de priorité d'implémentation
 
 ```text
-LandingPage
-├── <Suspense fallback={<FloatingOrbs />}>
-│   └── <HeroScene3D scrollProgress={scrollYProgress} />  ← lazy loaded
-├── LandingHeader
-├── HeroSection (contenu texte, inchangé)
-├── ... autres sections
+Priorité 1 (Différenciation) :
+  [1] Découverte d'utilisateurs hors proximité
+  [2] Formation de groupe / meetup spontané
+  [5] Tutoriel onboarding interactif
+
+Priorité 2 (Engagement) :
+  [3] Suggestions intelligentes de timing
+  [7] Empty states enrichis (social proof, suggestions)
+  [8] Badges de vérification sur la carte
+
+Priorité 3 (Innovation) :
+  [9] Notes vocales dans le chat
+  [4] Hub campus / communauté
+  [6] Feedback haptique/audio
+
+Priorité 4 (Qualité) :
+  [11] Supprimer les `as any` dans useConnections
+  [12] Supprimer le signalStore mock inutilisé
+  [10] Robustesse offline
+  [13] Tests E2E
 ```
-
-### Performance
-
-- Le Canvas est rendu à 0.75 dpr sur mobile pour préserver le framerate
-- `frameloop="demand"` désactivé (on veut l'animation continue) mais avec `performance.regress` de drei pour adapter dynamiquement
-- Les particules utilisent `InstancedMesh` (un seul draw call)
-- Lazy loading = 0 impact sur le temps de chargement initial si le bundle 3D est code-split
-
-### Sections impactées
-
-| Fichier | Action |
-|---------|--------|
-| `package.json` | Ajout three, r3f, drei, postprocessing |
-| `src/components/landing/HeroScene3D.tsx` | **Nouveau** — scène 3D complète |
-| `src/components/landing/FloatingOrbs.tsx` | Ajout détection WebGL + logique fallback |
-| `src/components/landing/index.ts` | Export du nouveau composant |
-| `src/pages/LandingPage.tsx` | Lazy import + Suspense + passage scrollProgress |
 
