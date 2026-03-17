@@ -1,7 +1,7 @@
 import { useRef, useMemo, type RefObject } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { ringVertexShader, ringFragmentShader } from './shaders';
+import { ringVertexShader, ringFragmentShader } from './shaders/ringFragment.glsl';
 
 // ── Single Ring ───────────────────────────────────────────────────────
 

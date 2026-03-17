@@ -1,7 +1,7 @@
 import { lazy, Suspense, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import type { MotionValue } from 'framer-motion';
-import { getDeviceCapabilities, getScenePreset } from '@/utils/deviceCapabilities';
+import { getDeviceCapabilities, getScenePreset } from './hero3d/deviceCapabilities';
 
 // ── Lazy-load 3D chunk — three/r3f/postprocessing stay off critical path ──
 const HeroScene3D = lazy(() =>

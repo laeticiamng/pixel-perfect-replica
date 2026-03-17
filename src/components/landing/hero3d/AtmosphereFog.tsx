@@ -1,7 +1,7 @@
 import { useRef, useMemo, type RefObject } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { atmosphereVertexShader, atmosphereFragmentShader } from './shaders';
+import { atmosphereVertexShader, atmosphereFragmentShader } from './shaders/atmosphereFog.glsl';
 
 interface AtmosphereFogProps {
   scrollRef: RefObject<number>;

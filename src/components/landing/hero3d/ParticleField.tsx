@@ -1,7 +1,8 @@
 import { useRef, useMemo, type RefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { particleVertexShader, particleFragmentShader } from './shaders';
+import { particleVertexShader } from './shaders/particlesVertex.glsl';
+import { particleFragmentShader } from './shaders/particlesFragment.glsl';
 
 interface ParticleFieldProps {
   scrollRef: RefObject<number>;
@@ -10,8 +11,8 @@ interface ParticleFieldProps {
 
 /**
  * Premium particle field using Points + BufferGeometry.
- * Supports up to 1200 particles on high-end desktop without per-mesh overhead.
- * Features: orbital drift, depth-based fade, multi-layered glow.
+ * Features: orbital drift, depth-based fade, multi-layered glow,
+ * variable sizes with depth perception, adaptive density per preset.
  * Drift updates are batched every 3 frames to reduce CPU cost.
  */
 export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
@@ -26,22 +27,23 @@ export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
     const speeds = new Float32Array(count);
     const orbitRadii = new Float32Array(count);
     const orbitSpeeds = new Float32Array(count);
+    const layers = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(2 * Math.random() - 1);
-      // Layered distribution: some near the orb, some further out
       const r = 3.0 + Math.random() * 5.0;
       positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
       positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = r * Math.cos(phi);
-      // Variable sizes — smaller particles far out, larger near center
-      const distFromCenter = r / 8.0; // 0..1 normalized
+
+      const distFromCenter = r / 8.0;
       sizes[i] = (3.0 + Math.random() * 9.0) * (1.0 - distFromCenter * 0.4);
       phases[i] = Math.random() * Math.PI * 2;
       speeds[i] = 0.25 + Math.random() * 1.0;
       orbitRadii[i] = r * 0.3 + Math.random() * 2.0;
       orbitSpeeds[i] = (0.1 + Math.random() * 0.3) * (Math.random() > 0.5 ? 1 : -1);
+      layers[i] = distFromCenter; // 0 = near, ~1 = far
     }
 
     const geo = new THREE.BufferGeometry();
@@ -51,6 +53,7 @@ export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
     geo.setAttribute('aSpeed', new THREE.BufferAttribute(speeds, 1));
     geo.setAttribute('aOrbitRadius', new THREE.BufferAttribute(orbitRadii, 1));
     geo.setAttribute('aOrbitSpeed', new THREE.BufferAttribute(orbitSpeeds, 1));
+    geo.setAttribute('aLayer', new THREE.BufferAttribute(layers, 1));
     return geo;
   }, [count]);
 
@@ -87,7 +90,6 @@ export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
         posArr[ix] += (Math.random() - 0.5) * 0.0015;
         posArr[ix + 1] += (Math.random() - 0.5) * 0.0015;
         posArr[ix + 2] += (Math.random() - 0.5) * 0.0015;
-        // Gentle pull toward origin to prevent drift
         posArr[ix] *= 0.9999;
         posArr[ix + 1] *= 0.9999;
         posArr[ix + 2] *= 0.9999;
