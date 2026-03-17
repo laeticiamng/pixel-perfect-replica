@@ -1,16 +1,23 @@
 import * as THREE from 'three';
 import { EffectComposer, Bloom, ChromaticAberration, Vignette, DepthOfField } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
-import type { ScenePreset } from '@/utils/deviceCapabilities';
+import type { ScenePreset } from './types';
 
 interface HeroPostFXProps {
   preset: ScenePreset;
 }
 
 /**
- * Adaptive postprocessing stack.
+ * Adaptive postprocessing stack — cinematic but controlled.
+ *
+ * Guard rails:
+ * - Bloom threshold prevents glow from burning text
+ * - Vignette darkness capped to avoid dark edges
+ * - DOF only on full preset with confirmed perf
+ * - CA uses radial modulation (subtle, not full-screen)
+ * - Haze controlled by enableHaze flag
+ *
  * Effects are conditionally mounted based on the device tier preset.
- * Keeps the text overlay readable — bloom is cinematic, not blown out.
  */
 export function HeroPostFX({ preset }: HeroPostFXProps) {
   const hasAnyEffect =

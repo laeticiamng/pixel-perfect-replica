@@ -1,17 +1,15 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
   getDeviceCapabilities,
   getScenePreset,
   PerformanceRegressor,
-  type DeviceTier,
-} from '@/utils/deviceCapabilities';
+  buildDegradedPreset,
+} from '@/components/landing/hero3d/deviceCapabilities';
+import type { DeviceTier } from '@/components/landing/hero3d/types';
 
 // ── Tier detection tests ──────────────────────────────────────────────
 
 describe('getDeviceCapabilities', () => {
-  const originalWindow = globalThis.window;
-  const originalNavigator = globalThis.navigator;
-
   function mockEnv(overrides: {
     webgl?: boolean;
     reducedMotion?: boolean;
@@ -102,23 +100,33 @@ describe('getDeviceCapabilities', () => {
     mockEnv({ dpr: 3 });
     expect(getDeviceCapabilities().tier).toBe('lite');
   });
+
+  it('includes gpuTier field', () => {
+    mockEnv({});
+    const caps = getDeviceCapabilities();
+    expect(['high', 'mid', 'low', 'unknown']).toContain(caps.gpuTier);
+  });
 });
 
 // ── Scene presets ─────────────────────────────────────────────────────
 
 describe('getScenePreset', () => {
-  it('full tier has 1200 particles', () => {
+  it('full tier has 1200 particles and all effects', () => {
     const preset = getScenePreset('full');
     expect(preset.particleCount).toBe(1200);
     expect(preset.enableBloom).toBe(true);
     expect(preset.enableChromaticAberration).toBe(true);
+    expect(preset.enableDepthOfField).toBe(true);
+    expect(preset.enableHaze).toBe(true);
     expect(preset.ringCount).toBe(3);
   });
 
-  it('lite tier has reduced particles', () => {
+  it('lite tier has reduced particles and no heavy effects', () => {
     const preset = getScenePreset('lite');
     expect(preset.particleCount).toBe(400);
     expect(preset.enableChromaticAberration).toBe(false);
+    expect(preset.enableDepthOfField).toBe(false);
+    expect(preset.enableHaze).toBe(false);
     expect(preset.ringCount).toBe(2);
   });
 
@@ -131,6 +139,44 @@ describe('getScenePreset', () => {
   });
 });
 
+// ── Degraded preset builder ──────────────────────────────────────────
+
+describe('buildDegradedPreset', () => {
+  it('caps particles to 400', () => {
+    const full = getScenePreset('full');
+    const degraded = buildDegradedPreset(full);
+    expect(degraded.particleCount).toBe(400);
+  });
+
+  it('disables heavy effects', () => {
+    const full = getScenePreset('full');
+    const degraded = buildDegradedPreset(full);
+    expect(degraded.enableChromaticAberration).toBe(false);
+    expect(degraded.enableDepthOfField).toBe(false);
+    expect(degraded.enableHaze).toBe(false);
+  });
+
+  it('caps bloom intensity', () => {
+    const full = getScenePreset('full');
+    const degraded = buildDegradedPreset(full);
+    expect(degraded.bloomIntensity).toBeLessThanOrEqual(0.8);
+  });
+
+  it('caps DPR and ring count', () => {
+    const full = getScenePreset('full');
+    const degraded = buildDegradedPreset(full);
+    expect(degraded.maxDpr).toBeLessThanOrEqual(1.5);
+    expect(degraded.ringCount).toBeLessThanOrEqual(2);
+  });
+
+  it('preserves lite preset without over-degrading', () => {
+    const lite = getScenePreset('lite');
+    const degraded = buildDegradedPreset(lite);
+    expect(degraded.particleCount).toBe(400);
+    expect(degraded.ringCount).toBe(2);
+  });
+});
+
 // ── Performance regressor ─────────────────────────────────────────────
 
 describe('PerformanceRegressor', () => {
@@ -138,7 +184,6 @@ describe('PerformanceRegressor', () => {
     const onRegress = vi.fn();
     const regressor = new PerformanceRegressor(onRegress, { sampleSize: 5, targetFps: 30 });
 
-    // Feed 5 frames at ~20fps (50ms each), which exceeds 33.3ms threshold
     for (let i = 0; i < 6; i++) {
       regressor.sample(50);
     }
@@ -150,7 +195,6 @@ describe('PerformanceRegressor', () => {
     const onRegress = vi.fn();
     const regressor = new PerformanceRegressor(onRegress, { sampleSize: 5, targetFps: 30 });
 
-    // Feed 5 frames at 60fps (16.6ms each)
     for (let i = 0; i < 6; i++) {
       regressor.sample(16.6);
     }
