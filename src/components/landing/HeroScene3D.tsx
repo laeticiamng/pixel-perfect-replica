@@ -7,6 +7,8 @@ import { OrganicOrb } from './hero3d/OrganicOrb';
 import { ParticleField } from './hero3d/ParticleField';
 import { OrbitalRings } from './hero3d/OrbitalRings';
 import { HeroPostFX } from './hero3d/HeroPostFX';
+import { AtmosphereFog } from './hero3d/AtmosphereFog';
+import { CameraBreathing } from './hero3d/CameraBreathing';
 
 // ── Orb offset — slightly right to serve hero text composition ────────
 const ORB_OFFSET: [number, number] = [0.6, 0.2];
@@ -27,6 +29,12 @@ function SceneContent({ scrollRef, preset }: SceneContentProps) {
       <ambientLight intensity={0.15} />
       <pointLight position={[4, 4, 5]} intensity={1.2} color="#ff6b5a" />
       <pointLight position={[-5, -2, 3]} intensity={0.5} color="#9933dd" />
+
+      {/* Atmospheric fog layer */}
+      {preset.enableAtmosphere && <AtmosphereFog scrollRef={scrollRef} />}
+
+      {/* Camera breathing */}
+      {preset.enableCameraBreathing && <CameraBreathing />}
 
       <OrganicOrb
         scrollRef={scrollRef}
@@ -103,6 +111,7 @@ export function HeroScene3D({ scrollProgress, preset: initialPreset }: HeroScene
       ...initialPreset,
       particleCount: Math.min(initialPreset.particleCount, 400),
       enableChromaticAberration: false,
+      enableDepthOfField: false,
       bloomIntensity: Math.min(initialPreset.bloomIntensity, 0.8),
       maxDpr: Math.min(initialPreset.maxDpr, 1.5),
       ringCount: Math.min(initialPreset.ringCount, 2),

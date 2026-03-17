@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, ChromaticAberration, Vignette, DepthOfField } from '@react-three/postprocessing';
 import { BlendFunction } from 'postprocessing';
 import type { ScenePreset } from '@/utils/deviceCapabilities';
 
@@ -14,7 +14,7 @@ interface HeroPostFXProps {
  */
 export function HeroPostFX({ preset }: HeroPostFXProps) {
   const hasAnyEffect =
-    preset.enableBloom || preset.enableChromaticAberration || preset.enableVignette;
+    preset.enableBloom || preset.enableChromaticAberration || preset.enableVignette || preset.enableDepthOfField;
 
   if (!hasAnyEffect) return null;
 
@@ -26,6 +26,14 @@ export function HeroPostFX({ preset }: HeroPostFXProps) {
           luminanceThreshold={preset.bloomThreshold}
           luminanceSmoothing={0.8}
           mipmapBlur
+        />
+      )}
+      {preset.enableDepthOfField && (
+        <DepthOfField
+          focusDistance={0.02}
+          focalLength={0.06}
+          bokehScale={2.5}
+          height={480}
         />
       )}
       {preset.enableChromaticAberration && (

@@ -32,6 +32,9 @@ export interface ScenePreset {
   enableBloom: boolean;
   enableChromaticAberration: boolean;
   enableVignette: boolean;
+  enableDepthOfField: boolean;
+  enableAtmosphere: boolean;
+  enableCameraBreathing: boolean;
   bloomIntensity: number;
   bloomThreshold: number;
   maxDpr: number;
@@ -114,6 +117,9 @@ export function getScenePreset(tier: DeviceTier): ScenePreset {
         enableBloom: true,
         enableChromaticAberration: true,
         enableVignette: true,
+        enableDepthOfField: true,
+        enableAtmosphere: true,
+        enableCameraBreathing: true,
         bloomIntensity: 1.2,
         bloomThreshold: 0.15,
         maxDpr: 2,
@@ -130,6 +136,9 @@ export function getScenePreset(tier: DeviceTier): ScenePreset {
         enableBloom: true,
         enableChromaticAberration: false,
         enableVignette: true,
+        enableDepthOfField: false,
+        enableAtmosphere: true,
+        enableCameraBreathing: true,
         bloomIntensity: 0.8,
         bloomThreshold: 0.3,
         maxDpr: 1.5,
@@ -147,6 +156,9 @@ export function getScenePreset(tier: DeviceTier): ScenePreset {
         enableBloom: false,
         enableChromaticAberration: false,
         enableVignette: false,
+        enableDepthOfField: false,
+        enableAtmosphere: false,
+        enableCameraBreathing: false,
         bloomIntensity: 0,
         bloomThreshold: 0.5,
         maxDpr: 1,

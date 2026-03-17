@@ -10,6 +10,8 @@ interface OrbitalRingProps {
   tilt: [number, number, number];
   speed: number;
   color: THREE.Color;
+  dashCount: number;
+  gapRatio: number;
   scrollRef: RefObject<number>;
   segments: number;
   orbOffset: [number, number];
@@ -20,6 +22,8 @@ function OrbitalRing({
   tilt,
   speed,
   color,
+  dashCount,
+  gapRatio,
   scrollRef,
   segments,
   orbOffset,
@@ -31,8 +35,10 @@ function OrbitalRing({
     () => ({
       uTime: { value: 0 },
       uColor: { value: color },
+      uDashCount: { value: dashCount },
+      uGapRatio: { value: gapRatio },
     }),
-    [color],
+    [color, dashCount, gapRatio],
   );
 
   useFrame((_, delta) => {
@@ -77,18 +83,24 @@ const RING_CONFIGS = [
     tilt: [0.3, 0.15, 0] as [number, number, number],
     speed: 0.1,
     color: new THREE.Color(1.0, 0.5, 0.35),
+    dashCount: 12,
+    gapRatio: 0.35,
   },
   {
     radius: 4.0,
     tilt: [-0.5, 0.75, 0.25] as [number, number, number],
     speed: -0.07,
     color: new THREE.Color(0.75, 0.35, 0.95),
+    dashCount: 8,
+    gapRatio: 0.4,
   },
   {
     radius: 4.6,
     tilt: [0.75, -0.25, -0.15] as [number, number, number],
     speed: 0.05,
     color: new THREE.Color(1.0, 0.78, 0.32),
+    dashCount: 16,
+    gapRatio: 0.3,
   },
 ];
 

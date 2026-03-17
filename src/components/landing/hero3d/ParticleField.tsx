@@ -11,6 +11,7 @@ interface ParticleFieldProps {
 /**
  * Premium particle field using Points + BufferGeometry.
  * Supports up to 1200 particles on high-end desktop without per-mesh overhead.
+ * Features: orbital drift, depth-based fade, multi-layered glow.
  * Drift updates are batched every 3 frames to reduce CPU cost.
  */
 export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
@@ -23,6 +24,8 @@ export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
     const sizes = new Float32Array(count);
     const phases = new Float32Array(count);
     const speeds = new Float32Array(count);
+    const orbitRadii = new Float32Array(count);
+    const orbitSpeeds = new Float32Array(count);
 
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
@@ -33,9 +36,12 @@ export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
       positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
       positions[i * 3 + 2] = r * Math.cos(phi);
       // Variable sizes — smaller particles far out, larger near center
-      sizes[i] = 3.0 + Math.random() * 9.0;
+      const distFromCenter = r / 8.0; // 0..1 normalized
+      sizes[i] = (3.0 + Math.random() * 9.0) * (1.0 - distFromCenter * 0.4);
       phases[i] = Math.random() * Math.PI * 2;
       speeds[i] = 0.25 + Math.random() * 1.0;
+      orbitRadii[i] = r * 0.3 + Math.random() * 2.0;
+      orbitSpeeds[i] = (0.1 + Math.random() * 0.3) * (Math.random() > 0.5 ? 1 : -1);
     }
 
     const geo = new THREE.BufferGeometry();
@@ -43,6 +49,8 @@ export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
     geo.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
     geo.setAttribute('aPhase', new THREE.BufferAttribute(phases, 1));
     geo.setAttribute('aSpeed', new THREE.BufferAttribute(speeds, 1));
+    geo.setAttribute('aOrbitRadius', new THREE.BufferAttribute(orbitRadii, 1));
+    geo.setAttribute('aOrbitSpeed', new THREE.BufferAttribute(orbitSpeeds, 1));
     return geo;
   }, [count]);
 
