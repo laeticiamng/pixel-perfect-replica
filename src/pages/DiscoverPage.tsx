@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, Users, Wifi, GraduationCap, UserPlus } from 'lucide-react';
+import { Search, Filter, Users, Wifi, GraduationCap, UserPlus, AlertTriangle, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -46,10 +46,12 @@ export default function DiscoverPage() {
   const [selectedUniversity, setSelectedUniversity] = useState<string | null>(null);
   const [universities, setUniversities] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
 
   const fetchUsers = useCallback(async () => {
     if (!user) return;
     setIsLoading(true);
+    setFetchError(false);
     try {
       const { data, error } = await supabase.rpc('discover_users', {
         p_activity: selectedActivity,
@@ -61,6 +63,7 @@ export default function DiscoverPage() {
       setUsers((data ?? []) as DiscoveredUser[]);
     } catch (err) {
       console.error('Error fetching users:', err);
+      setFetchError(true);
       toast.error(t('errors.generic'));
     } finally {
       setIsLoading(false);
@@ -226,6 +229,15 @@ export default function DiscoverPage() {
                   </div>
                 </div>
               ))
+            ) : fetchError ? (
+              <div className="text-center py-12 space-y-4">
+                <AlertTriangle className="h-12 w-12 text-destructive mx-auto" />
+                <p className="text-foreground font-medium">{t('errors.generic')}</p>
+                <Button variant="outline" onClick={fetchUsers} className="gap-2">
+                  <RefreshCw className="h-4 w-4" />
+                  {t('common.retry')}
+                </Button>
+              </div>
             ) : users.length === 0 ? (
               <EmptyState
                 icon={<Users className="h-12 w-12" />}
@@ -266,16 +278,14 @@ function UserCard({ user, index, dateLocale, t, onViewProfile }: UserCardProps) 
     : null;
 
   return (
-    <motion.div
+    <motion.button
+      type="button"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3 }}
       onClick={onViewProfile}
-      role="button"
-      tabIndex={0}
       aria-label={`${t('discover.viewProfile')} ${user.first_name || ''}`}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onViewProfile(); } }}
-      className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-coral/30 hover:shadow-md transition-all cursor-pointer group"
+      className="w-full flex items-center gap-4 p-4 rounded-2xl bg-card border border-border/50 hover:border-coral/30 hover:shadow-md transition-all cursor-pointer group text-left"
     >
       {/* Avatar */}
       <div className="relative shrink-0">
@@ -355,6 +365,6 @@ function UserCard({ user, index, dateLocale, t, onViewProfile }: UserCardProps) 
       >
         <UserPlus className="h-5 w-5" />
       </Button>
-    </motion.div>
+    </motion.button>
   );
 }

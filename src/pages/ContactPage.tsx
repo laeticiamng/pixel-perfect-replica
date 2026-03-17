@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Send, Mail, MessageSquare, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Send, Mail, MessageSquare, CheckCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
 import { SUPPORT_EMAIL } from '@/lib/constants';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet-async';
 import { SITE_URL } from '@/lib/constants';
 import { z } from 'zod';
@@ -31,8 +32,9 @@ export default function ContactPage() {
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = contactSchema.safeParse({ name, email, message });
     if (!result.success) {
@@ -44,14 +46,32 @@ export default function ContactPage() {
       return;
     }
     setErrors({});
+    setIsSending(true);
 
-    // Open mailto with pre-filled content
-    const subject = encodeURIComponent(`[NEARVITY Contact] Message de ${name}`);
-    const body = encodeURIComponent(`Nom : ${name}\nEmail : ${email}\n\n${message}`);
-    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+    try {
+      // Try sending via edge function first
+      const { error } = await supabase.functions.invoke('send-contact', {
+        body: { name: name.trim(), email: email.trim(), message: message.trim() },
+      });
 
-    setSent(true);
-    toast.success(t('contact.sent'));
+      if (error) throw error;
+
+      setSent(true);
+      toast.success(t('contact.sent'));
+    } catch {
+      // Fallback to mailto if edge function fails
+      const subjectText = t('contact.mailSubject').replace('{name}', name);
+      const subject = encodeURIComponent(subjectText);
+      const nameLabel = t('contact.mailBodyName');
+      const emailLabel = t('contact.mailBodyEmail');
+      const body = encodeURIComponent(`${nameLabel} : ${name}\n${emailLabel} : ${email}\n\n${message}`);
+      window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
+
+      setSent(true);
+      toast.success(t('contact.sent'));
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -131,8 +151,10 @@ export default function ContactPage() {
                       className="bg-muted"
                       maxLength={100}
                       autoComplete="name"
+                      aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                      aria-invalid={!!errors.name}
                     />
-                    {errors.name && <p className="text-xs text-destructive mt-1" role="alert">{t('contact.nameRequired')}</p>}
+                    {errors.name && <p id="contact-name-error" className="text-xs text-destructive mt-1" role="alert">{t('contact.nameRequired')}</p>}
                   </div>
 
                   <div>
@@ -147,8 +169,10 @@ export default function ContactPage() {
                       className="bg-muted"
                       maxLength={255}
                       autoComplete="email"
+                      aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                      aria-invalid={!!errors.email}
                     />
-                    {errors.email && <p className="text-xs text-destructive mt-1" role="alert">{t('contact.emailInvalid')}</p>}
+                    {errors.email && <p id="contact-email-error" className="text-xs text-destructive mt-1" role="alert">{t('contact.emailInvalid')}</p>}
                   </div>
 
                   <div>
@@ -161,15 +185,21 @@ export default function ContactPage() {
                       placeholder={t('contact.messagePlaceholder')}
                       className="bg-muted min-h-[120px]"
                       maxLength={2000}
+                      aria-describedby={errors.message ? 'contact-message-error' : undefined}
+                      aria-invalid={!!errors.message}
                     />
                     <p className="text-xs text-muted-foreground mt-1 text-right">{message.length}/2000</p>
-                    {errors.message && <p className="text-xs text-destructive mt-1">{t('contact.messageTooShort')}</p>}
+                    {errors.message && <p id="contact-message-error" className="text-xs text-destructive mt-1" role="alert">{t('contact.messageTooShort')}</p>}
                   </div>
                 </CardContent>
               </Card>
 
-              <Button type="submit" className="w-full h-12 text-base font-semibold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral">
-                <Send className="h-4 w-4 mr-2" />
+              <Button type="submit" disabled={isSending} className="w-full h-12 text-base font-semibold bg-gradient-to-r from-coral to-coral-light hover:from-coral-dark hover:to-coral">
+                {isSending ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4 mr-2" />
+                )}
                 {t('contact.send')}
               </Button>
             </motion.form>

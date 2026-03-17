@@ -8,11 +8,12 @@ import { useRateLimit, RATE_LIMIT_PRESETS } from '@/hooks/useRateLimit';
 import { PageLayout } from '@/components/PageLayout';
 import { useTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
+import { Helmet } from 'react-helmet-async';
 import toast from 'react-hot-toast';
 
 export default function ForgotPasswordPage() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -87,6 +88,10 @@ export default function ForgotPasswordPage() {
 
   return (
     <PageLayout showSidebar={false} className="flex flex-col px-4 sm:px-6 py-8 safe-bottom">
+      <Helmet>
+        <title>{locale === 'fr' ? 'Mot de passe oublié — NEARVITY' : 'Forgot Password — NEARVITY'}</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       {/* Header */}
       <header className="flex items-center gap-4 mb-8">
         <button

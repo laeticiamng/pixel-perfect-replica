@@ -70,6 +70,7 @@ export default function ConversationsPage() {
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="pl-10 rounded-xl"
+            aria-label={t('conversations.search')}
           />
         </div>
 
@@ -111,7 +112,9 @@ export default function ConversationsPage() {
                       {convo.other_user_name}
                     </p>
                     <span className="text-xs text-muted-foreground flex-shrink-0">
-                      {formatDistanceToNow(new Date(convo.last_message_at), { addSuffix: true, locale: dateFnsLocale })}
+                      {convo.last_message_at
+                        ? formatDistanceToNow(new Date(convo.last_message_at), { addSuffix: true, locale: dateFnsLocale })
+                        : ''}
                     </span>
                   </div>
                   <p className={cn(

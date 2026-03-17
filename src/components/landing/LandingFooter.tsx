@@ -10,7 +10,7 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
     <footer ref={ref} className="py-8 px-6 border-t border-muted/20 relative z-10">
       <div className="max-w-4xl mx-auto flex flex-col items-center gap-6">
         <div className="flex flex-col items-center justify-between w-full gap-4 sm:flex-row">
-          <Link to="/" className="flex items-center gap-2" aria-label="NEARVITY — Accueil">
+          <Link to="/" className="flex items-center gap-2" aria-label={t('a11y.homeLink')}>
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center">
               <span className="text-white font-bold text-sm">N</span>
             </div>
@@ -44,7 +44,7 @@ export const LandingFooter = forwardRef<HTMLElement>(function LandingFooter(_, r
         
         <div className="text-center text-xs text-muted-foreground">
           <p className="flex items-center justify-center gap-1">
-            Made with <Heart className="h-3.5 w-3.5 text-coral fill-coral" /> in France by EmotionsCare SASU
+            {t('footer.madeWith')} <Heart className="h-3.5 w-3.5 text-coral fill-coral" /> {t('footer.inFranceBy')} EmotionsCare SASU
           </p>
           <p className="mt-1 text-muted-foreground/60">© {new Date().getFullYear()} NEARVITY. {t('landing.allRightsReserved')}</p>
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Users, Activity, TrendingUp, Calendar,
   BarChart3, Clock, Eye, MousePointer, Shield, Bell,
@@ -258,8 +258,8 @@ export default function AdminDashboardPage() {
     return null;
   };
 
+  // Role check is handled by RoleProtectedRoute in App.tsx
   if (adminLoading) return <FullPageLoader />;
-  if (!isAdmin) return <Navigate to="/" replace />;
 
   return (
     <>
@@ -385,15 +385,15 @@ export default function AdminDashboardPage() {
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 bg-muted/30">
             <TabsTrigger value="overview">{t('admin.overview')}</TabsTrigger>
-            <TabsTrigger value="events">Events</TabsTrigger>
-            <TabsTrigger value="pages">Pages</TabsTrigger>
+            <TabsTrigger value="events">{t('admin.tabEvents')}</TabsTrigger>
+            <TabsTrigger value="pages">{t('admin.tabPages')}</TabsTrigger>
             <TabsTrigger value="scraper" className="flex items-center gap-1">
               <Search className="h-3 w-3" />
-              Scraper
+              {t('admin.tabScraper')}
             </TabsTrigger>
             <TabsTrigger value="cron" className="flex items-center gap-1">
               <Timer className="h-3 w-3" />
-              Cron
+              {t('admin.tabCron')}
             </TabsTrigger>
             <TabsTrigger value="alerts" className="flex items-center gap-1">
               <Bell className="h-3 w-3" />

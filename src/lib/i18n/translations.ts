@@ -1157,6 +1157,34 @@ export const translations = {
     refreshData: { en: 'Refresh data', fr: 'Rafraîchir les données', de: 'Daten aktualisieren' },
     cronJobs: { en: 'CRON Jobs', fr: 'Jobs CRON', de: 'CRON-Jobs' },
     recentErrors: { en: 'Recent errors', fr: 'Erreurs récentes', de: 'Neueste Fehler' },
+    dashboard: { en: 'Admin Dashboard', fr: 'Tableau de bord', de: 'Admin-Dashboard' },
+    analyticsEngagement: { en: 'Analytics & Engagement', fr: 'Analytics & Engagement', de: 'Analysen & Engagement' },
+    overview: { en: 'Overview', fr: 'Vue d\'ensemble', de: 'Übersicht' },
+    tabEvents: { en: 'Events', fr: 'Événements', de: 'Ereignisse' },
+    tabPages: { en: 'Pages', fr: 'Pages', de: 'Seiten' },
+    tabScraper: { en: 'Scraper', fr: 'Scraper', de: 'Scraper' },
+    tabCron: { en: 'Cron', fr: 'Cron', de: 'Cron' },
+    alerts: { en: 'Alerts', fr: 'Alertes', de: 'Alarme' },
+    interactions: { en: 'Interactions', fr: 'Interactions', de: 'Interaktionen' },
+    analyticsEvents: { en: 'Analytics events', fr: 'Événements analytics', de: 'Analytics-Ereignisse' },
+    activeUsers14d: { en: 'Active users (14 days)', fr: 'Utilisateurs actifs (14j)', de: 'Aktive Nutzer (14 Tage)' },
+    categoryDistribution: { en: 'Category distribution', fr: 'Répartition par catégorie', de: 'Kategorieverteilung' },
+    hourlyActivity: { en: 'Hourly activity', fr: 'Activité horaire', de: 'Stündliche Aktivität' },
+    topEvents: { en: 'Top events', fr: 'Événements les plus fréquents', de: 'Top-Ereignisse' },
+    mostFrequent: { en: 'Most frequent events', fr: 'Événements les plus fréquents', de: 'Häufigste Ereignisse' },
+    mostVisitedPages: { en: 'Most visited pages', fr: 'Pages les plus visitées', de: 'Meistbesuchte Seiten' },
+    noData: { en: 'No data available', fr: 'Aucune donnée disponible', de: 'Keine Daten verfügbar' },
+    noEventsRecorded: { en: 'No events recorded', fr: 'Aucun événement enregistré', de: 'Keine Ereignisse erfasst' },
+    noPageViews: { en: 'No page views recorded', fr: 'Aucune page vue enregistrée', de: 'Keine Seitenaufrufe erfasst' },
+    cleanupSuccess: { en: 'Cleanup completed', fr: 'Nettoyage terminé', de: 'Bereinigung abgeschlossen' },
+    cleanupError: { en: 'Cleanup failed', fr: 'Erreur lors du nettoyage', de: 'Bereinigung fehlgeschlagen' },
+    dataRefreshed: { en: 'Data refreshed', fr: 'Données rafraîchies', de: 'Daten aktualisiert' },
+    systemHealthy: { en: 'System healthy', fr: 'Système en bonne santé', de: 'System gesund' },
+    systemWarning: { en: 'System warning', fr: 'Avertissement système', de: 'Systemwarnung' },
+    systemCritical: { en: 'System critical', fr: 'Système critique', de: 'System kritisch' },
+    errorRate: { en: 'Error rate: {rate}% ({errors}/{total})', fr: 'Taux d\'erreur : {rate}% ({errors}/{total})', de: 'Fehlerrate: {rate}% ({errors}/{total})' },
+    cleanup: { en: 'Cleanup', fr: 'Nettoyer', de: 'Bereinigen' },
+    accessDenied: { en: 'Access denied', fr: 'Accès refusé', de: 'Zugriff verweigert' },
   },
 
   // Delete Account
@@ -2019,6 +2047,9 @@ export const translations = {
     sent: { en: 'Message ready to send!', fr: 'Message prêt à envoyer !', de: 'Nachricht bereit zum Senden!' },
     thankYou: { en: 'Message sent!', fr: 'Message envoyé !', de: 'Nachricht gesendet!' },
     thankYouDesc: { en: 'Your email client has opened with your message. We\'ll reply within 48h.', fr: 'Ton client email s\'est ouvert avec ton message. On te répond sous 48h.', de: 'Dein E-Mail-Client wurde mit deiner Nachricht geöffnet. Wir antworten innerhalb von 48h.' },
+    mailSubject: { en: '[NEARVITY Contact] Message from {name}', fr: '[NEARVITY Contact] Message de {name}', de: '[NEARVITY Contact] Nachricht von {name}' },
+    mailBodyName: { en: 'Name', fr: 'Nom', de: 'Name' },
+    mailBodyEmail: { en: 'Email', fr: 'Email', de: 'E-Mail' },
   },
 
   // Erasmus Newcomer Mode
@@ -2095,6 +2126,22 @@ export const translations = {
     lgbtqDesc: { en: 'Connect with LGBTQ+ community members', fr: 'Connecte-toi avec la communauté LGBTQ+', de: 'Verbinde dich mit LGBTQ+ Community-Mitgliedern' },
     firstGen: { en: 'First-generation student', fr: 'Étudiant(e) de première génération', de: 'Erstakademiker' },
     firstGenDesc: { en: 'Meet others who are first in their family at university', fr: 'Rencontre d\'autres premiers de leur famille à l\'université', de: 'Triff andere, die als Erste in ihrer Familie studieren' },
+  },
+
+  // Accessibility
+  a11y: {
+    showPassword: { en: 'Show password', fr: 'Afficher le mot de passe', de: 'Passwort anzeigen' },
+    hidePassword: { en: 'Hide password', fr: 'Masquer le mot de passe', de: 'Passwort verbergen' },
+    homeLink: { en: 'NEARVITY — Home', fr: 'NEARVITY — Accueil', de: 'NEARVITY — Startseite' },
+  },
+
+  // Missing keys
+  dismiss: { en: 'Dismiss', fr: 'Fermer', de: 'Schließen' },
+
+  // Footer
+  footer: {
+    madeWith: { en: 'Made with', fr: 'Fait avec', de: 'Gemacht mit' },
+    inFranceBy: { en: 'in France by', fr: 'en France par', de: 'in Frankreich von' },
   },
 
 } as const;
