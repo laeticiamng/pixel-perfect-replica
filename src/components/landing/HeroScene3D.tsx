@@ -336,6 +336,8 @@ function SceneContent({ scrollProgress }: { scrollProgress: number }) {
         <ChromaticAberration
           blendFunction={BlendFunction.NORMAL}
           offset={new THREE.Vector2(0.0006, 0.0006)}
+          radialModulation={false}
+          modulationOffset={0.0}
         />
       </EffectComposer>
       
