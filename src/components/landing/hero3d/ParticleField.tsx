@@ -1,10 +1,10 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, type RefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { particleVertexShader, particleFragmentShader } from './shaders';
 
 interface ParticleFieldProps {
-  scrollProgress: number;
+  scrollRef: RefObject<number>;
   count: number;
 }
 
@@ -13,7 +13,7 @@ interface ParticleFieldProps {
  * Supports up to 1200 particles on high-end desktop without per-mesh overhead.
  * Drift updates are batched every 3 frames to reduce CPU cost.
  */
-export function ParticleField({ scrollProgress, count }: ParticleFieldProps) {
+export function ParticleField({ scrollRef, count }: ParticleFieldProps) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const { pointer } = useThree();
   const frameCounter = useRef(0);
@@ -59,10 +59,12 @@ export function ParticleField({ scrollProgress, count }: ParticleFieldProps) {
 
   useFrame((_, delta) => {
     if (!materialRef.current) return;
+    const scroll = scrollRef.current ?? 0;
+
     uniforms.uTime.value += delta;
     uniforms.uScrollProgress.value = THREE.MathUtils.lerp(
       uniforms.uScrollProgress.value,
-      scrollProgress,
+      scroll,
       0.05,
     );
     mouseTarget.current.set(pointer.x, pointer.y);

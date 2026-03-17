@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect, useState, useMemo } from 'react';
+import { useRef, useCallback, useEffect, useState, useMemo, type RefObject } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import type { MotionValue } from 'framer-motion';
 import type { ScenePreset } from '@/utils/deviceCapabilities';
@@ -12,13 +12,15 @@ import { HeroPostFX } from './hero3d/HeroPostFX';
 const ORB_OFFSET: [number, number] = [0.6, 0.2];
 
 // ── Scene content ─────────────────────────────────────────────────────
+// All children read scrollRef.current inside their own useFrame —
+// no React re-renders needed for scroll-driven animation.
 
 interface SceneContentProps {
-  scrollProgress: number;
+  scrollRef: RefObject<number>;
   preset: ScenePreset;
 }
 
-function SceneContent({ scrollProgress, preset }: SceneContentProps) {
+function SceneContent({ scrollRef, preset }: SceneContentProps) {
   return (
     <>
       {/* Minimal lighting — shaders handle their own illumination */}
@@ -27,7 +29,7 @@ function SceneContent({ scrollProgress, preset }: SceneContentProps) {
       <pointLight position={[-5, -2, 3]} intensity={0.5} color="#9933dd" />
 
       <OrganicOrb
-        scrollProgress={scrollProgress}
+        scrollRef={scrollRef}
         icosahedronDetail={preset.icosahedronDetail}
         innerGlowDetail={preset.innerGlowDetail}
         enableInnerGlow={preset.enableInnerGlow}
@@ -35,12 +37,12 @@ function SceneContent({ scrollProgress, preset }: SceneContentProps) {
       />
 
       {preset.particleCount > 0 && (
-        <ParticleField scrollProgress={scrollProgress} count={preset.particleCount} />
+        <ParticleField scrollRef={scrollRef} count={preset.particleCount} />
       )}
 
       {preset.ringCount > 0 && (
         <OrbitalRings
-          scrollProgress={scrollProgress}
+          scrollRef={scrollRef}
           segments={preset.ringSegments}
           ringCount={preset.ringCount}
           orbOffset={ORB_OFFSET}
@@ -66,19 +68,9 @@ function useScenePaused(): boolean {
   return paused;
 }
 
-// ── ScrollBridge — reads MotionValue per frame without React rerenders ─
+// ── PerfMonitor — samples frame deltas for regression detection ───────
 
-function ScrollBridge({
-  scrollRef,
-  preset,
-  paused,
-  onRegress,
-}: {
-  scrollRef: React.RefObject<number>;
-  preset: ScenePreset;
-  paused: boolean;
-  onRegress: () => void;
-}) {
+function PerfMonitor({ paused, onRegress }: { paused: boolean; onRegress: () => void }) {
   const regressor = useMemo(
     () => new PerformanceRegressor(onRegress, { sampleSize: 90, targetFps: 28 }),
     [onRegress],
@@ -86,11 +78,10 @@ function ScrollBridge({
 
   useFrame((_, delta) => {
     if (paused) return;
-    // Feed delta (in seconds) to regressor as ms
     regressor.sample(delta * 1000);
   });
 
-  return <SceneContent scrollProgress={scrollRef.current ?? 0} preset={preset} />;
+  return null;
 }
 
 // ── Exported wrapper ──────────────────────────────────────────────────
@@ -105,7 +96,7 @@ export function HeroScene3D({ scrollProgress, preset: initialPreset }: HeroScene
   const paused = useScenePaused();
   const [degraded, setDegraded] = useState(false);
 
-  // Performance regression: downgrade from full -> lite parameters dynamically
+  // Performance regression: downgrade dynamically when FPS drops
   const preset = useMemo<ScenePreset>(() => {
     if (!degraded) return initialPreset;
     return {
@@ -122,7 +113,7 @@ export function HeroScene3D({ scrollProgress, preset: initialPreset }: HeroScene
     setDegraded(true);
   }, []);
 
-  // Read MotionValue outside R3F to avoid React re-renders
+  // Read MotionValue into ref — no React re-renders, fresh every frame
   useEffect(() => {
     const unsubscribe = scrollProgress.on('change', (v: number) => {
       scrollRef.current = v;
@@ -150,12 +141,8 @@ export function HeroScene3D({ scrollProgress, preset: initialPreset }: HeroScene
         frameloop={paused ? 'never' : 'always'}
         style={{ background: 'transparent' }}
       >
-        <ScrollBridge
-          scrollRef={scrollRef}
-          preset={preset}
-          paused={paused}
-          onRegress={onRegress}
-        />
+        <PerfMonitor paused={paused} onRegress={onRegress} />
+        <SceneContent scrollRef={scrollRef} preset={preset} />
       </Canvas>
     </div>
   );

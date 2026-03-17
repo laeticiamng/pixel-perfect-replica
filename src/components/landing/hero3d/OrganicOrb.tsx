@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, type RefObject } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import {
@@ -11,12 +11,12 @@ import {
 // ── Organic Sphere mesh ───────────────────────────────────────────────
 
 interface OrganicSphereProps {
-  scrollProgress: number;
+  scrollRef: RefObject<number>;
   detail: number;
   orbOffset: [number, number];
 }
 
-function OrganicSphere({ scrollProgress, detail, orbOffset }: OrganicSphereProps) {
+function OrganicSphere({ scrollRef, detail, orbOffset }: OrganicSphereProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const mouseCurrent = useRef(new THREE.Vector2(0, 0));
@@ -35,16 +35,17 @@ function OrganicSphere({ scrollProgress, detail, orbOffset }: OrganicSphereProps
 
   useFrame((_, delta) => {
     if (!materialRef.current || !meshRef.current) return;
+    const scroll = scrollRef.current ?? 0;
 
     uniforms.uTime.value += delta;
     uniforms.uDistortion.value = THREE.MathUtils.lerp(
       uniforms.uDistortion.value,
-      1.0 + scrollProgress * 0.6,
+      1.0 + scroll * 0.6,
       0.05,
     );
     uniforms.uScrollProgress.value = THREE.MathUtils.lerp(
       uniforms.uScrollProgress.value,
-      scrollProgress,
+      scroll,
       0.05,
     );
 
@@ -59,9 +60,9 @@ function OrganicSphere({ scrollProgress, detail, orbOffset }: OrganicSphereProps
 
     // Position: slightly off-center right to serve hero text composition
     meshRef.current.position.x = orbOffset[0] + mouseCurrent.current.x * 0.25;
-    meshRef.current.position.y = orbOffset[1] + mouseCurrent.current.y * 0.15 - scrollProgress * 2;
+    meshRef.current.position.y = orbOffset[1] + mouseCurrent.current.y * 0.15 - scroll * 2;
 
-    const s = THREE.MathUtils.lerp(1, 0.5, scrollProgress);
+    const s = THREE.MathUtils.lerp(1, 0.5, scroll);
     meshRef.current.scale.setScalar(s);
   });
 
@@ -83,24 +84,25 @@ function OrganicSphere({ scrollProgress, detail, orbOffset }: OrganicSphereProps
 // ── Inner Glow shell ──────────────────────────────────────────────────
 
 interface InnerGlowProps {
-  scrollProgress: number;
+  scrollRef: RefObject<number>;
   detail: number;
   orbOffset: [number, number];
 }
 
-function InnerGlow({ scrollProgress, detail, orbOffset }: InnerGlowProps) {
+function InnerGlow({ scrollRef, detail, orbOffset }: InnerGlowProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const uniforms = useMemo(() => ({ uTime: { value: 0 } }), []);
 
   useFrame((_, delta) => {
     if (!materialRef.current || !meshRef.current) return;
+    const scroll = scrollRef.current ?? 0;
     uniforms.uTime.value += delta;
 
-    const s = THREE.MathUtils.lerp(1, 0.45, scrollProgress) * 1.5;
+    const s = THREE.MathUtils.lerp(1, 0.45, scroll) * 1.5;
     meshRef.current.scale.setScalar(s);
     meshRef.current.position.x = orbOffset[0];
-    meshRef.current.position.y = orbOffset[1] - scrollProgress * 2;
+    meshRef.current.position.y = orbOffset[1] - scroll * 2;
   });
 
   return (
@@ -122,7 +124,7 @@ function InnerGlow({ scrollProgress, detail, orbOffset }: InnerGlowProps) {
 // ── Combined Orb ──────────────────────────────────────────────────────
 
 interface OrganicOrbProps {
-  scrollProgress: number;
+  scrollRef: RefObject<number>;
   icosahedronDetail: number;
   innerGlowDetail: number;
   enableInnerGlow: boolean;
@@ -130,7 +132,7 @@ interface OrganicOrbProps {
 }
 
 export function OrganicOrb({
-  scrollProgress,
+  scrollRef,
   icosahedronDetail,
   innerGlowDetail,
   enableInnerGlow,
@@ -139,17 +141,9 @@ export function OrganicOrb({
   return (
     <>
       {enableInnerGlow && (
-        <InnerGlow
-          scrollProgress={scrollProgress}
-          detail={innerGlowDetail}
-          orbOffset={orbOffset}
-        />
+        <InnerGlow scrollRef={scrollRef} detail={innerGlowDetail} orbOffset={orbOffset} />
       )}
-      <OrganicSphere
-        scrollProgress={scrollProgress}
-        detail={icosahedronDetail}
-        orbOffset={orbOffset}
-      />
+      <OrganicSphere scrollRef={scrollRef} detail={icosahedronDetail} orbOffset={orbOffset} />
     </>
   );
 }

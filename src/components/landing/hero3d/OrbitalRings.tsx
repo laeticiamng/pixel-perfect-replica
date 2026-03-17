@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, type RefObject } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { ringVertexShader, ringFragmentShader } from './shaders';
@@ -10,7 +10,7 @@ interface OrbitalRingProps {
   tilt: [number, number, number];
   speed: number;
   color: THREE.Color;
-  scrollProgress: number;
+  scrollRef: RefObject<number>;
   segments: number;
   orbOffset: [number, number];
 }
@@ -20,7 +20,7 @@ function OrbitalRing({
   tilt,
   speed,
   color,
-  scrollProgress,
+  scrollRef,
   segments,
   orbOffset,
 }: OrbitalRingProps) {
@@ -37,10 +37,11 @@ function OrbitalRing({
 
   useFrame((_, delta) => {
     if (!ref.current || !matRef.current) return;
+    const scroll = scrollRef.current ?? 0;
     uniforms.uTime.value += delta;
     ref.current.rotation.z += delta * speed;
-    ref.current.position.y = orbOffset[1] - scrollProgress * 2;
-    const s = THREE.MathUtils.lerp(1, 0.45, scrollProgress);
+    ref.current.position.y = orbOffset[1] - scroll * 2;
+    const s = THREE.MathUtils.lerp(1, 0.45, scroll);
     ref.current.scale.setScalar(s);
   });
 
@@ -64,7 +65,7 @@ function OrbitalRing({
 // ── Ring Group ─────────────────────────────────────────────────────────
 
 interface OrbitalRingsProps {
-  scrollProgress: number;
+  scrollRef: RefObject<number>;
   segments: number;
   ringCount: number;
   orbOffset?: [number, number];
@@ -92,7 +93,7 @@ const RING_CONFIGS = [
 ];
 
 export function OrbitalRings({
-  scrollProgress,
+  scrollRef,
   segments,
   ringCount,
   orbOffset = [0.6, 0.2],
@@ -105,7 +106,7 @@ export function OrbitalRings({
         <OrbitalRing
           key={i}
           {...r}
-          scrollProgress={scrollProgress}
+          scrollRef={scrollRef}
           segments={segments}
           orbOffset={orbOffset}
         />
