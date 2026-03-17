@@ -1,16 +1,13 @@
 /**
- * Device capability detection for 3D scene activation.
+ * Device capability detection & performance regression for 3D scene.
  *
- * Centralised decision function that determines which rendering tier
- * the current device should use.  This avoids scattered feature-detection
- * across the codebase and makes it trivial to tweak thresholds.
+ * Three tiers:
+ *   "full" – Desktop / high-end.  All effects, up to 1200 particles.
+ *   "lite" – Mid-range / mobile.  Reduced particles, simpler FX.
+ *   "off"  – No WebGL, low-end, reduced-motion, data-saver. CSS fallback.
  *
- * Tiers:
- *   "full"    – Desktop / high-end mobile.  All effects enabled.
- *   "lite"    – Mid-range mobile / older laptop.  Reduced particles,
- *               simpler postprocessing, lower DPR.
- *   "off"     – No WebGL, low-end device, reduced-motion, data-saver.
- *               Falls back to the pure-CSS orbs.
+ * Also provides a runtime performance regressor that can downgrade
+ * the tier dynamically if frame rate drops below thresholds.
  */
 
 export type DeviceTier = 'full' | 'lite' | 'off';
@@ -20,13 +17,29 @@ export interface DeviceCapabilities {
   hasWebGL: boolean;
   prefersReducedMotion: boolean;
   coreCount: number;
-  deviceMemory: number; // GB, defaults to 4 when unavailable
+  deviceMemory: number;
   dpr: number;
   isMobile: boolean;
   isDataSaver: boolean;
 }
 
-// ---------- helpers ---------------------------------------------------------
+export interface ScenePreset {
+  particleCount: number;
+  icosahedronDetail: number;
+  innerGlowDetail: number;
+  ringSegments: number;
+  ringCount: number;
+  enableBloom: boolean;
+  enableChromaticAberration: boolean;
+  enableVignette: boolean;
+  bloomIntensity: number;
+  bloomThreshold: number;
+  maxDpr: number;
+  orbScale: number;
+  enableInnerGlow: boolean;
+}
+
+// ── Detection helpers ─────────────────────────────────────────────────
 
 function detectWebGL(): boolean {
   if (typeof window === 'undefined') return false;
@@ -45,7 +58,7 @@ function detectReducedMotion(): boolean {
 
 function detectDataSaver(): boolean {
   if (typeof navigator === 'undefined') return false;
-  // @ts-expect-error – non-standard API, may not exist
+  // @ts-expect-error – non-standard API
   return navigator.connection?.saveData === true;
 }
 
@@ -54,14 +67,8 @@ function detectMobile(): boolean {
   return window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent);
 }
 
-// ---------- main decision function ------------------------------------------
+// ── Main tier decision ────────────────────────────────────────────────
 
-/**
- * Evaluate current device and return the recommended 3D tier.
- *
- * Call once at mount time; the result should be cached (e.g. via useMemo).
- * The function is synchronous and cheap.
- */
 export function getDeviceCapabilities(): DeviceCapabilities {
   const hasWebGL = detectWebGL();
   const prefersReducedMotion = detectReducedMotion();
@@ -72,106 +79,120 @@ export function getDeviceCapabilities(): DeviceCapabilities {
   const isMobile = detectMobile();
   const isDataSaver = detectDataSaver();
 
-  // ---- tier decision ----
   let tier: DeviceTier = 'full';
 
-  // Hard blocks → "off"
+  // Hard blocks -> "off"
   if (!hasWebGL) tier = 'off';
   else if (prefersReducedMotion) tier = 'off';
   else if (isDataSaver) tier = 'off';
   else if (coreCount < 4) tier = 'off';
   else if (deviceMemory < 2) tier = 'off';
-
-  // Soft downgrades → "lite"
+  // Soft downgrades -> "lite"
   else if (isMobile) tier = 'lite';
   else if (coreCount < 6) tier = 'lite';
   else if (deviceMemory < 4) tier = 'lite';
-  else if (dpr > 2.5) tier = 'lite'; // very high DPR = expensive fill rate
+  else if (dpr > 2.5) tier = 'lite';
 
-  return {
-    tier,
-    hasWebGL,
-    prefersReducedMotion,
-    coreCount,
-    deviceMemory,
-    dpr,
-    isMobile,
-    isDataSaver,
-  };
+  return { tier, hasWebGL, prefersReducedMotion, coreCount, deviceMemory, dpr, isMobile, isDataSaver };
 }
 
-/**
- * Shorthand – returns true only when tier !== 'off'.
- */
 export function shouldEnable3D(): boolean {
   return getDeviceCapabilities().tier !== 'off';
 }
 
-// ---------- per-tier presets ------------------------------------------------
-
-export interface ScenePreset {
-  particleCount: number;
-  connectionNodeCount: number;
-  icosahedronDetail: number;       // subdivisions for the organic sphere
-  innerGlowDetail: number;
-  ringSegments: number;
-  enableBloom: boolean;
-  enableChromaticAberration: boolean;
-  enableVignette: boolean;
-  enableNoise: boolean;
-  bloomIntensity: number;
-  maxDpr: number;
-  enableConnectionLines: boolean;
-}
+// ── Per-tier presets ──────────────────────────────────────────────────
 
 export function getScenePreset(tier: DeviceTier): ScenePreset {
   switch (tier) {
     case 'full':
       return {
-        particleCount: 200,          // reduced from 300 – still plenty
-        connectionNodeCount: 40,      // reduced from 50
-        icosahedronDetail: 64,        // reduced from 96 – visually identical
-        innerGlowDetail: 24,          // reduced from 32
-        ringSegments: 100,            // reduced from 160
+        particleCount: 1200,
+        icosahedronDetail: 64,
+        innerGlowDetail: 24,
+        ringSegments: 128,
+        ringCount: 3,
         enableBloom: true,
         enableChromaticAberration: true,
         enableVignette: true,
-        enableNoise: false,           // film grain is barely visible, costs a pass
-        bloomIntensity: 1.4,
+        bloomIntensity: 1.2,
+        bloomThreshold: 0.15,
         maxDpr: 2,
-        enableConnectionLines: true,
+        orbScale: 1.0,
+        enableInnerGlow: true,
       };
     case 'lite':
       return {
-        particleCount: 80,
-        connectionNodeCount: 0,       // connection lines off on mobile
+        particleCount: 400,
         icosahedronDetail: 32,
         innerGlowDetail: 16,
         ringSegments: 64,
+        ringCount: 2,
         enableBloom: true,
         enableChromaticAberration: false,
         enableVignette: true,
-        enableNoise: false,
-        bloomIntensity: 1.0,
+        bloomIntensity: 0.8,
+        bloomThreshold: 0.3,
         maxDpr: 1.5,
-        enableConnectionLines: false,
+        orbScale: 0.9,
+        enableInnerGlow: true,
       };
     case 'off':
     default:
-      // Should never be used directly – caller should render CSS fallback
       return {
         particleCount: 0,
-        connectionNodeCount: 0,
         icosahedronDetail: 16,
         innerGlowDetail: 8,
         ringSegments: 32,
+        ringCount: 0,
         enableBloom: false,
         enableChromaticAberration: false,
         enableVignette: false,
-        enableNoise: false,
         bloomIntensity: 0,
+        bloomThreshold: 0.5,
         maxDpr: 1,
-        enableConnectionLines: false,
+        orbScale: 0.8,
+        enableInnerGlow: false,
       };
+  }
+}
+
+// ── Performance regression ────────────────────────────────────────────
+
+/**
+ * Tracks frame times and triggers a callback when performance degrades.
+ * Use inside useFrame to feed delta values; when avg frame time exceeds
+ * threshold for `sampleWindow` consecutive frames, `onRegress` fires.
+ */
+export class PerformanceRegressor {
+  private frameTimes: number[] = [];
+  private readonly sampleSize: number;
+  private readonly threshold: number; // ms per frame
+  private triggered = false;
+
+  constructor(
+    private readonly onRegress: () => void,
+    { sampleSize = 90, targetFps = 30 }: { sampleSize?: number; targetFps?: number } = {},
+  ) {
+    this.sampleSize = sampleSize;
+    this.threshold = 1000 / targetFps;
+  }
+
+  sample(deltaMs: number): void {
+    if (this.triggered) return;
+    this.frameTimes.push(deltaMs);
+    if (this.frameTimes.length < this.sampleSize) return;
+
+    const avg = this.frameTimes.reduce((a, b) => a + b, 0) / this.frameTimes.length;
+    if (avg > this.threshold) {
+      this.triggered = true;
+      this.onRegress();
+    }
+    // Slide window
+    this.frameTimes = this.frameTimes.slice(this.sampleSize / 2);
+  }
+
+  reset(): void {
+    this.frameTimes = [];
+    this.triggered = false;
   }
 }
