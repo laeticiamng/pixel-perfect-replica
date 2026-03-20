@@ -1,260 +1,242 @@
-# 🟢 NEARVITY — Le premier réseau social 100% réel
+# NEARVITY
 
-**NEARVITY** est une application mobile-first qui permet aux étudiants et jeunes actifs de se connecter spontanément dans la vraie vie. Active ton statut NEARVITY, découvre qui est disponible autour de toi sur le radar, et brise la glace facilement.
+NEARVITY est une PWA React + Supabase orientée rencontres réelles entre étudiants et jeunes actifs : radar social en direct, sessions binôme, événements, conversations, sécurité, analytics admin et fonctionnalités IA optionnelles.
 
-![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript) ![Lovable Cloud](https://img.shields.io/badge/Lovable_Cloud-Backend-3FCF8E?logo=supabase) ![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss) ![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa)
+![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)
+![Supabase](https://img.shields.io/badge/Supabase-Backend-3ECF8E?logo=supabase)
+![Tailwind](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss)
+![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?logo=pwa)
 
 ---
 
-## ⚠️ Statut du projet
+## Statut du projet
 
 | Champ | Valeur |
-|-------|--------|
-| **Version** | 2.0.0 |
-| **Statut** | 🟢 Production Ready |
-| **Plateforme** | Web PWA (mobile-first, installable) |
-| **Backend** | Lovable Cloud |
-| **Dernière mise à jour** | 8 février 2026 |
+|---|---|
+| Version | 2.1.0 |
+| Statut | Production active |
+| Plateforme | Web PWA mobile-first |
+| Frontend | React, Vite, TypeScript, Tailwind, shadcn/ui, Framer Motion |
+| Backend | Supabase (Postgres, Auth, Storage, Edge Functions, RPC SQL) |
+| Dernière mise à jour | 19 mars 2026 |
 
-> **Note** : Ce projet est en production. Toutes les fonctionnalités de base sont implémentées et testées.
+### Ce qui a été réaligné
+
+- Le cockpit présidentiel n’utilise plus de dataset mocké : il lit désormais les vraies métriques système, alertes, cron jobs et indicateurs institutionnels.
+- La page Discover exploite mieux le backend existant avec un tri intelligent, des scores de pertinence et une hiérarchisation ergonomique des profils.
+- Le README a été remis à niveau pour refléter l’état réel du backend, des surfaces front et des commandes de vérification.
 
 ---
 
-## 🚀 Installation Rapide
-
-### Sur mobile (recommandé)
-1. Ouvre l'app dans ton navigateur
-2. Va sur `/install` pour les instructions
-3. **iPhone/iPad** : Partager → Sur l'écran d'accueil
-4. **Android** : Menu ⋮ → Installer l'application
+## Installation
 
 ### Développement local
+
 ```bash
-git clone <YOUR_GIT_URL>
-cd nearvity-app
+git clone <repo>
+cd pixel-perfect-replica
 npm install
 npm run dev
 ```
 
-### Configuration
-Copie `.env.example` vers `.env` et remplis les valeurs nécessaires :
+### Build production
+
 ```bash
-cp .env.example .env
+npm run build
+npm run preview
 ```
 
-Variables requises :
-- `MAPBOX_ACCESS_TOKEN` - Token Mapbox (obtenir sur [mapbox.com](https://mapbox.com))
+### Vérifications qualité
 
-Variables optionnelles (pour les fonctionnalités premium) :
-- `STRIPE_SECRET_KEY` - Pour les paiements
-- `PERPLEXITY_API_KEY` - Pour les recommandations IA
-- `ELEVENLABS_API_KEY` - Pour les icebreakers vocaux
-
----
-
-## 🎯 Fonctionnalités
-
-### ✅ Implémentées et fonctionnelles
-
-| Fonctionnalité | Description |
-|----------------|-------------|
-| **Radar temps réel** | Visualise les personnes disponibles autour de toi |
-| **3 états NEARVITY** | 🟢 Ouvert, 🟡 Conditionnel, 🔴 Occupé |
-| **6 activités** | 📚 Réviser, 🍽️ Manger, 💻 Bosser, 💬 Parler, 🏃 Sport, ✨ Autre |
-| **Ghost mode** | Deviens invisible sur le radar |
-| **Sessions binôme** | Planifie des sessions d'étude en groupe |
-| **Chat de groupe** | Échange avec les participants (10 messages max) |
-| **Export GDPR** | Télécharge toutes tes données en JSON |
-| **PWA installable** | Fonctionne comme une app native |
-| **Blocage utilisateurs** | Bloque les utilisateurs indésirables |
-| **Signalement** | Signale les comportements inappropriés |
-| **Favoris événements** | Sauvegarde les événements qui t'intéressent |
-
-### ⚠️ Partiellement implémentées
-
-| Fonctionnalité | Statut |
-|----------------|--------|
-| **Notifications push** | Infrastructure OK, tests réels en cours |
-| **Paiements Stripe** | Edge functions OK, flux non testé E2E |
-| **Recommandations IA** | Fonctionne mais nécessite clé API |
-| **Icebreakers vocaux** | Fonctionne mais nécessite clé API |
-
-### 📋 Prévues (non implémentées)
-
-- Mode hors-ligne complet
-- Notifications en temps réel
-- Matching par affinités
+```bash
+npm run lint
+npm run test
+```
 
 ---
 
-## 🔒 Sécurité
+## Variables d’environnement
 
-### Implémenté
-
-| Élément | Description |
-|---------|-------------|
-| **RLS (Row Level Security)** | Actif sur toutes les tables |
-| **Validation des inputs** | Schemas Zod côté client |
-| **Sanitization** | Protection XSS sur tous les champs texte |
-| **Rate limiting** | 5 signalements/h, 10 révélations/h |
-| **Rate limiting Edge Functions** | ai-assistant: 20/min, voice-icebreaker: 5/min |
-| **Floutage GPS** | Coordonnées arrondies à ~100m |
-| **Shadow ban automatique** | 3+ signalements en 24h |
-
----
-
-## 🛠️ Stack Technique
+Le projet s’appuie principalement sur Supabase côté client et sur les secrets des Edge Functions côté plateforme.
 
 ### Frontend
-| Technologie | Usage |
-|-------------|-------|
-| **React 18** | Framework UI avec hooks |
-| **TypeScript** | Typage statique |
-| **Vite + PWA** | Build tool avec service worker |
-| **Tailwind CSS** | Styling avec design tokens |
-| **shadcn/ui** | Composants UI accessibles |
-| **Framer Motion** | Animations |
-| **Zustand** | State management |
-| **TanStack Query** | Cache et requêtes async |
-| **Mapbox GL** | Carte interactive |
 
-### Backend (Lovable Cloud)
-| Service | Usage |
-|---------|-------|
-| **PostgreSQL** | Base de données |
-| **Auth** | Email/password |
-| **Storage** | Avatars |
-| **RLS** | Row Level Security |
-| **Edge Functions** | Logique serveur |
+Variables attendues par l’application web :
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_MAPBOX_ACCESS_TOKEN` ou token récupéré via `get-mapbox-token`
+
+### Edge Functions / backend
+
+Suivant les fonctions activées, prévoir :
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `RESEND_API_KEY`
+- `PERPLEXITY_API_KEY`
+- `FIRECRAWL_API_KEY`
+- `ELEVENLABS_API_KEY`
 
 ---
 
-## 🧪 Tests
+## Fonctionnalités produit
+
+### Expérience utilisateur
+
+- Radar temps réel avec signal actif, expiration et filtrage d’activité.
+- Discover avec recherche, filtres université/activité, tri intelligent et cartes de compatibilité.
+- Révélation de profil de proximité avec badges, mini-chat et icebreakers IA/voix.
+- Sessions binôme avec création, participation, historique, check-in et feedback.
+- Événements publics avec favoris, détail et check-in QR.
+- Profil, édition, confidentialité, blocages, signalements, export RGPD et paramètres.
+- PWA installable avec support offline partiel et support notifications.
+
+### Côté admin / ops
+
+- Dashboard analytics pour l’activité, les pages, les événements et la santé système.
+- Cockpit présidentiel live branché sur les métriques réelles :
+  - `system` edge function,
+  - `cron_job_executions`,
+  - `alert_logs`,
+  - `get_institutional_metrics()`,
+  - `analytics_events`.
+- Monitoring des jobs cron et préférences d’alertes admin.
+
+### IA et services enrichis
+
+- Recommandations de lieux via Edge Function `recommend-locations`.
+- Assistant IA contextualisé via `ai-assistant`.
+- Icebreakers vocaux via `voice-icebreaker`.
+- Scraping / enrichissement d’événements via `firecrawl-*` et `scrape-events`.
+
+> Certaines briques IA dépendent de secrets externes et peuvent être indisponibles sans configuration backend.
+
+---
+
+## Architecture
+
+### Frontend
+
+- `src/pages/*` : surfaces applicatives.
+- `src/components/*` : composants UI, social, map, admin, landing, safety, binome.
+- `src/hooks/*` : orchestration des appels Supabase, analytics, quotas, notifications, IA.
+- `src/lib/*` : validation, i18n, logs, sécurité, cache de recommandations.
+- `src/integrations/supabase/*` : client Supabase et types générés.
+
+### Backend Supabase
+
+- `supabase/migrations/*` : schéma SQL, RLS, RPC, fonctions métier.
+- `supabase/functions/*` : Edge Functions TypeScript/Deno.
+
+### Endpoints/flux backend clés exposés au front
+
+- RPC : `discover_users`, `get_institutional_metrics`, `get_daily_active_users`, `get_events_public`, `get_public_profiles`, `join_session`, `leave_session`, etc.
+- Edge Functions : `system`, `notifications`, `recommend-locations`, `voice-icebreaker`, `create-checkout`, `confirm-session-purchase`, `send-contact`, `log-client-error`.
+
+---
+
+## Focus audit frontend ↔ backend
+
+Les principaux écarts couverts dans cette itération :
+
+1. **Frontend admin réaligné avec le backend réel**
+   - suppression du cockpit présidentiel alimenté par données de démonstration ;
+   - lecture de vraies métriques système et institutionnelles.
+
+2. **Ergonomie Discover optimisée**
+   - tri intelligent par activité live, fraîcheur, campus et signaux utiles ;
+   - meilleure lisibilité des profils à forte pertinence ;
+   - présentation premium 3D légère sur les cartes.
+
+3. **Qualité TypeScript/outilchain**
+   - correction des suppressions TypeScript héritées sur les Edge Functions ;
+   - correction de la config Tailwind ;
+   - correction d’un hook conditionnel dans l’overlay diagnostic 3D.
+
+---
+
+## Sécurité
+
+Le dépôt contient déjà une base sécurité avancée :
+
+- RLS sur les tables métier sensibles.
+- Validation côté client et côté fonctions Edge.
+- Sanitization des entrées texte.
+- Limites de taux sur plusieurs flux sensibles.
+- Floutage de localisation et garde-fous anti-abus.
+- Journalisation d’erreurs client côté backend.
+
+Pour les détails d’audit et de hardening, voir aussi :
+
+- `AUDIT_RESERVATION_MODE.md`
+- `docs/known-issues.md`
+- `docs/SECURITY_RELEASE.md`
+
+---
+
+## Tests
+
+Commandes disponibles :
 
 ```bash
-# Lancer tous les tests
 npm run test
-
-# Voir la couverture
-npm run test -- --coverage
+npm run lint
+npm run build
 ```
 
-### État des tests
-
-| Type | Statut |
-|------|--------|
-| **Smoke tests** | ✅ Passent |
-| **Validation inputs** | ✅ Complet |
-| **Sanitization XSS** | ✅ Complet |
-| **Logique métier** | ✅ Complet |
-| **RLS policies** | ✅ DB Linter: 0 issues |
+Le dépôt contient des tests unitaires, intégration et parcours critiques dans `src/test/*` ainsi que des tests liés à certaines Edge Functions.
 
 ---
 
-## 📊 Architecture Base de Données
-
-### Tables principales
-
-| Table | Description |
-|-------|-------------|
-| `profiles` | Informations utilisateur |
-| `active_signals` | Statuts NEARVITY actifs (expiration 2h) |
-| `interactions` | Historique des rencontres |
-| `user_settings` | Préférences (ghost mode, etc.) |
-| `scheduled_sessions` | Sessions binôme |
-| `session_participants` | Participants aux sessions |
-| `reports` | Signalements |
-| `user_blocks` | Blocages bidirectionnels |
-
-### Edge Functions
-
-| Fonction | Description |
-|----------|-------------|
-| `get-mapbox-token` | Récupère le token Mapbox (auth requise) |
-| `notifications` | Envoi de notifications push |
-| `create-checkout` | Crée une session Stripe |
-| `ai-assistant` | Assistant IA contextuel |
-| `recommend-locations` | Recommandations de lieux |
-| `voice-icebreaker` | Génération d'icebreakers vocaux |
-| `send-auth-email` | Emails d'authentification personnalisés |
-| `system` | Tâches de maintenance |
-
----
-
-## 💰 Modèle économique
-
-### Gratuit
-- 2 sessions binôme par mois
-- Radar et NEARVITY illimités
-- Chat (10 messages par interaction)
-
-### Premium (9,90€/mois)
-- Sessions binôme illimitées
-- Ghost mode
-- Badge premium
-- Fonctionnalités IA
-
-### Pay-per-use
-- 0,99€ par session supplémentaire
-
----
-
-## 📱 Routes de l'Application
+## Routes principales
 
 ### Publiques
-| Route | Description |
-|-------|-------------|
-| `/` | Page d'accueil |
-| `/onboarding` | Inscription/Connexion |
-| `/install` | Guide d'installation PWA |
-| `/terms` | CGU |
-| `/privacy` | Politique de confidentialité |
 
-### Protégées (auth requise)
-| Route | Description |
-|-------|-------------|
-| `/map` | Radar principal |
-| `/binome` | Sessions binôme |
-| `/profile` | Mon profil |
-| `/settings` | Paramètres |
-| `/data-export` | Export GDPR |
+- `/`
+- `/onboarding`
+- `/forgot-password`
+- `/reset-password`
+- `/install`
+- `/about`
+- `/contact`
+- `/terms`
+- `/privacy`
+- `/changelog`
 
----
+### Authentifiées
 
-## 🤝 Contribution
+- `/map`
+- `/discover`
+- `/reveal/:userId`
+- `/binome`
+- `/events`
+- `/profile`
+- `/settings`
+- `/notifications`
+- `/data-export`
 
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/NewFeature`)
-3. Lire `.env.example` pour la configuration
-4. Lancer les tests (`npm test`)
-5. Commit (`git commit -m 'Add NewFeature'`)
-6. Push (`git push origin feature/NewFeature`)
-7. Ouvrir une Pull Request
+### Admin
 
-### Standards de code
-- TypeScript strict
-- Tests pour toute nouvelle logique métier
-- Composants < 200 lignes
-- Pas de `any` explicite
+- `/admin`
+- `/president-cockpit`
+- `/institutional-dashboard`
 
 ---
 
-## 📞 Support
+## Notes de développement
 
-- **Documentation** : Ce README
-- **Discord** : [Communauté Lovable](https://discord.com/channels/1119885301872070706/1280461670979993613)
-- **Feedback** : Page Feedback dans l'app
-
----
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+- Le dépôt utilise Vite + React lazy loading pour une grande partie des pages.
+- Les composants landing 3D reposent sur `three`, `@react-three/fiber` et `@react-three/postprocessing`.
+- En environnement sans secrets tiers, les fonctionnalités IA/paiement/contact peuvent retourner des erreurs contrôlées côté backend.
+- Les warnings `forwardRef` documentés dans `docs/known-issues.md` proviennent de dépendances tierces en mode dev.
 
 ---
 
-<p align="center">
-  <strong>🟢 NEARVITY</strong> — Le premier réseau social 100% réel<br>
-  <em>Version 2.0.0 • Production Ready • PWA</em><br><br>
-  Fait avec ❤️ in France par EmotionsCare Sasu
-</p>
+## Licence
+
+Projet sous licence MIT sauf mention contraire.

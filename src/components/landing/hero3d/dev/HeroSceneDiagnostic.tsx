@@ -26,11 +26,11 @@ function DiagnosticRow({ label, value }: DiagnosticRowProps) {
 }
 
 export function HeroSceneDiagnostic() {
-  // Only render in development
-  if (import.meta.env.PROD) return null;
-
   const caps: DeviceCapabilities = useMemo(() => getDeviceCapabilities(), []);
   const preset: ScenePreset = useMemo(() => getScenePreset(caps.tier), [caps.tier]);
+
+  // Only render in development
+  if (import.meta.env.PROD) return null;
 
   return (
     <div
