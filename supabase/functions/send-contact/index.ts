@@ -8,7 +8,7 @@ const SUPPORT_EMAIL = "contact@emotionscare.com";
  * Requires authentication to prevent spam.
  */
 function serve(handler: (req: Request) => Promise<Response>) {
-  // @ts-ignore Deno.serve
+  // @ts-expect-error Deno global is provided in the Supabase Edge runtime
   Deno.serve(handler);
 }
 
