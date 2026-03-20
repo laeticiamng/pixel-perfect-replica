@@ -12,6 +12,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { useTheme } from "@/hooks";
 import { AnalyticsProvider } from "@/hooks/useAnalytics";
 import { FullPageLoader } from "@/components/shared/FullPageLoader";
+import { ExperienceProvider } from '@/experience';
 import { useTranslation } from "@/lib/i18n";
 
 // Lazy-loaded pages — each page is code-split into its own chunk
@@ -338,13 +339,15 @@ const App = () => (
               }}
             />
             <BrowserRouter>
-              <AnalyticsProvider>
-                <HtmlLangSync />
-                <CommandPalette />
-                <AnimatedRoutes />
-                <CookieConsent />
-                <OfflineBanner />
-              </AnalyticsProvider>
+              <ExperienceProvider>
+                <AnalyticsProvider>
+                  <HtmlLangSync />
+                  <CommandPalette />
+                  <AnimatedRoutes />
+                  <CookieConsent />
+                  <OfflineBanner />
+                </AnalyticsProvider>
+              </ExperienceProvider>
             </BrowserRouter>
           </TooltipProvider>
         </ThemeInitializer>
