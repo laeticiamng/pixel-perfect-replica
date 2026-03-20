@@ -1,5 +1,11 @@
 project_id = "afvssugntxjolqqeyffn"
 
+# SECURITY NOTE: verify_jwt is disabled because Supabase Edge Functions use
+# getClaims()-based JWT validation in _shared/auth.ts (authenticateRequest)
+# as a compensating control. This allows functions like log-client-error to
+# accept anonymous requests while still enforcing auth where needed.
+# Each function handles its own auth checks — see _shared/auth.ts.
+
 [functions.notifications]
 verify_jwt = false
 

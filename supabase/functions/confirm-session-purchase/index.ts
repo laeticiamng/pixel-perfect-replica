@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
+import { authenticateRequest, isAuthError, getCorsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
@@ -16,7 +16,7 @@ const logStep = (step: string, details?: Record<string, unknown>) => {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: getCorsHeaders(req) });
   }
 
   const supabaseClient = createClient(
@@ -35,10 +35,10 @@ serve(async (req) => {
 
     // Rate limit: 5 confirmations per minute
     const rl = checkRateLimit(`confirm-session:${userId}`, { maxRequests: 5, windowMs: 60_000 });
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!, req);
 
     const rawBody = await req.json();
-    const parsed = validateBody(rawBody, confirmSchema);
+    const parsed = validateBody(rawBody, confirmSchema, req);
     if (isValidationError(parsed)) return parsed;
 
     const { sessions_purchased: count, checkout_session_id } = parsed;
@@ -56,7 +56,7 @@ serve(async (req) => {
       logStep("Replay detected — checkout session already confirmed", { checkout_session_id });
       return new Response(
         JSON.stringify({ error: "This purchase has already been confirmed" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 409 }
+        { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" }, status: 409 }
       );
     }
 
@@ -105,14 +105,14 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ success: true, sessions_added: count, new_total: newTotal }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+      { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: msg });
     return new Response(
       JSON.stringify({ error: msg }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" }, status: 500 }
     );
   }
 });

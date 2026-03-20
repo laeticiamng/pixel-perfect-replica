@@ -9,9 +9,14 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   // Supabase config — env vars are injected by Lovable Cloud in production.
-  // Fallbacks kept for local development only.
-  const supabaseUrl = env.VITE_SUPABASE_URL || 'https://afvssugntxjolqqeyffn.supabase.co';
-  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmdnNzdWdudHhqb2xxcWV5ZmZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2MzkzNjIsImV4cCI6MjA4NTIxNTM2Mn0.-OMupENyeT43nrybPSB9EtS7KBVYP4XYlhZgGZuebkM';
+  const supabaseUrl = env.VITE_SUPABASE_URL;
+  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  if (mode === 'production' && (!supabaseUrl || !supabaseKey)) {
+    throw new Error(
+      'Missing required environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY must be set for production builds.'
+    );
+  }
 
   return {
     define: {

@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
-import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
+import { authenticateRequest, isAuthError, getCorsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 
 const logStep = (step: string, details?: Record<string, unknown>) => {
@@ -10,7 +10,7 @@ const logStep = (step: string, details?: Record<string, unknown>) => {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -25,7 +25,7 @@ serve(async (req) => {
 
     // Rate limit: 5 portal sessions per minute
     const rl = checkRateLimit(`customer-portal:${userId}`, { maxRequests: 5, windowMs: 60_000 });
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!, req);
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
@@ -51,14 +51,14 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ url: portalSession.url }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+      { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: msg });
     return new Response(
       JSON.stringify({ error: msg }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" }, status: 500 }
     );
   }
 });

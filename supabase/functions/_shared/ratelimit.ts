@@ -1,4 +1,4 @@
-import { corsHeaders } from "./auth.ts";
+import { getCorsHeaders } from "./auth.ts";
 
 interface RateLimitEntry {
   count: number;
@@ -47,13 +47,13 @@ export function checkRateLimit(
 }
 
 /** Ready-made 429 response with Retry-After header */
-export function rateLimitResponse(retryAfter: number): Response {
+export function rateLimitResponse(retryAfter: number, req?: Request): Response {
   return new Response(
     JSON.stringify({ error: "Rate limit exceeded", retry_after: retryAfter }),
     {
       status: 429,
       headers: {
-        ...corsHeaders,
+        ...getCorsHeaders(req),
         "Content-Type": "application/json",
         "Retry-After": String(retryAfter),
       },

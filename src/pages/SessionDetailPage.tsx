@@ -172,7 +172,7 @@ export default function SessionDetailPage() {
       if (error) throw error;
       toast.success(t('binome.joinedSession'));
       await fetchSessionDetails();
-    } catch (error) { toast.error((error as Error).message); }
+    } catch (error) { toast.error(error instanceof Error ? error.message : String(error)); }
   };
 
   const handleLeave = async () => {
@@ -182,7 +182,7 @@ export default function SessionDetailPage() {
       if (error) throw error;
       toast.success(t('binome.leftSession'));
       await fetchSessionDetails();
-    } catch (error) { toast.error((error as Error).message); }
+    } catch (error) { toast.error(error instanceof Error ? error.message : String(error)); }
   };
 
   if (isLoading) {

@@ -44,7 +44,7 @@ export function ProfileQRCode({ userId, firstName, avatarUrl, className, trigger
           url: profileUrl,
         });
       } catch (err) {
-        if ((err as Error).name !== 'AbortError') handleCopyLink();
+        if (!(err instanceof Error) || err.name !== 'AbortError') handleCopyLink();
       }
     } else {
       handleCopyLink();

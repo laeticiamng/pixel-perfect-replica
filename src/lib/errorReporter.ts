@@ -49,14 +49,14 @@ function scheduleFlush() {
 }
 
 export function reportError(
-  error: Error | string,
+  error: Error | string | unknown,
   context?: { component?: string; level?: 'error' | 'warn' }
 ) {
   // Only report in production
   if (!import.meta.env.PROD) return;
 
-  const message = typeof error === 'string' ? error : error.message;
-  const stack = typeof error === 'string' ? undefined : error.stack;
+  const message = typeof error === 'string' ? error : (error instanceof Error ? error.message : String(error));
+  const stack = typeof error === 'string' ? undefined : (error instanceof Error ? error.stack : undefined);
 
   errorQueue.push({
     message,

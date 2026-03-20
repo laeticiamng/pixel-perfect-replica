@@ -24,9 +24,9 @@ export const useLocationStore = create<LocationState>((set, get) => ({
 
   startWatching: () => {
     if (!navigator.geolocation) {
-      // Use default position for demo
-      set({ 
-        position: DEFAULT_POSITION, 
+      logger.ui.warning('Geolocation API not available — using default fallback position (Paris)');
+      set({
+        position: DEFAULT_POSITION,
         lastUpdated: new Date(),
         error: 'geolocation_not_supported'
       });
@@ -52,7 +52,8 @@ export const useLocationStore = create<LocationState>((set, get) => ({
         const errorMsg = error.code === 1
           ? 'location_denied'
           : 'location_unavailable';
-        // Fallback to default position for demo mode, but preserve error for UI
+        // Fallback to default position, but preserve error for UI
+        logger.ui.warning(`Falling back to default position — geolocation ${errorMsg}`);
         set({
           position: DEFAULT_POSITION,
           lastUpdated: new Date(),

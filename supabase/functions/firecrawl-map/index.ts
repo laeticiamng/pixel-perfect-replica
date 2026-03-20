@@ -1,4 +1,4 @@
-import { authenticateRequest, isAuthError, requireAdmin, corsHeaders } from "../_shared/auth.ts";
+import { authenticateRequest, isAuthError, requireAdmin, getCorsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
@@ -13,7 +13,7 @@ const mapSchema = z.object({
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -25,10 +25,10 @@ Deno.serve(async (req) => {
 
     // Rate limit: 10 map requests per minute
     const rl = checkRateLimit(`firecrawl-map:${auth.userId}`, { maxRequests: 10, windowMs: 60_000 });
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!, req);
 
     const rawBody = await req.json();
-    const parsed = validateBody(rawBody, mapSchema);
+    const parsed = validateBody(rawBody, mapSchema, req);
     if (isValidationError(parsed)) return parsed;
 
     const { url, options } = parsed;
@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
       console.error("FIRECRAWL_API_KEY not configured");
       return new Response(
         JSON.stringify({ success: false, error: "Firecrawl connector not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
       );
     }
 
@@ -69,20 +69,20 @@ Deno.serve(async (req) => {
       console.error("Firecrawl API error:", data);
       return new Response(
         JSON.stringify({ success: false, error: data.error || `Request failed with status ${response.status}` }),
-        { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: response.status, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
       );
     }
 
     console.log("Map successful");
     return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("Error mapping:", error);
     const msg = error instanceof Error ? error.message : "Failed to map";
     return new Response(
       JSON.stringify({ success: false, error: msg }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 });

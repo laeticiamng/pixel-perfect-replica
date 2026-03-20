@@ -2,12 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { Resend } from "https://esm.sh/resend@2.0.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { getCorsHeaders } from "../_shared/auth.ts";
 
 // ============================================================
 // TYPES
@@ -195,7 +190,7 @@ async function handleAdminAlert(
     console.log("[notifications/admin-alert] No recipients for alert type:", alert_type);
     return new Response(
       JSON.stringify({ success: true, message: "No recipients configured for this alert type" }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
     );
   }
 
@@ -279,7 +274,7 @@ async function handleAdminAlert(
       sent: successCount,
       failed: failureCount,
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
   );
 }
 
@@ -292,7 +287,7 @@ async function handlePushNotification(
   if (!targetUserId || !title || !body) {
     return new Response(
       JSON.stringify({ error: "Missing required fields: targetUserId, title, body" }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 400, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
     );
   }
 
@@ -306,7 +301,7 @@ async function handlePushNotification(
     console.error("[notifications/push] Error fetching subscriptions:", subError);
     return new Response(
       JSON.stringify({ error: "Failed to fetch subscriptions" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
     );
   }
 
@@ -316,7 +311,7 @@ async function handlePushNotification(
     console.log("[notifications/push] No push subscriptions found for user:", targetUserId);
     return new Response(
       JSON.stringify({ message: "No subscriptions found", sent: 0 }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
     );
   }
 
@@ -332,7 +327,7 @@ async function handlePushNotification(
       title,
       body,
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
   );
 }
 
@@ -355,7 +350,7 @@ async function handleSessionReminders(
       console.log("[notifications/session-reminders] No reminders needed");
       return new Response(
         JSON.stringify({ success: true, sent: 0, message: "No reminders needed" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
       );
     }
 
@@ -421,7 +416,7 @@ async function handleSessionReminders(
         sent: sentCount,
         total: remindersList.length,
       }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("[notifications/session-reminders] Error:", error);
@@ -439,7 +434,7 @@ function handleHealth(): Response {
       version: "1.4.0",
       actions: ["send-admin-alert", "send-push", "send-session-reminders", "send-reengagement", "health"],
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
   );
 }
 
@@ -469,7 +464,7 @@ async function handleReengagement(
     if (!inactiveUsers || inactiveUsers.length === 0) {
       return new Response(
         JSON.stringify({ success: true, sent: 0, message: "No users to process" }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
       );
     }
 
@@ -541,7 +536,7 @@ async function handleReengagement(
 
     return new Response(
       JSON.stringify({ success: true, action: "send-reengagement", sent: sentCount }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 200, headers: { ...getCorsHeaders(), "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("[notifications/reengagement] Error:", error);
@@ -556,7 +551,7 @@ async function handleReengagement(
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   const startTime = Date.now();
@@ -575,7 +570,7 @@ const handler = async (req: Request): Promise<Response> => {
           error: "Missing 'action' field",
           availableActions: ["send-admin-alert", "send-push", "send-session-reminders", "health"],
         }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 400, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
       );
     }
 
@@ -595,13 +590,13 @@ const handler = async (req: Request): Promise<Response> => {
         if (!authResult.authenticated) {
           return new Response(
             JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         if (!authResult.isAdmin) {
           return new Response(
             JSON.stringify({ error: "Admin role required" }),
-            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 403, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         response = await handleAdminAlert(body as AdminAlertRequest, supabase);
@@ -614,7 +609,7 @@ const handler = async (req: Request): Promise<Response> => {
         if (!authResult.authenticated) {
           return new Response(
             JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         response = await handlePushNotification(body as PushNotificationRequest, supabase);
@@ -630,7 +625,7 @@ const handler = async (req: Request): Promise<Response> => {
           console.warn("[notifications] send-session-reminders: unauthorized caller");
           return new Response(
             JSON.stringify({ error: "Unauthorized — cron token required" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         console.log("[notifications] send-session-reminders: cron auth verified");
@@ -647,7 +642,7 @@ const handler = async (req: Request): Promise<Response> => {
           console.warn("[notifications] send-reengagement: unauthorized caller");
           return new Response(
             JSON.stringify({ error: "Unauthorized — cron token required" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         console.log("[notifications] send-reengagement: cron auth verified");
@@ -661,7 +656,7 @@ const handler = async (req: Request): Promise<Response> => {
             error: `Unknown action: ${action}`,
             availableActions: ["send-admin-alert", "send-push", "send-session-reminders", "send-reengagement", "health"],
           }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 400, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
         );
     }
 
@@ -675,7 +670,7 @@ const handler = async (req: Request): Promise<Response> => {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(
       JSON.stringify({ success: false, error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 };
