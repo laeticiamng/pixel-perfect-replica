@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
+import { authenticateRequest, isAuthError, getCorsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
@@ -10,7 +10,7 @@ const voiceSchema = z.object({
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -24,11 +24,11 @@ serve(async (req) => {
     const rl = checkRateLimit(`voice-icebreaker:${auth.userId}`, { maxRequests: 5, windowMs: 60_000 });
     if (!rl.allowed) {
       console.log(`[voice-icebreaker] Rate limit exceeded for user ${auth.userId}`);
-      return rateLimitResponse(rl.retryAfter!);
+      return rateLimitResponse(rl.retryAfter!, req);
     }
 
     const rawBody = await req.json();
-    const parsed = validateBody(rawBody, voiceSchema);
+    const parsed = validateBody(rawBody, voiceSchema, req);
     if (isValidationError(parsed)) return parsed;
 
     const { text, voice_id } = parsed;
@@ -59,7 +59,7 @@ serve(async (req) => {
       if (response.status === 429) {
         return new Response(
           JSON.stringify({ success: false, error: "ElevenLabs rate limit exceeded" }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 429, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
         );
       }
       throw new Error(`ElevenLabs API error: ${response.status}`);
@@ -72,14 +72,14 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ success: true, audio_base64: base64Audio, content_type: "audio/mpeg", text_length: text.length }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("[voice-icebreaker] Error:", error);
     const msg = error instanceof Error ? error.message : "Unknown error";
     return new Response(
       JSON.stringify({ success: false, error: msg }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 });

@@ -94,7 +94,7 @@ export default function ConnectionsPage() {
       });
       if (error) throw error;
       setChatState({ interactionId: data as string, name });
-    } catch (err: any) {
+    } catch (err) {
       toast.error(t('connections.chatError'));
     } finally {
       setLoadingChatFor(null);

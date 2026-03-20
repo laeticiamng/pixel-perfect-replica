@@ -60,9 +60,9 @@ export function useEventFavorites() {
         setFavorites(prev => [...prev, eventId]);
       }
       return { error: null };
-    } catch (err: any) {
+    } catch (err) {
       logger.api.error('event_favorites', 'toggle', String(err));
-      return { error: err.message };
+      return { error: err instanceof Error ? err.message : String(err) };
     } finally {
       setIsLoading(false);
     }

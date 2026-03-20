@@ -29,12 +29,13 @@ export function getCorsHeaders(req?: Request) {
   };
 }
 
-/** @deprecated Use getCorsHeaders(req) for origin-aware CORS. Kept for backward compat. */
-export const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+/**
+ * @deprecated Use getCorsHeaders(req) for origin-aware CORS.
+ * This wildcard fallback is only kept as a re-export of getCorsHeaders()
+ * so that any remaining callers still compile. It resolves to the
+ * production domain when no request is available.
+ */
+export const corsHeaders = getCorsHeaders();
 
 export interface AuthResult {
   userId: string;
@@ -42,10 +43,10 @@ export interface AuthResult {
   claims: Record<string, unknown>;
 }
 
-export function errorResponse(status: number, message: string): Response {
+export function errorResponse(status: number, message: string, req?: Request): Response {
   return new Response(
     JSON.stringify({ error: message }),
-    { status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
@@ -65,7 +66,7 @@ export async function authenticateRequest(
 
   if (!authHeader?.startsWith("Bearer ")) {
     console.warn("[auth] Missing or malformed Authorization header");
-    return errorResponse(401, "Missing authorization header");
+    return errorResponse(401, "Missing authorization header", req);
   }
 
   const token = authHeader.replace("Bearer ", "");
@@ -73,7 +74,7 @@ export async function authenticateRequest(
 
   if (!token || token.length < 10) {
     console.warn(`[auth] Token too short (prefix: ${tokenPrefix}…)`);
-    return errorResponse(401, "Invalid authentication token");
+    return errorResponse(401, "Invalid authentication token", req);
   }
 
   const supabaseClient = createClient(
@@ -89,7 +90,7 @@ export async function authenticateRequest(
     console.warn(
       `[auth] getClaims failed (prefix: ${tokenPrefix}…): ${claimsError?.message ?? "no sub claim"}`
     );
-    return errorResponse(401, "Invalid or expired authentication token");
+    return errorResponse(401, "Invalid or expired authentication token", req);
   }
 
   const claims = claimsData.claims as Record<string, unknown>;
@@ -101,7 +102,7 @@ export async function authenticateRequest(
       console.warn(
         `[auth] Token expired (prefix: ${tokenPrefix}…), exp=${claims.exp} now=${nowSec}`
       );
-      return errorResponse(401, "Authentication token has expired");
+      return errorResponse(401, "Authentication token has expired", req);
     }
   }
 

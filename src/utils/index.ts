@@ -1,5 +1,5 @@
 // Utils barrel export
-// Usage: import { calculateDistance, mockUsers } from '@/utils';
+// Usage: import { calculateDistance } from '@/utils';
 
 export * from './distance';
-export * from './mockData';
+export { DEFAULT_POSITION } from './mockData';

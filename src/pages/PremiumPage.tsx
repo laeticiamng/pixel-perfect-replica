@@ -39,7 +39,7 @@ export default function PremiumPage() {
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
   const [successType, setSuccessType] = useState<'subscription' | 'session' | null>(null);
 
-  const isPremium = profile?.is_premium || status?.subscribed;
+  const isPremium = status?.subscribed ?? profile?.is_premium ?? false;
   const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
 
   const NEARVITY_PLUS_FEATURES = [

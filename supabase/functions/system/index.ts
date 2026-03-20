@@ -1,11 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
+import { getCorsHeaders } from "../_shared/auth.ts";
 
 // ============================================================
 // TYPES
@@ -152,7 +147,7 @@ async function validateAuth(
 // HANDLERS
 // ============================================================
 
-function handleHealth(): Response {
+function handleHealth(req?: Request): Response {
   return new Response(
     JSON.stringify({
       success: true,
@@ -171,13 +166,14 @@ function handleHealth(): Response {
         "send-error-alert"
       ],
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleGetStats(
   payload: GetStatsRequest,
-  supabase: AnySupabaseClient
+  supabase: AnySupabaseClient,
+  req: Request
 ): Promise<Response> {
   const daysBack = payload.days_back ?? 7;
 
@@ -256,21 +252,22 @@ async function handleGetStats(
         timestamp: new Date().toISOString(),
       },
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleGetUserQuota(
   payload: GetUserQuotaRequest,
   supabase: AnySupabaseClient,
-  requestingUserId: string
+  requestingUserId: string,
+  req: Request
 ): Promise<Response> {
   const { user_id } = payload;
 
   if (!user_id) {
     return new Response(
       JSON.stringify({ error: "Missing required field: user_id" }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 400, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 
@@ -278,7 +275,7 @@ async function handleGetUserQuota(
   if (user_id !== requestingUserId) {
     return new Response(
       JSON.stringify({ error: "Cannot query another user's quota" }),
-      { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 403, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 
@@ -295,7 +292,7 @@ async function handleGetUserQuota(
     console.error("[system/get-user-quota] Error fetching user stats:", statsError);
     return new Response(
       JSON.stringify({ error: "User not found or stats unavailable" }),
-      { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 404, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 
@@ -334,13 +331,14 @@ async function handleGetUserQuota(
         timestamp: new Date().toISOString(),
       },
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleGetSystemLogs(
   payload: GetSystemLogsRequest,
-  supabase: AnySupabaseClient
+  supabase: AnySupabaseClient,
+  req: Request
 ): Promise<Response> {
   const limit = Math.min(payload.limit ?? 50, 200);
   const eventCategory = payload.event_category;
@@ -363,7 +361,7 @@ async function handleGetSystemLogs(
     console.error("[system/get-system-logs] Error fetching logs:", error);
     return new Response(
       JSON.stringify({ error: "Failed to fetch logs" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 
@@ -386,13 +384,14 @@ async function handleGetSystemLogs(
         timestamp: new Date().toISOString(),
       },
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleGetErrorRate(
   payload: GetErrorRateRequest,
-  supabase: AnySupabaseClient
+  supabase: AnySupabaseClient,
+  req: Request
 ): Promise<Response> {
   const hoursBack = payload.hours_back ?? 24;
   const since = new Date(Date.now() - hoursBack * 60 * 60 * 1000).toISOString();
@@ -448,12 +447,13 @@ async function handleGetErrorRate(
         timestamp: new Date().toISOString(),
       },
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleCleanupExpired(
-  supabase: AnySupabaseClient
+  supabase: AnySupabaseClient,
+  req: Request
 ): Promise<Response> {
   console.log("[system/cleanup-expired] Running cleanup tasks");
 
@@ -559,12 +559,13 @@ async function handleCleanupExpired(
         timestamp: new Date().toISOString(),
       },
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleCleanupRateLimits(
-  supabase: AnySupabaseClient
+  supabase: AnySupabaseClient,
+  req: Request
 ): Promise<Response> {
   console.log("[system/cleanup_rate_limits] Running rate limits cleanup");
 
@@ -605,12 +606,13 @@ async function handleCleanupRateLimits(
         timestamp: new Date().toISOString(),
       },
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleCheckShadowBans(
-  supabase: AnySupabaseClient
+  supabase: AnySupabaseClient,
+  req: Request
 ): Promise<Response> {
   console.log("[system/check-shadow-bans] Running shadow-ban cleanup");
 
@@ -621,7 +623,7 @@ async function handleCheckShadowBans(
     console.error("[system/check-shadow-bans] Error:", error);
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 
@@ -641,13 +643,14 @@ async function handleCheckShadowBans(
         timestamp: new Date().toISOString(),
       },
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleSendErrorAlert(
   payload: SendErrorAlertRequest,
-  supabase: AnySupabaseClient
+  supabase: AnySupabaseClient,
+  req: Request
 ): Promise<Response> {
   const thresholdPercent = payload.threshold_percent ?? 5;
   const hoursBack = 1; // Check last hour
@@ -716,7 +719,7 @@ async function handleSendErrorAlert(
         timestamp: new Date().toISOString(),
       },
     }),
-    { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { status: 200, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
@@ -727,7 +730,7 @@ async function handleSendErrorAlert(
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   const startTime = Date.now();
@@ -755,7 +758,7 @@ const handler = async (req: Request): Promise<Response> => {
             "send-error-alert"
           ],
         }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 400, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
       );
     }
 
@@ -766,7 +769,7 @@ const handler = async (req: Request): Promise<Response> => {
     switch (action) {
       case "health":
         // Health check doesn't require auth
-        response = handleHealth();
+        response = handleHealth(req);
         break;
 
       case "get-stats": {
@@ -775,16 +778,16 @@ const handler = async (req: Request): Promise<Response> => {
         if (!authResult.authenticated) {
           return new Response(
             JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         if (!authResult.isAdmin) {
           return new Response(
             JSON.stringify({ error: "Admin role required" }),
-            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 403, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
-        response = await handleGetStats(body as GetStatsRequest, supabase);
+        response = await handleGetStats(body as GetStatsRequest, supabase, req);
         break;
       }
 
@@ -794,10 +797,10 @@ const handler = async (req: Request): Promise<Response> => {
         if (!authResult.authenticated || !authResult.userId) {
           return new Response(
             JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
-        response = await handleGetUserQuota(body as GetUserQuotaRequest, supabase, authResult.userId);
+        response = await handleGetUserQuota(body as GetUserQuotaRequest, supabase, authResult.userId, req);
         break;
       }
 
@@ -807,16 +810,16 @@ const handler = async (req: Request): Promise<Response> => {
         if (!authResult.authenticated) {
           return new Response(
             JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         if (!authResult.isAdmin) {
           return new Response(
             JSON.stringify({ error: "Admin role required" }),
-            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 403, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
-        response = await handleGetSystemLogs(body as GetSystemLogsRequest, supabase);
+        response = await handleGetSystemLogs(body as GetSystemLogsRequest, supabase, req);
         break;
       }
 
@@ -826,16 +829,16 @@ const handler = async (req: Request): Promise<Response> => {
         if (!authResult.authenticated) {
           return new Response(
             JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         if (!authResult.isAdmin) {
           return new Response(
             JSON.stringify({ error: "Admin role required" }),
-            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 403, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
-        response = await handleGetErrorRate(body as GetErrorRateRequest, supabase);
+        response = await handleGetErrorRate(body as GetErrorRateRequest, supabase, req);
         break;
       }
 
@@ -849,11 +852,11 @@ const handler = async (req: Request): Promise<Response> => {
           console.warn("[system] cleanup-expired: unauthorized caller");
           return new Response(
             JSON.stringify({ error: "Unauthorized — cron token required" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         console.log("[system] cleanup-expired: cron auth verified");
-        response = await handleCleanupExpired(supabase);
+        response = await handleCleanupExpired(supabase, req);
         break;
       }
 
@@ -866,11 +869,11 @@ const handler = async (req: Request): Promise<Response> => {
           console.warn("[system] cleanup_rate_limits: unauthorized caller");
           return new Response(
             JSON.stringify({ error: "Unauthorized — cron token required" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         console.log("[system] cleanup_rate_limits: cron auth verified");
-        response = await handleCleanupRateLimits(supabase);
+        response = await handleCleanupRateLimits(supabase, req);
         break;
       }
 
@@ -880,16 +883,16 @@ const handler = async (req: Request): Promise<Response> => {
         if (!authResult.authenticated) {
           return new Response(
             JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         if (!authResult.isAdmin) {
           return new Response(
             JSON.stringify({ error: "Admin role required" }),
-            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 403, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
-        response = await handleCheckShadowBans(supabase);
+        response = await handleCheckShadowBans(supabase, req);
         break;
       }
 
@@ -899,16 +902,16 @@ const handler = async (req: Request): Promise<Response> => {
         if (!authResult.authenticated) {
           return new Response(
             JSON.stringify({ error: authResult.error || "Unauthorized" }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 401, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
         if (!authResult.isAdmin) {
           return new Response(
             JSON.stringify({ error: "Admin role required" }),
-            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+            { status: 403, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
           );
         }
-        response = await handleSendErrorAlert(body as SendErrorAlertRequest, supabase);
+        response = await handleSendErrorAlert(body as SendErrorAlertRequest, supabase, req);
         break;
       }
 
@@ -929,7 +932,7 @@ const handler = async (req: Request): Promise<Response> => {
               "send-error-alert"
             ],
           }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 400, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
         );
     }
 
@@ -943,7 +946,7 @@ const handler = async (req: Request): Promise<Response> => {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(
       JSON.stringify({ success: false, error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 };

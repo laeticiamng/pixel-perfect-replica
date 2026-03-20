@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.93.2";
-import { authenticateRequest, isAuthError, requireAdmin, corsHeaders } from "../_shared/auth.ts";
+import { authenticateRequest, isAuthError, requireAdmin, getCorsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
@@ -22,7 +22,7 @@ const scrapeEventsSchema = z.object({
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -36,13 +36,13 @@ serve(async (req) => {
 
     // Rate limit: 5 scrape requests per minute
     const rl = checkRateLimit(`scrape-events:${auth.userId}`, { maxRequests: 5, windowMs: 60_000 });
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!, req);
 
     const FIRECRAWL_API_KEY = Deno.env.get("FIRECRAWL_API_KEY");
     if (!FIRECRAWL_API_KEY) throw new Error("FIRECRAWL_API_KEY is not configured");
 
     const rawBody = await req.json();
-    const parsed = validateBody(rawBody, scrapeEventsSchema);
+    const parsed = validateBody(rawBody, scrapeEventsSchema, req);
     if (isValidationError(parsed)) return parsed;
 
     const { university_url, city } = parsed;
@@ -202,14 +202,14 @@ Si aucun événement n'est trouvé, retourne [].`,
         events_imported: importedEvents.length,
         events: importedEvents,
       }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("[scrape-events] Error:", error);
     const msg = error instanceof Error ? error.message : "Unknown error";
     return new Response(
       JSON.stringify({ success: false, error: msg }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 });

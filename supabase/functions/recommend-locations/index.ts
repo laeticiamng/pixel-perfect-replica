@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
+import { authenticateRequest, isAuthError, getCorsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
@@ -21,7 +21,7 @@ const recommendSchema = z.object({
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -32,13 +32,13 @@ serve(async (req) => {
 
     // Rate limit: 10 requests per minute
     const rl = checkRateLimit(`recommend-locations:${auth.userId}`, { maxRequests: 10, windowMs: 60_000 });
-    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter!, req);
 
     const PERPLEXITY_API_KEY = Deno.env.get("PERPLEXITY_API_KEY");
     if (!PERPLEXITY_API_KEY) throw new Error("PERPLEXITY_API_KEY is not configured");
 
     const rawBody = await req.json();
-    const parsed = validateBody(rawBody, recommendSchema);
+    const parsed = validateBody(rawBody, recommendSchema, req);
     if (isValidationError(parsed)) return parsed;
 
     const { activity, city, context } = parsed;
@@ -86,7 +86,7 @@ Retourne UNIQUEMENT le JSON, pas de markdown.`,
       if (response.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded, please try again later" }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 429, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
         );
       }
       const errorText = await response.text();
@@ -120,14 +120,14 @@ Retourne UNIQUEMENT le JSON, pas de markdown.`,
 
     return new Response(
       JSON.stringify({ success: true, activity, city, recommendations, citations }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("[recommend-locations] Error:", error);
     const msg = error instanceof Error ? error.message : "Unknown error";
     return new Response(
       JSON.stringify({ success: false, error: msg }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 });

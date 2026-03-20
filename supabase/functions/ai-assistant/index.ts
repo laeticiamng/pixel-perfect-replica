@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { authenticateRequest, isAuthError, corsHeaders } from "../_shared/auth.ts";
+import { authenticateRequest, isAuthError, getCorsHeaders } from "../_shared/auth.ts";
 import { checkRateLimit, rateLimitResponse } from "../_shared/ratelimit.ts";
 import { z, validateBody, isValidationError } from "../_shared/validation.ts";
 
@@ -35,7 +35,7 @@ const RATE_LIMITS: Record<string, { maxRequests: number; windowMs: number }> = {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: getCorsHeaders(req) });
   }
 
   try {
@@ -52,7 +52,7 @@ serve(async (req) => {
     if (action !== "icebreaker" && action !== "session-recommendations") {
       return new Response(
         JSON.stringify({ error: "Unknown action" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 400, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
       );
     }
 
@@ -61,23 +61,23 @@ serve(async (req) => {
     const rl = checkRateLimit(`ai-assistant-${action}:${auth.userId}`, config);
     if (!rl.allowed) {
       console.log(`[ai-assistant] Rate limit exceeded for user ${auth.userId}, action: ${action}`);
-      return rateLimitResponse(rl.retryAfter!);
+      return rateLimitResponse(rl.retryAfter!, req);
     }
 
     if (action === "icebreaker") {
-      const parsed = validateBody(rawBody, icebreakerSchema);
+      const parsed = validateBody(rawBody, icebreakerSchema, req);
       if (isValidationError(parsed)) return parsed;
-      return await handleIcebreaker(parsed, LOVABLE_API_KEY);
+      return await handleIcebreaker(parsed, LOVABLE_API_KEY, req);
     } else {
-      const parsed = validateBody(rawBody, sessionRecommendationSchema);
+      const parsed = validateBody(rawBody, sessionRecommendationSchema, req);
       if (isValidationError(parsed)) return parsed;
-      return await handleSessionRecommendations(parsed, LOVABLE_API_KEY);
+      return await handleSessionRecommendations(parsed, LOVABLE_API_KEY, req);
     }
   } catch (error) {
     console.error("[ai-assistant] Error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 });
@@ -106,7 +106,7 @@ interface SessionRecommendationInput {
   };
 }
 
-async function handleIcebreaker(request: IcebreakerInput, apiKey: string): Promise<Response> {
+async function handleIcebreaker(request: IcebreakerInput, apiKey: string, req: Request): Promise<Response> {
   const { activity, context, language = "fr" } = request;
 
   const activityLabels: Record<string, string> = {
@@ -164,13 +164,13 @@ Réponds uniquement avec un JSON array de 3 strings, rien d'autre.`;
     if (response.status === 429) {
       return new Response(
         JSON.stringify({ error: "Rate limit exceeded" }),
-        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 429, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
       );
     }
 
     return new Response(
       JSON.stringify({ icebreakers: getStaticIcebreakers(activity), source: "fallback" }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 
@@ -184,7 +184,7 @@ Réponds uniquement avec un JSON array de 3 strings, rien d'autre.`;
       console.log("[ai-assistant] Generated icebreakers:", icebreakers);
       return new Response(
         JSON.stringify({ icebreakers, source: "ai" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
       );
     }
   } catch (parseError) {
@@ -193,13 +193,14 @@ Réponds uniquement avec un JSON array de 3 strings, rien d'autre.`;
 
   return new Response(
     JSON.stringify({ icebreakers: getStaticIcebreakers(activity), source: "fallback" }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 
 async function handleSessionRecommendations(
   request: SessionRecommendationInput,
-  apiKey: string
+  apiKey: string,
+  req: Request
 ): Promise<Response> {
   const { preferences, history } = request;
 
@@ -254,7 +255,7 @@ Génère 3 recommandations personnalisées.`;
     console.error("[ai-assistant] Session recommendations error:", response.status);
     return new Response(
       JSON.stringify({ error: "Failed to generate recommendations" }),
-      { status: response.status === 429 ? 429 : 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: response.status === 429 ? 429 : 500, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
 
@@ -266,7 +267,7 @@ Génère 3 recommandations personnalisées.`;
     if (jsonMatch) {
       const recommendations = JSON.parse(jsonMatch[0]);
       return new Response(JSON.stringify(recommendations), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
       });
     }
   } catch (parseError) {
@@ -281,7 +282,7 @@ Génère 3 recommandations personnalisées.`;
       ],
       motivation: "Chaque session est une opportunité de rencontre !",
     }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    { headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
   );
 }
 

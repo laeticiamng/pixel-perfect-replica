@@ -1,5 +1,5 @@
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
-import { corsHeaders } from "./auth.ts";
+import { getCorsHeaders } from "./auth.ts";
 
 export { z };
 
@@ -9,7 +9,8 @@ export { z };
  */
 export function validateBody<T extends z.ZodTypeAny>(
   body: unknown,
-  schema: T
+  schema: T,
+  req?: Request
 ): z.infer<T> | Response {
   const result = schema.safeParse(body);
   if (!result.success) {
@@ -20,7 +21,7 @@ export function validateBody<T extends z.ZodTypeAny>(
     console.warn("[validation] Body rejected:", JSON.stringify(errors));
     return new Response(
       JSON.stringify({ error: "Invalid request payload", details: errors }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 400, headers: { ...getCorsHeaders(req), "Content-Type": "application/json" } }
     );
   }
   return result.data;
