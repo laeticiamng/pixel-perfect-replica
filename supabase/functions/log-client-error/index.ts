@@ -89,6 +89,6 @@ serve(async (req: Request) => {
 });
 
 function serve(handler: (req: Request) => Promise<Response>) {
-  // @ts-ignore Deno.serve
+  // @ts-expect-error Deno global is provided in the Supabase Edge runtime
   Deno.serve(handler);
 }

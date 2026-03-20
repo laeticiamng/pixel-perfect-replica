@@ -264,6 +264,53 @@
   .shadow-strong {
     box-shadow: var(--shadow-strong);
   }
+
+  .premium-3d-card {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+    box-shadow: 0 22px 50px -28px hsl(var(--midnight) / 0.95);
+  }
+
+  .premium-3d-card::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      linear-gradient(135deg, hsl(var(--coral) / 0.18), transparent 42%),
+      linear-gradient(315deg, hsl(var(--purple-accent) / 0.16), transparent 38%);
+    opacity: 0.9;
+  }
+
+  .premium-3d-card:hover {
+    transform: translateY(-4px) rotateX(0.4deg) rotateY(-0.6deg);
+    border-color: hsl(var(--coral) / 0.3);
+    box-shadow:
+      0 26px 60px -30px hsl(var(--midnight) / 1),
+      0 10px 26px -18px hsl(var(--coral) / 0.7);
+  }
+
+  .premium-3d-surface {
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(18px);
+  }
+
+  .premium-3d-grid {
+    perspective: 1200px;
+  }
+
+  .light .premium-3d-card {
+    box-shadow: 0 18px 40px -28px hsl(220 25% 15% / 0.22);
+  }
+
+  .light .premium-3d-card:hover {
+    box-shadow:
+      0 20px 50px -30px hsl(220 25% 15% / 0.25),
+      0 10px 24px -18px hsl(var(--coral) / 0.25);
+  }
   
   /* Signal colors */
   .text-signal-green {
