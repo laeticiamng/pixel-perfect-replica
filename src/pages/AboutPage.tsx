@@ -127,7 +127,7 @@ export default function AboutPage() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             {t('about.subtitle')}
           </p>
-          {/* NOT a dating app badge */}
+          {/* Activity-based badge */}
           <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-coral/30 bg-coral/5 text-sm font-medium text-coral">
             <Shield className="w-4 h-4" />
             {t('about.notDatingApp')}
