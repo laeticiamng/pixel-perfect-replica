@@ -90,12 +90,22 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         </Button>
       </motion.div>
 
+      {/* Signup expectation */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="mt-5 text-xs text-muted-foreground/70"
+      >
+        {t('landing.signupExpectation')}
+      </motion.p>
+
       {/* Discrete login link */}
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="mt-4 text-sm text-muted-foreground"
+        className="mt-2 text-sm text-muted-foreground"
       >
         {t('landing.alreadyAccount')}{' '}
         <button

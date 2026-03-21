@@ -70,20 +70,23 @@ const HowItWorksSection = forwardRef<HTMLElement>(function HowItWorksSection(_pr
   );
 });
 
-// Features Grid Section - Bento grid layout
+// Combined Features + Use Cases section
 const FeaturesSection = forwardRef<HTMLElement>(function FeaturesSection(_props, ref) {
   const { t } = useTranslation();
-  
+
   return (
     <section ref={ref} className="py-16 px-6 relative z-10">
       <div className="max-w-5xl mx-auto">
         <RevealText>
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             {t('landing.whyItChanges')}
           </h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-lg mx-auto">
+            {t('landing.worksEverywhere')}
+          </p>
         </RevealText>
-        
-        <div className="grid md:grid-cols-2 gap-4">
+
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
           <FeatureCard
             icon={Users}
             title={t('landing.fightLoneliness')}

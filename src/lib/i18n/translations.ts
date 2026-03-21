@@ -337,6 +337,7 @@ export const translations = {
     allRightsReserved: { en: 'All rights reserved.', fr: 'Tous droits réservés.', de: 'Alle Rechte vorbehalten.' },
     seeHowItWorks: { en: 'See how it works', fr: 'Voir comment ça marche', de: 'So funktioniert\'s' },
     betaTester: { en: 'Beta tester', fr: 'Bêta-testeur', de: 'Beta-Tester' },
+    signupExpectation: { en: '30 seconds to sign up — then see who\'s around you', fr: '30 secondes pour s\'inscrire — puis vois qui est autour de toi', de: '30 Sekunden zur Anmeldung — dann sieh, wer in deiner Nähe ist' },
     radarMe: { en: 'Me', fr: 'Moi', de: 'Ich' },
     erasmusBadge: { en: 'Erasmus+ Ready', fr: 'Prêt pour Erasmus+', de: 'Erasmus+ Ready' },
     erasmusTitle: { en: 'Also for international students', fr: 'Aussi pour les étudiants internationaux', de: 'Auch für internationale Studierende' },
