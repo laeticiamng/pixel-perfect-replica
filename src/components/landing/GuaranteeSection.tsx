@@ -34,16 +34,17 @@ export const GuaranteeSection = forwardRef<HTMLElement>(function GuaranteeSectio
         <div className="grid md:grid-cols-3 gap-4">
           {guarantees.map((item, i) => (
             <RevealText key={i} delay={i * 0.1}>
-              <motion.div 
-                className="group relative p-6 rounded-2xl border border-border/40 bg-card/40 backdrop-blur-md text-center overflow-hidden hover:border-coral/20 transition-all duration-300"
-                whileHover={{ y: -4 }}
+              <motion.div
+                className="group relative p-6 rounded-2xl border border-border/40 bg-card/40 backdrop-blur-md text-center overflow-hidden hover:border-signal-green/30 transition-all duration-300"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.25 }}
               >
                 {/* Top shine */}
-                <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent" />
-                
+                <div className="absolute top-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-signal-green/20 to-transparent" />
+
                 <div className="relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-coral/15 to-coral/5 flex items-center justify-center mx-auto mb-4 border border-coral/10">
-                    <item.icon className="h-7 w-7 text-coral" />
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-signal-green/15 to-signal-green/5 flex items-center justify-center mx-auto mb-4 border border-signal-green/10">
+                    <item.icon className="h-7 w-7 text-signal-green" />
                   </div>
                   <h3 className="font-bold text-foreground mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>

@@ -231,8 +231,8 @@ export default function PremiumPage() {
     '@type': 'Product',
     name: 'NEARVITY',
     description: locale === 'fr'
-      ? 'Réseau social IRL pour étudiants. Plans gratuit, rencontre à l\'unité et premium.'
-      : 'IRL social network for students. Free, pay-per-meetup and premium plans.',
+      ? 'App de rencontres spontanées entre étudiants. Plans gratuit, rencontre à l\'unité et premium.'
+      : 'Spontaneous student meetup app. Free, pay-per-meetup and premium plans.',
     brand: { '@type': 'Brand', name: 'NEARVITY' },
     offers: [
       { '@type': 'Offer', name: 'Free', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },

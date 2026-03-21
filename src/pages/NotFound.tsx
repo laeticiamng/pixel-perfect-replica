@@ -31,12 +31,19 @@ const NotFound = () => {
         <p className="mb-8 text-muted-foreground">
           {t('notFound.description')}
         </p>
-        <Button asChild className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl px-6">
-          <Link to="/">
-            <Home className="h-4 w-4 mr-2" />
-            {t('notFound.backHome')}
-          </Link>
-        </Button>
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          <Button asChild className="bg-coral hover:bg-coral-dark text-primary-foreground rounded-xl px-6">
+            <Link to="/">
+              <Home className="h-4 w-4 mr-2" />
+              {t('notFound.backHome')}
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="rounded-xl px-6 border-border hover:bg-muted">
+            <Link to="/onboarding">
+              {t('notFound.discoverApp')}
+            </Link>
+          </Button>
+        </div>
       </div>
     </PageLayout>
     </>

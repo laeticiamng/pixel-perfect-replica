@@ -16,20 +16,15 @@ export const UseCasesSection = forwardRef<HTMLElement>(function UseCasesSection(
   ];
 
   return (
-    <section ref={ref} className="py-16 px-6 relative z-10 overflow-hidden">
+    <section ref={ref} className="pb-16 pt-0 px-6 relative z-10 overflow-hidden">
       <div className="max-w-5xl mx-auto">
-        <RevealText>
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
-            {t('landing.worksEverywhere')}
-          </h2>
-        </RevealText>
-        
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {useCases.map((item, i) => (
             <RevealText key={i} delay={i * 0.1}>
-              <motion.div 
+              <motion.div
                 className="group relative p-6 rounded-2xl border border-border/40 bg-card/40 backdrop-blur-md text-center hover:border-coral/30 transition-all duration-300 overflow-hidden"
-                whileHover={{ y: -4 }}
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.25 }}
               >
                 {/* Gradient background */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />

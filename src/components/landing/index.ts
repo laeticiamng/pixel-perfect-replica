@@ -18,3 +18,4 @@ export { PricingPreviewSection } from './PricingPreviewSection';
 export { LandingTestimonialsSection } from './TestimonialsSection';
 export { TrustedBySection } from './TrustedBySection';
 export { ErasmusFeaturesSection } from './ErasmusFeaturesSection';
+export { ComparisonSection } from './ComparisonSection';

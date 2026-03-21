@@ -62,14 +62,14 @@ export default function AboutPage() {
       name: 'EmotionsCare SASU',
       brand: { '@type': 'Brand', name: 'NEARVITY' },
       description: locale === 'fr'
-        ? 'Le premier réseau social 100% réel. Connecte des intentions réelles pour des rencontres IRL basées sur les activités.'
-        : 'The first 100% real social network. Connects real intentions for IRL activity-based meetings.',
+        ? 'L\'app des rencontres spontanées entre étudiants. Connecte des intentions réelles pour des meetups IRL autour d\'activités.'
+        : 'The app for spontaneous meetups between students. Connects real intentions for IRL activity-based meetings.',
       url: SITE_URL,
       foundingDate: '2025',
       foundingLocation: { '@type': 'Place', name: 'France' },
       sameAs: [],
       knowsAbout: [
-        'IRL social networking',
+        'Spontaneous student meetups',
         'Activity-based matching',
         'Student connection platform',
         'Consent-first interactions',
@@ -83,14 +83,14 @@ export default function AboutPage() {
       <Helmet>
         <title>{locale === 'fr' ? 'À propos de NEARVITY — Mission, Équipe & Valeurs' : 'About NEARVITY — Mission, Team & Values'}</title>
         <meta name="description" content={locale === 'fr'
-          ? 'Découvrez la mission de NEARVITY, le premier réseau social 100% réel. Conçu en France par EmotionsCare SASU pour connecter les étudiants IRL.'
-          : 'Discover NEARVITY\'s mission — the first 100% real social network. Built in France by EmotionsCare SASU to connect students IRL.'
+          ? 'Découvrez la mission de NEARVITY — l\'app des rencontres spontanées entre étudiants. Conçue en France par EmotionsCare SASU.'
+          : 'Discover NEARVITY\'s mission — the app for spontaneous meetups between students. Built in France by EmotionsCare SASU.'
         } />
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta property="og:title" content={locale === 'fr' ? 'À propos de NEARVITY — Mission & Valeurs' : 'About NEARVITY — Mission & Values'} />
         <meta property="og:description" content={locale === 'fr'
-          ? 'Le premier réseau social 100% réel, conçu en France par EmotionsCare SASU.'
-          : 'The first 100% real social network, built in France by EmotionsCare SASU.'
+          ? 'L\'app des rencontres spontanées entre étudiants, conçue en France par EmotionsCare SASU.'
+          : 'The app for spontaneous student meetups, built in France by EmotionsCare SASU.'
         } />
         <meta property="og:url" content={`${SITE_URL}/about`} />
         <meta property="og:type" content="website" />
@@ -127,7 +127,7 @@ export default function AboutPage() {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             {t('about.subtitle')}
           </p>
-          {/* NOT a dating app badge */}
+          {/* Activity-based badge */}
           <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-coral/30 bg-coral/5 text-sm font-medium text-coral">
             <Shield className="w-4 h-4" />
             {t('about.notDatingApp')}
@@ -186,7 +186,7 @@ export default function AboutPage() {
           </div>
         </motion.section>
 
-        {/* NOT a dating app callout */}
+        {/* Activity-based meetups callout */}
         <motion.section {...fadeUp(0.25)} className="mb-12">
           <Card className="border-coral/30 bg-coral/5">
             <CardContent className="p-6 sm:p-8 text-center">

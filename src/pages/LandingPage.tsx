@@ -22,6 +22,8 @@ import {
   PricingPreviewSection,
   LandingTestimonialsSection,
   ErasmusFeaturesSection,
+  ComparisonSection,
+  TrustedBySection,
 } from '@/components/landing';
 
 // How It Works — 3 simple steps (replaces old Problem + SignalExplanation)
@@ -35,7 +37,7 @@ const HowItWorksSection = forwardRef<HTMLElement>(function HowItWorksSection(_pr
   ];
 
   return (
-    <section ref={ref} className="py-16 px-6 relative z-10">
+    <section ref={ref} id="how-it-works" className="py-16 px-6 relative z-10 scroll-mt-20">
       <div className="max-w-4xl mx-auto">
         <RevealText>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
@@ -70,20 +72,23 @@ const HowItWorksSection = forwardRef<HTMLElement>(function HowItWorksSection(_pr
   );
 });
 
-// Features Grid Section - Bento grid layout
+// Combined Features + Use Cases section
 const FeaturesSection = forwardRef<HTMLElement>(function FeaturesSection(_props, ref) {
   const { t } = useTranslation();
-  
+
   return (
     <section ref={ref} className="py-16 px-6 relative z-10">
       <div className="max-w-5xl mx-auto">
         <RevealText>
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             {t('landing.whyItChanges')}
           </h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-lg mx-auto">
+            {t('landing.worksEverywhere')}
+          </p>
         </RevealText>
-        
-        <div className="grid md:grid-cols-2 gap-4">
+
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
           <FeatureCard
             icon={Users}
             title={t('landing.fightLoneliness')}
@@ -139,8 +144,8 @@ export default function LandingPage() {
     applicationCategory: 'SocialNetworkingApplication',
     operatingSystem: 'Web',
     description: locale === 'fr'
-      ? 'Le premier réseau social 100% IRL. Active ton signal, trouve des étudiants qui veulent aussi se rencontrer.'
-      : 'The first 100% IRL social network. Activate your signal, find students who also want to meet.',
+      ? 'L\'app des rencontres spontanées entre étudiants. Active ton signal, vois qui est dispo près de toi, retrouve-toi en vrai.'
+      : 'The app for spontaneous meetups between students. Activate your signal, see who\'s available near you, meet up in real life.',
     offers: [
       { '@type': 'Offer', price: '0', priceCurrency: 'EUR', name: 'Free' },
       { '@type': 'Offer', price: '0.99', priceCurrency: 'EUR', name: 'Session unitaire' },
@@ -160,8 +165,8 @@ export default function LandingPage() {
     alternateName: 'Nearvity',
     url: SITE_URL,
     description: locale === 'fr'
-      ? 'Le premier réseau social 100% IRL pour étudiants.'
-      : 'The first 100% IRL social network for students.',
+      ? 'L\'app des rencontres spontanées entre étudiants. Retrouve-toi en vrai, en quelques minutes.'
+      : 'The app for spontaneous student meetups. Meet up in real life, in minutes.',
     inLanguage: [locale === 'fr' ? 'fr-FR' : 'en'],
     publisher: {
       '@type': 'Organization',
@@ -172,18 +177,22 @@ export default function LandingPage() {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
+      {/* Skip to content — accessibility */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-coral focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
+        {t('a11y.skipToContent')}
+      </a>
       <Helmet>
-        <title>{locale === 'fr' ? 'NEARVITY — Le réseau social 100% IRL pour étudiants' : 'NEARVITY — The 100% IRL social network for students'}</title>
+        <title>{locale === 'fr' ? 'NEARVITY — Ne mange, révise ou fais du sport plus jamais seul' : 'NEARVITY — Never eat, study or work out alone again'}</title>
         <meta name="description" content={locale === 'fr'
-          ? 'NEARVITY est le premier réseau social IRL. Active ton signal, vois qui est ouvert à l\'interaction autour de toi. Rencontres spontanées entre étudiants. Gratuit.'
-          : 'NEARVITY is the first IRL social network. Activate your signal, see who is open to interact around you. Spontaneous student meetups. Free.'
+          ? 'Active ton signal, vois qui est dispo près de toi, retrouve-toi en vrai. L\'app des rencontres spontanées entre étudiants. Gratuit.'
+          : 'Activate your signal, see who\'s available near you, meet up in real life. The app for spontaneous meetups between students. Free.'
         } />
         <link rel="canonical" href={`${SITE_URL}/`} />
         <meta property="og:url" content={`${SITE_URL}/`} />
-        <meta property="og:title" content={locale === 'fr' ? 'NEARVITY — Le réseau social 100% IRL pour étudiants' : 'NEARVITY — The 100% IRL social network for students'} />
+        <meta property="og:title" content={locale === 'fr' ? 'NEARVITY — L\'app des rencontres spontanées entre étudiants' : 'NEARVITY — The app for spontaneous meetups between students'} />
         <meta property="og:description" content={locale === 'fr'
-          ? 'Vois qui est ouvert à l\'interaction autour de toi. Rencontres spontanées IRL entre étudiants. Gratuit.'
-          : 'See who is open to interact around you. Spontaneous IRL student meetups. Free.'
+          ? 'Active ton signal, vois qui est dispo autour de toi. Rencontres IRL entre étudiants en quelques minutes. Gratuit.'
+          : 'Activate your signal, see who\'s available around you. IRL student meetups in minutes. Free.'
         } />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={`${SITE_URL}/og-image.png`} />
@@ -191,25 +200,38 @@ export default function LandingPage() {
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="NEARVITY" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={locale === 'fr' ? 'NEARVITY — Réseau social IRL' : 'NEARVITY — IRL Social Network'} />
+        <meta name="twitter:title" content={locale === 'fr' ? 'NEARVITY — L\'app des rencontres spontanées entre étudiants' : 'NEARVITY — Spontaneous student meetups, IRL'} />
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         <script type="application/ld+json">{JSON.stringify(jsonLdApp)}</script>
         <script type="application/ld+json">{JSON.stringify(jsonLdWebSite)}</script>
       </Helmet>
       <FloatingOrbs scrollProgress={scrollYProgress} />
       <LandingHeader />
-      <main>
+      <main id="main-content" role="main">
         <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
-        <AppPreviewSection />
         <SocialProofBar />
         <HowItWorksSection />
-        <GuaranteeSection />
+
+        {/* Before/After comparison */}
+        <section className="py-12 px-6 relative z-10">
+          <div className="max-w-3xl mx-auto">
+            <RevealText>
+              <p className="text-center text-muted-foreground mb-2 text-sm">{t('landing.weConnectIntentions')}</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">{t('landing.weConnectIntentions2')}</h2>
+            </RevealText>
+            <ComparisonSection />
+          </div>
+        </section>
+
+        <AppPreviewSection />
         <FeaturesSection />
         <UseCasesSection />
+        <GuaranteeSection />
         <LandingTestimonialsSection />
-        <ErasmusFeaturesSection />
         <PricingPreviewSection />
+        <TrustedBySection />
         <FinalCTASection />
+        <ErasmusFeaturesSection />
       </main>
       <LandingFooter />
     </div>
