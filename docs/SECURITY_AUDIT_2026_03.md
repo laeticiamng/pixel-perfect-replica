@@ -84,13 +84,16 @@ All functions verified for: authentication, rate limiting, input validation, COR
 
 ### Frontend Security
 
-- **XSS:** DOMPurify used for sanitization (`src/lib/sanitize.ts`). Only `dangerouslySetInnerHTML` usage is in shadcn chart.tsx for CSS generation (safe — no user input).
+- **XSS:** DOMPurify used for sanitization (`src/lib/sanitize.ts`). Only `dangerouslySetInnerHTML` usage is in shadcn chart.tsx for CSS generation (safe — app config values, not user input).
 - **eval/Function:** None found in source code
-- **Hardcoded secrets:** None found. Supabase keys properly loaded from environment variables.
-- **localStorage:** Used for Zustand persistence (settings, locale) — no sensitive tokens stored directly
-- **Auth tokens:** Managed by Supabase SDK (not manually stored in localStorage)
-- **Input validation:** Zod schemas for auth forms (`src/lib/validation.ts`)
-- **Error reporting:** `errorReporter.ts` sends structured errors without sensitive data
+- **Hardcoded secrets:** None found. Supabase keys properly loaded from environment variables. Only `VITE_SUPABASE_PUBLISHABLE_KEY` used (no service role key exposed).
+- **Auth tokens:** Managed by Supabase SDK via localStorage with `persistSession: true`. This is Supabase's default — mitigated by strong XSS protection (DOMPurify, no eval, no unescaped user HTML).
+- **localStorage:** Used for Zustand persistence (settings, locale) and Supabase auth.
+- **Input validation:** Zod schemas for auth forms (`src/lib/validation.ts`), dangerous protocols blocked in sanitize.ts.
+- **Error reporting:** `errorReporter.ts` sends structured errors only in production, without sensitive data.
+- **Diagnostics page:** Gated by `ProtectedRoute` (auth required) + localStorage debug flag. Exposes only non-sensitive diagnostic info (latency, logs) to authenticated users. Low risk.
+- **console.warn/error:** Some components log API error messages to console (e.g., `EventAttendeesPreview.tsx:29`, `useEvents.ts:81`). Low risk — consider using structured logger instead.
+- **Password change:** Properly validates current password via re-authentication before allowing updates.
 
 ---
 
@@ -101,6 +104,8 @@ All functions verified for: authentication, rate limiting, input validation, COR
 3. **`system` function:** Consider migrating user-initiated admin actions to use shared `authenticateRequest()` for consistency
 4. **`notifications` function:** Consider using JWT validation instead of token string comparison for admin auth
 5. **Log centralization:** External log aggregation service for production monitoring
+6. **Content Security Policy:** Add CSP headers to further mitigate XSS impact
+7. **Console logging:** Replace `console.error`/`console.warn` in production components with structured `logger` calls
 
 ---
 
