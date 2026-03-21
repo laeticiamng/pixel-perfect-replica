@@ -62,14 +62,14 @@ export default function AboutPage() {
       name: 'EmotionsCare SASU',
       brand: { '@type': 'Brand', name: 'NEARVITY' },
       description: locale === 'fr'
-        ? 'Le premier réseau social 100% réel. Connecte des intentions réelles pour des rencontres IRL basées sur les activités.'
-        : 'The first 100% real social network. Connects real intentions for IRL activity-based meetings.',
+        ? 'L\'app des rencontres spontanées entre étudiants. Connecte des intentions réelles pour des meetups IRL autour d\'activités.'
+        : 'The app for spontaneous meetups between students. Connects real intentions for IRL activity-based meetings.',
       url: SITE_URL,
       foundingDate: '2025',
       foundingLocation: { '@type': 'Place', name: 'France' },
       sameAs: [],
       knowsAbout: [
-        'IRL social networking',
+        'Spontaneous student meetups',
         'Activity-based matching',
         'Student connection platform',
         'Consent-first interactions',
@@ -89,8 +89,8 @@ export default function AboutPage() {
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta property="og:title" content={locale === 'fr' ? 'À propos de NEARVITY — Mission & Valeurs' : 'About NEARVITY — Mission & Values'} />
         <meta property="og:description" content={locale === 'fr'
-          ? 'Le premier réseau social 100% réel, conçu en France par EmotionsCare SASU.'
-          : 'The first 100% real social network, built in France by EmotionsCare SASU.'
+          ? 'L\'app des rencontres spontanées entre étudiants, conçue en France par EmotionsCare SASU.'
+          : 'The app for spontaneous student meetups, built in France by EmotionsCare SASU.'
         } />
         <meta property="og:url" content={`${SITE_URL}/about`} />
         <meta property="og:type" content="website" />
@@ -186,7 +186,7 @@ export default function AboutPage() {
           </div>
         </motion.section>
 
-        {/* NOT a dating app callout */}
+        {/* Activity-based meetups callout */}
         <motion.section {...fadeUp(0.25)} className="mb-12">
           <Card className="border-coral/30 bg-coral/5">
             <CardContent className="p-6 sm:p-8 text-center">

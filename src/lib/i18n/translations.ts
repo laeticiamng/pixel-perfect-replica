@@ -775,7 +775,7 @@ export const translations = {
   // About page
   about: {
     title: { en: 'About NEARVITY', fr: 'À propos de NEARVITY', de: 'Über NEARVITY' },
-    subtitle: { en: 'The first 100% real social network — built to connect intentions, not just profiles.', fr: 'Le premier réseau social 100% réel — conçu pour connecter des intentions, pas des profils.', de: 'Das erste 100% echte soziale Netzwerk — gebaut, um Absichten zu verbinden, nicht nur Profile.' },
+    subtitle: { en: 'The app that connects students who want the same thing, at the same time, nearby.', fr: 'L\'app qui connecte les étudiants qui veulent la même chose, au même moment, à côté.', de: 'Die App, die Studierende verbindet, die das Gleiche wollen, zur gleichen Zeit, in der Nähe.' },
     missionTitle: { en: 'Our Mission', fr: 'Notre Mission', de: 'Unsere Mission' },
     missionText: { en: 'NEARVITY connects real intentions, not just profiles. We believe that the best connections happen when two people are both open to interaction, at the same place, at the same time. Our mission is to fight loneliness and make genuine connections easier, by providing mutual consent before any approach.', fr: 'NEARVITY connecte des intentions réelles, pas seulement des profils. Nous croyons que les meilleures connexions se font quand deux personnes sont toutes les deux ouvertes à l\'interaction, au même endroit, au même moment. Notre mission est de lutter contre la solitude et de faciliter les connexions authentiques, en garantissant un consentement mutuel avant toute approche.', de: 'NEARVITY verbindet echte Absichten, nicht nur Profile. Wir glauben, dass die besten Verbindungen entstehen, wenn zwei Menschen gleichzeitig am gleichen Ort offen für Interaktion sind. Unsere Mission ist es, Einsamkeit zu bekämpfen und echte Verbindungen zu erleichtern, durch gegenseitiges Einverständnis vor jeder Annäherung.' },
     teamTitle: { en: 'The Team', fr: 'L\'Équipe', de: 'Das Team' },
@@ -809,7 +809,7 @@ export const translations = {
     figGDPR: { en: 'GDPR Compliant', fr: 'Conforme RGPD', de: 'DSGVO-konform' },
     figMadeIn: { en: 'Made in France', fr: 'Conçu en France', de: 'Made in France' },
     notDatingApp: { en: '100% IRL — activity-based meetups', fr: '100% IRL — rencontres autour d\'activités', de: '100% IRL — aktivitätsbasierte Treffen' },
-    notDatingDesc: { en: 'NEARVITY is designed exclusively for platonic, activity-based connections. Meet to study, eat, do sports, or just talk — never to date.', fr: 'NEARVITY est conçu exclusivement pour des connexions platoniques et basées sur des activités. Se retrouver pour réviser, manger, faire du sport ou discuter — jamais pour draguer.', de: 'NEARVITY ist ausschließlich für platonische, aktivitätsbasierte Verbindungen gedacht. Treffen zum Lernen, Essen, Sport treiben oder einfach Reden — nie zum Daten.' },
+    notDatingDesc: { en: 'Eat together, study together, work out together, or just chat. NEARVITY is built around shared activities — you choose what you want to do, and we connect you with someone who wants the same thing.', fr: 'Manger ensemble, réviser ensemble, faire du sport ensemble, ou juste discuter. NEARVITY est construit autour d\'activités partagées — tu choisis ce que tu veux faire, et on te connecte avec quelqu\'un qui veut la même chose.', de: 'Zusammen essen, zusammen lernen, zusammen Sport machen, oder einfach reden. NEARVITY basiert auf gemeinsamen Aktivitäten — du wählst, was du machen willst, und wir verbinden dich mit jemandem, der das Gleiche will.' },
     founderRole: { en: 'Founder & CEO', fr: 'Fondateur & CEO', de: 'Gründer & CEO' },
     techLead: { en: 'AI & Product', fr: 'IA & Produit', de: 'KI & Produkt' },
     madeWithLove: { en: 'Made with ❤️ in France', fr: 'Fait avec ❤️ en France', de: 'Made with ❤️ in France' },
@@ -1304,7 +1304,7 @@ export const translations = {
 
   // Share
   share: {
-    title: { en: 'NEARVITY - The first 100% real social network', fr: 'NEARVITY - Le premier réseau social 100% réel', de: 'NEARVITY - Das erste 100% echte soziale Netzwerk' },
+    title: { en: 'NEARVITY - Spontaneous meetups between students', fr: 'NEARVITY - Rencontres spontanées entre étudiants', de: 'NEARVITY - Spontane Treffen zwischen Studierenden' },
     text: { en: 'Join me on NEARVITY for spontaneous real-life meetups!', fr: 'Rejoignez-moi sur NEARVITY pour des rencontres spontanées en vrai !', de: 'Komm zu NEARVITY für spontane Treffen im echten Leben!' },
   },
 

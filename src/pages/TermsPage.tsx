@@ -14,8 +14,8 @@ export default function TermsPage() {
       <Helmet>
         <title>{locale === 'fr' ? 'Conditions Générales d\'Utilisation — NEARVITY' : 'Terms of Service — NEARVITY'}</title>
         <meta name="description" content={locale === 'fr'
-          ? 'Conditions générales d\'utilisation de NEARVITY, le réseau social IRL. Règles d\'utilisation, politique de confidentialité, droits RGPD.'
-          : 'NEARVITY terms of service — the IRL social network. Usage rules, privacy policy, GDPR rights.'
+          ? 'Conditions générales d\'utilisation de NEARVITY, l\'app de rencontres spontanées entre étudiants. Règles, confidentialité, droits RGPD.'
+          : 'NEARVITY terms of service — the app for spontaneous student meetups. Usage rules, privacy, GDPR rights.'
         } />
         <link rel="canonical" href={`${SITE_URL}/terms`} />
         <meta property="og:title" content={locale === 'fr' ? 'CGU — NEARVITY' : 'Terms — NEARVITY'} />

@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
         registerType: "autoUpdate",
         includeAssets: ["favicon.ico", "robots.txt", "nearvity-logo.png"],
         manifest: {
-          name: "NEARVITY - Le premier réseau social 100% réel",
+          name: "NEARVITY - Rencontres spontanées entre étudiants",
           short_name: "NEARVITY",
           description: "Facilite les rencontres IRL. Des vraies personnes, prêtes à se retrouver.",
           theme_color: "#0f0f1a",
