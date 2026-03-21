@@ -83,8 +83,8 @@ export default function AboutPage() {
       <Helmet>
         <title>{locale === 'fr' ? 'À propos de NEARVITY — Mission, Équipe & Valeurs' : 'About NEARVITY — Mission, Team & Values'}</title>
         <meta name="description" content={locale === 'fr'
-          ? 'Découvrez la mission de NEARVITY, le premier réseau social 100% réel. Conçu en France par EmotionsCare SASU pour connecter les étudiants IRL.'
-          : 'Discover NEARVITY\'s mission — the first 100% real social network. Built in France by EmotionsCare SASU to connect students IRL.'
+          ? 'Découvrez la mission de NEARVITY — l\'app des rencontres spontanées entre étudiants. Conçue en France par EmotionsCare SASU.'
+          : 'Discover NEARVITY\'s mission — the app for spontaneous meetups between students. Built in France by EmotionsCare SASU.'
         } />
         <link rel="canonical" href={`${SITE_URL}/about`} />
         <meta property="og:title" content={locale === 'fr' ? 'À propos de NEARVITY — Mission & Valeurs' : 'About NEARVITY — Mission & Values'} />
