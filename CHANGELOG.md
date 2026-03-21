@@ -153,6 +153,6 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 ---
 
 <p align="center">
-  <strong>🟢 NEARVITY</strong> — Le premier réseau social 100% réel<br>
+  <strong>🟢 NEARVITY</strong> — L'app des rencontres spontanées entre étudiants<br>
   <em>Fait avec ❤️ in France par EmotionsCare Sasu</em>
 </p>

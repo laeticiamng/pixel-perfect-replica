@@ -23,6 +23,7 @@ import {
   LandingTestimonialsSection,
   ErasmusFeaturesSection,
   ComparisonSection,
+  TrustedBySection,
 } from '@/components/landing';
 
 // How It Works — 3 simple steps (replaces old Problem + SignalExplanation)
@@ -176,6 +177,10 @@ export default function LandingPage() {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
+      {/* Skip to content — accessibility */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-coral focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
+        {t('a11y.skipToContent')}
+      </a>
       <Helmet>
         <title>{locale === 'fr' ? 'NEARVITY — Ne mange, révise ou fais du sport plus jamais seul' : 'NEARVITY — Never eat, study or work out alone again'}</title>
         <meta name="description" content={locale === 'fr'
@@ -202,7 +207,7 @@ export default function LandingPage() {
       </Helmet>
       <FloatingOrbs scrollProgress={scrollYProgress} />
       <LandingHeader />
-      <main>
+      <main id="main-content" role="main">
         <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
         <SocialProofBar />
         <HowItWorksSection />
@@ -224,6 +229,7 @@ export default function LandingPage() {
         <GuaranteeSection />
         <LandingTestimonialsSection />
         <PricingPreviewSection />
+        <TrustedBySection />
         <FinalCTASection />
         <ErasmusFeaturesSection />
       </main>

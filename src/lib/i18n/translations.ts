@@ -2193,6 +2193,14 @@ export const translations = {
     showPassword: { en: 'Show password', fr: 'Afficher le mot de passe', de: 'Passwort anzeigen' },
     hidePassword: { en: 'Hide password', fr: 'Masquer le mot de passe', de: 'Passwort verbergen' },
     homeLink: { en: 'NEARVITY — Home', fr: 'NEARVITY — Accueil', de: 'NEARVITY — Startseite' },
+    skipToContent: { en: 'Skip to content', fr: 'Aller au contenu', de: 'Zum Inhalt springen' },
+  },
+
+  notFound: {
+    title: { en: 'Page not found', fr: 'Page introuvable', de: 'Seite nicht gefunden' },
+    description: { en: 'This page doesn\'t exist or has been moved.', fr: 'Cette page n\'existe pas ou a été déplacée.', de: 'Diese Seite existiert nicht oder wurde verschoben.' },
+    backHome: { en: 'Back to home', fr: 'Retour à l\'accueil', de: 'Zurück zur Startseite' },
+    discoverApp: { en: 'Discover NEARVITY', fr: 'Découvrir NEARVITY', de: 'NEARVITY entdecken' },
   },
 
   // Missing keys
