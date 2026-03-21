@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           name: "NEARVITY - Rencontres spontanées entre étudiants",
           short_name: "NEARVITY",
-          description: "Facilite les rencontres IRL. Des vraies personnes, prêtes à se retrouver.",
+          description: "Active ton signal, vois qui est dispo autour de toi, retrouve-toi en vrai.",
           theme_color: "#0f0f1a",
           background_color: "#0f0f1a",
           display: "standalone",
