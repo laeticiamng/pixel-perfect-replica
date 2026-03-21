@@ -35,7 +35,7 @@ const HowItWorksSection = forwardRef<HTMLElement>(function HowItWorksSection(_pr
   ];
 
   return (
-    <section ref={ref} className="py-16 px-6 relative z-10">
+    <section ref={ref} id="how-it-works" className="py-16 px-6 relative z-10 scroll-mt-20">
       <div className="max-w-4xl mx-auto">
         <RevealText>
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
@@ -200,16 +200,16 @@ export default function LandingPage() {
       <LandingHeader />
       <main>
         <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
-        <AppPreviewSection />
         <SocialProofBar />
         <HowItWorksSection />
-        <GuaranteeSection />
+        <AppPreviewSection />
         <FeaturesSection />
         <UseCasesSection />
+        <GuaranteeSection />
         <LandingTestimonialsSection />
-        <ErasmusFeaturesSection />
         <PricingPreviewSection />
         <FinalCTASection />
+        <ErasmusFeaturesSection />
       </main>
       <LandingFooter />
     </div>

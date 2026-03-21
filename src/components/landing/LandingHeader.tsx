@@ -19,11 +19,16 @@ export function LandingHeader() {
           </span>
         </Link>
         <nav className="flex items-center gap-1 sm:gap-3 shrink-0" aria-label="Main navigation">
-          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 hidden sm:inline-flex">
-            <Link to="/about">{t('about.title')}</Link>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 hidden sm:inline-flex"
+            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            {t('landing.seeHowItWorks')}
           </Button>
           <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 hidden sm:inline-flex">
-            <Link to="/help">{t('nav.help')}</Link>
+            <Link to="/about">{t('about.title')}</Link>
           </Button>
           <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 hidden md:inline-flex">
             <Link to="/premium">{t('premium.title')}</Link>

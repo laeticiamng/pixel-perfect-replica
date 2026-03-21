@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Download, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronDown, Download, Sparkles } from 'lucide-react';
 import { motion, MotionValue } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/lib/i18n';
@@ -78,6 +78,15 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         >
           {t('landing.createMyAccount')}
           <ArrowRight className="ml-2 h-6 w-6 transition-transform group-hover:translate-x-1" />
+        </Button>
+        <Button
+          onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+          variant="outline"
+          size="lg"
+          className="group h-14 sm:h-16 px-8 sm:px-10 text-lg sm:text-xl font-bold rounded-full border-border/60 hover:border-coral/40 transition-all duration-300"
+        >
+          {t('landing.seeHowItWorks')}
+          <ChevronDown className="ml-2 h-5 w-5 transition-transform group-hover:translate-y-1" />
         </Button>
       </motion.div>
 
