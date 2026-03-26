@@ -225,6 +225,7 @@ export default function LandingPage() {
         </section>
 
         <AppPreviewSection />
+        <PromoVideoSection />
         <FeaturesSection />
         <UseCasesSection />
         <GuaranteeSection />
