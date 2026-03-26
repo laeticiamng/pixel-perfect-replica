@@ -1,178 +1,117 @@
-import {
-  AbsoluteFill,
-  useCurrentFrame,
-  useVideoConfig,
-  interpolate,
-  spring,
-  Sequence,
-} from "remotion";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring, Sequence } from "remotion";
 
-// Per-character animated text
-function CharReveal({
-  text,
-  startFrame,
-  style,
-  charDelay = 2,
-  springConfig = { damping: 18, stiffness: 180 },
-}: {
-  text: string;
-  startFrame: number;
-  style?: React.CSSProperties;
-  charDelay?: number;
-  springConfig?: { damping: number; stiffness: number };
-}) {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  return (
-    <span style={{ display: "inline-flex", flexWrap: "wrap", ...style }}>
-      {text.split("").map((char, i) => {
-        const s = spring({
-          frame: frame - startFrame - i * charDelay,
-          fps,
-          config: springConfig,
-        });
-        const y = interpolate(s, [0, 1], [50, 0]);
-        const opacity = interpolate(s, [0, 1], [0, 1]);
-        const blur = interpolate(s, [0, 1], [8, 0]);
-
-        return (
-          <span
-            key={i}
-            style={{
-              display: "inline-block",
-              transform: `translateY(${y}px)`,
-              opacity,
-              filter: `blur(${blur}px)`,
-              whiteSpace: char === " " ? "pre" : undefined,
-            }}
-          >
-            {char}
-          </span>
-        );
-      })}
-    </span>
-  );
-}
-
-// Scene 1: Emotional hook — loneliness → hope
 export const Scene1Loneliness: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Slow zoom in
-  const zoom = interpolate(frame, [0, 120], [1, 1.06], {
+  // "Encore seul ce midi ?" — per-character reveal
+  const line1 = "Encore seul ce midi ?";
+  const charsVisible = Math.floor(
+    interpolate(frame, [15, 15 + line1.length * 2], [0, line1.length], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    })
+  );
+
+  // Cursor blink
+  const cursorOpacity = Math.sin(frame * 0.3) > 0 ? 1 : 0;
+  const showCursor = frame > 15 && frame < 80;
+
+  // Line 2 reveal
+  const line2Opacity = interpolate(frame, [80, 100], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const line2Y = interpolate(frame, [80, 100], [30, 0], {
+    extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // Lonely emoji floating
-  const emojiY = Math.sin(frame * 0.04) * 8;
-  const emojiOpacity = spring({
-    frame: frame - 5,
-    fps,
-    config: { damping: 30, stiffness: 80 },
+  // Lonely person silhouette (simple circle + body)
+  const silhouetteOpacity = interpolate(frame, [0, 30], [0, 0.3], {
+    extrapolateRight: "clamp",
   });
 
-  // Line reveal
-  const lineWidth = spring({
-    frame: frame - 65,
-    fps,
-    config: { damping: 30, stiffness: 60 },
-  });
+  // Subtle breathing scale
+  const breathe = interpolate(Math.sin(frame * 0.05), [-1, 1], [0.98, 1.02]);
 
-  // "Et si..." text
-  const hopeSpring = spring({
-    frame: frame - 75,
-    fps,
-    config: { damping: 20, stiffness: 100 },
+  // Vignette darkening
+  const vignetteOpacity = interpolate(frame, [0, 60], [0, 0.6], {
+    extrapolateRight: "clamp",
   });
 
   return (
-    <AbsoluteFill
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        transform: `scale(${zoom})`,
-      }}
-    >
-      {/* Subtle radial warmth */}
+    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
+      {/* Vignette */}
       <div
         style={{
           position: "absolute",
-          width: 500,
-          height: 500,
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(255,107,90,0.06) 0%, transparent 70%)",
+          inset: 0,
+          background: "radial-gradient(ellipse at center, transparent 30%, rgba(5,5,15,0.8) 100%)",
+          opacity: vignetteOpacity,
         }}
       />
 
-      {/* Lonely person emoji — large, centered */}
+      {/* Lonely silhouette in background */}
       <div
         style={{
-          fontSize: 100,
-          opacity: interpolate(emojiOpacity, [0, 1], [0, 1]),
-          transform: `translateY(${emojiY - 60}px)`,
-          marginBottom: 20,
+          position: "absolute",
+          top: "35%",
+          left: "50%",
+          transform: `translate(-50%, -50%) scale(${breathe})`,
+          opacity: silhouetteOpacity,
         }}
       >
-        😔
-      </div>
-
-      {/* Main question — per-character reveal */}
-      <div style={{ textAlign: "center", position: "relative" }}>
-        <CharReveal
-          text="Encore seul"
-          startFrame={10}
-          charDelay={2}
-          style={{
-            fontSize: 96,
-            fontWeight: 900,
-            color: "#e8e8f0",
-            letterSpacing: -2,
-          }}
-        />
-        <br />
-        <CharReveal
-          text="ce midi ?"
-          startFrame={22}
-          charDelay={2}
-          style={{
-            fontSize: 96,
-            fontWeight: 900,
-            color: "#FF6B5A",
-            letterSpacing: -2,
-          }}
-        />
-      </div>
-
-      {/* Thin horizontal divider */}
-      <div
-        style={{
-          width: interpolate(lineWidth, [0, 1], [0, 240]),
-          height: 2,
-          background: "linear-gradient(90deg, transparent, rgba(255,107,90,0.5), transparent)",
-          marginTop: 40,
-          borderRadius: 1,
-        }}
-      />
-
-      {/* "Et si ça changeait ?" */}
-      <Sequence from={75}>
         <div
           style={{
-            position: "absolute",
-            bottom: 200,
-            opacity: interpolate(hopeSpring, [0, 1], [0, 1]),
-            transform: `translateY(${interpolate(hopeSpring, [0, 1], [30, 0])}px)`,
-            fontSize: 32,
-            fontWeight: 300,
-            color: "rgba(240,240,245,0.6)",
-            letterSpacing: 2,
+            width: 60,
+            height: 60,
+            borderRadius: "50%",
+            background: "rgba(124, 58, 237, 0.15)",
+            margin: "0 auto 10px",
+          }}
+        />
+        <div
+          style={{
+            width: 40,
+            height: 80,
+            borderRadius: "20px 20px 0 0",
+            background: "rgba(124, 58, 237, 0.1)",
+            margin: "0 auto",
+          }}
+        />
+      </div>
+
+      {/* Main text */}
+      <div style={{ textAlign: "center", zIndex: 2 }}>
+        <div
+          style={{
+            fontSize: 80,
+            fontWeight: 700,
+            color: "#f0f0ff",
+            letterSpacing: "-2px",
+            lineHeight: 1.1,
+          }}
+        >
+          {line1.slice(0, charsVisible)}
+          {showCursor && (
+            <span style={{ opacity: cursorOpacity, color: "#7c3aed" }}>|</span>
+          )}
+        </div>
+
+        <div
+          style={{
+            fontSize: 36,
+            color: "#a78bfa",
+            marginTop: 30,
+            opacity: line2Opacity,
+            transform: `translateY(${line2Y}px)`,
+            fontWeight: 400,
           }}
         >
           Et si ça changeait ?
         </div>
-      </Sequence>
+      </div>
     </AbsoluteFill>
   );
 };

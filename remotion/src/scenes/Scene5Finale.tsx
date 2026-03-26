@@ -1,263 +1,126 @@
-import {
-  AbsoluteFill,
-  useCurrentFrame,
-  useVideoConfig,
-  interpolate,
-  spring,
-  Sequence,
-} from "remotion";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
 
-// Scene 5: Finale — brand reveal with dramatic entrance
 export const Scene5Finale: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Logo icon entrance — scale + rotate
+  // Logo entrance
   const logoSpring = spring({
-    frame,
+    frame: frame - 10,
     fps,
-    config: { damping: 14, stiffness: 100 },
+    config: { damping: 12, stiffness: 100 },
   });
 
-  // Brand text — delayed
-  const textSpring = spring({
-    frame: frame - 18,
-    fps,
-    config: { damping: 22, stiffness: 120 },
+  // Light beam sweep
+  const beamX = interpolate(frame, [0, 60], [-200, 2200], {
+    extrapolateRight: "clamp",
   });
 
-  // Tagline — further delayed
-  const tagSpring = spring({
-    frame: frame - 40,
-    fps,
-    config: { damping: 25, stiffness: 100 },
+  // Tagline
+  const taglineOpacity = interpolate(frame, [40, 55], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const taglineY = interpolate(frame, [40, 55], [20, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
   });
 
   // Badge
   const badgeSpring = spring({
-    frame: frame - 60,
+    frame: frame - 65,
     fps,
-    config: { damping: 15, stiffness: 180 },
+    config: { damping: 10 },
   });
 
-  // Breathing scale
-  const breathe = 1 + Math.sin(frame * 0.05) * 0.015;
-
-  // Glow pulse
-  const glowIntensity = interpolate(
-    Math.sin(frame * 0.06),
-    [-1, 1],
-    [0.15, 0.4]
-  );
-
-  // Light beam sweep
-  const beamX = interpolate(frame, [0, 140], [-200, 2100], {
-    extrapolateRight: "clamp",
-  });
+  // Subtle pulsing glow behind logo
+  const glowPulse = interpolate(Math.sin(frame * 0.08), [-1, 1], [0.3, 0.6]);
 
   return (
-    <AbsoluteFill
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {/* Epic radial glow */}
+    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
+      {/* Central glow */}
       <div
         style={{
           position: "absolute",
-          width: 900,
-          height: 900,
+          width: 600,
+          height: 600,
           borderRadius: "50%",
-          background: `radial-gradient(circle, 
-            rgba(255,107,90,${glowIntensity}) 0%, 
-            rgba(159,122,234,0.06) 35%, 
-            transparent 65%)`,
+          background: "radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)",
+          opacity: glowPulse,
         }}
       />
 
-      {/* Light beam sweep */}
+      {/* Light beam */}
       <div
         style={{
           position: "absolute",
           top: 0,
           left: beamX,
-          width: 120,
+          width: 150,
           height: "100%",
-          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent)",
+          background: "linear-gradient(90deg, transparent, rgba(167,139,250,0.08), transparent)",
           transform: "skewX(-15deg)",
         }}
       />
 
-      {/* Logo + Brand group */}
+      {/* Logo text */}
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 28,
-          transform: `scale(${breathe})`,
+          transform: `scale(${logoSpring})`,
+          opacity: logoSpring,
+          textAlign: "center",
         }}
       >
-        {/* Logo icon */}
         <div
           style={{
-            width: 130,
-            height: 130,
-            borderRadius: 36,
-            background: "linear-gradient(135deg, #FF6B5A 0%, #e04a3a 50%, #cc3d2e 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: `
-              0 20px 60px rgba(255,107,90,0.35),
-              0 0 0 1px rgba(255,255,255,0.08),
-              inset 0 1px 0 rgba(255,255,255,0.15)
-            `,
-            transform: `scale(${interpolate(logoSpring, [0, 1], [0.2, 1])}) rotate(${interpolate(logoSpring, [0, 1], [-15, 0])}deg)`,
-            opacity: interpolate(logoSpring, [0, 1], [0, 1]),
+            fontSize: 96,
+            fontWeight: 700,
+            letterSpacing: "-3px",
+            background: "linear-gradient(135deg, #7c3aed 0%, #a78bfa 40%, #ff6b6b 100%)",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            lineHeight: 1,
           }}
         >
-          <span
-            style={{
-              fontSize: 76,
-              fontWeight: 900,
-              color: "white",
-              textShadow: "0 2px 8px rgba(0,0,0,0.2)",
-            }}
-          >
-            N
-          </span>
-        </div>
-
-        {/* NEARVITY text */}
-        <div
-          style={{
-            fontSize: 80,
-            fontWeight: 900,
-            letterSpacing: 8,
-            opacity: interpolate(textSpring, [0, 1], [0, 1]),
-            transform: `translateY(${interpolate(textSpring, [0, 1], [30, 0])}px)`,
-          }}
-        >
-          <span
-            style={{
-              background: "linear-gradient(135deg, #FF6B5A 0%, #FF8A7A 50%, #FF6B5A 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            NEARVITY
-          </span>
+          NEARVITY
         </div>
       </div>
 
       {/* Tagline */}
-      <Sequence from={40}>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 280,
-            textAlign: "center",
-            opacity: interpolate(tagSpring, [0, 1], [0, 1]),
-            transform: `translateY(${interpolate(tagSpring, [0, 1], [25, 0])}px)`,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 30,
-              fontWeight: 400,
-              color: "rgba(240,240,245,0.7)",
-              lineHeight: 1.5,
-            }}
-          >
-            Ne mange, révise ou fais du sport
-          </div>
-          <div
-            style={{
-              fontSize: 34,
-              fontWeight: 800,
-              marginTop: 8,
-            }}
-          >
-            <span
-              style={{
-                background: "linear-gradient(135deg, #FF6B5A, #ff8a6a)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              plus jamais seul.
-            </span>
-          </div>
-        </div>
-      </Sequence>
+      <div
+        style={{
+          position: "absolute",
+          top: "58%",
+          fontSize: 28,
+          color: "#a78bfa",
+          opacity: taglineOpacity,
+          transform: `translateY(${taglineY}px)`,
+          fontWeight: 400,
+          letterSpacing: "2px",
+        }}
+      >
+        La proximité crée le lien
+      </div>
 
-      {/* Available badge */}
-      <Sequence from={60}>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 180,
-            transform: `scale(${interpolate(badgeSpring, [0, 1], [0.6, 1])})`,
-            opacity: interpolate(badgeSpring, [0, 1], [0, 1]),
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              fontSize: 18,
-              fontWeight: 600,
-              color: "#22c55e",
-              background: "rgba(34,197,94,0.06)",
-              padding: "10px 28px",
-              borderRadius: 24,
-              border: "1px solid rgba(34,197,94,0.2)",
-            }}
-          >
-            <div
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "#22c55e",
-                boxShadow: "0 0 10px rgba(34,197,94,0.5)",
-              }}
-            />
-            Disponible maintenant · 100% gratuit
-          </div>
-        </div>
-      </Sequence>
-
-      {/* URL */}
-      <Sequence from={75}>
-        {(() => {
-          const urlSpring = spring({
-            frame: frame - 75,
-            fps,
-            config: { damping: 30, stiffness: 100 },
-          });
-          return (
-            <div
-              style={{
-                position: "absolute",
-                bottom: 120,
-                fontSize: 18,
-                fontWeight: 300,
-                color: "rgba(240,240,245,0.3)",
-                letterSpacing: 3,
-                opacity: interpolate(urlSpring, [0, 1], [0, 1]),
-              }}
-            >
-              nearvity.lovable.app
-            </div>
-          );
-        })()}
-      </Sequence>
+      {/* Badge */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 120,
+          transform: `scale(${badgeSpring})`,
+          opacity: badgeSpring,
+          background: "rgba(124, 58, 237, 0.15)",
+          border: "1px solid rgba(124, 58, 237, 0.3)",
+          borderRadius: 30,
+          padding: "12px 30px",
+          fontSize: 18,
+          color: "#f0f0ff",
+          fontWeight: 700,
+        }}
+      >
+        📲 Disponible maintenant
+      </div>
     </AbsoluteFill>
   );
 };

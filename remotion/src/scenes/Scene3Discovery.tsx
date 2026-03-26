@@ -1,88 +1,65 @@
-import {
-  AbsoluteFill,
-  useCurrentFrame,
-  useVideoConfig,
-  interpolate,
-  spring,
-  Sequence,
-} from "remotion";
+import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
 
-// Scene 3: Discovery — radar-like view showing nearby people
+const USERS = [
+  { name: "Léa", emoji: "👩‍🎓", angle: 45, dist: 180, activity: "Café" },
+  { name: "Marco", emoji: "👨‍💻", angle: 160, dist: 220, activity: "Étudier" },
+  { name: "Aisha", emoji: "👩‍🔬", angle: 280, dist: 160, activity: "Sport" },
+];
+
 export const Scene3Discovery: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Radar sweep rotation
-  const sweepAngle = interpolate(frame, [0, 110], [0, 360], {
+  // Radar sweep
+  const sweepAngle = interpolate(frame, [0, 90], [0, 360], {
     extrapolateRight: "clamp",
   });
 
-  // Title entrance
-  const titleSpring = spring({
-    frame,
-    fps,
-    config: { damping: 25, stiffness: 100 },
-  });
-
-  // Users appearing on radar
-  const users = [
-    { angle: 45, dist: 0.55, emoji: "👩‍🎓", name: "Léa", delay: 25, color: "#FF6B5A" },
-    { angle: 160, dist: 0.7, emoji: "👨‍💻", name: "Hugo", delay: 35, color: "#9f7aea" },
-    { angle: 250, dist: 0.4, emoji: "👩‍🔬", name: "Aïsha", delay: 45, color: "#22c55e" },
-    { angle: 320, dist: 0.65, emoji: "🧑‍🎨", name: "Tom", delay: 55, color: "#f59e0b" },
-  ];
-
-  const radarSize = 500;
+  // Center pulse
+  const pulseScale = interpolate(Math.sin(frame * 0.1), [-1, 1], [0.95, 1.05]);
 
   return (
-    <AbsoluteFill
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 100,
-        padding: "0 100px",
-      }}
-    >
-      {/* Radar visualization */}
+    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
+      {/* Title */}
       <div
         style={{
+          position: "absolute",
+          top: 60,
+          fontSize: 48,
+          fontWeight: 700,
+          color: "#f0f0ff",
+          opacity: interpolate(frame, [0, 20], [0, 1], { extrapolateRight: "clamp" }),
+        }}
+      >
+        Découvre qui est autour de toi
+      </div>
+
+      {/* Radar container */}
+      <div
+        style={{
+          width: 500,
+          height: 500,
+          borderRadius: "50%",
           position: "relative",
-          width: radarSize,
-          height: radarSize,
+          background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
         }}
       >
         {/* Concentric rings */}
-        {[0.33, 0.66, 1].map((r, i) => (
+        {[1, 2, 3].map((i) => (
           <div
             key={i}
             style={{
               position: "absolute",
               top: "50%",
               left: "50%",
-              width: radarSize * r,
-              height: radarSize * r,
+              width: i * 160,
+              height: i * 160,
               borderRadius: "50%",
-              border: "1px solid rgba(255,255,255,0.04)",
+              border: "1px solid rgba(124, 58, 237, 0.15)",
               transform: "translate(-50%, -50%)",
             }}
           />
         ))}
-
-        {/* Center dot (you) */}
-        <div
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            width: 16,
-            height: 16,
-            borderRadius: "50%",
-            background: "#FF6B5A",
-            transform: "translate(-50%, -50%)",
-            boxShadow: "0 0 20px rgba(255,107,90,0.5)",
-          }}
-        />
 
         {/* Sweep line */}
         <div
@@ -90,43 +67,63 @@ export const Scene3Discovery: React.FC = () => {
             position: "absolute",
             top: "50%",
             left: "50%",
-            width: radarSize / 2,
+            width: 250,
             height: 2,
-            background: "linear-gradient(90deg, rgba(255,107,90,0.6), transparent)",
-            transformOrigin: "0% 50%",
+            background: "linear-gradient(90deg, #7c3aed, transparent)",
+            transformOrigin: "0 50%",
             transform: `rotate(${sweepAngle}deg)`,
           }}
         />
 
-        {/* Sweep trail */}
+        {/* Sweep glow */}
         <div
           style={{
             position: "absolute",
             top: "50%",
             left: "50%",
-            width: radarSize,
-            height: radarSize,
-            transform: "translate(-50%, -50%)",
-            background: `conic-gradient(from ${sweepAngle - 40}deg at 50% 50%, transparent 0deg, rgba(255,107,90,0.06) 30deg, transparent 40deg)`,
+            width: 250,
+            height: 60,
+            background: `linear-gradient(90deg, rgba(124,58,237,0.15), transparent)`,
+            transformOrigin: "0 50%",
+            transform: `rotate(${sweepAngle - 15}deg)`,
+          }}
+        />
+
+        {/* Center dot (you) */}
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: 20,
+            height: 20,
             borderRadius: "50%",
+            background: "#7c3aed",
+            transform: `translate(-50%, -50%) scale(${pulseScale})`,
+            boxShadow: "0 0 20px rgba(124, 58, 237, 0.5)",
           }}
         />
 
         {/* User dots */}
-        {users.map((user, i) => {
-          const userSpring = spring({
-            frame: frame - user.delay,
+        {USERS.map((user, i) => {
+          const angleRad = (user.angle * Math.PI) / 180;
+          const x = Math.cos(angleRad) * user.dist;
+          const y = Math.sin(angleRad) * user.dist;
+
+          // Appear when sweep passes their angle
+          const appearFrame = (user.angle / 360) * 90;
+          const dotSpring = spring({
+            frame: frame - appearFrame,
             fps,
-            config: { damping: 12, stiffness: 200 },
+            config: { damping: 10, stiffness: 100 },
           });
-          const rad = (user.angle * Math.PI) / 180;
-          const x = Math.cos(rad) * (radarSize / 2) * user.dist;
-          const y = Math.sin(rad) * (radarSize / 2) * user.dist;
-          const scale = interpolate(userSpring, [0, 1], [0, 1]);
-          const opacity = interpolate(userSpring, [0, 1], [0, 1]);
 
           // Breathing glow
-          const glow = Math.sin((frame - user.delay) * 0.08) * 0.3 + 0.7;
+          const glow = interpolate(
+            Math.sin(frame * 0.08 + i * 2),
+            [-1, 1],
+            [0.4, 0.8]
+          );
 
           return (
             <div
@@ -135,105 +132,64 @@ export const Scene3Discovery: React.FC = () => {
                 position: "absolute",
                 top: "50%",
                 left: "50%",
-                transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale})`,
-                opacity,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 6,
+                transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${dotSpring})`,
+                opacity: dotSpring,
+                textAlign: "center",
               }}
             >
               <div
                 style={{
-                  width: 56,
-                  height: 56,
+                  width: 50,
+                  height: 50,
                   borderRadius: "50%",
-                  background: `${user.color}22`,
-                  border: `2px solid ${user.color}66`,
+                  background: "rgba(124, 58, 237, 0.2)",
+                  border: "2px solid rgba(167, 139, 250, 0.5)",
                   display: "flex",
-                  alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 28,
-                  boxShadow: `0 0 ${20 * glow}px ${user.color}33`,
+                  alignItems: "center",
+                  fontSize: 24,
+                  boxShadow: `0 0 ${20 * glow}px rgba(124, 58, 237, ${glow * 0.5})`,
                 }}
               >
                 {user.emoji}
               </div>
-              <span
+              <div
                 style={{
                   fontSize: 13,
-                  fontWeight: 600,
-                  color: "rgba(240,240,245,0.7)",
+                  color: "#a78bfa",
+                  marginTop: 4,
+                  fontWeight: 700,
                 }}
               >
                 {user.name}
-              </span>
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "rgba(167, 139, 250, 0.6)",
+                }}
+              >
+                {user.activity}
+              </div>
             </div>
           );
         })}
       </div>
 
-      {/* Right text */}
+      {/* Bottom stat */}
       <div
         style={{
-          flex: 1,
-          maxWidth: 500,
-          opacity: interpolate(titleSpring, [0, 1], [0, 1]),
-          transform: `translateX(${interpolate(titleSpring, [0, 1], [60, 0])}px)`,
+          position: "absolute",
+          bottom: 80,
+          fontSize: 24,
+          color: "#a78bfa",
+          opacity: interpolate(frame, [100, 120], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          }),
         }}
       >
-        <div
-          style={{
-            display: "inline-block",
-            fontSize: 14,
-            fontWeight: 700,
-            color: "#9f7aea",
-            textTransform: "uppercase",
-            letterSpacing: 5,
-            marginBottom: 20,
-            padding: "6px 16px",
-            borderRadius: 6,
-            background: "rgba(159,122,234,0.08)",
-            border: "1px solid rgba(159,122,234,0.15)",
-          }}
-        >
-          Étape 02
-        </div>
-        <div
-          style={{
-            fontSize: 54,
-            fontWeight: 800,
-            color: "#f0f0f5",
-            lineHeight: 1.15,
-            marginBottom: 24,
-          }}
-        >
-          Vois qui est{" "}
-          <span
-            style={{
-              background: "linear-gradient(135deg, #9f7aea, #b794f6)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            dispo
-          </span>
-          <br />
-          autour de toi
-        </div>
-        <div
-          style={{
-            fontSize: 22,
-            fontWeight: 300,
-            color: "rgba(240,240,245,0.45)",
-            lineHeight: 1.6,
-          }}
-        >
-          En temps réel. Anonyme.
-          <br />
-          Tu choisis qui tu contactes.
-        </div>
+        3 étudiants à moins de 200m
       </div>
     </AbsoluteFill>
   );
