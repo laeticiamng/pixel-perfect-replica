@@ -1,9 +1,9 @@
-import { shallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/shallow';
 import { useExperienceStore } from '@/experience/core/experience-store';
 
 export function useExperienceMode() {
   return useExperienceStore(
-    (state) => ({
+    useShallow((state) => ({
       immersionLevel: state.immersionLevel,
       emotionalTone: state.emotionalTone,
       sceneMode: state.sceneMode,
@@ -11,7 +11,6 @@ export function useExperienceMode() {
       motionMode: state.motionMode,
       reducedExperience: state.reducedExperience,
       focusTarget: state.focusTarget,
-    }),
-    shallow,
+    })),
   );
 }
