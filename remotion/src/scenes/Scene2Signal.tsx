@@ -20,15 +20,17 @@ export const Scene2Signal: React.FC = () => {
   const ringStart = 45;
 
   return (
-    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
+    <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", display: "flex" }}>
       <Sequence from={0} durationInFrames={120}>
         <div
           style={{
             position: "absolute",
-            top: 80,
+            top: 60,
+            left: 0,
+            right: 0,
             width: "100%",
             textAlign: "center",
-            fontSize: 48,
+            fontSize: 52,
             fontWeight: 700,
             color: "#f0f0ff",
             opacity: interpolate(frame, [0, 20], [0, 1], { extrapolateRight: "clamp" }),
@@ -40,24 +42,25 @@ export const Scene2Signal: React.FC = () => {
 
       <div
         style={{
-          width: 280,
-          height: 500,
-          borderRadius: 40,
+          width: 320,
+          height: 560,
+          borderRadius: 44,
           background: "linear-gradient(180deg, #1a1a3e 0%, #0f0f2a 100%)",
           border: "2px solid rgba(124, 58, 237, 0.3)",
           transform: `translateY(${phoneY}px) scale(${phoneScale})`,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: "40px 20px",
+          padding: "44px 24px",
           position: "relative",
           overflow: "hidden",
           boxShadow: "0 30px 80px rgba(124, 58, 237, 0.3)",
+          margin: "0 auto",
         }}
       >
         <div style={{ width: 100, height: 24, borderRadius: 12, background: "#0a0a1e", position: "absolute", top: 10 }} />
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginTop: 40 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", marginTop: 44 }}>
           {ACTIVITIES.map((act, i) => {
             const chipSpring = spring({ frame: frame - 15 - i * 6, fps, config: { damping: 12 } });
             return (
@@ -67,8 +70,8 @@ export const Scene2Signal: React.FC = () => {
                   background: `${act.color}22`,
                   border: `1px solid ${act.color}44`,
                   borderRadius: 20,
-                  padding: "6px 14px",
-                  fontSize: 15,
+                  padding: "8px 16px",
+                  fontSize: 16,
                   color: act.color,
                   transform: `scale(${chipSpring})`,
                   opacity: chipSpring,
@@ -78,7 +81,7 @@ export const Scene2Signal: React.FC = () => {
                   gap: 6,
                 }}
               >
-                <span style={{ width: 18, height: 18, borderRadius: "50%", background: act.color, display: "inline-flex", justifyContent: "center", alignItems: "center", fontSize: 10, color: "#fff", fontWeight: 700 }}>
+                <span style={{ width: 20, height: 20, borderRadius: "50%", background: act.color, display: "inline-flex", justifyContent: "center", alignItems: "center", fontSize: 11, color: "#fff", fontWeight: 700 }}>
                   {act.icon}
                 </span>
                 {act.label}
@@ -89,9 +92,9 @@ export const Scene2Signal: React.FC = () => {
 
         <div
           style={{
-            marginTop: 40,
-            width: 120,
-            height: 120,
+            marginTop: 44,
+            width: 130,
+            height: 130,
             borderRadius: "50%",
             background: "linear-gradient(135deg, #7c3aed, #a78bfa)",
             display: "flex",
@@ -101,7 +104,7 @@ export const Scene2Signal: React.FC = () => {
             boxShadow: frame > ringStart ? "0 0 40px rgba(124, 58, 237, 0.6)" : "0 0 20px rgba(124, 58, 237, 0.3)",
           }}
         >
-          <div style={{ fontSize: 28, color: "#fff", fontWeight: 700 }}>GO</div>
+          <div style={{ fontSize: 30, color: "#fff", fontWeight: 700 }}>GO</div>
         </div>
 
         {frame > ringStart &&
@@ -117,8 +120,8 @@ export const Scene2Signal: React.FC = () => {
                   position: "absolute",
                   top: "55%",
                   left: "50%",
-                  width: 120,
-                  height: 120,
+                  width: 130,
+                  height: 130,
                   borderRadius: "50%",
                   border: "2px solid #7c3aed",
                   transform: `translate(-50%, -50%) scale(${ringScale})`,
@@ -131,8 +134,8 @@ export const Scene2Signal: React.FC = () => {
         {frame > 50 && (
           <div
             style={{
-              marginTop: 30,
-              fontSize: 14,
+              marginTop: 34,
+              fontSize: 15,
               color: "#a78bfa",
               opacity: interpolate(frame, [50, 60], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
               textAlign: "center",
