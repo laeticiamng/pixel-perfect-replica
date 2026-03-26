@@ -16,44 +16,47 @@ export function LandingHeader() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 px-3 sm:px-6 py-3 sm:py-4">
+    <header className="fixed top-0 left-0 right-0 z-50">
+      {/* Frosted glass effect with subtle bottom border */}
+      <div className="absolute inset-0 bg-background/70 backdrop-blur-2xl border-b border-border/30" />
+      
+      <div className="relative max-w-7xl mx-auto flex items-center justify-between gap-2 px-3 sm:px-6 py-2.5 sm:py-3">
         <Link to="/" className="flex items-center gap-2 shrink-0" aria-label={t('a11y.homeLink')}>
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-lg">
-            <span className="text-white font-black text-base sm:text-lg">N</span>
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-lg shadow-coral/20">
+            <span className="text-white font-black text-sm sm:text-base">N</span>
           </div>
-          <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">
+          <span className="text-lg sm:text-xl font-black tracking-tight bg-gradient-to-r from-coral to-coral-light bg-clip-text text-transparent">
             NEARVITY
           </span>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden sm:flex items-center gap-1 sm:gap-3 shrink-0" aria-label="Main navigation">
+        <nav className="hidden sm:flex items-center gap-0.5 sm:gap-1 shrink-0" aria-label="Main navigation">
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3"
+            className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 rounded-full"
             onClick={scrollToHowItWorks}
           >
             {t('landing.seeHowItWorks')}
           </Button>
-          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3">
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 rounded-full">
             <Link to="/about">{t('about.title')}</Link>
           </Button>
-          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 hidden md:inline-flex">
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 hidden md:inline-flex rounded-full">
             <Link to="/premium">{t('premium.title')}</Link>
           </Button>
-          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 hidden md:inline-flex">
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 hidden md:inline-flex rounded-full">
             <Link to="/contact">{t('landing.contact')}</Link>
           </Button>
-          <Button asChild variant="ghost" size="sm" className="text-coral hover:text-coral-dark hover:bg-coral/10 gap-1.5 px-2 sm:px-3">
+          <Button asChild variant="ghost" size="sm" className="text-coral hover:text-coral-dark hover:bg-coral/10 gap-1.5 px-2.5 sm:px-3 rounded-full">
             <Link to="/install">
-              <Download className="h-4 w-4" />
+              <Download className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t('landing.install')}</span>
             </Link>
           </Button>
           <LanguageToggle />
-          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2 sm:px-3 whitespace-nowrap">
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 whitespace-nowrap rounded-full">
             <Link to="/onboarding" state={{ isLogin: true }}>
               {t('auth.signIn')}
             </Link>
@@ -61,7 +64,7 @@ export function LandingHeader() {
         </nav>
 
         {/* Mobile nav controls */}
-        <div className="flex sm:hidden items-center gap-1">
+        <div className="flex sm:hidden items-center gap-0.5">
           <LanguageToggle />
           <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs px-2 whitespace-nowrap">
             <Link to="/onboarding" state={{ isLogin: true }}>
@@ -88,40 +91,40 @@ export function LandingHeader() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="sm:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl overflow-hidden"
+            className="relative sm:hidden border-t border-border/30 bg-background/90 backdrop-blur-2xl overflow-hidden"
           >
-            <nav className="flex flex-col px-4 py-3 gap-1" aria-label="Mobile navigation">
+            <nav className="flex flex-col px-4 py-3 gap-0.5" aria-label="Mobile navigation">
               <button
                 onClick={scrollToHowItWorks}
-                className="text-left text-sm font-medium text-muted-foreground hover:text-foreground py-2.5 px-3 rounded-lg hover:bg-muted/50 transition-colors"
+                className="text-left text-sm font-medium text-muted-foreground hover:text-foreground py-2.5 px-3 rounded-xl hover:bg-muted/30 transition-colors"
               >
                 {t('landing.seeHowItWorks')}
               </button>
               <Link
                 to="/about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground py-2.5 px-3 rounded-lg hover:bg-muted/50 transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground py-2.5 px-3 rounded-xl hover:bg-muted/30 transition-colors"
               >
                 {t('about.title')}
               </Link>
               <Link
                 to="/premium"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground py-2.5 px-3 rounded-lg hover:bg-muted/50 transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground py-2.5 px-3 rounded-xl hover:bg-muted/30 transition-colors"
               >
                 {t('premium.title')}
               </Link>
               <Link
                 to="/contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground py-2.5 px-3 rounded-lg hover:bg-muted/50 transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground py-2.5 px-3 rounded-xl hover:bg-muted/30 transition-colors"
               >
                 {t('landing.contact')}
               </Link>
               <Link
                 to="/install"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-coral hover:text-coral-dark py-2.5 px-3 rounded-lg hover:bg-coral/5 transition-colors flex items-center gap-2"
+                className="text-sm font-medium text-coral hover:text-coral-dark py-2.5 px-3 rounded-xl hover:bg-coral/5 transition-colors flex items-center gap-2"
               >
                 <Download className="h-4 w-4" />
                 {t('landing.install')}
