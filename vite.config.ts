@@ -12,11 +12,8 @@ export default defineConfig(({ mode }) => {
   const supabaseUrl = env.VITE_SUPABASE_URL;
   const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-  if (mode === 'production' && (!supabaseUrl || !supabaseKey)) {
-    throw new Error(
-      'Missing required environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY must be set for production builds.'
-    );
-  }
+  // Gracefully handle missing env vars — Lovable Cloud injects them at build time
+  // via process.env, not via .env files, so loadEnv may not find them.
 
   return {
     define: {

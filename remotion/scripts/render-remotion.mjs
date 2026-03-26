@@ -1,9 +1,5 @@
 import { bundle } from "@remotion/bundler";
-import {
-  renderMedia,
-  selectComposition,
-  openBrowser,
-} from "@remotion/renderer";
+import { renderMedia, selectComposition, openBrowser } from "@remotion/renderer";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -15,8 +11,7 @@ const bundled = await bundle({
 });
 
 const browser = await openBrowser("chrome", {
-  browserExecutable:
-    process.env.PUPPETEER_EXECUTABLE_PATH ?? "/bin/chromium",
+  browserExecutable: process.env.PUPPETEER_EXECUTABLE_PATH ?? "/bin/chromium",
   chromiumOptions: {
     args: ["--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage"],
   },
@@ -33,11 +28,12 @@ await renderMedia({
   composition,
   serveUrl: bundled,
   codec: "h264",
-  outputLocation: "/mnt/documents/nearvity-promo.mp4",
+  outputLocation: "/mnt/documents/nearvity-promo-v2.mp4",
   puppeteerInstance: browser,
   muted: true,
   concurrency: 1,
 });
 
 await browser.close({ silent: false });
-console.log("Done! Output: /mnt/documents/nearvity-promo.mp4");
+
+console.log("✅ Rendered to /mnt/documents/nearvity-promo-v2.mp4");
