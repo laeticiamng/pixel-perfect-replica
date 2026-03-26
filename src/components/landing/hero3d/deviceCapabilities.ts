@@ -80,7 +80,7 @@ export function getDeviceCapabilities(): DeviceCapabilities {
   else if (isDataSaver) tier = 'off';
   else if (coreCount < 4) tier = 'off';
   else if (deviceMemory < 2) tier = 'off';
-  else if (gpuTier === 'low') tier = 'lite';
+  else if (gpuTier === 'low') tier = 'off';
   // Soft downgrades -> "lite"
   else if (isMobile) tier = 'lite';
   else if (coreCount < 6) tier = 'lite';
