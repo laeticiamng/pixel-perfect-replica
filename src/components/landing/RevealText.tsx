@@ -7,15 +7,25 @@ interface RevealTextProps {
   delay?: number;
 }
 
+const revealVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay, ease: [0.25, 0.4, 0.25, 1] },
+  }),
+};
+
 export const RevealText = forwardRef<HTMLDivElement, RevealTextProps>(
   function RevealText({ children, className = '', delay = 0 }, forwardedRef) {
     return (
       <motion.div
         ref={forwardedRef}
-        initial={{ opacity: 0, y: 40, filter: 'blur(6px)' }}
-        whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.7, delay, ease: [0.25, 0.4, 0.25, 1] }}
+        variants={revealVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        custom={delay}
         className={className}
       >
         {children}
