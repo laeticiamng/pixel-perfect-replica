@@ -4,41 +4,15 @@ export const Scene5Finale: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Logo entrance
-  const logoSpring = spring({
-    frame: frame - 10,
-    fps,
-    config: { damping: 12, stiffness: 100 },
-  });
-
-  // Light beam sweep
-  const beamX = interpolate(frame, [0, 60], [-200, 2200], {
-    extrapolateRight: "clamp",
-  });
-
-  // Tagline
-  const taglineOpacity = interpolate(frame, [40, 55], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const taglineY = interpolate(frame, [40, 55], [20, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // Badge
-  const badgeSpring = spring({
-    frame: frame - 65,
-    fps,
-    config: { damping: 10 },
-  });
-
-  // Subtle pulsing glow behind logo
+  const logoSpring = spring({ frame: frame - 10, fps, config: { damping: 12, stiffness: 100 } });
+  const beamX = interpolate(frame, [0, 60], [-200, 2200], { extrapolateRight: "clamp" });
+  const taglineOpacity = interpolate(frame, [40, 55], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const taglineY = interpolate(frame, [40, 55], [20, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const badgeSpring = spring({ frame: frame - 65, fps, config: { damping: 10 } });
   const glowPulse = interpolate(Math.sin(frame * 0.08), [-1, 1], [0.3, 0.6]);
 
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
-      {/* Central glow */}
       <div
         style={{
           position: "absolute",
@@ -50,7 +24,6 @@ export const Scene5Finale: React.FC = () => {
         }}
       />
 
-      {/* Light beam */}
       <div
         style={{
           position: "absolute",
@@ -63,14 +36,7 @@ export const Scene5Finale: React.FC = () => {
         }}
       />
 
-      {/* Logo text */}
-      <div
-        style={{
-          transform: `scale(${logoSpring})`,
-          opacity: logoSpring,
-          textAlign: "center",
-        }}
-      >
+      <div style={{ transform: `scale(${logoSpring})`, opacity: logoSpring, textAlign: "center" }}>
         <div
           style={{
             fontSize: 96,
@@ -87,7 +53,6 @@ export const Scene5Finale: React.FC = () => {
         </div>
       </div>
 
-      {/* Tagline */}
       <div
         style={{
           position: "absolute",
@@ -103,7 +68,6 @@ export const Scene5Finale: React.FC = () => {
         La proximité crée le lien
       </div>
 
-      {/* Badge */}
       <div
         style={{
           position: "absolute",
@@ -119,7 +83,7 @@ export const Scene5Finale: React.FC = () => {
           fontWeight: 700,
         }}
       >
-        📲 Disponible maintenant
+        Disponible maintenant
       </div>
     </AbsoluteFill>
   );

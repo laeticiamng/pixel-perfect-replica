@@ -1,26 +1,20 @@
 import { AbsoluteFill, useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
 
 const USERS = [
-  { name: "Léa", emoji: "👩‍🎓", angle: 45, dist: 180, activity: "Café" },
-  { name: "Marco", emoji: "👨‍💻", angle: 160, dist: 220, activity: "Étudier" },
-  { name: "Aisha", emoji: "👩‍🔬", angle: 280, dist: 160, activity: "Sport" },
+  { name: "Léa", initial: "L", angle: 45, dist: 180, activity: "Café", color: "#ff6b6b" },
+  { name: "Marco", initial: "M", angle: 160, dist: 220, activity: "Étudier", color: "#7c3aed" },
+  { name: "Aisha", initial: "A", angle: 280, dist: 160, activity: "Sport", color: "#34d399" },
 ];
 
 export const Scene3Discovery: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Radar sweep
-  const sweepAngle = interpolate(frame, [0, 90], [0, 360], {
-    extrapolateRight: "clamp",
-  });
-
-  // Center pulse
+  const sweepAngle = interpolate(frame, [0, 90], [0, 360], { extrapolateRight: "clamp" });
   const pulseScale = interpolate(Math.sin(frame * 0.1), [-1, 1], [0.95, 1.05]);
 
   return (
     <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
-      {/* Title */}
       <div
         style={{
           position: "absolute",
@@ -34,17 +28,7 @@ export const Scene3Discovery: React.FC = () => {
         Découvre qui est autour de toi
       </div>
 
-      {/* Radar container */}
-      <div
-        style={{
-          width: 500,
-          height: 500,
-          borderRadius: "50%",
-          position: "relative",
-          background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)",
-        }}
-      >
-        {/* Concentric rings */}
+      <div style={{ width: 500, height: 500, borderRadius: "50%", position: "relative", background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)" }}>
         {[1, 2, 3].map((i) => (
           <div
             key={i}
@@ -61,7 +45,6 @@ export const Scene3Discovery: React.FC = () => {
           />
         ))}
 
-        {/* Sweep line */}
         <div
           style={{
             position: "absolute",
@@ -75,7 +58,6 @@ export const Scene3Discovery: React.FC = () => {
           }}
         />
 
-        {/* Sweep glow */}
         <div
           style={{
             position: "absolute",
@@ -83,13 +65,12 @@ export const Scene3Discovery: React.FC = () => {
             left: "50%",
             width: 250,
             height: 60,
-            background: `linear-gradient(90deg, rgba(124,58,237,0.15), transparent)`,
+            background: "linear-gradient(90deg, rgba(124,58,237,0.15), transparent)",
             transformOrigin: "0 50%",
             transform: `rotate(${sweepAngle - 15}deg)`,
           }}
         />
 
-        {/* Center dot (you) */}
         <div
           style={{
             position: "absolute",
@@ -104,26 +85,13 @@ export const Scene3Discovery: React.FC = () => {
           }}
         />
 
-        {/* User dots */}
         {USERS.map((user, i) => {
           const angleRad = (user.angle * Math.PI) / 180;
           const x = Math.cos(angleRad) * user.dist;
           const y = Math.sin(angleRad) * user.dist;
-
-          // Appear when sweep passes their angle
           const appearFrame = (user.angle / 360) * 90;
-          const dotSpring = spring({
-            frame: frame - appearFrame,
-            fps,
-            config: { damping: 10, stiffness: 100 },
-          });
-
-          // Breathing glow
-          const glow = interpolate(
-            Math.sin(frame * 0.08 + i * 2),
-            [-1, 1],
-            [0.4, 0.8]
-          );
+          const dotSpring = spring({ frame: frame - appearFrame, fps, config: { damping: 10, stiffness: 100 } });
+          const glow = interpolate(Math.sin(frame * 0.08 + i * 2), [-1, 1], [0.4, 0.8]);
 
           return (
             <div
@@ -142,51 +110,33 @@ export const Scene3Discovery: React.FC = () => {
                   width: 50,
                   height: 50,
                   borderRadius: "50%",
-                  background: "rgba(124, 58, 237, 0.2)",
-                  border: "2px solid rgba(167, 139, 250, 0.5)",
+                  background: `${user.color}33`,
+                  border: `2px solid ${user.color}88`,
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  fontSize: 24,
-                  boxShadow: `0 0 ${20 * glow}px rgba(124, 58, 237, ${glow * 0.5})`,
-                }}
-              >
-                {user.emoji}
-              </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "#a78bfa",
-                  marginTop: 4,
+                  fontSize: 22,
                   fontWeight: 700,
+                  color: user.color,
+                  boxShadow: `0 0 ${20 * glow}px ${user.color}44`,
                 }}
               >
-                {user.name}
+                {user.initial}
               </div>
-              <div
-                style={{
-                  fontSize: 11,
-                  color: "rgba(167, 139, 250, 0.6)",
-                }}
-              >
-                {user.activity}
-              </div>
+              <div style={{ fontSize: 13, color: "#a78bfa", marginTop: 4, fontWeight: 700 }}>{user.name}</div>
+              <div style={{ fontSize: 11, color: "rgba(167, 139, 250, 0.6)" }}>{user.activity}</div>
             </div>
           );
         })}
       </div>
 
-      {/* Bottom stat */}
       <div
         style={{
           position: "absolute",
           bottom: 80,
           fontSize: 24,
           color: "#a78bfa",
-          opacity: interpolate(frame, [100, 120], [0, 1], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          }),
+          opacity: interpolate(frame, [100, 120], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
         }}
       >
         3 étudiants à moins de 200m
