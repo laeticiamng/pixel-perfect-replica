@@ -12,7 +12,7 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
   useEffect(() => {
     if (!isInView || value === 0) return;
     const controls = animate(0, value, {
-      duration: 1.5,
+      duration: 1.8,
       ease: [0.25, 0.4, 0.25, 1],
       onUpdate: (v) => setDisplay(Math.round(v)),
     });
@@ -55,7 +55,6 @@ export function SocialProofBar() {
     }
   }, [isInView, stats]);
 
-  // Show static fallback when no real stats yet
   const allZero = !stats || (stats.active_users_now === 0 && stats.sessions_this_month === 0 && stats.completed_sessions === 0);
 
   const fallbackBadges = [
@@ -77,17 +76,18 @@ export function SocialProofBar() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="py-8 px-6 relative z-10"
+      className="py-6 sm:py-8 px-4 sm:px-6 relative z-10"
     >
       <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-center bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl py-4 px-3 sm:px-6">
+        <div className="flex items-center justify-center bg-card/30 backdrop-blur-xl border border-border/30 rounded-2xl py-4 px-3 sm:px-6 hover:border-border/50 transition-colors duration-300">
           {allZero ? (
-            // Trust badges when no real data
             fallbackBadges.map((badge, i) => (
               <div key={i} className="flex items-center min-w-0">
-                {i > 0 && <div className="w-px h-8 bg-border/50 mx-2 sm:mx-4 md:mx-6 shrink-0" />}
+                {i > 0 && <div className="w-px h-8 bg-border/30 mx-2 sm:mx-4 md:mx-6 shrink-0" />}
                 <div className="flex items-center gap-1.5 sm:gap-2">
-                  <badge.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-coral shrink-0" />
+                  <div className="w-6 h-6 rounded-full bg-coral/10 flex items-center justify-center shrink-0">
+                    <badge.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-coral" />
+                  </div>
                   <span className="text-xs sm:text-sm font-semibold text-foreground">{badge.label}</span>
                 </div>
               </div>
@@ -95,10 +95,12 @@ export function SocialProofBar() {
           ) : (
             displayStats!.map((stat, i) => (
               <div key={i} className="flex items-center min-w-0">
-                {i > 0 && <div className="w-px h-8 bg-border/50 mx-2 sm:mx-4 md:mx-6 shrink-0" />}
+                {i > 0 && <div className="w-px h-8 bg-border/30 mx-2 sm:mx-4 md:mx-6 shrink-0" />}
                 <div className="flex flex-col items-center gap-1 min-w-0">
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-coral shrink-0" />
+                    <div className="w-6 h-6 rounded-full bg-coral/10 flex items-center justify-center shrink-0">
+                      <stat.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-coral" />
+                    </div>
                     <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                   </div>
                   <span className="text-[10px] sm:text-xs text-muted-foreground font-medium text-center leading-tight">{stat.label}</span>

@@ -10,7 +10,7 @@ interface RevealTextProps {
 export const RevealText = forwardRef<HTMLDivElement, RevealTextProps>(
   function RevealText({ children, className = '', delay = 0 }, forwardedRef) {
     const internalRef = useRef<HTMLDivElement>(null);
-    const isInView = useInView(internalRef, { once: true, margin: "-100px" });
+    const isInView = useInView(internalRef, { once: true, margin: "-80px" });
     
     return (
       <motion.div
@@ -22,9 +22,9 @@ export const RevealText = forwardRef<HTMLDivElement, RevealTextProps>(
             forwardedRef.current = node;
           }
         }}
-        initial={{ opacity: 0, y: 60 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
-        transition={{ duration: 0.8, delay, ease: [0.25, 0.4, 0.25, 1] }}
+        initial={{ opacity: 0, y: 40, filter: 'blur(6px)' }}
+        animate={isInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, y: 40, filter: 'blur(6px)' }}
+        transition={{ duration: 0.7, delay, ease: [0.25, 0.4, 0.25, 1] }}
         className={className}
       >
         {children}
