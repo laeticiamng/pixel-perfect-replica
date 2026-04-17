@@ -227,6 +227,7 @@ export default function LandingPage() {
       <main id="main-content" role="main">
         <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
         <SocialProofBar />
+        <InBriefSection />
         <HowItWorksSection />
 
         {/* Before/After comparison */}
@@ -248,6 +249,7 @@ export default function LandingPage() {
         <LandingTestimonialsSection />
         <PricingPreviewSection />
         <TrustedBySection />
+        <LandingFAQSection />
         <FinalCTASection />
         <ErasmusFeaturesSection />
       </main>
