@@ -179,6 +179,18 @@ export default function LandingPage() {
     },
   };
 
+  // FAQ JSON-LD — sourced from the same data as the visible LandingFAQSection
+  const landingFaqs = getLandingFaqsForJsonLd(t);
+  const jsonLdFaq = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: landingFaqs.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+
   return (
     <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
       {/* Skip to content — accessibility */}
