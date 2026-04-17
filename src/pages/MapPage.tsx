@@ -16,7 +16,6 @@ import {
   SearchingIndicator,
   InteractiveMap,
   SignalHistoryPanel,
-  EmptyRadarState,
   LocationPermissionScreen,
   RadarSonarView,
 } from '@/components/map';
@@ -444,15 +443,9 @@ export default function MapPage() {
           )}
         </div>
 
-        {/* Interactive Map / Radar */}
-        <div className="flex-1 min-h-0 px-4 sm:px-6" data-tour="map-area">
-          {filteredNearbyUsers.length === 0 && !isActive ? (
-            <div className="flex flex-col items-center justify-center h-full">
-              <EmptyRadarState
-                onActivateSignal={handleSignalToggle}
-              />
-            </div>
-          ) : mapMode === 'map' ? (
+        {/* Interactive Map / Radar — always visible. Empty state shown as overlay. */}
+        <div className="flex-1 min-h-0 px-4 sm:px-6 relative" data-tour="map-area">
+          {mapMode === 'map' ? (
             <InteractiveMap
               nearbyUsers={filteredNearbyUsers.map(u => ({
                 id: u.id,
@@ -494,6 +487,33 @@ export default function MapPage() {
               className="w-full h-full"
               onUserClick={handleUserClick}
             />
+          )}
+
+          {/* Empty-state overlay — shown only when no one around and signal off */}
+          {filteredNearbyUsers.length === 0 && !isActive && mapMode === 'map' && (
+            <div className="pointer-events-none absolute inset-x-4 sm:inset-x-6 bottom-4 z-10">
+              <div className="pointer-events-auto glass-strong rounded-2xl p-4 shadow-medium border border-border/40">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-coral/15 flex items-center justify-center shrink-0">
+                    <Radio className="h-5 w-5 text-coral" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-foreground mb-0.5">
+                      {t('map.noOneAround')}
+                    </p>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      {t('map.beTheFirst')}
+                    </p>
+                    <button
+                      onClick={handleSignalToggle}
+                      className="text-xs font-semibold text-coral hover:text-coral-dark transition-colors"
+                    >
+                      {t('map.activateMySignal')} →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
