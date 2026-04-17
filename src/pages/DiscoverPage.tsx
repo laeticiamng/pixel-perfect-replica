@@ -33,6 +33,7 @@ import { fr, enUS, de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { BottomNav } from '@/components/BottomNav';
 import toast from 'react-hot-toast';
+import { track, report } from '@/lib/observability';
 
 interface DiscoveredUser {
   user_id: string;
@@ -72,6 +73,7 @@ export default function DiscoverPage() {
     if (!user) return;
     setIsLoading(true);
     setFetchError(false);
+    const startedAt = performance.now();
     try {
       const { data, error } = await supabase.rpc('discover_users', {
         p_activity: selectedActivity,
@@ -80,9 +82,17 @@ export default function DiscoverPage() {
         p_limit: 30,
       });
       if (error) throw error;
-      setUsers((data ?? []) as DiscoveredUser[]);
+      const results = (data ?? []) as DiscoveredUser[];
+      setUsers(results);
+      track('discover.search', {
+        result_count: results.length,
+        has_activity_filter: !!selectedActivity,
+        has_university_filter: !!selectedUniversity,
+        has_search: !!searchQuery,
+        duration_ms: Math.round(performance.now() - startedAt),
+      }, { category: 'discovery' });
     } catch (err) {
-      console.error('Error fetching users:', err);
+      report(err, { component: 'DiscoverPage.fetchUsers', severity: 'error' });
       setFetchError(true);
       toast.error(t('errors.generic'));
     } finally {
