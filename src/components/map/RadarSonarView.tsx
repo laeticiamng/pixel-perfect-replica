@@ -46,7 +46,7 @@ export const RadarSonarView = forwardRef<HTMLDivElement, RadarSonarViewProps>(fu
   );
 
   return (
-    <div className={cn('relative rounded-2xl overflow-hidden bg-gradient-to-b from-deep-blue-light/30 to-background border border-border', className)}>
+    <div ref={ref} className={cn('relative rounded-2xl overflow-hidden bg-gradient-to-b from-deep-blue-light/30 to-background border border-border', className)}>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         {[20, 40, 60, 80].map((size, idx) => (
           <div
@@ -85,4 +85,5 @@ export const RadarSonarView = forwardRef<HTMLDivElement, RadarSonarViewProps>(fu
       </div>
     </div>
   );
-}
+});
+
