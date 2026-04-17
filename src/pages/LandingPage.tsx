@@ -21,11 +21,9 @@ import {
   SocialProofBar,
   PricingPreviewSection,
   LandingTestimonialsSection,
-  ErasmusFeaturesSection,
   ComparisonSection,
   TrustedBySection,
   PromoVideoSection,
-  InBriefSection,
   LandingFAQSection,
   getLandingFaqsForJsonLd,
 } from '@/components/landing';
