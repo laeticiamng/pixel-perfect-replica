@@ -444,7 +444,7 @@ export default function MapPage() {
         </div>
 
         {/* Interactive Map / Radar — always visible. Empty state shown as overlay. */}
-        <div className="flex-1 min-h-0 px-4 sm:px-6 relative" data-tour="map-area">
+        <div className="flex-1 min-h-[420px] sm:min-h-[520px] px-4 sm:px-6 relative" data-tour="map-area">
           {mapMode === 'map' ? (
             <InteractiveMap
               nearbyUsers={filteredNearbyUsers.map(u => ({
