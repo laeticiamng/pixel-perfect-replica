@@ -62,6 +62,7 @@ export default function DiscoverPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const dateLocale = locale === 'fr' ? fr : locale === 'de' ? de : enUS;
+  const { connections, requestConnection } = useConnections();
 
   const [users, setUsers] = useState<DiscoveredUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,6 +73,45 @@ export default function DiscoverPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [fetchError, setFetchError] = useState(false);
   const [sortMode, setSortMode] = useState<SortMode>('smart');
+  const [pendingTargets, setPendingTargets] = useState<Set<string>>(new Set());
+
+  /** Map<targetUserId, status> derived from existing connections */
+  const connectionStatus = useMemo(() => {
+    const map = new Map<string, 'pending' | 'accepted' | 'declined'>();
+    if (!user) return map;
+    for (const c of connections) {
+      const other = c.user_a === user.id ? c.user_b : c.user_a;
+      map.set(other, c.status as 'pending' | 'accepted' | 'declined');
+    }
+    return map;
+  }, [connections, user]);
+
+  const handleSendInterest = useCallback(
+    async (targetUserId: string, fallbackActivity: ActivityType | null) => {
+      if (!user) return;
+      const activity = (selectedActivity ?? fallbackActivity) as ActivityType | null;
+      if (!activity) {
+        toast.error(t('discover.selectActivityFirst'));
+        return;
+      }
+      setPendingTargets((prev) => new Set(prev).add(targetUserId));
+      audit('discover.send_interest', { type: 'connection', id: targetUserId }, { activity });
+      const result = await requestConnection(targetUserId, null, activity);
+      if (result.success) {
+        toast.success(t('discover.interestSent'));
+        track('discover.interest_sent', { activity }, { category: 'discovery' });
+      } else {
+        report(result.error, { component: 'DiscoverPage.handleSendInterest', severity: 'warn' });
+        toast.error(t('discover.interestError'));
+        setPendingTargets((prev) => {
+          const next = new Set(prev);
+          next.delete(targetUserId);
+          return next;
+        });
+      }
+    },
+    [user, selectedActivity, requestConnection, t]
+  );
 
   const fetchUsers = useCallback(async () => {
     if (!user) return;
