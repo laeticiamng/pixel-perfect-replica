@@ -1,15 +1,15 @@
+/// <reference types="node" />
 /**
  * Static contract tests for the `audit_sensitive_profile_changes` trigger.
  *
- * Goal: lock the *intent* (which fields trigger an audit row, what shape the
- * metadata has) without requiring a live DB. A full integration test would
- * need service-role credentials and a writable test profile, which we don't
- * expose to the client bundle. Migration drift is detected via the migration
- * file content, which is committed and read-only.
+ * Goal: lock the *intent* (which fields trigger an audit row) without needing
+ * a live DB. The migration file is the source of truth — we assert its shape.
  */
 import { describe, it, expect } from 'vitest';
-import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { readFileSync, readdirSync } = require('node:fs') as typeof import('node:fs');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { join } = require('node:path') as typeof import('node:path');
 
 const MIGRATIONS_DIR = join(process.cwd(), 'supabase/migrations');
 
