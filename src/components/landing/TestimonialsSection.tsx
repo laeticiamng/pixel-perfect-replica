@@ -75,7 +75,7 @@ function Marquee({ items, direction = 'left', betaLabel }: { items: Testimonial[
 
 export const LandingTestimonialsSection = forwardRef<HTMLElement>(function LandingTestimonialsSection(_props, ref) {
   const { t } = useTranslation();
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[] | null>(null);
 
   useEffect(() => {
     supabase
@@ -84,24 +84,18 @@ export const LandingTestimonialsSection = forwardRef<HTMLElement>(function Landi
       .eq('is_approved', true)
       .limit(12)
       .then(({ data }) => {
-        if (data && data.length > 0) {
-          setTestimonials(data);
-        } else {
-          setTestimonials([
-            { id: 'f1', quote: t('landing.fallbackTestimonial1'), activity: t('landing.fallbackActivity1'), name: 'Lucas' },
-            { id: 'f2', quote: t('landing.fallbackTestimonial2'), activity: t('landing.fallbackActivity2'), name: 'Maria' },
-            { id: 'f3', quote: t('landing.fallbackTestimonial3'), activity: t('landing.fallbackActivity3'), name: 'Thomas' },
-            { id: 'f4', quote: t('landing.fallbackTestimonial4'), activity: t('landing.fallbackActivity4'), name: 'Sophie' },
-          ]);
-        }
+        // Only show real, approved testimonials. If none, hide the section
+        // entirely — fake names would destroy credibility.
+        setTestimonials(data && data.length > 0 ? data : []);
       });
-  }, [t]);
+  }, []);
+
+  // Hide entirely until we have real testimonials.
+  if (!testimonials || testimonials.length === 0) return null;
 
   const half = Math.ceil(testimonials.length / 2);
   const row1 = testimonials.slice(0, half);
   const row2 = testimonials.slice(half);
-  const isFallback = testimonials.length > 0 && testimonials[0].name != null;
-  const betaLabel = isFallback ? t('landing.betaTester') : undefined;
 
   return (
     <section ref={ref} className="py-14 sm:py-16 relative z-10 overflow-hidden">
@@ -114,8 +108,8 @@ export const LandingTestimonialsSection = forwardRef<HTMLElement>(function Landi
       </div>
 
       <div className="space-y-3 sm:space-y-4">
-        <Marquee items={row1} direction="left" betaLabel={betaLabel} />
-        {row2.length > 0 && <Marquee items={row2} direction="right" betaLabel={betaLabel} />}
+        <Marquee items={row1} direction="left" />
+        {row2.length > 0 && <Marquee items={row2} direction="right" />}
       </div>
     </section>
   );

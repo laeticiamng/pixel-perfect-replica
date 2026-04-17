@@ -30,7 +30,7 @@ export function LandingHeader() {
           </span>
         </Link>
 
-        {/* Desktop nav */}
+        {/* Desktop nav — kept lean: How it works · Pricing · Sign in · Start CTA */}
         <nav className="hidden sm:flex items-center gap-0.5 sm:gap-1 shrink-0" aria-label="Main navigation">
           <Button
             variant="ghost"
@@ -40,26 +40,17 @@ export function LandingHeader() {
           >
             {t('landing.seeHowItWorks')}
           </Button>
-          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 rounded-full">
-            <Link to="/about">{t('about.title')}</Link>
-          </Button>
           <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 hidden md:inline-flex rounded-full">
             <Link to="/premium">{t('premium.title')}</Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 hidden md:inline-flex rounded-full">
-            <Link to="/contact">{t('landing.contact')}</Link>
-          </Button>
-          <Button asChild variant="ghost" size="sm" className="text-coral hover:text-coral-dark hover:bg-coral/10 gap-1.5 px-2.5 sm:px-3 rounded-full">
-            <Link to="/install">
-              <Download className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">{t('landing.install')}</span>
-            </Link>
           </Button>
           <LanguageToggle />
           <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground text-xs sm:text-sm px-2.5 sm:px-3 whitespace-nowrap rounded-full">
             <Link to="/onboarding" state={{ isLogin: true }}>
               {t('auth.signIn')}
             </Link>
+          </Button>
+          <Button asChild size="sm" className="bg-gradient-to-r from-coral to-coral-light text-white hover:shadow-lg hover:shadow-coral/25 text-xs sm:text-sm px-3 sm:px-4 rounded-full font-semibold ml-1">
+            <Link to="/onboarding">{t('common.cta.startFree') || t('landing.startNow')}</Link>
           </Button>
         </nav>
 
