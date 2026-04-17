@@ -470,119 +470,164 @@ interface UserCardProps {
   dateLocale: typeof enUS;
   t: (key: string, vars?: Record<string, unknown>) => string;
   onViewProfile: () => void;
+  onSendInterest: () => void;
+  connectionStatus: 'pending' | 'accepted' | 'declined' | null;
+  isSending: boolean;
 }
 
-function UserCard({ user, index, dateLocale, t, onViewProfile }: UserCardProps) {
+function UserCard({
+  user,
+  index,
+  dateLocale,
+  t,
+  onViewProfile,
+  onSendInterest,
+  connectionStatus,
+  isSending,
+}: UserCardProps) {
   const activity = user.current_activity
     ? ACTIVITIES.find((item) => item.id === user.current_activity)
     : null;
 
+  const ctaState: 'idle' | 'pending' | 'accepted' | 'sending' =
+    isSending ? 'sending'
+    : connectionStatus === 'accepted' ? 'accepted'
+    : connectionStatus === 'pending' ? 'pending'
+    : 'idle';
+
   return (
-    <motion.button
-      type="button"
+    <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04, duration: 0.3 }}
-      onClick={onViewProfile}
-      aria-label={`${t('discover.viewProfile')} ${user.first_name || ''}`}
+      role="group"
+      aria-label={`${user.first_name || ''}`}
       className="premium-3d-card group w-full overflow-hidden rounded-[1.75rem] border border-white/10 bg-card/80 text-left transition-all"
     >
-      <div className="premium-3d-surface flex items-center gap-4 p-4">
-        <div className="relative shrink-0">
-          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-background bg-muted shadow-sm transition-shadow group-hover:shadow-md">
-            {user.avatar_url ? (
-              <img
-                src={user.avatar_url}
-                alt={user.first_name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <span className="text-xl font-bold text-foreground">
-                {(user.first_name ?? '?').charAt(0).toUpperCase()}
-              </span>
-            )}
-          </div>
-          {user.is_online_now && (
-            <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-background bg-signal-green">
-              <div className="absolute inset-0 animate-ping rounded-full bg-signal-green opacity-40" />
-            </div>
-          )}
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="truncate font-semibold text-foreground">{user.first_name}</h3>
-            <VerificationBadges userId={user.user_id} />
-            <Badge variant="outline" className="border-coral/20 bg-coral/10 text-coral">
-              {user.matchScore} {t('discover.compatibilityScore')}
-            </Badge>
-            {user.is_online_now && activity && (
-              <Badge variant="outline" className="shrink-0 border-signal-green/30 bg-signal-green/10 text-xs text-signal-green">
-                {activity.emoji} {t(activity.labelKey)}
-              </Badge>
-            )}
-          </div>
-
-          <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-            {user.university && (
-              <span className="flex items-center gap-1 truncate">
-                <GraduationCap className="h-3.5 w-3.5 shrink-0" />
-                {user.university}
-              </span>
-            )}
-            {!user.is_online_now && user.last_active_at && (
-              <span className="flex shrink-0 items-center gap-1">
-                <Wifi className="h-3.5 w-3.5" />
-                {formatDistanceToNow(new Date(user.last_active_at), { addSuffix: true, locale: dateLocale })}
-              </span>
-            )}
-          </div>
-
-          {user.reasons.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {user.reasons.slice(0, 3).map((reason) => (
-                <Badge key={reason} variant="secondary" className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-muted-foreground">
-                  {reason}
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          {user.favorite_activities && user.favorite_activities.length > 0 && !user.is_online_now && (
-            <div className="mt-2 flex items-center gap-1.5">
-              {user.favorite_activities.slice(0, 4).map((activityId) => {
-                const favoriteActivity = ACTIVITIES.find((item) => item.id === activityId);
-                return favoriteActivity ? (
-                  <span key={activityId} className="text-sm" title={t(favoriteActivity.labelKey)}>
-                    {favoriteActivity.emoji}
-                  </span>
-                ) : null;
-              })}
-              {user.favorite_activities.length > 4 && (
-                <span className="text-xs text-muted-foreground">+{user.favorite_activities.length - 4}</span>
+      <button
+        type="button"
+        onClick={onViewProfile}
+        aria-label={`${t('discover.viewProfile')} ${user.first_name || ''}`}
+        className="w-full text-left"
+      >
+        <div className="premium-3d-surface flex items-center gap-4 p-4">
+          <div className="relative shrink-0">
+            <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-background bg-muted shadow-sm transition-shadow group-hover:shadow-md">
+              {user.avatar_url ? (
+                <img
+                  src={user.avatar_url}
+                  alt={user.first_name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="text-xl font-bold text-foreground">
+                  {(user.first_name ?? '?').charAt(0).toUpperCase()}
+                </span>
               )}
             </div>
-          )}
-        </div>
+            {user.is_online_now && (
+              <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-background bg-signal-green">
+                <div className="absolute inset-0 animate-ping rounded-full bg-signal-green opacity-40" />
+              </div>
+            )}
+          </div>
 
-        <div className="flex shrink-0 flex-col items-end gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-2xl text-muted-foreground transition-all group-hover:bg-coral/10 group-hover:text-coral"
-            onClick={(event) => {
-              event.stopPropagation();
-              onViewProfile();
-            }}
-            aria-label={t('discover.viewProfile')}
-          >
-            <UserPlus className="h-5 w-5" />
-          </Button>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="truncate font-semibold text-foreground">{user.first_name}</h3>
+              <VerificationBadges userId={user.user_id} />
+              <Badge variant="outline" className="border-coral/20 bg-coral/10 text-coral">
+                {user.matchScore} {t('discover.compatibilityScore')}
+              </Badge>
+              {user.is_online_now && activity && (
+                <Badge variant="outline" className="shrink-0 border-signal-green/30 bg-signal-green/10 text-xs text-signal-green">
+                  {activity.emoji} {t(activity.labelKey)}
+                </Badge>
+              )}
+            </div>
+
+            <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              {user.university && (
+                <span className="flex items-center gap-1 truncate">
+                  <GraduationCap className="h-3.5 w-3.5 shrink-0" />
+                  {user.university}
+                </span>
+              )}
+              {!user.is_online_now && user.last_active_at && (
+                <span className="flex shrink-0 items-center gap-1">
+                  <Wifi className="h-3.5 w-3.5" />
+                  {formatDistanceToNow(new Date(user.last_active_at), { addSuffix: true, locale: dateLocale })}
+                </span>
+              )}
+            </div>
+
+            {user.reasons.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {user.reasons.slice(0, 3).map((reason) => (
+                  <Badge key={reason} variant="secondary" className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-muted-foreground">
+                    {reason}
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            {user.favorite_activities && user.favorite_activities.length > 0 && !user.is_online_now && (
+              <div className="mt-2 flex items-center gap-1.5">
+                {user.favorite_activities.slice(0, 4).map((activityId) => {
+                  const favoriteActivity = ACTIVITIES.find((item) => item.id === activityId);
+                  return favoriteActivity ? (
+                    <span key={activityId} className="text-sm" title={t(favoriteActivity.labelKey)}>
+                      {favoriteActivity.emoji}
+                    </span>
+                  ) : null;
+                })}
+                {user.favorite_activities.length > 4 && (
+                  <span className="text-xs text-muted-foreground">+{user.favorite_activities.length - 4}</span>
+                )}
+              </div>
+            )}
+          </div>
+
           <div className="hidden rounded-full border border-white/10 bg-white/5 p-2 text-muted-foreground md:flex">
             <ArrowUpRight className="h-4 w-4" />
           </div>
         </div>
+      </button>
+
+      {/* CTA bar — outside the inner button to avoid nested interactive elements */}
+      <div className="flex items-center justify-between gap-2 border-t border-white/5 bg-white/[0.02] px-4 py-2.5">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="rounded-xl text-muted-foreground hover:bg-coral/10 hover:text-coral"
+          onClick={onViewProfile}
+        >
+          <UserPlus className="mr-1 h-4 w-4" />
+          {t('discover.viewProfile')}
+        </Button>
+
+        {ctaState === 'accepted' ? (
+          <Badge variant="outline" className="border-signal-green/30 bg-signal-green/10 text-signal-green">
+            <Check className="mr-1 h-3.5 w-3.5" />
+            {t('discover.interestConnected')}
+          </Badge>
+        ) : ctaState === 'pending' ? (
+          <Badge variant="outline" className="border-coral/30 bg-coral/10 text-coral">
+            <Clock className="mr-1 h-3.5 w-3.5" />
+            {t('discover.interestPending')}
+          </Badge>
+        ) : (
+          <Button
+            size="sm"
+            disabled={ctaState === 'sending'}
+            onClick={onSendInterest}
+            className="rounded-xl bg-coral text-primary-foreground hover:bg-coral/90"
+          >
+            <Send className="mr-1 h-4 w-4" />
+            {t('discover.sendInterest')}
+          </Button>
+        )}
       </div>
-    </motion.button>
+    </motion.div>
   );
 }
