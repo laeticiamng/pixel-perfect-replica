@@ -16,7 +16,6 @@ import {
   SearchingIndicator,
   InteractiveMap,
   SignalHistoryPanel,
-  EmptyRadarState,
   LocationPermissionScreen,
   RadarSonarView,
 } from '@/components/map';
