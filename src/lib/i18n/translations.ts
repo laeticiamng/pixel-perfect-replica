@@ -1798,6 +1798,7 @@ export const translations = {
     errorBoundaryDesc: { en: 'An unexpected error occurred. Please try again.', fr: 'Une erreur inattendue s\'est produite. Réessaie.', de: 'Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.' },
     home: { en: 'Home', fr: 'Accueil', de: 'Startseite' },
     reload: { en: 'Reload', fr: 'Recharger', de: 'Neu laden' },
+    generic: { en: 'Something went wrong. Please try again.', fr: 'Une erreur est survenue. Réessaie.', de: 'Etwas ist schiefgelaufen. Bitte versuche es erneut.' },
   },
 
   // Hooks
@@ -1862,6 +1863,8 @@ export const translations = {
     reasonCampus: { en: 'Relevant campus', fr: 'Campus pertinent', de: 'Relevanter Campus' },
     reasonActivityLive: { en: 'Live activity match', fr: 'Activité live alignée', de: 'Passende Live-Aktivität' },
     reasonActivityAffinity: { en: 'Activity affinity', fr: 'Affinité d’activité', de: 'Aktivitätsaffinität' },
+    showFilters: { en: 'Show filters', fr: 'Afficher les filtres', de: 'Filter anzeigen' },
+    hideFilters: { en: 'Hide filters', fr: 'Masquer les filtres', de: 'Filter ausblenden' },
   },
 
   // Notifications Page
