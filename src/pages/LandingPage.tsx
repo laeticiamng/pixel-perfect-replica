@@ -25,6 +25,9 @@ import {
   ComparisonSection,
   TrustedBySection,
   PromoVideoSection,
+  InBriefSection,
+  LandingFAQSection,
+  getLandingFaqsForJsonLd,
 } from '@/components/landing';
 
 // How It Works — 3 simple steps (replaces old Problem + SignalExplanation)
