@@ -19,7 +19,7 @@ export function AppPreviewSection() {
   const glowOpacity = useTransform(scrollYProgress, [0.2, 0.5], [0, 0.6]);
 
   return (
-    <section ref={sectionRef} className="py-16 sm:py-20 px-6 relative z-10 overflow-hidden">
+    <section ref={sectionRef} id="app-preview" className="py-16 sm:py-20 px-6 relative z-10 overflow-hidden scroll-mt-20">
       <div className="max-w-4xl mx-auto">
         <RevealText>
           <div className="text-center mb-10">
