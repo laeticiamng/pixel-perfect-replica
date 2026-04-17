@@ -101,7 +101,7 @@ export const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props,
           />
           <div className="relative w-11 h-11 rounded-full bg-gradient-to-br from-coral to-coral-dark flex items-center justify-center shadow-lg shadow-coral/30 ring-2 ring-background">
             <span className="text-white font-bold text-sm">
-              {t('landing.radarMe') ?? 'Moi'}
+              {t('landing.radarMe')}
             </span>
           </div>
         </motion.div>
