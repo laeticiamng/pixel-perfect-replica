@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/lib/i18n';
 
@@ -22,7 +22,10 @@ const signalClassMap: Record<RadarUser['signal'], string> = {
   red: 'bg-signal-red',
 };
 
-export function RadarSonarView({ users, maxDistance, className, onUserClick }: RadarSonarViewProps) {
+export const RadarSonarView = forwardRef<HTMLDivElement, RadarSonarViewProps>(function RadarSonarView(
+  { users, maxDistance, className, onUserClick },
+  ref,
+) {
   const { t } = useTranslation();
   const plottedUsers = useMemo(
     () => users.slice(0, 20).map((user, index) => {
