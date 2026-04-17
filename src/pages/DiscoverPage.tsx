@@ -434,16 +434,27 @@ export default function DiscoverPage() {
                 description={t('discover.noResultsDesc')}
               />
             ) : (
-              sortedUsers.map((item, index) => (
-                <UserCard
-                  key={item.user_id}
-                  user={item}
-                  index={index}
-                  dateLocale={dateLocale}
-                  t={t}
-                  onViewProfile={() => navigate(`/reveal/${item.user_id}`)}
-                />
-              ))
+              sortedUsers.map((item, index) => {
+                const status = connectionStatus.get(item.user_id) ?? null;
+                return (
+                  <UserCard
+                    key={item.user_id}
+                    user={item}
+                    index={index}
+                    dateLocale={dateLocale}
+                    t={t}
+                    onViewProfile={() => navigate(`/reveal/${item.user_id}`)}
+                    onSendInterest={() =>
+                      handleSendInterest(
+                        item.user_id,
+                        (item.current_activity ?? item.favorite_activities?.[0] ?? null) as ActivityType | null
+                      )
+                    }
+                    connectionStatus={status}
+                    isSending={pendingTargets.has(item.user_id)}
+                  />
+                );
+              })
             )}
           </div>
         </div>
