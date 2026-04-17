@@ -23,7 +23,6 @@
 
 import { supabase } from '@/integrations/supabase/client';
 import { reportError } from '@/lib/errorReporter';
-import { logger } from '@/lib/logger';
 
 export type Severity = 'info' | 'warn' | 'error' | 'critical';
 
@@ -75,9 +74,8 @@ export function track(
         event_data: { ...payload, severity } as never,
         page_path: typeof window !== 'undefined' ? window.location.pathname : null,
       });
-    } catch (err) {
+    } catch {
       // Silently swallow — analytics must never break the app.
-      logger.debug('observability.track failed', err);
     }
   })();
 }
@@ -94,13 +92,9 @@ export function report(
 
   if (!IS_PROD) {
     // In dev, surface immediately with full context.
-    if (severity === 'critical') {
-      logger.error('[CRITICAL]', options.component ?? 'unknown', error);
-    } else if (severity === 'warn') {
-      logger.warn(options.component ?? 'unknown', error);
-    } else {
-      logger.error(options.component ?? 'unknown', error);
-    }
+    const tag = severity === 'critical' ? '[CRITICAL]' : `[${severity.toUpperCase()}]`;
+    // eslint-disable-next-line no-console
+    console[severity === 'warn' ? 'warn' : 'error'](tag, options.component ?? 'unknown', error);
   }
 
   reportError(error, { component: options.component, level });
