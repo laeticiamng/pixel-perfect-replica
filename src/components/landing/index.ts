@@ -20,3 +20,5 @@ export { TrustedBySection } from './TrustedBySection';
 export { ErasmusFeaturesSection } from './ErasmusFeaturesSection';
 export { ComparisonSection } from './ComparisonSection';
 export { PromoVideoSection } from './PromoVideoSection';
+export { InBriefSection } from './InBriefSection';
+export { LandingFAQSection, getLandingFaqsForJsonLd } from './LandingFAQSection';

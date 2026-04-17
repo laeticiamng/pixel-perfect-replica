@@ -25,6 +25,9 @@ import {
   ComparisonSection,
   TrustedBySection,
   PromoVideoSection,
+  InBriefSection,
+  LandingFAQSection,
+  getLandingFaqsForJsonLd,
 } from '@/components/landing';
 
 // How It Works — 3 simple steps (replaces old Problem + SignalExplanation)
@@ -176,6 +179,18 @@ export default function LandingPage() {
     },
   };
 
+  // FAQ JSON-LD — sourced from the same data as the visible LandingFAQSection
+  const landingFaqs = getLandingFaqsForJsonLd(t);
+  const jsonLdFaq = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: landingFaqs.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  };
+
   return (
     <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
       {/* Skip to content — accessibility */}
@@ -205,12 +220,14 @@ export default function LandingPage() {
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         <script type="application/ld+json">{JSON.stringify(jsonLdApp)}</script>
         <script type="application/ld+json">{JSON.stringify(jsonLdWebSite)}</script>
+        <script type="application/ld+json">{JSON.stringify(jsonLdFaq)}</script>
       </Helmet>
       <FloatingOrbs scrollProgress={scrollYProgress} />
       <LandingHeader />
       <main id="main-content" role="main">
         <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
         <SocialProofBar />
+        <InBriefSection />
         <HowItWorksSection />
 
         {/* Before/After comparison */}
@@ -232,6 +249,7 @@ export default function LandingPage() {
         <LandingTestimonialsSection />
         <PricingPreviewSection />
         <TrustedBySection />
+        <LandingFAQSection />
         <FinalCTASection />
         <ErasmusFeaturesSection />
       </main>
