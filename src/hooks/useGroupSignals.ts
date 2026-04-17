@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { ActivityType } from '@/types/signal';
-import { logger } from '@/lib/logger';
+import { report } from '@/lib/observability';
 
 export interface GroupSignal {
   id: string;
@@ -56,7 +56,7 @@ export function useGroupSignals() {
       setGroupSignals(signals);
       setMyGroupSignal(signals.find(s => s.creator_id === user.id) || null);
     } catch (err) {
-      logger.api.error('group_signals', 'fetch', String(err));
+      report(err, { component: 'useGroupSignals.fetch', severity: 'warn' });
     }
   }, [user, position]);
 

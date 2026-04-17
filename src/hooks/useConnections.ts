@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Database } from '@/integrations/supabase/types';
-import { logger } from '@/lib/logger';
+import { report } from '@/lib/observability';
 
 type ActivityType = Database["public"]["Enums"]["activity_type"];
 type ConnectionRow = Database["public"]["Tables"]["connections"]["Row"];
@@ -27,7 +27,7 @@ export function useConnections() {
       if (error) throw error;
       setConnections(data || []);
     } catch (error) {
-      logger.api.error('connections', 'select', String(error));
+      report(error, { component: 'useConnections.select', severity: 'warn' });
     }
   }, [user]);
 
@@ -46,7 +46,7 @@ export function useConnections() {
       if (error) throw error;
       setPendingRequests(data || []);
     } catch (error) {
-      logger.api.error('connections', 'select-pending', String(error));
+      report(error, { component: 'useConnections.select-pending', severity: 'warn' });
     }
   }, [user]);
 
@@ -86,7 +86,7 @@ export function useConnections() {
         if (error) throw error;
         return { success: true, data };
       } catch (error) {
-        logger.api.error('connections', 'insert', String(error));
+        report(error, { component: 'useConnections.insert', severity: 'warn' });
         return { success: false, error };
       }
     },
@@ -112,7 +112,7 @@ export function useConnections() {
         if (error) throw error;
         return { success: true, data };
       } catch (error) {
-        logger.api.error('connections', 'accept', String(error));
+        report(error, { component: 'useConnections.accept', severity: 'warn' });
         return { success: false, error };
       }
     },
@@ -137,7 +137,7 @@ export function useConnections() {
         if (error) throw error;
         return { success: true, data };
       } catch (error) {
-        logger.api.error('connections', 'decline', String(error));
+        report(error, { component: 'useConnections.decline', severity: 'warn' });
         return { success: false, error };
       }
     },
