@@ -362,7 +362,7 @@ export const translations = {
     trustBadgePrivacy: { en: 'Your location stays private', fr: 'Ta position reste privée', de: 'Dein Standort bleibt privat' },
     trustBadgeFrance: { en: 'GDPR compliant', fr: 'Conforme RGPD', de: 'DSGVO-konform' },
     allRightsReserved: { en: 'All rights reserved.', fr: 'Tous droits réservés.', de: 'Alle Rechte vorbehalten.' },
-    seeHowItWorks: { en: 'See how it works', fr: 'Voir comment ça marche', de: 'So funktioniert\'s' },
+    seeHowItWorks: { en: 'See the demo (30s)', fr: 'Voir la démo (30s)', de: 'Demo ansehen (30s)' },
     betaTester: { en: 'Beta tester', fr: 'Bêta-testeur', de: 'Beta-Tester' },
     signupExpectation: { en: '30 seconds to sign up — then see who\'s around you', fr: '30 secondes pour s\'inscrire — puis vois qui est autour de toi', de: '30 Sekunden zur Anmeldung — dann sieh, wer in deiner Nähe ist' },
     radarMe: { en: 'Me', fr: 'Moi', de: 'Ich' },
