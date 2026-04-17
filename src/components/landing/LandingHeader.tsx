@@ -50,7 +50,7 @@ export function LandingHeader() {
             </Link>
           </Button>
           <Button asChild size="sm" className="bg-gradient-to-r from-coral to-coral-light text-white hover:shadow-lg hover:shadow-coral/25 text-xs sm:text-sm px-3 sm:px-4 rounded-full font-semibold ml-1">
-            <Link to="/onboarding">{t('common.cta.startFree') || t('landing.startNow')}</Link>
+            <Link to="/onboarding">{t('landing.startNow')}</Link>
           </Button>
         </nav>
 
