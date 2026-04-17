@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { report } from '@/lib/observability';
 
 export interface Conversation {
   interaction_id: string;
@@ -27,7 +28,7 @@ export function useConversations() {
       .rpc('get_conversations_with_unread', { p_user_id: user.id });
 
     if (error) {
-      console.error('Failed to fetch conversations:', error.message);
+      report(error, { component: 'useConversations.fetch', severity: 'error' });
       setIsLoading(false);
       return;
     }

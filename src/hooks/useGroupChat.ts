@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { report } from '@/lib/observability';
 
 export interface GroupMessage {
   id: string;
@@ -45,7 +46,7 @@ export function useGroupChat(groupSignalId: string | null) {
 
       setMessages(data || []);
     } catch (err) {
-      console.error('Error fetching group messages:', err);
+      report(err, { component: 'useGroupChat.fetch', severity: 'error' });
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +64,7 @@ export function useGroupChat(groupSignalId: string | null) {
       });
 
     if (error) {
-      console.error('Error sending group message:', error);
+      report(error, { component: 'useGroupChat.send', severity: 'error' });
     }
   };
 
