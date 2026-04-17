@@ -12,6 +12,8 @@ function getAllowedOrigin(req?: Request): string {
   if (
     ALLOWED_ORIGINS.includes(origin) ||
     origin.endsWith(".lovable.app") ||
+    origin.endsWith(".lovableproject.com") ||
+    origin.endsWith(".lovable.dev") ||
     origin.startsWith("http://localhost")
   ) {
     return origin;
