@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * Static contract tests for the `audit_sensitive_profile_changes` trigger.
  *
