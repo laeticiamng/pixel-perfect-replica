@@ -2057,6 +2057,46 @@ export type Database = {
           university: string
         }[]
       }
+      get_public_event: {
+        Args: { p_event_id: string }
+        Returns: {
+          created_at: string
+          description: string
+          ends_at: string
+          event_source: string
+          id: string
+          is_active: boolean
+          latitude: number
+          location_name: string
+          longitude: number
+          max_participants: number
+          name: string
+          organizer_id: string
+          source_label: string
+          source_url: string
+          starts_at: string
+        }[]
+      }
+      get_public_events: {
+        Args: { p_limit?: number; p_only_active?: boolean }
+        Returns: {
+          created_at: string
+          description: string
+          ends_at: string
+          event_source: string
+          id: string
+          is_active: boolean
+          latitude: number
+          location_name: string
+          longitude: number
+          max_participants: number
+          name: string
+          organizer_id: string
+          source_label: string
+          source_url: string
+          starts_at: string
+        }[]
+      }
       get_public_profile: {
         Args: { profile_id: string }
         Returns: {
