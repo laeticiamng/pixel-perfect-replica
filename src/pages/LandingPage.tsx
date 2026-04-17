@@ -21,11 +21,9 @@ import {
   SocialProofBar,
   PricingPreviewSection,
   LandingTestimonialsSection,
-  ErasmusFeaturesSection,
   ComparisonSection,
   TrustedBySection,
   PromoVideoSection,
-  InBriefSection,
   LandingFAQSection,
   getLandingFaqsForJsonLd,
 } from '@/components/landing';
@@ -227,10 +225,11 @@ export default function LandingPage() {
       <main id="main-content" role="main">
         <HeroSection heroOpacity={heroOpacity} heroScale={heroScale} />
         <SocialProofBar />
-        <InBriefSection />
         <HowItWorksSection />
+        <AppPreviewSection />
+        <PromoVideoSection />
 
-        {/* Before/After comparison */}
+        {/* Before/After comparison — kept compact, single emotional pivot */}
         <section className="py-12 px-6 relative z-10">
           <div className="max-w-3xl mx-auto">
             <RevealText>
@@ -241,8 +240,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <AppPreviewSection />
-        <PromoVideoSection />
         <FeaturesSection />
         <UseCasesSection />
         <GuaranteeSection />
@@ -251,7 +248,6 @@ export default function LandingPage() {
         <TrustedBySection />
         <LandingFAQSection />
         <FinalCTASection />
-        <ErasmusFeaturesSection />
       </main>
       <LandingFooter />
     </div>

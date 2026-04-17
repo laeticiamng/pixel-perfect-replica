@@ -155,7 +155,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           </span>
         </MagneticButton>
         <Button
-          onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => document.getElementById('app-preview')?.scrollIntoView({ behavior: 'smooth' }) ?? document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
           variant="outline"
           size="lg"
           className="group h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-xl font-bold rounded-full border-border/50 hover:border-coral/40 bg-card/30 backdrop-blur-sm transition-all duration-300"
