@@ -1865,6 +1865,12 @@ export const translations = {
     reasonActivityAffinity: { en: 'Activity affinity', fr: 'Affinité d’activité', de: 'Aktivitätsaffinität' },
     showFilters: { en: 'Show filters', fr: 'Afficher les filtres', de: 'Filter anzeigen' },
     hideFilters: { en: 'Hide filters', fr: 'Masquer les filtres', de: 'Filter ausblenden' },
+    sendInterest: { en: 'Send interest', fr: "Envoyer un signal d'intérêt", de: 'Interesse senden' },
+    interestSent: { en: 'Interest sent ✨', fr: 'Signal envoyé ✨', de: 'Signal gesendet ✨' },
+    interestPending: { en: 'Pending', fr: 'En attente', de: 'Ausstehend' },
+    interestConnected: { en: 'Connected', fr: 'Connecté', de: 'Verbunden' },
+    interestError: { en: 'Could not send interest', fr: "Impossible d'envoyer le signal", de: 'Signal konnte nicht gesendet werden' },
+    selectActivityFirst: { en: 'Pick an activity to send interest', fr: "Choisis une activité pour envoyer un signal", de: 'Wähle eine Aktivität' },
   },
 
   // Notifications Page
