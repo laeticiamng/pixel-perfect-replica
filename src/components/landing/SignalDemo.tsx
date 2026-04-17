@@ -23,7 +23,7 @@ export const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props,
     {
       name: 'Léa',
       initial: 'L',
-      activity: t('activities.coffee') ?? 'Café',
+      activity: t('activities.eating'),
       icon: Coffee,
       // top-right
       x: 58,
@@ -34,7 +34,7 @@ export const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props,
     {
       name: 'Tom',
       initial: 'T',
-      activity: t('activities.sport') ?? 'Sport',
+      activity: t('activities.sport'),
       icon: Dumbbell,
       // bottom-left
       x: 18,
@@ -45,7 +45,7 @@ export const SignalDemo = forwardRef<HTMLDivElement>(function SignalDemo(_props,
     {
       name: 'Sara',
       initial: 'S',
-      activity: t('activities.studying') ?? 'Révisions',
+      activity: t('activities.studying'),
       icon: BookOpen,
       // bottom-right
       x: 70,
