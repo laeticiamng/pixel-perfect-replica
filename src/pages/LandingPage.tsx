@@ -220,6 +220,7 @@ export default function LandingPage() {
         <meta name="twitter:image" content={`${SITE_URL}/og-image.png`} />
         <script type="application/ld+json">{JSON.stringify(jsonLdApp)}</script>
         <script type="application/ld+json">{JSON.stringify(jsonLdWebSite)}</script>
+        <script type="application/ld+json">{JSON.stringify(jsonLdFaq)}</script>
       </Helmet>
       <FloatingOrbs scrollProgress={scrollYProgress} />
       <LandingHeader />
