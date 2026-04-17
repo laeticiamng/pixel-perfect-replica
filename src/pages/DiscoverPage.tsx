@@ -7,12 +7,15 @@ import {
   GraduationCap,
   RefreshCw,
   Search,
+  Send,
   Sparkles,
   TrendingUp,
   UserPlus,
   Users,
   Wifi,
   AlertTriangle,
+  Check,
+  Clock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
@@ -25,7 +28,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
-import { ACTIVITIES } from '@/types/signal';
+import { ACTIVITIES, ActivityType } from '@/types/signal';
 import { VerificationBadges } from '@/components/social/VerificationBadges';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { formatDistanceToNow } from 'date-fns';
@@ -33,7 +36,8 @@ import { fr, enUS, de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { BottomNav } from '@/components/BottomNav';
 import toast from 'react-hot-toast';
-import { track, report } from '@/lib/observability';
+import { track, report, audit } from '@/lib/observability';
+import { useConnections } from '@/hooks/useConnections';
 
 interface DiscoveredUser {
   user_id: string;
