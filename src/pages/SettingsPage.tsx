@@ -26,6 +26,7 @@ export default function SettingsPage() {
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const { userPreference: reduceMotionPref, systemPreference: reduceMotionSystem, setUserPreference: setReduceMotion } = useReducedMotion();
+  const { userPreference: highContrastPref, systemPreference: highContrastSystem, setUserPreference: setHighContrast } = useHighContrast();
   const {
     settings,
     setGhostMode,
