@@ -115,7 +115,16 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           transition={{ duration: 0.9, delay: 0.2, ease: [0.25, 0.4, 0.25, 1] }}
           className="block"
         >
-          <span className="bg-gradient-to-b from-white to-white/90 bg-clip-text text-transparent drop-shadow-[0_2px_24px_hsl(var(--deep-blue)/0.65)]">
+          {/* Solid white (not bg-clip gradient) so the title stays high-contrast
+              over the coral/purple 3D scene. The previous gradient-clip turned
+              the text grey on warm backgrounds — see screenshot regression. */}
+          <span
+            className="text-white hc-text-strong"
+            style={{
+              textShadow:
+                '0 2px 18px hsl(var(--deep-blue) / 0.85), 0 1px 2px hsl(var(--midnight) / 0.95), 0 0 1px hsl(var(--midnight) / 0.6)',
+            }}
+          >
             {t('landing.seeWhoIsOpen')}
           </span>
         </motion.span>
