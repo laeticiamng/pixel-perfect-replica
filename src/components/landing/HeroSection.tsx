@@ -70,8 +70,15 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
       style={{ opacity: heroOpacity, scale: heroScale }}
       className="min-h-screen min-h-[100dvh] flex flex-col items-center justify-center px-4 sm:px-6 relative z-10 pt-16"
     >
-      {/* Radial glow behind hero content */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-coral/[0.04] rounded-full blur-[120px] pointer-events-none" />
+      {/* Readability scrim — dark vignette over the 3D scene so text always pops.
+          Layered: full-page top→bottom darkener + centered radial glow behind text. */}
+      <div className="absolute inset-0 pointer-events-none -z-[1]">
+        <div className="absolute inset-0 bg-gradient-to-b from-deep-blue/55 via-deep-blue/35 to-deep-blue/75" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(var(--deep-blue)/0.7)_0%,_transparent_65%)]" />
+      </div>
+
+      {/* Radial glow behind hero content (coral accent) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-coral/[0.10] rounded-full blur-[140px] pointer-events-none" />
 
       {/* Tagline badge with shimmer border */}
       <motion.div
@@ -80,19 +87,19 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         transition={{ duration: 0.7, delay: 0.1 }}
         className="mb-6 sm:mb-8"
       >
-        <div className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/50 bg-card/50 backdrop-blur-xl hover:border-coral/40 transition-all duration-500 cursor-default overflow-hidden">
+        <div className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-deep-blue/60 backdrop-blur-xl shadow-lg shadow-deep-blue/30 hover:border-coral/50 transition-all duration-500 cursor-default overflow-hidden">
           {/* Animated border shimmer */}
           <motion.div
             className="absolute inset-0 rounded-full"
             style={{
-              background: 'linear-gradient(90deg, transparent 0%, hsl(var(--coral) / 0.15) 50%, transparent 100%)',
+              background: 'linear-gradient(90deg, transparent 0%, hsl(var(--coral) / 0.25) 50%, transparent 100%)',
               backgroundSize: '200% 100%',
             }}
             animate={{ backgroundPositionX: ['0%', '200%'] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
           />
           <Sparkles className="h-3.5 w-3.5 text-coral relative z-10" />
-          <span className="text-xs sm:text-sm font-medium text-muted-foreground relative z-10">
+          <span className="text-xs sm:text-sm font-semibold text-white/95 relative z-10">
             {t('landing.heroTagline')}
           </span>
         </div>
@@ -100,7 +107,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
 
       {/* Main Title — staggered word reveal with blur-in */}
       <motion.h1 
-        className="text-[2.5rem] sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-5 sm:mb-6 leading-[1.05]"
+        className="text-[2.5rem] sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-5 sm:mb-6 leading-[1.05] [text-shadow:0_2px_30px_hsl(var(--deep-blue)/0.6)]"
       >
         <motion.span
           initial={{ opacity: 0, y: 40, filter: 'blur(12px)' }}
@@ -108,7 +115,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           transition={{ duration: 0.9, delay: 0.2, ease: [0.25, 0.4, 0.25, 1] }}
           className="block"
         >
-          <span className="bg-gradient-to-b from-foreground to-foreground/60 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-b from-white to-white/85 bg-clip-text text-transparent drop-shadow-[0_2px_24px_hsl(var(--deep-blue)/0.55)]">
             {t('landing.seeWhoIsOpen')}
           </span>
         </motion.span>
@@ -119,7 +126,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           className="block"
         >
           <span
-            className="hero-shimmer bg-gradient-to-r from-coral via-coral-light via-50% to-coral bg-clip-text text-transparent bg-[length:200%_100%]"
+            className="hero-shimmer bg-gradient-to-r from-coral via-coral-light via-50% to-coral bg-clip-text text-transparent bg-[length:200%_100%] drop-shadow-[0_2px_28px_hsl(var(--coral)/0.4)]"
           >
             {t('landing.openToInteract')}
           </span>
@@ -131,7 +138,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ duration: 0.8, delay: 0.55 }}
-        className="text-base sm:text-lg md:text-xl text-muted-foreground text-center max-w-md sm:max-w-lg mb-8 sm:mb-10 leading-relaxed"
+        className="text-base sm:text-lg md:text-xl text-white/90 text-center max-w-md sm:max-w-lg mb-8 sm:mb-10 leading-relaxed [text-shadow:0_1px_16px_hsl(var(--deep-blue)/0.7)]"
       >
         {t('landing.heroSubtitle')}
       </motion.p>
@@ -158,7 +165,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           onClick={() => document.getElementById('app-preview')?.scrollIntoView({ behavior: 'smooth' }) ?? document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
           variant="outline"
           size="lg"
-          className="group h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-xl font-bold rounded-full border-border/50 hover:border-coral/40 bg-card/30 backdrop-blur-sm transition-all duration-300"
+          className="group h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-xl font-bold rounded-full border-white/25 hover:border-coral/60 bg-deep-blue/55 hover:bg-deep-blue/70 backdrop-blur-md text-white shadow-lg shadow-deep-blue/30 transition-all duration-300"
         >
           {t('landing.seeHowItWorks')}
           <ChevronDown className="ml-2 h-5 w-5 transition-transform group-hover:translate-y-1" />
@@ -170,16 +177,16 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
-        className="mt-5 flex flex-col items-center gap-1.5"
+        className="mt-5 flex flex-col items-center gap-1.5 [text-shadow:0_1px_12px_hsl(var(--deep-blue)/0.8)]"
       >
-        <p className="text-xs text-muted-foreground/60">
+        <p className="text-xs text-white/75">
           {t('landing.signupExpectation')}
         </p>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-white/90">
           {t('landing.alreadyAccount')}{' '}
           <button
             onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
-            className="text-coral hover:underline font-medium transition-colors"
+            className="text-coral-light hover:text-white font-semibold underline-offset-4 hover:underline transition-colors"
           >
             {t('auth.signIn')}
           </button>
