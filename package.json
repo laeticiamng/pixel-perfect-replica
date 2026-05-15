@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "test:a11y": "vitest run src/test/landing-a11y.test.tsx src/test/landing-states.test.tsx src/test/high-contrast.test.tsx"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
