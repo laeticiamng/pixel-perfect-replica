@@ -42,7 +42,7 @@ export function SmoothScroll() {
       cancelAnimationFrame(rafId);
       lenis.destroy();
     };
-  }, [pathname]);
+  }, [pathname, reduceMotion]);
 
   return null;
 }
