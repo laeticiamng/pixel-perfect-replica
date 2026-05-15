@@ -771,3 +771,26 @@ html, body {
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* ===== Reduced-motion accessibility ===========================
+   Triggered by either the OS preference (prefers-reduced-motion: reduce)
+   or the in-app toggle, which sets data-reduce-motion="true" on <html>.
+   Framer Motion respects MotionConfig automatically; this block neutralises
+   plain CSS transitions/animations and Tailwind animate-* utilities. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-reduce-motion="true"] *,
+html[data-reduce-motion="true"] *::before,
+html[data-reduce-motion="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
