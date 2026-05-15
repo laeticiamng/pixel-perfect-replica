@@ -190,7 +190,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
+    <div ref={containerRef} className="landing-page min-h-screen bg-background text-foreground overflow-x-hidden relative">
       {/* Skip to content — accessibility */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-coral focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
         {t('a11y.skipToContent')}
