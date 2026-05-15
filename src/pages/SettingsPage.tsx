@@ -15,6 +15,7 @@ import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useTranslation } from '@/lib/i18n';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useHighContrast } from '@/hooks/useHighContrast';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
