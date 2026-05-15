@@ -20,7 +20,7 @@ import { motion } from 'framer-motion';
 // Reach into framer-motion's context to assert the resolved reducedMotion
 // value the runtime is actually using. This is more deterministic than
 // inspecting inline styles, which depend on jsdom's RAF cadence.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// @ts-expect-error — deep import, no type declarations
 import { MotionConfigContext } from 'framer-motion/dist/es/context/MotionConfigContext.mjs';
 import { MotionAccessibilityProvider } from '@/components/MotionAccessibilityProvider';
 import { SmoothScroll } from '@/components/SmoothScroll';
