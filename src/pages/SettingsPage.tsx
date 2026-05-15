@@ -157,6 +157,43 @@ export default function SettingsPage() {
           <ThemeToggle />
         </motion.div>
 
+        {/* Reduce Motion (accessibility) */}
+        <motion.div
+          className="glass rounded-xl p-4"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+          }}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="font-medium text-foreground">{t('settings.reduceMotion')}</span>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {t('settings.reduceMotionDesc')}
+                </p>
+                {reduceMotionSystem && (
+                  <p className="text-xs text-muted-foreground/80 mt-1 italic">
+                    {t('settings.reduceMotionSystem')}
+                  </p>
+                )}
+              </div>
+            </div>
+            <Switch
+              checked={reduceMotionPref || reduceMotionSystem}
+              disabled={reduceMotionSystem}
+              onCheckedChange={(checked) => {
+                setReduceMotion(checked);
+                toast.success(t('settings.settingUpdated'));
+              }}
+              aria-label={t('settings.reduceMotion')}
+            />
+          </div>
+        </motion.div>
+
         {/* Quick Access Section */}
         <div className="glass rounded-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-border/50">
