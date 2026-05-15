@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download, BarChart3, Globe, ArrowLeft } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download, BarChart3, Globe, ArrowLeft, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -14,6 +14,7 @@ import { useUserSettings } from '@/hooks/useUserSettings';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useTranslation } from '@/lib/i18n';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
@@ -23,6 +24,7 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
+  const { userPreference: reduceMotionPref, systemPreference: reduceMotionSystem, setUserPreference: setReduceMotion } = useReducedMotion();
   const {
     settings,
     setGhostMode,
