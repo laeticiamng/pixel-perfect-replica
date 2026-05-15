@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
-    "test:a11y": "vitest run src/test/landing-a11y.test.tsx src/test/landing-states.test.tsx src/test/high-contrast.test.tsx"
+    "test:a11y": "vitest run src/test/landing-a11y.test.tsx src/test/landing-states.test.tsx src/test/high-contrast.test.tsx",
+    "test:visual:check": "node scripts/check-visual-baselines.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
