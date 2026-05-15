@@ -11,11 +11,17 @@ import { useHighContrast } from '@/hooks/useHighContrast';
  */
 export function MotionAccessibilityProvider({ children }: PropsWithChildren) {
   const { reduceMotion } = useReducedMotion();
+  const { highContrast } = useHighContrast();
 
   useEffect(() => {
     if (typeof document === 'undefined') return;
     document.documentElement.dataset.reduceMotion = reduceMotion ? 'true' : 'false';
   }, [reduceMotion]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.dataset.highContrast = highContrast ? 'true' : 'false';
+  }, [highContrast]);
 
   return (
     <MotionConfig reducedMotion={reduceMotion ? 'always' : 'never'}>
