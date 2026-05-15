@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, Loader2 } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
 
@@ -15,9 +15,10 @@ export function PromoVideoSection() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   // Lazy-attach the video src only once the section enters the viewport
-  // so the 1.9 MB MP4 never blocks the initial home paint.
+  // so the ~500 KB MP4 never blocks the initial home paint.
   useEffect(() => {
     if (isInView) setShouldLoad(true);
   }, [isInView]);
@@ -78,7 +79,23 @@ export function PromoVideoSection() {
             onEnded={() => setIsPlaying(false)}
             onPause={() => setIsPlaying(false)}
             onPlay={() => { setIsPlaying(true); setHasStarted(true); }}
-          />
+            onLoadedData={() => setIsReady(true)}
+            aria-label={locale === 'fr' ? 'Vidéo de présentation Nearvity' : 'Nearvity presentation video'}
+          >
+            {/* Text/image fallback for browsers without <video> support or before lazy-load */}
+            <img
+              src={VIDEO_POSTER}
+              alt={locale === 'fr'
+                ? 'Aperçu Nearvity : signal, match, rencontre'
+                : 'Nearvity preview: signal, match, meet'}
+              className="w-full h-full object-cover"
+            />
+            <p className="sr-only">
+              {locale === 'fr'
+                ? 'Votre navigateur ne peut pas lire cette vidéo. Active ton signal, vois qui est dispo, retrouve-toi en vrai.'
+                : 'Your browser cannot play this video. Activate your signal, see who is available, meet up in real life.'}
+            </p>
+          </video>
 
           <motion.div
             className="absolute inset-0 flex items-center justify-center bg-black/30"
@@ -92,13 +109,24 @@ export function PromoVideoSection() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              {isPlaying ? (
+              {!shouldLoad || (shouldLoad && !isReady && hasStarted) ? (
+                <Loader2 className="h-8 w-8 sm:h-10 sm:w-10 text-white animate-spin" />
+              ) : isPlaying ? (
                 <Pause className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
               ) : (
                 <Play className="h-8 w-8 sm:h-10 sm:w-10 text-white ml-1" />
               )}
             </motion.div>
           </motion.div>
+
+          {/* Status pill — visible while waiting for lazy-load or buffering */}
+          {(!shouldLoad || !isReady) && (
+            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-background/70 backdrop-blur-sm border border-border/40 text-[11px] font-medium text-muted-foreground">
+              {!shouldLoad
+                ? (locale === 'fr' ? 'Aperçu — clique pour lire' : 'Preview — click to play')
+                : (locale === 'fr' ? 'Chargement…' : 'Loading…')}
+            </div>
+          )}
 
           <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-background/60 to-transparent pointer-events-none" />
         </motion.div>
