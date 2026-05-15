@@ -15,6 +15,7 @@ import { FullPageLoader } from "@/components/shared/FullPageLoader";
 import { ExperienceProvider } from '@/experience';
 import { useTranslation } from "@/lib/i18n";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { MotionAccessibilityProvider } from "@/components/MotionAccessibilityProvider";
 
 // Lazy-loaded pages — each page is code-split into its own chunk
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -341,14 +342,16 @@ const App = () => (
             />
             <BrowserRouter>
               <ExperienceProvider>
-                <AnalyticsProvider>
-                  <HtmlLangSync />
-                  <SmoothScroll />
-                  <CommandPalette />
-                  <AnimatedRoutes />
-                  <CookieConsent />
-                  <OfflineBanner />
-                </AnalyticsProvider>
+                <MotionAccessibilityProvider>
+                  <AnalyticsProvider>
+                    <HtmlLangSync />
+                    <SmoothScroll />
+                    <CommandPalette />
+                    <AnimatedRoutes />
+                    <CookieConsent />
+                    <OfflineBanner />
+                  </AnalyticsProvider>
+                </MotionAccessibilityProvider>
               </ExperienceProvider>
             </BrowserRouter>
           </TooltipProvider>
