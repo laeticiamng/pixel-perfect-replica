@@ -16,12 +16,7 @@ import { useContext } from 'react';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { motion } from 'framer-motion';
-// Reach into framer-motion's context to assert the resolved reducedMotion
-// value the runtime is actually using. This is more deterministic than
-// inspecting inline styles, which depend on jsdom's RAF cadence.
-// @ts-expect-error — deep import, no type declarations
-import { MotionConfigContext } from 'framer-motion/dist/es/context/MotionConfigContext.mjs';
+import { motion, MotionConfigContext } from 'framer-motion';
 import { MotionAccessibilityProvider } from '@/components/MotionAccessibilityProvider';
 import { SmoothScroll } from '@/components/SmoothScroll';
 
