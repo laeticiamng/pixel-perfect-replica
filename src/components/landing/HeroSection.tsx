@@ -87,7 +87,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         transition={{ duration: 0.7, delay: 0.1 }}
         className="mb-6 sm:mb-8"
       >
-        <div className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-deep-blue/60 backdrop-blur-xl shadow-lg shadow-deep-blue/30 hover:border-coral/50 transition-all duration-500 cursor-default overflow-hidden">
+        <div className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 hc-border bg-deep-blue/60 hc-button-bg backdrop-blur-xl shadow-lg shadow-deep-blue/30 hover:border-coral/50 transition-all duration-500 cursor-default overflow-hidden">
           {/* Animated border shimmer */}
           <motion.div
             className="absolute inset-0 rounded-full"
@@ -98,8 +98,8 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
             animate={{ backgroundPositionX: ['0%', '200%'] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
           />
-          <Sparkles className="h-3.5 w-3.5 text-coral relative z-10" />
-          <span className="text-xs sm:text-sm font-semibold text-white/95 relative z-10">
+          <Sparkles className="h-3.5 w-3.5 text-coral hc-coral relative z-10" />
+          <span className="text-xs sm:text-sm font-semibold text-white hc-text-strong relative z-10">
             {t('landing.heroTagline')}
           </span>
         </div>
