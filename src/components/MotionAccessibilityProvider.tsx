@@ -1,6 +1,7 @@
 import { PropsWithChildren, useEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useHighContrast } from '@/hooks/useHighContrast';
 
 /**
  * Wraps the app with framer-motion's MotionConfig so every <motion.*> element
