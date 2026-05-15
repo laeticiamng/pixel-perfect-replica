@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 /**
  * Site-wide smooth scrolling via Lenis.
@@ -14,12 +15,12 @@ const DISABLED_PREFIXES = ['/map', '/binome', '/proximity'];
 
 export function SmoothScroll() {
   const { pathname } = useLocation();
+  const { reduceMotion } = useReducedMotion();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const disabled = reduced || DISABLED_PREFIXES.some((p) => pathname.startsWith(p));
+    const disabled = reduceMotion || DISABLED_PREFIXES.some((p) => pathname.startsWith(p));
     if (disabled) return;
 
     const lenis = new Lenis({
@@ -41,7 +42,7 @@ export function SmoothScroll() {
       cancelAnimationFrame(rafId);
       lenis.destroy();
     };
-  }, [pathname]);
+  }, [pathname, reduceMotion]);
 
   return null;
 }
