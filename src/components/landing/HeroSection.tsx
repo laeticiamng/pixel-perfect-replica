@@ -70,11 +70,11 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
       style={{ opacity: heroOpacity, scale: heroScale }}
       className="min-h-screen min-h-[100dvh] flex flex-col items-center justify-center px-4 sm:px-6 relative z-10 pt-16"
     >
-      {/* Readability scrim — dark vignette over the 3D scene so text always pops.
-          Layered: full-page top→bottom darkener + centered radial glow behind text. */}
+      {/* Readability scrim — harmonized with PromoVideo / AppPreview via the
+          shared `.section-scrim` utility. Mobile gets stronger opacity and
+          high-contrast mode further reinforces it (see index.css). */}
       <div className="absolute inset-0 pointer-events-none -z-[1]">
-        <div className="absolute inset-0 bg-gradient-to-b from-deep-blue/55 via-deep-blue/35 to-deep-blue/75" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(var(--deep-blue)/0.7)_0%,_transparent_65%)]" />
+        <div className="absolute inset-0 section-scrim" />
       </div>
 
       {/* Radial glow behind hero content (coral accent) */}
