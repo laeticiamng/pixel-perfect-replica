@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download, BarChart3, Globe, ArrowLeft, Sparkles } from 'lucide-react';
+import { Ghost, Ruler, Bell, Volume2, Vibrate, Bug, RotateCcw, Palette, Key, Lock, ChevronRight, Shield, Download, BarChart3, Globe, ArrowLeft, Sparkles, Contrast } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNav } from '@/components/BottomNav';
 import { PageLayout } from '@/components/PageLayout';
@@ -15,6 +15,7 @@ import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
 import { useTranslation } from '@/lib/i18n';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useHighContrast } from '@/hooks/useHighContrast';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
@@ -25,6 +26,7 @@ export default function SettingsPage() {
   const { currentRouteIndex, totalRoutes } = useSwipeNavigation();
   const { isAdmin, isLoading: adminLoading } = useAdminCheck();
   const { userPreference: reduceMotionPref, systemPreference: reduceMotionSystem, setUserPreference: setReduceMotion } = useReducedMotion();
+  const { userPreference: highContrastPref, systemPreference: highContrastSystem, setUserPreference: setHighContrast } = useHighContrast();
   const {
     settings,
     setGhostMode,
@@ -190,6 +192,43 @@ export default function SettingsPage() {
                 toast.success(t('settings.settingUpdated'));
               }}
               aria-label={t('settings.reduceMotion')}
+            />
+          </div>
+        </motion.div>
+
+        {/* High contrast (accessibility) */}
+        <motion.div
+          className="glass rounded-xl p-4"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+          }}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
+                <Contrast className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="font-medium text-foreground">{t('settings.highContrast')}</span>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {t('settings.highContrastDesc')}
+                </p>
+                {highContrastSystem && (
+                  <p className="text-xs text-muted-foreground/80 mt-1 italic">
+                    {t('settings.highContrastSystem')}
+                  </p>
+                )}
+              </div>
+            </div>
+            <Switch
+              checked={highContrastPref || highContrastSystem}
+              disabled={highContrastSystem}
+              onCheckedChange={(checked) => {
+                setHighContrast(checked);
+                toast.success(t('settings.settingUpdated'));
+              }}
+              aria-label={t('settings.highContrast')}
             />
           </div>
         </motion.div>

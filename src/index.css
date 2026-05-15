@@ -794,3 +794,69 @@ html[data-reduce-motion="true"] *::after {
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
 }
+
+/* ===== Readability scrim — harmonized across landing sections ============
+   Use `.section-scrim` on an absolute-positioned overlay sitting behind
+   text that floats over the 3D scene, video, or imagery. Mobile gets a
+   slightly stronger baseline because text size shrinks and ambient light
+   is harsher on phones. */
+.section-scrim {
+  background:
+    radial-gradient(ellipse at center, hsl(var(--deep-blue) / 0.55) 0%, transparent 65%),
+    linear-gradient(to bottom, hsl(var(--deep-blue) / 0.45), hsl(var(--deep-blue) / 0.30) 45%, hsl(var(--deep-blue) / 0.70));
+}
+@media (max-width: 640px) {
+  .section-scrim {
+    background:
+      radial-gradient(ellipse at center, hsl(var(--deep-blue) / 0.65) 0%, transparent 60%),
+      linear-gradient(to bottom, hsl(var(--deep-blue) / 0.55), hsl(var(--deep-blue) / 0.40) 45%, hsl(var(--deep-blue) / 0.80));
+  }
+}
+
+.hero-text-shadow-strong {
+  text-shadow: 0 2px 30px hsl(var(--deep-blue) / 0.6), 0 1px 4px hsl(var(--deep-blue) / 0.7);
+}
+.hero-text-shadow-soft {
+  text-shadow: 0 1px 16px hsl(var(--deep-blue) / 0.7), 0 1px 3px hsl(var(--deep-blue) / 0.6);
+}
+@media (max-width: 640px) {
+  /* On mobile, push shadows to ensure WCAG-AA legibility against any 3D
+     frame the user lands on. */
+  .hero-text-shadow-strong { text-shadow: 0 2px 18px hsl(var(--deep-blue) / 0.85), 0 1px 3px hsl(var(--deep-blue) / 0.95); }
+  .hero-text-shadow-soft   { text-shadow: 0 1px 12px hsl(var(--deep-blue) / 0.85), 0 1px 2px hsl(var(--deep-blue) / 0.9); }
+}
+
+/* ===== High-contrast mode ================================================
+   Toggled via the in-app accessibility setting or OS-level
+   prefers-contrast: more / forced-colors: active. Strengthens the scrim,
+   text shadows, borders, and hero accent so even users with low vision
+   land on a fully legible hero. */
+html[data-high-contrast="true"] .section-scrim {
+  background:
+    radial-gradient(ellipse at center, hsl(var(--deep-blue) / 0.85) 0%, hsl(var(--deep-blue) / 0.35) 70%),
+    linear-gradient(to bottom, hsl(var(--deep-blue) / 0.80), hsl(var(--deep-blue) / 0.70) 45%, hsl(var(--deep-blue) / 0.95)) !important;
+}
+html[data-high-contrast="true"] .hero-text-shadow-strong {
+  text-shadow:
+    0 0 1px hsl(var(--deep-blue)),
+    0 2px 6px hsl(var(--deep-blue) / 0.95),
+    0 4px 24px hsl(var(--deep-blue) / 0.9) !important;
+}
+html[data-high-contrast="true"] .hero-text-shadow-soft {
+  text-shadow:
+    0 0 1px hsl(var(--deep-blue)),
+    0 1px 4px hsl(var(--deep-blue) / 0.95),
+    0 2px 18px hsl(var(--deep-blue) / 0.9) !important;
+}
+/* Lift accent colors and outlines */
+html[data-high-contrast="true"] .hc-coral { color: hsl(var(--coral-light)) !important; }
+html[data-high-contrast="true"] .hc-border { border-color: hsl(0 0% 100% / 0.55) !important; }
+html[data-high-contrast="true"] .hc-button-bg {
+  background-color: hsl(var(--deep-blue) / 0.85) !important;
+}
+html[data-high-contrast="true"] .hc-text-strong { color: hsl(0 0% 100%) !important; }
+/* Outline focus indicators get a brighter ring */
+html[data-high-contrast="true"] :focus-visible {
+  outline: 3px solid hsl(var(--coral-light)) !important;
+  outline-offset: 3px !important;
+}

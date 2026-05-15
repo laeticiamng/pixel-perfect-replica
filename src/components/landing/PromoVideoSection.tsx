@@ -98,7 +98,7 @@ export function PromoVideoSection() {
           </video>
 
           <motion.div
-            className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-b from-deep-blue/40 via-deep-blue/55 to-deep-blue/75"
+            className="absolute inset-0 flex flex-col items-center justify-center gap-4 section-scrim"
             initial={false}
             animate={{ opacity: isPlaying && hasStarted ? 0 : 1 }}
             whileHover={{ opacity: 1 }}
