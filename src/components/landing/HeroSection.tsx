@@ -70,8 +70,15 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
       style={{ opacity: heroOpacity, scale: heroScale }}
       className="min-h-screen min-h-[100dvh] flex flex-col items-center justify-center px-4 sm:px-6 relative z-10 pt-16"
     >
-      {/* Radial glow behind hero content */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-coral/[0.04] rounded-full blur-[120px] pointer-events-none" />
+      {/* Readability scrim — dark vignette over the 3D scene so text always pops.
+          Layered: full-page top→bottom darkener + centered radial glow behind text. */}
+      <div className="absolute inset-0 pointer-events-none -z-[1]">
+        <div className="absolute inset-0 bg-gradient-to-b from-deep-blue/55 via-deep-blue/35 to-deep-blue/75" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(var(--deep-blue)/0.7)_0%,_transparent_65%)]" />
+      </div>
+
+      {/* Radial glow behind hero content (coral accent) */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] bg-coral/[0.10] rounded-full blur-[140px] pointer-events-none" />
 
       {/* Tagline badge with shimmer border */}
       <motion.div
@@ -80,19 +87,19 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         transition={{ duration: 0.7, delay: 0.1 }}
         className="mb-6 sm:mb-8"
       >
-        <div className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/50 bg-card/50 backdrop-blur-xl hover:border-coral/40 transition-all duration-500 cursor-default overflow-hidden">
+        <div className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-deep-blue/60 backdrop-blur-xl shadow-lg shadow-deep-blue/30 hover:border-coral/50 transition-all duration-500 cursor-default overflow-hidden">
           {/* Animated border shimmer */}
           <motion.div
             className="absolute inset-0 rounded-full"
             style={{
-              background: 'linear-gradient(90deg, transparent 0%, hsl(var(--coral) / 0.15) 50%, transparent 100%)',
+              background: 'linear-gradient(90deg, transparent 0%, hsl(var(--coral) / 0.25) 50%, transparent 100%)',
               backgroundSize: '200% 100%',
             }}
             animate={{ backgroundPositionX: ['0%', '200%'] }}
             transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
           />
           <Sparkles className="h-3.5 w-3.5 text-coral relative z-10" />
-          <span className="text-xs sm:text-sm font-medium text-muted-foreground relative z-10">
+          <span className="text-xs sm:text-sm font-semibold text-white/95 relative z-10">
             {t('landing.heroTagline')}
           </span>
         </div>
