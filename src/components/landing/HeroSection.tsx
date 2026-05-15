@@ -107,7 +107,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
 
       {/* Main Title — staggered word reveal with blur-in */}
       <motion.h1 
-        className="text-[2.5rem] sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-5 sm:mb-6 leading-[1.05] [text-shadow:0_2px_30px_hsl(var(--deep-blue)/0.6)]"
+        className="text-[2.5rem] sm:text-5xl md:text-7xl lg:text-8xl font-extrabold text-center tracking-tight mb-5 sm:mb-6 leading-[1.05] hero-text-shadow-strong"
       >
         <motion.span
           initial={{ opacity: 0, y: 40, filter: 'blur(12px)' }}
@@ -115,7 +115,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           transition={{ duration: 0.9, delay: 0.2, ease: [0.25, 0.4, 0.25, 1] }}
           className="block"
         >
-          <span className="bg-gradient-to-b from-white to-white/85 bg-clip-text text-transparent drop-shadow-[0_2px_24px_hsl(var(--deep-blue)/0.55)]">
+          <span className="bg-gradient-to-b from-white to-white/90 bg-clip-text text-transparent drop-shadow-[0_2px_24px_hsl(var(--deep-blue)/0.65)]">
             {t('landing.seeWhoIsOpen')}
           </span>
         </motion.span>
@@ -126,7 +126,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           className="block"
         >
           <span
-            className="hero-shimmer bg-gradient-to-r from-coral via-coral-light via-50% to-coral bg-clip-text text-transparent bg-[length:200%_100%] drop-shadow-[0_2px_28px_hsl(var(--coral)/0.4)]"
+            className="hero-shimmer hc-coral bg-gradient-to-r from-coral via-coral-light via-50% to-coral bg-clip-text text-transparent bg-[length:200%_100%] drop-shadow-[0_2px_28px_hsl(var(--coral)/0.45)]"
           >
             {t('landing.openToInteract')}
           </span>
@@ -138,7 +138,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ duration: 0.8, delay: 0.55 }}
-        className="text-base sm:text-lg md:text-xl text-white/90 text-center max-w-md sm:max-w-lg mb-8 sm:mb-10 leading-relaxed [text-shadow:0_1px_16px_hsl(var(--deep-blue)/0.7)]"
+        className="text-base sm:text-lg md:text-xl text-white hc-text-strong text-center max-w-md sm:max-w-lg mb-8 sm:mb-10 leading-relaxed hero-text-shadow-soft"
       >
         {t('landing.heroSubtitle')}
       </motion.p>
