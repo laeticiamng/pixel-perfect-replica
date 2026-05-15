@@ -870,3 +870,65 @@ html[data-high-contrast="true"] :focus-visible {
 html[data-high-contrast="true"] .landing-veil {
   background: linear-gradient(180deg, hsl(var(--deep-blue) / 0.6) 0%, hsl(var(--deep-blue) / 0.75) 50%, hsl(var(--deep-blue) / 0.9) 100%) !important;
 }
+
+/* ===== Global keyboard focus — sits ABOVE the landing veil ================
+   The fixed `.landing-veil` is z-[1] / pointer-events-none, but to guarantee
+   focus rings stay visible against any 3D frame we draw a high-contrast
+   double ring (coral inner + white halo) on every focusable element. */
+:focus-visible {
+  outline: 2px solid hsl(var(--coral));
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px hsl(0 0% 100% / 0.35);
+  border-radius: inherit;
+}
+html[data-high-contrast="true"] :focus-visible {
+  outline: 3px solid hsl(var(--coral-light)) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px hsl(0 0% 100% / 0.55) !important;
+}
+
+/* ===== Landing-page-wide readability harmonization =======================
+   Every section on the landing sits over the same fixed 3D scene + veil, so
+   we apply consistent text shadows and hover/focus contrast to headings,
+   paragraphs and interactive elements regardless of which section file
+   renders them. Scoped to `.landing-page` so the rest of the app (settings,
+   map, etc.) is untouched. */
+.landing-page h1,
+.landing-page h2,
+.landing-page h3 {
+  text-shadow: 0 1px 14px hsl(var(--deep-blue) / 0.55), 0 1px 3px hsl(var(--deep-blue) / 0.6);
+}
+.landing-page p,
+.landing-page li,
+.landing-page label {
+  text-shadow: 0 1px 8px hsl(var(--deep-blue) / 0.45);
+}
+@media (max-width: 640px) {
+  .landing-page h1,
+  .landing-page h2,
+  .landing-page h3 { text-shadow: 0 1px 10px hsl(var(--deep-blue) / 0.85), 0 1px 2px hsl(var(--deep-blue) / 0.95); }
+  .landing-page p,
+  .landing-page li,
+  .landing-page label { text-shadow: 0 1px 6px hsl(var(--deep-blue) / 0.75); }
+}
+/* Lift muted secondary copy to AA on the veil — keeps hierarchy but never
+   drops below ~5.5:1 against the deep-blue scrim. */
+.landing-page .text-muted-foreground { color: hsl(220 14% 82%); }
+html[data-high-contrast="true"] .landing-page .text-muted-foreground {
+  color: hsl(0 0% 100%) !important;
+  text-shadow: 0 1px 4px hsl(var(--deep-blue) / 0.95) !important;
+}
+/* Header/nav links + ghost buttons — make sure hover/focus stay AA-compliant
+   over the global veil and in HC mode. */
+.landing-page a:hover,
+.landing-page button:hover { color: hsl(var(--coral-light)); }
+html[data-high-contrast="true"] .landing-page a,
+html[data-high-contrast="true"] .landing-page nav button { color: hsl(0 0% 100%) !important; }
+html[data-high-contrast="true"] .landing-page a:hover,
+html[data-high-contrast="true"] .landing-page nav button:hover { color: hsl(var(--coral-light)) !important; }
+/* In HC mode, every interactive control on the landing gets a visible
+   border so it never dissolves into the scrim. */
+html[data-high-contrast="true"] .landing-page button,
+html[data-high-contrast="true"] .landing-page a[role="button"] {
+  border-color: hsl(0 0% 100% / 0.45) !important;
+}
