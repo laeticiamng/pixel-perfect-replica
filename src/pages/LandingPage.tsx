@@ -225,7 +225,7 @@ export default function LandingPage() {
           section keeps WCAG-AA legibility regardless of what's animating behind. */}
       <div
         aria-hidden
-        className="fixed inset-0 z-[1] pointer-events-none bg-[linear-gradient(180deg,hsl(var(--deep-blue)/0.25)_0%,hsl(var(--deep-blue)/0.45)_50%,hsl(var(--deep-blue)/0.65)_100%)]"
+        className="landing-veil fixed inset-0 z-[1] pointer-events-none bg-[linear-gradient(180deg,hsl(var(--deep-blue)/0.25)_0%,hsl(var(--deep-blue)/0.45)_50%,hsl(var(--deep-blue)/0.65)_100%)]"
       />
       <LandingHeader />
       <main id="main-content" role="main">
