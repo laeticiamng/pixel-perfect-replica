@@ -860,3 +860,13 @@ html[data-high-contrast="true"] :focus-visible {
   outline: 3px solid hsl(var(--coral-light)) !important;
   outline-offset: 3px !important;
 }
+
+/* Strengthen the global landing veil under high-contrast mode + on mobile. */
+@media (max-width: 640px) {
+  .landing-veil {
+    background: linear-gradient(180deg, hsl(var(--deep-blue) / 0.45) 0%, hsl(var(--deep-blue) / 0.6) 50%, hsl(var(--deep-blue) / 0.8) 100%) !important;
+  }
+}
+html[data-high-contrast="true"] .landing-veil {
+  background: linear-gradient(180deg, hsl(var(--deep-blue) / 0.6) 0%, hsl(var(--deep-blue) / 0.75) 50%, hsl(var(--deep-blue) / 0.9) 100%) !important;
+}
