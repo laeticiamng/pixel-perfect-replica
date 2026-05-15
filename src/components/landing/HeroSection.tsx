@@ -177,16 +177,16 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.9 }}
-        className="mt-5 flex flex-col items-center gap-1.5 [text-shadow:0_1px_12px_hsl(var(--deep-blue)/0.8)]"
+        className="mt-5 flex flex-col items-center gap-1.5 hero-text-shadow-soft"
       >
-        <p className="text-xs text-white/75">
+        <p className="text-xs text-white/85 hc-text-strong">
           {t('landing.signupExpectation')}
         </p>
-        <p className="text-sm text-white/90">
+        <p className="text-sm text-white hc-text-strong">
           {t('landing.alreadyAccount')}{' '}
           <button
             onClick={() => navigate('/onboarding', { state: { isLogin: true } })}
-            className="text-coral-light hover:text-white font-semibold underline-offset-4 hover:underline transition-colors"
+            className="text-coral-light hc-coral hover:text-white font-semibold underline-offset-4 hover:underline transition-colors"
           >
             {t('auth.signIn')}
           </button>
