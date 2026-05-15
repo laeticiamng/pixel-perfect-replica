@@ -15,9 +15,10 @@ export function PromoVideoSection() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   // Lazy-attach the video src only once the section enters the viewport
-  // so the 1.9 MB MP4 never blocks the initial home paint.
+  // so the ~500 KB MP4 never blocks the initial home paint.
   useEffect(() => {
     if (isInView) setShouldLoad(true);
   }, [isInView]);
