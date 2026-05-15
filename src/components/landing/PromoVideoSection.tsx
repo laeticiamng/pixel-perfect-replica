@@ -1,31 +1,38 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Play, Pause } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { RevealText } from './RevealText';
 
+const VIDEO_SRC = '/nearvity-promo.mp4';
+const VIDEO_POSTER = '/nearvity-promo-poster.jpg';
+
 export function PromoVideoSection() {
-  const { t, locale } = useTranslation();
+  const { locale } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, amount: 0.3 });
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  // Lazy-attach the video src only once the section enters the viewport
+  // so the 1.9 MB MP4 never blocks the initial home paint.
+  useEffect(() => {
+    if (isInView) setShouldLoad(true);
+  }, [isInView]);
 
   const handlePlayPause = () => {
-    if (!videoRef.current) return;
+    const video = videoRef.current;
+    if (!video) return;
     if (isPlaying) {
-      videoRef.current.pause();
+      video.pause();
       setIsPlaying(false);
     } else {
-      videoRef.current.play();
+      void video.play();
       setIsPlaying(true);
       setHasStarted(true);
     }
-  };
-
-  const handleVideoEnd = () => {
-    setIsPlaying(false);
   };
 
   return (
@@ -48,25 +55,33 @@ export function PromoVideoSection() {
           transition={{ duration: 0.8, ease: [0.25, 0.4, 0.25, 1] }}
           className="relative group cursor-pointer rounded-2xl overflow-hidden shadow-2xl shadow-coral/10 border border-border/30"
           onClick={handlePlayPause}
+          role="button"
+          tabIndex={0}
+          aria-label={isPlaying ? 'Pause video' : 'Play video'}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handlePlayPause();
+            }
+          }}
         >
-          {/* Ambient glow behind video */}
           <div className="absolute -inset-4 bg-gradient-to-r from-coral/10 via-purple-accent/5 to-coral/10 blur-3xl opacity-50 -z-10 rounded-3xl" />
 
-          {/* Video element */}
           <video
             ref={videoRef}
-            src="/nearvity-promo.mp4"
-            className="w-full aspect-video object-cover"
+            src={shouldLoad ? VIDEO_SRC : undefined}
+            poster={VIDEO_POSTER}
+            className="w-full aspect-video object-cover bg-deep-blue"
             playsInline
             muted
-            preload="metadata"
-            onEnded={handleVideoEnd}
-            poster=""
+            preload="none"
+            onEnded={() => setIsPlaying(false)}
+            onPause={() => setIsPlaying(false)}
+            onPlay={() => { setIsPlaying(true); setHasStarted(true); }}
           />
 
-          {/* Play/Pause overlay */}
           <motion.div
-            className="absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity"
+            className="absolute inset-0 flex items-center justify-center bg-black/30"
             initial={false}
             animate={{ opacity: isPlaying && hasStarted ? 0 : 1 }}
             whileHover={{ opacity: 1 }}
@@ -85,7 +100,6 @@ export function PromoVideoSection() {
             </motion.div>
           </motion.div>
 
-          {/* Bottom gradient for polish */}
           <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-background/60 to-transparent pointer-events-none" />
         </motion.div>
       </div>
