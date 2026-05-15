@@ -98,15 +98,30 @@ export function PromoVideoSection() {
           </video>
 
           <motion.div
-            className="absolute inset-0 flex items-center justify-center bg-black/30"
+            className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-b from-deep-blue/40 via-deep-blue/55 to-deep-blue/75"
             initial={false}
             animate={{ opacity: isPlaying && hasStarted ? 0 : 1 }}
             whileHover={{ opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
+            {/* Title overlay — explicit context before play */}
+            {!hasStarted && (
+              <div className="text-center px-6 max-w-md pointer-events-none">
+                <p className="text-xs uppercase tracking-[0.2em] text-coral/90 font-semibold mb-2">
+                  {locale === 'fr' ? 'Vidéo · 15 s · muet' : 'Video · 15s · muted'}
+                </p>
+                <p className="text-base sm:text-lg text-white/90 font-medium leading-snug">
+                  {locale === 'fr'
+                    ? 'Vois Nearvity en action en moins de 15 secondes'
+                    : 'See Nearvity in action in under 15 seconds'}
+                </p>
+              </div>
+            )}
+
+            {/* Round play / pause / loading icon */}
             <motion.div
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-coral/90 flex items-center justify-center shadow-xl shadow-coral/30"
-              whileHover={{ scale: 1.1 }}
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-coral flex items-center justify-center shadow-xl shadow-coral/40 ring-4 ring-coral/20"
+              whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
             >
               {!shouldLoad || (shouldLoad && !isReady && hasStarted) ? (
@@ -114,16 +129,28 @@ export function PromoVideoSection() {
               ) : isPlaying ? (
                 <Pause className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
               ) : (
-                <Play className="h-8 w-8 sm:h-10 sm:w-10 text-white ml-1" />
+                <Play className="h-8 w-8 sm:h-10 sm:w-10 text-white ml-1" fill="currentColor" />
               )}
             </motion.div>
+
+            {/* Explicit text CTA — duplicates the icon affordance for clarity */}
+            {!hasStarted && (
+              <span className="px-4 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-white text-sm font-medium pointer-events-none">
+                {!shouldLoad
+                  ? (locale === 'fr' ? 'Cliquer pour charger et lire' : 'Click to load & play')
+                  : !isReady
+                    ? (locale === 'fr' ? 'Chargement de la vidéo…' : 'Loading video…')
+                    : (locale === 'fr' ? '▸ Lancer la vidéo' : '▸ Play video')}
+              </span>
+            )}
           </motion.div>
 
-          {/* Status pill — visible while waiting for lazy-load or buffering */}
+          {/* Status pill — top corner, always visible until ready */}
           {(!shouldLoad || !isReady) && (
-            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-background/70 backdrop-blur-sm border border-border/40 text-[11px] font-medium text-muted-foreground">
+            <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-sm border border-border/40 text-[11px] font-medium text-muted-foreground flex items-center gap-1.5">
+              <span className={`w-1.5 h-1.5 rounded-full ${shouldLoad ? 'bg-coral animate-pulse' : 'bg-muted-foreground/60'}`} />
               {!shouldLoad
-                ? (locale === 'fr' ? 'Aperçu — clique pour lire' : 'Preview — click to play')
+                ? (locale === 'fr' ? 'Aperçu' : 'Preview')
                 : (locale === 'fr' ? 'Chargement…' : 'Loading…')}
             </div>
           )}
