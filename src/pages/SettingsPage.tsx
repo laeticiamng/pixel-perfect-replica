@@ -196,6 +196,43 @@ export default function SettingsPage() {
           </div>
         </motion.div>
 
+        {/* High contrast (accessibility) */}
+        <motion.div
+          className="glass rounded-xl p-4"
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+          }}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="p-2 rounded-lg bg-deep-blue-light text-coral">
+                <Contrast className="h-5 w-5" />
+              </div>
+              <div>
+                <span className="font-medium text-foreground">{t('settings.highContrast')}</span>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  {t('settings.highContrastDesc')}
+                </p>
+                {highContrastSystem && (
+                  <p className="text-xs text-muted-foreground/80 mt-1 italic">
+                    {t('settings.highContrastSystem')}
+                  </p>
+                )}
+              </div>
+            </div>
+            <Switch
+              checked={highContrastPref || highContrastSystem}
+              disabled={highContrastSystem}
+              onCheckedChange={(checked) => {
+                setHighContrast(checked);
+                toast.success(t('settings.settingUpdated'));
+              }}
+              aria-label={t('settings.highContrast')}
+            />
+          </div>
+        </motion.div>
+
         {/* Quick Access Section */}
         <div className="glass rounded-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-border/50">
