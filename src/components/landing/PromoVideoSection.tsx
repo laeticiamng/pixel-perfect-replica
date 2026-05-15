@@ -134,7 +134,3 @@ export function PromoVideoSection() {
     </section>
   );
 }
-      </div>
-    </section>
-  );
-}
