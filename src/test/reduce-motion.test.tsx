@@ -12,35 +12,43 @@
  * App.tsx and a sentinel <motion.div> at each path — that's exactly what
  * Framer Motion sees in production.
  */
+import { useContext } from 'react';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { render, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { motion } from 'framer-motion';
+// Reach into framer-motion's context to assert the resolved reducedMotion
+// value the runtime is actually using. This is more deterministic than
+// inspecting inline styles, which depend on jsdom's RAF cadence.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { MotionConfigContext } from 'framer-motion/dist/es/context/MotionConfigContext.mjs';
 import { MotionAccessibilityProvider } from '@/components/MotionAccessibilityProvider';
 import { SmoothScroll } from '@/components/SmoothScroll';
 
 const PROTECTED_ROUTES = ['/map', '/binome', '/binome/check-in', '/proximity', '/proximity/123'];
 
-function Sentinel() {
-  // A motion element whose final style would only land after a 1s tween.
-  // Under reducedMotion="always", framer-motion must skip the tween and
-  // apply the target value synchronously.
+let capturedReducedMotion: string | undefined;
+
+function Probe() {
+  const ctx = useContext(MotionConfigContext as React.Context<{ reducedMotion?: string }>);
+  capturedReducedMotion = ctx.reducedMotion;
   return (
     <motion.div
       data-testid="sentinel"
-      initial={{ opacity: 0, x: -200 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     />
   );
 }
 
 function renderAt(path: string) {
+  capturedReducedMotion = undefined;
   return render(
     <MemoryRouter initialEntries={[path]}>
       <MotionAccessibilityProvider>
         <SmoothScroll />
-        <Sentinel />
+        <Probe />
       </MotionAccessibilityProvider>
     </MemoryRouter>
   );
