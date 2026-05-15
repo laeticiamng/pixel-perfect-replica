@@ -1,0 +1,65 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Landing — structural snapshot (normal vs high-contrast) > fingerprint stable — desktop high-contrast mode 1`] = `
+{
+  "hasGlobalVeil": true,
+  "hasLandingPageScope": true,
+  "hcBorder": 2,
+  "hcButtonBg": 2,
+  "hcCoral": 4,
+  "hcTextStrong": 14,
+  "heroShadowSoft": 11,
+  "heroShadowStrong": 1,
+  "htmlHighContrast": "true",
+  "sectionScrims": 3,
+  "veilAriaHidden": "true",
+}
+`;
+
+exports[`Landing — structural snapshot (normal vs high-contrast) > fingerprint stable — desktop normal mode 1`] = `
+{
+  "hasGlobalVeil": true,
+  "hasLandingPageScope": true,
+  "hcBorder": 2,
+  "hcButtonBg": 2,
+  "hcCoral": 4,
+  "hcTextStrong": 14,
+  "heroShadowSoft": 11,
+  "heroShadowStrong": 1,
+  "htmlHighContrast": "false",
+  "sectionScrims": 3,
+  "veilAriaHidden": "true",
+}
+`;
+
+exports[`Landing — structural snapshot (normal vs high-contrast) > fingerprint stable — mobile high-contrast mode 1`] = `
+{
+  "hasGlobalVeil": true,
+  "hasLandingPageScope": true,
+  "hcBorder": 2,
+  "hcButtonBg": 2,
+  "hcCoral": 4,
+  "hcTextStrong": 14,
+  "heroShadowSoft": 11,
+  "heroShadowStrong": 1,
+  "htmlHighContrast": "true",
+  "sectionScrims": 3,
+  "veilAriaHidden": "true",
+}
+`;
+
+exports[`Landing — structural snapshot (normal vs high-contrast) > fingerprint stable — mobile normal mode 1`] = `
+{
+  "hasGlobalVeil": true,
+  "hasLandingPageScope": true,
+  "hcBorder": 2,
+  "hcButtonBg": 2,
+  "hcCoral": 4,
+  "hcTextStrong": 14,
+  "heroShadowSoft": 11,
+  "heroShadowStrong": 1,
+  "htmlHighContrast": "false",
+  "sectionScrims": 3,
+  "veilAriaHidden": "true",
+}
+`;
