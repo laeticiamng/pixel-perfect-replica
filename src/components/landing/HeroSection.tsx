@@ -165,7 +165,7 @@ export function HeroSection({ heroOpacity, heroScale }: HeroSectionProps) {
           onClick={() => document.getElementById('app-preview')?.scrollIntoView({ behavior: 'smooth' }) ?? document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
           variant="outline"
           size="lg"
-          className="group h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-xl font-bold rounded-full border-border/50 hover:border-coral/40 bg-card/30 backdrop-blur-sm transition-all duration-300"
+          className="group h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-xl font-bold rounded-full border-white/25 hover:border-coral/60 bg-deep-blue/55 hover:bg-deep-blue/70 backdrop-blur-md text-white shadow-lg shadow-deep-blue/30 transition-all duration-300"
         >
           {t('landing.seeHowItWorks')}
           <ChevronDown className="ml-2 h-5 w-5 transition-transform group-hover:translate-y-1" />
