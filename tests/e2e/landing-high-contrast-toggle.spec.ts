@@ -63,6 +63,8 @@ async function readState(page: import('@playwright/test').Page) {
       veilBg,
       outlineWidth: cs ? parseFloat(cs.outlineWidth || '0') : 0,
       outlineColor: cs?.outlineColor ?? '',
+      outlineStyle: cs?.outlineStyle ?? 'none',
+      focusVisible: probe ? probe.matches(':focus-visible') : false,
       boxShadow: cs?.boxShadow ?? '',
     };
   });
@@ -92,10 +94,17 @@ for (const { name, viewport } of VIEWPORTS) {
       await mountToggle(page);
       const before = await readState(page);
       expect(before.hcAttr).toBe('false');
+      expect(before.focusVisible).toBe(true);
       expect(before.outlineWidth).toBeGreaterThan(0);
 
-      // Real UI click — same code path as the Settings <Switch>.
-      await page.click('#e2e-hc-toggle');
+      // Activation réelle au clavier (focus + Entrée) — même chemin de code
+      // que le <Switch> des Paramètres. Un clic souris ferait basculer
+      // Chromium en modalité « pointeur » : le focus programmatique de la
+      // sonde ne correspondrait alors plus à :focus-visible (outline-style
+      // none, box-shadow none) et l'assertion sur l'anneau mesurerait un
+      // élément sans anneau. Le contrat testé est l'anneau clavier.
+      await page.focus('#e2e-hc-toggle');
+      await page.keyboard.press('Enter');
 
       await expect
         .poll(() =>
@@ -115,6 +124,10 @@ for (const { name, viewport } of VIEWPORTS) {
       expect(after.veilBg).toMatch(/gradient/i);
 
       // 3) The keyboard focus ring got thicker (2px → 3px in HC mode).
+      //    La sonde doit réellement porter l'anneau (sinon outline-width
+      //    reste calculé à 3px avec outline-style none).
+      expect(after.focusVisible).toBe(true);
+      expect(after.outlineStyle).not.toBe('none');
       expect(after.outlineWidth).toBeGreaterThan(before.outlineWidth);
 
       // 4) The white halo (box-shadow) is preserved / reinforced.
@@ -122,7 +135,8 @@ for (const { name, viewport } of VIEWPORTS) {
       expect(after.boxShadow).toMatch(/rgb|hsl/);
 
       // 5) Toggling back restores normal mode end-to-end.
-      await page.click('#e2e-hc-toggle');
+      await page.focus('#e2e-hc-toggle');
+      await page.keyboard.press('Enter');
       await expect
         .poll(() =>
           page.evaluate(

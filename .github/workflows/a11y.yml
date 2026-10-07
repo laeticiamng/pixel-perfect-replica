@@ -1,106 +1,102 @@
-name: a11y + visual regression
+name: CI — typage, lint, tests, build, a11y
 
 on:
   push:
     branches: [main]
   pull_request:
 
-# Cancel superseded runs on the same ref to keep CI snappy.
+# Annule les exécutions supplantées sur la même référence.
 concurrency:
-  group: a11y-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  vitest-a11y:
-    name: Vitest a11y suite (axe + tab + auth variants)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      # Cache Bun's global download/install store + the project's node_modules.
-      # Keyed on bun.lock so any dependency change busts both layers atomically.
-      - name: Cache Bun store + node_modules
-        id: bun-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: |
-            bun-${{ runner.os }}-
-
-      - name: Install dependencies
-        if: steps.bun-cache.outputs.cache-hit != 'true'
-        run: bun install --frozen-lockfile
-
-      - name: Run axe / high-contrast / auth-variant unit tests
-        run: bunx vitest run src/test/landing-a11y.test.tsx src/test/landing-states.test.tsx src/test/high-contrast.test.tsx
-
-  playwright-a11y-visual:
-    name: Playwright (Chromium) — axe runtime + tab + visual
+  verifications:
+    name: Installation figée, typage, lint, Vitest, build
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      TZ: UTC
+    steps:
+      - uses: actions/checkout@v4
+
+      # Version de Bun figée (celle avec laquelle bun.lock a été vérifié) :
+      # « latest » rendait l'installation non reproductible.
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      # Seul le magasin de Bun est mis en cache ; l'installation tourne
+      # toujours, en mode figé, pour échouer si bun.lock est désynchronisé.
+      - name: Cache du magasin Bun
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            bun-${{ runner.os }}-
+
+      - name: Installation (lockfile figé)
+        run: bun install --frozen-lockfile
+
+      # Le tsconfig.json racine a « files: [] » : `tsc` seul ne vérifie rien.
+      # Le script typecheck cible explicitement app, node et e2e.
+      - name: Typage réel
+        run: bun run typecheck
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Vitest (suite complète, dont axe / contraste élevé / états d'auth)
+        run: bunx vitest run
+
+      # Build de production sans variables : doit réussir (page de
+      # maintenance servie si le backend n'est pas configuré).
+      - name: Build
+        run: bun run build
+
+  playwright:
+    name: Playwright (Chromium) — axe réel, tabulation, contraste élevé, états d'auth
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      TZ: UTC
     steps:
       - uses: actions/checkout@v4
 
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: 1.3.13
 
-      # Layer 1 — Bun store + node_modules (shared key with the vitest job).
-      - name: Cache Bun store + node_modules
-        id: bun-cache
+      - name: Cache du magasin Bun
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
+          path: ~/.bun/install/cache
           key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
           restore-keys: |
             bun-${{ runner.os }}-
 
-      - name: Install dependencies
-        if: steps.bun-cache.outputs.cache-hit != 'true'
+      - name: Installation (lockfile figé)
         run: bun install --frozen-lockfile
 
-      # Layer 2 — Playwright browser binaries (~300 MB). Keyed on the
-      # Playwright version pinned in bun.lock so a `bun update` to a new
-      # browser revision invalidates the cache automatically.
-      - name: Resolve Playwright version
-        id: pw-version
-        run: |
-          VERSION=$(node -p "require('./node_modules/@playwright/test/package.json').version")
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      # Seul Chromium est utilisé (les deux projets forcent browserName).
+      - name: Chromium + dépendances système
+        run: bunx playwright install --with-deps chromium
 
-      - name: Cache Playwright browsers
-        id: pw-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.pw-version.outputs.version }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install Chromium (browser binaries)
-        if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: bunx playwright install chromium
-
-      # System libs are NOT cached (apt state lives outside ~/.cache) — but
-      # they're cheap (<10s) and required even on a browser-cache hit.
-      - name: Install Chromium system dependencies
-        run: bunx playwright install-deps chromium
-
-      - name: Run Playwright (axe + tab traversal + visual normal/HC × mobile/desktop)
-        run: bunx playwright test
+      # Les captures pixel (@visual) sont exclues ici : aucune référence n'a
+      # jamais été générée sur ubuntu-latest. Elles tournent et se
+      # (re)génèrent via le workflow manuel « visual.yml ».
+      # Le build lancé par webServer utilise une config Supabase factice et
+      # hermétique (voir playwright.config.ts) : aucun secret requis.
+      - name: Playwright (hors captures pixel)
+        run: bunx playwright test --grep-invert @visual
         env:
           CI: '1'
 
-      - name: Upload Playwright report
+      - name: Rapport Playwright
         if: always()
         uses: actions/upload-artifact@v4
         with:

@@ -926,6 +926,11 @@ html[data-high-contrast="true"] .landing-page a,
 html[data-high-contrast="true"] .landing-page nav button { color: hsl(0 0% 100%) !important; }
 html[data-high-contrast="true"] .landing-page a:hover,
 html[data-high-contrast="true"] .landing-page nav button:hover { color: hsl(var(--coral-light)) !important; }
+/* Exception : un bouton de nav à fond corail (pastille de langue active)
+   garde son texte sombre. Le blanc forcé ci-dessus donnait 2,92:1 sur
+   #ff644d (axe color-contrast, WCAG 1.4.3) ; primary-foreground ≈ 7:1. */
+html[data-high-contrast="true"] .landing-page nav button.bg-coral,
+html[data-high-contrast="true"] .landing-page nav button.bg-coral:hover { color: hsl(var(--primary-foreground)) !important; }
 /* In HC mode, every interactive control on the landing gets a visible
    border so it never dissolves into the scrim. */
 html[data-high-contrast="true"] .landing-page button,

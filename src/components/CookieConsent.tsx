@@ -47,11 +47,16 @@ export const CookieConsent = forwardRef<HTMLDivElement>(function CookieConsent(_
             <Shield className="h-5 w-5 text-coral" />
             <h3 className="font-semibold text-foreground text-sm">{t('cookies.title')}</h3>
           </div>
-          <button 
+          {/* Bouton icône : nom accessible obligatoire (WCAG 4.1.2, axe button-name).
+              La croix équivaut à un refus, le libellé le dit explicitement. */}
+          <button
+            type="button"
             onClick={handleDecline}
+            aria-label={t('cookies.closeAndDecline')}
+            title={t('cookies.closeAndDecline')}
             className="text-muted-foreground hover:text-foreground"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
         

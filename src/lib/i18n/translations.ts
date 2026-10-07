@@ -802,6 +802,7 @@ export const translations = {
     description: { en: 'NEARVITY uses cookies to improve your experience and analyze app usage. Your location is never stored without your consent.', fr: 'NEARVITY utilise des cookies pour améliorer ton expérience et analyser l\'utilisation de l\'app. Ta position n\'est jamais stockée sans ton consentement.', de: 'NEARVITY verwendet Cookies, um dein Erlebnis zu verbessern und die App-Nutzung zu analysieren. Dein Standort wird niemals ohne deine Zustimmung gespeichert.' },
     accept: { en: 'Accept', fr: 'Accepter', de: 'Akzeptieren' },
     decline: { en: 'Decline', fr: 'Refuser', de: 'Ablehnen' },
+    closeAndDecline: { en: 'Close and decline cookies', fr: 'Fermer et refuser les cookies', de: 'Schließen und Cookies ablehnen' },
     learnMore: { en: 'Learn more about our privacy policy', fr: 'En savoir plus sur notre politique de confidentialité', de: 'Mehr über unsere Datenschutzrichtlinie erfahren' },
   },
 
