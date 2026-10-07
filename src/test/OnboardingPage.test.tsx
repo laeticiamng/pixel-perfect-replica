@@ -53,7 +53,9 @@ describe("OnboardingPage", () => {
       </MemoryRouter>
     );
 
-    expect(getByText("Créons ton compte")).toBeInTheDocument();
+    // Titre auth.createAccount — libellé réécrit par 7964b45
+    // (« Créons ton compte » → « Crée ton compte en 30 secondes »).
+    expect(getByText("Crée ton compte en 30 secondes")).toBeInTheDocument();
     expect(getByPlaceholderText("ton.email@exemple.fr")).toBeInTheDocument();
     expect(getByPlaceholderText("Mot de passe")).toBeInTheDocument();
   });

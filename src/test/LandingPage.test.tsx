@@ -100,8 +100,9 @@ describe('LandingPage', () => {
       </BrowserRouter>
     );
 
-    // The badge / subheading text — verify key concept is present
-    expect(container.textContent).toContain("spontanément IRL");
+    // Badge du héros (landing.heroTagline) — libellé réécrit par 02e5a18
+    // (« …spontanément IRL » → « Rencontres spontanées, en vrai… »).
+    expect(container.textContent).toContain("Rencontres spontanées, en vrai, près de chez toi");
   });
 
   it('should render the problem statement', async () => {
