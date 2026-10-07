@@ -1,0 +1,81 @@
+name: Régression visuelle (manuel)
+
+# Workflow manuel : les références des captures pixel de la landing
+# (tests/e2e/landing-visual.spec.ts-snapshots/*-linux.png) n'existent pas
+# encore dans le dépôt et doivent être produites sur la plateforme du CI
+# (polices, rendu Chromium Linux). Sur push, ces tests échouaient donc
+# systématiquement (« A snapshot doesn't exist »).
+#
+# Utilisation :
+#   1. Lancer avec « mettre_a_jour = true » : génère les 4 références et les
+#      publie en artefact « references-visuelles ».
+#   2. Vérifier les images, les committer dans
+#      tests/e2e/landing-visual.spec.ts-snapshots/.
+#   3. Relancer avec « mettre_a_jour = false » : compare au pixel près
+#      (tolérance définie dans playwright.config.ts). Une fois les
+#      références committées, ce job peut être ajouté au CI sur push.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mettre_a_jour:
+        description: "Régénérer les références au lieu de comparer"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  visual:
+    name: Captures pixel landing (normal / contraste élevé × mobile / desktop)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: UTC
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Installation (lockfile figé)
+        run: bun install --frozen-lockfile
+
+      - name: Chromium + dépendances système
+        run: bunx playwright install --with-deps chromium
+
+      - name: Vérifier la présence des références
+        if: ${{ !inputs.mettre_a_jour }}
+        run: bun run test:visual:check
+
+      - name: Comparer aux références
+        if: ${{ !inputs.mettre_a_jour }}
+        run: bunx playwright test --grep @visual
+        env:
+          CI: '1'
+
+      - name: Générer les références
+        if: ${{ inputs.mettre_a_jour }}
+        run: bunx playwright test --grep @visual --update-snapshots
+        env:
+          CI: '1'
+
+      - name: Publier les références générées
+        if: ${{ inputs.mettre_a_jour }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: references-visuelles
+          path: tests/e2e/landing-visual.spec.ts-snapshots
+          retention-days: 14
+
+      - name: Rapport Playwright
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-visual
+          path: |
+            playwright-report
+            test-results
+          retention-days: 14
