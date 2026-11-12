@@ -250,67 +250,13 @@ export function useActiveSignal() {
         }
       }
 
-      // Fallback if RPC returns nothing - use direct query
-      const { data: fallbackSignals, error: fallbackError } = await supabase
-        .from('active_signals')
-        .select(`
-          id,
-          user_id,
-          signal_type,
-          activity,
-          latitude,
-          longitude,
-          started_at
-        `)
-        .neq('user_id', user.id)
-        .gte('expires_at', new Date().toISOString());
-
-      if (fallbackError) {
-        logger.api.error('active_signals', 'select-nearby', fallbackError.message);
-        return;
+      // Privacy boundary: never fall back to reading other users' raw coordinates.
+      // An empty result is valid; a failed RPC must fail closed rather than
+      // bypassing server-side visibility, blocking and ghost-mode rules.
+      if (rpcError) {
+        logger.api.error('get_nearby_signals', 'rpc', rpcError.message);
       }
-
-      if (!fallbackSignals || fallbackSignals.length === 0) {
-        setNearbyUsers([]);
-        return;
-      }
-
-      // Get profiles using secure RPC (avoids RLS issues on user_settings/user_stats)
-      const userIds = fallbackSignals.map(s => s.user_id);
-      
-      const { data: profiles } = await supabase
-        .rpc('get_public_profiles', { profile_ids: userIds });
-
-      // Calculate distances and combine data
-      const nearbyFiltered: NearbyUser[] = fallbackSignals
-        .map(signal => {
-          const profile = profiles?.find(p => p.id === signal.user_id);
-          
-          const distance = calculateDistance(
-            position.latitude,
-            position.longitude,
-            Number(signal.latitude),
-            Number(signal.longitude)
-          );
-
-          return {
-            id: signal.user_id,
-            firstName: profile?.first_name || t('eventsExtra.anonymous'),
-            signal: signal.signal_type as SignalType,
-            activity: signal.activity as ActivityType,
-            distance,
-            activeSince: new Date(signal.started_at),
-            rating: 5.0, // Default - can't read other users' stats due to RLS
-            position: {
-              latitude: Number(signal.latitude),
-              longitude: Number(signal.longitude),
-            },
-          };
-        })
-        .filter(u => u.distance <= maxDistance)
-        .sort((a, b) => a.distance - b.distance);
-
-      setNearbyUsers(nearbyFiltered);
+      setNearbyUsers([]);
     } catch (err) {
       logger.api.error('active_signals', 'fetchNearbyUsers', String(err));
     }
