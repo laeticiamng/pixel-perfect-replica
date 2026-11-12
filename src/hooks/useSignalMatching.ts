@@ -63,7 +63,15 @@ export function useSignalMatching({ isActive, myActivity, onMatch }: UseSignalMa
     if (!user || !position || !isActive || !myActivity) return;
 
     const signal = payload.new;
-    if (signal.user_id === user.id) return;
+    if (!signal || signal.user_id === user.id) return;
+    // Ignore stale, unavailable or malformed realtime presence.
+    if (signal.signal_type === 'red') return;
+    if (!signal.expires_at || !Number.isFinite(Date.parse(signal.expires_at)) ||
+        Date.parse(signal.expires_at) <= Date.now()) return;
+    if (!Number.isFinite(Number(signal.latitude)) ||
+        !Number.isFinite(Number(signal.longitude)) ||
+        Math.abs(Number(signal.latitude)) > 90 ||
+        Math.abs(Number(signal.longitude)) > 180) return;
 
     // Already notified about this match
     const matchKey = `${signal.user_id}:${signal.activity}`;
@@ -80,7 +88,7 @@ export function useSignalMatching({ isActive, myActivity, onMatch }: UseSignalMa
       Number(signal.longitude)
     );
 
-    if (distance > settings.visibility_distance) return;
+    if (!Number.isFinite(distance) || distance > settings.visibility_distance) return;
 
     // Check ghost mode
     const { data: userSettings } = await supabase

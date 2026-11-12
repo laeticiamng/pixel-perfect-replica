@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Users2, UserCheck, UserPlus, Clock, MessageCircle, Search, UserX, ArrowLeft } from 'lucide-react';
+import { Users2, UserCheck, UserPlus, Clock, MessageCircle, Search, UserX, ArrowLeft, Star } from 'lucide-react';
 import { PageLayout } from '@/components/PageLayout';
 import { BottomNav } from '@/components/BottomNav';
 import { PageHeader } from '@/components/shared/PageHeader';
@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MiniChat } from '@/components/social/MiniChat';
 import { useConnections } from '@/hooks/useConnections';
+import { usePersonFavorites } from '@/hooks/usePersonFavorites';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/lib/i18n';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,6 +41,7 @@ interface UserProfile {
 export default function ConnectionsPage() {
   const { connections, pendingRequests, isLoading, acceptConnection, declineConnection } = useConnections();
   const { user } = useAuth();
+  const { favoriteIds, toggle: toggleFavorite } = usePersonFavorites();
   const { t, locale } = useTranslation();
   const [profiles, setProfiles] = useState<Record<string, UserProfile>>({});
   const [searchQuery, setSearchQuery] = useState('');
@@ -171,6 +173,19 @@ export default function ConnectionsPage() {
           </p>
         </div>
         <div className="flex gap-2 flex-shrink-0">
+          <Button
+            size="sm"
+            variant="ghost"
+            aria-label={favoriteIds.includes(otherUserId) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+            aria-pressed={favoriteIds.includes(otherUserId)}
+            title={favoriteIds.includes(otherUserId) ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+            onClick={async () => {
+              if (!(await toggleFavorite(otherUserId))) toast.error('Impossible de modifier les favoris');
+            }}
+            className="rounded-xl"
+          >
+            <Star className={cn('h-4 w-4', favoriteIds.includes(otherUserId) && 'fill-current text-amber-500')} />
+          </Button>
           <Button
             size="sm"
             onClick={() => handleOpenChat(otherUserId, name)}

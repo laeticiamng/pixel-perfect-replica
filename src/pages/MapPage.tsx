@@ -69,6 +69,7 @@ export default function MapPage() {
     setLocationDescription,
     lastUpdated,
     filteredNearbyUsers,
+    favoriteIds,
     openUsersCount,
     handleManualRefresh,
     handleSignalToggle,
@@ -399,6 +400,85 @@ export default function MapPage() {
           )}
         </header>
 
+        {/* One obvious primary action, even on an empty map. */}
+        <section className="px-4 sm:px-6 mb-4" aria-label="Exprimer une envie">
+          <div className="rounded-2xl border border-border/50 bg-card p-4 shadow-medium">
+            <p className="text-lg font-bold text-foreground mb-1">Tu as envie de faire quoi ?</p>
+            <p className="text-sm text-muted-foreground mb-3">
+              Choisis une activité, Nearvity cherche des personnes disponibles.
+            </p>
+            {!isActive && (
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {[
+                  { id: 'eating', label: 'Manger', emoji: '🍽️' },
+                  { id: 'sport', label: 'Bouger', emoji: '🏃' },
+                  { id: 'talking', label: 'Discuter', emoji: '💬' },
+                  { id: 'studying', label: 'Réviser', emoji: '📚' },
+                  { id: 'working', label: 'Travailler', emoji: '💻' },
+                  { id: 'other', label: 'Autre envie', emoji: '✨' },
+                ].map((choice) => (
+                  <button key={choice.id} type="button"
+                    onClick={() => {
+                      setSelectedActivity(choice.id as (typeof ACTIVITIES)[number]['id']);
+                      setShowActivityModal(true);
+                    }}
+                    className="min-h-14 rounded-xl border border-border/60 bg-background px-2 text-sm font-medium hover:border-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral"
+                  >
+                    <span aria-hidden="true">{choice.emoji}</span> {choice.label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={handleSignalToggle}
+              disabled={isActivating}
+              className="w-full min-h-14 rounded-xl bg-coral text-primary-foreground font-bold text-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+              aria-label={isActive ? 'Arrêter ma disponibilité' : 'Choisir une activité et y aller'}
+            >
+              {isActive ? '✓ Disponible · Arrêter' : '⚡ GO · On fait quoi ?'}
+            </button>
+            {isActive && myActivity && (
+              <button type="button" onClick={handleChangeActivity}
+                className="mt-3 w-full text-sm font-semibold text-coral min-h-10">
+                Changer d’activité
+              </button>
+            )}
+          </div>
+        </section>
+
+        {/* Favorites are a shortcut, never an exclusive discovery filter. */}
+        {favoriteIds.length > 0 && (
+          <div className="px-4 sm:px-6 mb-4" aria-label="Mes favoris disponibles">
+            <div className="rounded-2xl bg-card border border-border/50 p-4">
+              <div className="flex justify-between items-center gap-3">
+                <div>
+                  <p className="font-semibold">⭐ Mes favoris</p>
+                  <p className="text-sm text-muted-foreground">
+                    {filteredNearbyUsers.filter(person => favoriteIds.includes(person.id)).length} disponible(s) près de toi
+                  </p>
+                </div>
+                <button type="button" onClick={() => navigate('/connections')}
+                  className="text-sm text-coral font-semibold min-h-10">Gérer</button>
+              </div>
+              {filteredNearbyUsers.some(person => favoriteIds.includes(person.id)) && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {filteredNearbyUsers.filter(person => favoriteIds.includes(person.id)).slice(0, 5).map(person => (
+                    <button key={person.id} type="button"
+                      onClick={() => handleUserClick(person.id, person.distance)}
+                      className="rounded-full bg-muted px-3 py-2 text-sm min-h-10">
+                      ⭐ {person.firstName}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground mt-2">
+                Tu peux aussi découvrir de nouvelles personnes sur la carte.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Searching Indicator */}
         {isActive && (
           <div className="px-4 sm:px-6 mb-4">
@@ -582,13 +662,18 @@ export default function MapPage() {
                 onSelect={setSelectedActivity}
               />
 
-              <div className="mt-4">
-                <LocationDescriptionInput
-                  value={locationDescription}
-                  onChange={setLocationDescription}
-                  placeholder={t('mapUI.wherePlaceholder')}
-                />
-              </div>
+              <details className="mt-4 rounded-xl border border-border/50 p-3">
+                <summary className="cursor-pointer text-sm text-muted-foreground">
+                  Ajouter un lieu (facultatif)
+                </summary>
+                <div className="mt-3">
+                  <LocationDescriptionInput
+                    value={locationDescription}
+                    onChange={setLocationDescription}
+                    placeholder={t('mapUI.wherePlaceholder')}
+                  />
+                </div>
+              </details>
               
               <div className="flex gap-3 mt-6">
                 <Button

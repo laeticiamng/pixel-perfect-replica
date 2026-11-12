@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
+import { usePersonFavorites } from '@/hooks/usePersonFavorites';
+import { prioritizeFavorites } from '@/lib/prioritizeFavorites';
 import { useUserSettings } from '@/hooks/useUserSettings';
-import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
-import { useSignalMatching } from '@/hooks/useSignalMatching';
 import { ActivityType, SignalType } from '@/types/signal';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
@@ -18,6 +18,7 @@ export function useMapPageLogic() {
   const { profile, user } = useAuth();
   const { position, startWatching, lastUpdated } = useLocationStore();
   const { settings } = useUserSettings();
+  const { favoriteIds } = usePersonFavorites();
   const { 
     isActive,
     mySignal,
@@ -41,28 +42,6 @@ export function useMapPageLogic() {
   const [locationDescription, setLocationDescription] = useState('');
   const activeTimeRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Setup realtime notifications for new nearby users
-  const { initializeKnownUsers } = useNearbyNotifications({
-    isActive,
-    onNewUserNearby: useCallback((_nearbyUser) => {
-      if (position) {
-        fetchNearbyUsers(settings.visibility_distance);
-      }
-    }, [position, fetchNearbyUsers, settings.visibility_distance]),
-  });
-
-  // Setup signal matching notifications (compatible activities)
-  useSignalMatching({
-    isActive,
-    myActivity: myActivity || null,
-    onMatch: useCallback((match) => {
-      // Refresh nearby users when a compatible match is found
-      if (position) {
-        fetchNearbyUsers(settings.visibility_distance);
-      }
-    }, [position, fetchNearbyUsers, settings.visibility_distance]),
-  });
-
   // Start location watching
   useEffect(() => {
     startWatching();
@@ -75,13 +54,8 @@ export function useMapPageLogic() {
     }
   }, [position, fetchNearbyUsers, settings.visibility_distance]);
 
-  // Initialize known users when nearby list changes
-  useEffect(() => {
-    if (isActive && nearbyUsers.length > 0) {
-      initializeKnownUsers(nearbyUsers.map(u => u.id));
-    }
-  }, [isActive, nearbyUsers, initializeKnownUsers]);
-
+  // Server-filtered discovery is the only source of nearby people.
+  // Never subscribe to raw location-bearing active_signals changes.
   // Auto-refresh every 30 seconds
   useEffect(() => {
     if (position && isActive) {
@@ -226,9 +200,14 @@ export function useMapPageLogic() {
   }, [lastUpdated]);
 
   // Computed values
-  const filteredNearbyUsers = activityFilters.length > 0
-    ? nearbyUsers.filter(u => activityFilters.includes(u.activity))
-    : nearbyUsers;
+  // Favorites rise to the top, but everyone eligible stays discoverable.
+  // Preserve server distance order within each group.
+  const filteredNearbyUsers = prioritizeFavorites(
+    activityFilters.length > 0
+      ? nearbyUsers.filter(person => activityFilters.includes(person.activity))
+      : nearbyUsers,
+    favoriteIds,
+  );
 
   const openUsersCount = filteredNearbyUsers.filter(
     u => u.signal === 'green' || u.signal === 'yellow'
@@ -244,6 +223,7 @@ export function useMapPageLogic() {
     myActivity,
     signalType,
     nearbyUsers,
+    favoriteIds,
     showActivityModal,
     setShowActivityModal,
     selectedActivity,
