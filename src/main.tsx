@@ -5,6 +5,7 @@ import { Maintenance } from "./components/Maintenance";
 import { supabaseConfigured } from "./integrations/supabase/client";
 import "./index.css";
 import { installGlobalErrorHandlers } from "./lib/errorReporter";
+import { installChunkReloadGuard } from "./lib/chunkReloadGuard";
 
 // Initialize analytics session ID early so all tracking (including SocialProofBar) has it
 if (!sessionStorage.getItem('analytics_session_id')) {
@@ -13,6 +14,9 @@ if (!sessionStorage.getItem('analytics_session_id')) {
 
 // Install global error monitoring (production only)
 installGlobalErrorHandlers();
+
+// Reload once instead of a blank screen when a code chunk fails to load
+installChunkReloadGuard();
 
 // Sans backend configuré, page de maintenance lisible plutôt qu'un écran vide
 createRoot(document.getElementById("root")!).render(
