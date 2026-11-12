@@ -69,6 +69,7 @@ export default function MapPage() {
     setLocationDescription,
     lastUpdated,
     filteredNearbyUsers,
+    favoriteIds,
     openUsersCount,
     handleManualRefresh,
     handleSignalToggle,
@@ -445,6 +446,38 @@ export default function MapPage() {
             )}
           </div>
         </section>
+
+        {/* Favorites are a shortcut, never an exclusive discovery filter. */}
+        {favoriteIds.length > 0 && (
+          <div className="px-4 sm:px-6 mb-4" aria-label="Mes favoris disponibles">
+            <div className="rounded-2xl bg-card border border-border/50 p-4">
+              <div className="flex justify-between items-center gap-3">
+                <div>
+                  <p className="font-semibold">⭐ Mes favoris</p>
+                  <p className="text-sm text-muted-foreground">
+                    {filteredNearbyUsers.filter(person => favoriteIds.includes(person.id)).length} disponible(s) près de toi
+                  </p>
+                </div>
+                <button type="button" onClick={() => navigate('/connections')}
+                  className="text-sm text-coral font-semibold min-h-10">Gérer</button>
+              </div>
+              {filteredNearbyUsers.some(person => favoriteIds.includes(person.id)) && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {filteredNearbyUsers.filter(person => favoriteIds.includes(person.id)).slice(0, 5).map(person => (
+                    <button key={person.id} type="button"
+                      onClick={() => handleUserClick(person.id, person.distance)}
+                      className="rounded-full bg-muted px-3 py-2 text-sm min-h-10">
+                      ⭐ {person.firstName}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground mt-2">
+                Tu peux aussi découvrir de nouvelles personnes sur la carte.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Searching Indicator */}
         {isActive && (
