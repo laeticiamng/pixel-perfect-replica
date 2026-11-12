@@ -53,7 +53,7 @@ export function useActiveSignal() {
       return;
     }
 
-    setMySignal(data);
+    setMySignal(data && new Date(data.expires_at).getTime() > Date.now() ? data : null);
   }, [user]);
 
   // Activate signal (with rate limiting: max 10 new signals per hour)
@@ -207,7 +207,7 @@ export function useActiveSignal() {
 
   // Fetch nearby users with signals (respects ghost mode)
   const fetchNearbyUsers = useCallback(async (maxDistance: number = 200) => {
-    if (!user || !position) return;
+    if (!user || !position) { setNearbyUsers([]); return; }
 
     try {
       // Use get_nearby_signals RPC (secure, respects ghost mode)
@@ -241,7 +241,7 @@ export function useActiveSignal() {
               longitude: Number(signal.longitude),
             },
           };
-        }).filter((u: NearbyUser) => u.distance <= maxDistance)
+        }).filter((u: NearbyUser) => Number.isFinite(u.distance) && u.distance <= maxDistance && u.id !== user.id && u.signal !== 'red')
           .sort((a, b) => a.distance - b.distance);
 
         if (nearby.length > 0) {
@@ -258,6 +258,7 @@ export function useActiveSignal() {
       }
       setNearbyUsers([]);
     } catch (err) {
+      setNearbyUsers([]);
       logger.api.error('active_signals', 'fetchNearbyUsers', String(err));
     }
   }, [user, position]);
@@ -293,62 +294,9 @@ export function useActiveSignal() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [position?.latitude, position?.longitude]);
 
-  // Setup realtime subscription for nearby signals
-  useEffect(() => {
-    if (!user || !position) return;
-
-    const channel = supabase
-      .channel('active-signals-realtime')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'active_signals',
-        },
-        () => {
-          logger.api.request('active_signals', 'realtime-insert');
-          fetchNearbyUsers(200);
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'active_signals',
-        },
-        (payload) => {
-          // Only refetch if it's not my own signal update
-          if (payload.new && (payload.new as { user_id: string }).user_id !== user.id) {
-            logger.api.request('active_signals', 'realtime-update');
-            fetchNearbyUsers(200);
-          }
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'active_signals',
-        },
-        () => {
-          logger.api.request('active_signals', 'realtime-delete');
-          fetchNearbyUsers(200);
-        }
-      )
-      .subscribe((status) => {
-        if (status === 'SUBSCRIBED') {
-          logger.api.success('active_signals', 'realtime-subscribe');
-        }
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id, fetchNearbyUsers]);
+  // Discovery is refreshed by the map's existing 30-second polling.
+  // Do not subscribe clients to raw active_signals row changes: realtime
+  // payloads can include precise locations even when the UI hides them.
 
   return {
     mySignal,
