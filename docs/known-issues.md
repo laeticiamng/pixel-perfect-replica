@@ -22,3 +22,12 @@ Several `forwardRef` deprecation warnings appear in the browser console during d
 ### How to verify
 
 Run a production build (`npm run build`) and confirm zero `forwardRef` warnings in the output.
+
+## Debug registry
+
+### 2026-11-12 — Users signed out when opening /map
+- **Symptom**: opening the map redirected signed-in users to /onboarding ("Connexion requise").
+- **Cause**: `InteractiveMap` called `supabase.auth.refreshSession()` on every mount. A forced refresh rotates the refresh token; any failure (stale/reused token, multi-tab race) makes the client clear the session.
+- **Fix**: use `supabase.auth.getSession()` (auto-refreshes only when needed). Same change in `useSubscription` checkout.
+- **Do not retry**: forcing `refreshSession()` before edge function calls — `functions.invoke` already sends the current token.
+- **Also seen**: backend briefly unreachable (HTTP 521) while Lovable Cloud was restarting; recovered on its own, no code change.
