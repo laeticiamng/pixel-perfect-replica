@@ -88,10 +88,10 @@ export function useSubscription() {
   const createNearvityPlusCheckout = async () => {
     if (!user) throw new Error('Not authenticated');
 
-    // Refresh session to ensure valid token
-    const { error: refreshError } = await supabase.auth.refreshSession();
-    if (refreshError) {
-      logger.api.error('auth', 'session-refresh', String(refreshError));
+    // Ensure a valid session (auto-refreshed by the client only when needed)
+    const { data: { session: currentSession }, error: refreshError } = await supabase.auth.getSession();
+    if (refreshError || !currentSession) {
+      logger.api.error('auth', 'session-check', String(refreshError ?? 'no session'));
       throw new Error('Session expired, please log in again');
     }
 

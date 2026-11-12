@@ -139,11 +139,13 @@ export function InteractiveMap({
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        // Try to refresh the session first to get a fresh token
-        const { data: { session }, error: refreshError } = await supabase.auth.refreshSession();
+        // getSession() returns the current session and auto-refreshes only when needed.
+        // Never force refreshSession() here: rotating the refresh token on every map mount
+        // can invalidate it (multi-tab / race) and sign the user out.
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        if (refreshError || !session) {
-            logger.ui.warning('InteractiveMap: session refresh failed: ' + (refreshError?.message || ''));
+        if (sessionError || !session) {
+            logger.ui.warning('InteractiveMap: no active session: ' + (sessionError?.message || ''));
             setError(t('map.unavailable'));
           setIsLoading(false);
           return;
