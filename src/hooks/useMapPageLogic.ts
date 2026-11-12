@@ -4,8 +4,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { useUserSettings } from '@/hooks/useUserSettings';
-import { useNearbyNotifications } from '@/hooks/useNearbyNotifications';
-import { useSignalMatching } from '@/hooks/useSignalMatching';
 import { ActivityType, SignalType } from '@/types/signal';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
@@ -41,28 +39,6 @@ export function useMapPageLogic() {
   const [locationDescription, setLocationDescription] = useState('');
   const activeTimeRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Setup realtime notifications for new nearby users
-  const { initializeKnownUsers } = useNearbyNotifications({
-    isActive,
-    onNewUserNearby: useCallback((_nearbyUser) => {
-      if (position) {
-        fetchNearbyUsers(settings.visibility_distance);
-      }
-    }, [position, fetchNearbyUsers, settings.visibility_distance]),
-  });
-
-  // Setup signal matching notifications (compatible activities)
-  useSignalMatching({
-    isActive,
-    myActivity: myActivity || null,
-    onMatch: useCallback((match) => {
-      // Refresh nearby users when a compatible match is found
-      if (position) {
-        fetchNearbyUsers(settings.visibility_distance);
-      }
-    }, [position, fetchNearbyUsers, settings.visibility_distance]),
-  });
-
   // Start location watching
   useEffect(() => {
     startWatching();
@@ -75,13 +51,8 @@ export function useMapPageLogic() {
     }
   }, [position, fetchNearbyUsers, settings.visibility_distance]);
 
-  // Initialize known users when nearby list changes
-  useEffect(() => {
-    if (isActive && nearbyUsers.length > 0) {
-      initializeKnownUsers(nearbyUsers.map(u => u.id));
-    }
-  }, [isActive, nearbyUsers, initializeKnownUsers]);
-
+  // Server-filtered discovery is the only source of nearby people.
+  // Never subscribe to raw location-bearing active_signals changes.
   // Auto-refresh every 30 seconds
   useEffect(() => {
     if (position && isActive) {
