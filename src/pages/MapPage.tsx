@@ -399,6 +399,31 @@ export default function MapPage() {
           )}
         </header>
 
+        {/* One obvious primary action, even on an empty map. */}
+        <section className="px-4 sm:px-6 mb-4" aria-label="Exprimer une envie">
+          <div className="rounded-2xl border border-border/50 bg-card p-4 shadow-medium">
+            <p className="text-lg font-bold text-foreground mb-1">Tu as envie de faire quoi ?</p>
+            <p className="text-sm text-muted-foreground mb-3">
+              Choisis une activité, Nearvity cherche des personnes disponibles.
+            </p>
+            <button
+              type="button"
+              onClick={handleSignalToggle}
+              disabled={isActivating}
+              className="w-full min-h-14 rounded-xl bg-coral text-primary-foreground font-bold text-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+              aria-label={isActive ? 'Arrêter ma disponibilité' : 'Choisir une activité et y aller'}
+            >
+              {isActive ? '✓ Disponible · Arrêter' : '⚡ GO · On fait quoi ?'}
+            </button>
+            {isActive && myActivity && (
+              <button type="button" onClick={handleChangeActivity}
+                className="mt-3 w-full text-sm font-semibold text-coral min-h-10">
+                Changer d’activité
+              </button>
+            )}
+          </div>
+        </section>
+
         {/* Searching Indicator */}
         {isActive && (
           <div className="px-4 sm:px-6 mb-4">
@@ -582,13 +607,18 @@ export default function MapPage() {
                 onSelect={setSelectedActivity}
               />
 
-              <div className="mt-4">
-                <LocationDescriptionInput
-                  value={locationDescription}
-                  onChange={setLocationDescription}
-                  placeholder={t('mapUI.wherePlaceholder')}
-                />
-              </div>
+              <details className="mt-4 rounded-xl border border-border/50 p-3">
+                <summary className="cursor-pointer text-sm text-muted-foreground">
+                  Ajouter un lieu (facultatif)
+                </summary>
+                <div className="mt-3">
+                  <LocationDescriptionInput
+                    value={locationDescription}
+                    onChange={setLocationDescription}
+                    placeholder={t('mapUI.wherePlaceholder')}
+                  />
+                </div>
+              </details>
               
               <div className="flex gap-3 mt-6">
                 <Button
