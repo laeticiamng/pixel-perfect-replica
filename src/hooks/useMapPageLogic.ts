@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLocationStore } from '@/stores/locationStore';
 import { useActiveSignal } from '@/hooks/useActiveSignal';
 import { usePersonFavorites } from '@/hooks/usePersonFavorites';
+import { prioritizeFavorites } from '@/lib/prioritizeFavorites';
 import { useUserSettings } from '@/hooks/useUserSettings';
 import { ActivityType, SignalType } from '@/types/signal';
 import { supabase } from '@/integrations/supabase/client';
@@ -201,15 +202,12 @@ export function useMapPageLogic() {
   // Computed values
   // Favorites rise to the top, but everyone eligible stays discoverable.
   // Preserve server distance order within each group.
-  const filteredNearbyUsers = (activityFilters.length > 0
-    ? nearbyUsers.filter(u => activityFilters.includes(u.activity))
-    : nearbyUsers
-  ).map((person, index) => ({ person, index }))
-    .sort((a, b) =>
-      Number(favoriteIds.includes(b.person.id)) - Number(favoriteIds.includes(a.person.id))
-      || a.index - b.index
-    )
-    .map(({ person }) => person);
+  const filteredNearbyUsers = prioritizeFavorites(
+    activityFilters.length > 0
+      ? nearbyUsers.filter(person => activityFilters.includes(person.activity))
+      : nearbyUsers,
+    favoriteIds,
+  );
 
   const openUsersCount = filteredNearbyUsers.filter(
     u => u.signal === 'green' || u.signal === 'yellow'
