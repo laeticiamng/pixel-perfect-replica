@@ -406,6 +406,28 @@ export default function MapPage() {
             <p className="text-sm text-muted-foreground mb-3">
               Choisis une activité, Nearvity cherche des personnes disponibles.
             </p>
+            {!isActive && (
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {[
+                  { id: 'eating', label: 'Manger', emoji: '🍽️' },
+                  { id: 'sport', label: 'Bouger', emoji: '🏃' },
+                  { id: 'talking', label: 'Discuter', emoji: '💬' },
+                  { id: 'studying', label: 'Réviser', emoji: '📚' },
+                  { id: 'working', label: 'Travailler', emoji: '💻' },
+                  { id: 'other', label: 'Autre envie', emoji: '✨' },
+                ].map((choice) => (
+                  <button key={choice.id} type="button"
+                    onClick={() => {
+                      setSelectedActivity(choice.id as (typeof ACTIVITIES)[number]['id']);
+                      setShowActivityModal(true);
+                    }}
+                    className="min-h-14 rounded-xl border border-border/60 bg-background px-2 text-sm font-medium hover:border-coral focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral"
+                  >
+                    <span aria-hidden="true">{choice.emoji}</span> {choice.label}
+                  </button>
+                ))}
+              </div>
+            )}
             <button
               type="button"
               onClick={handleSignalToggle}
